@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: aladdin-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234 # root 계정 비밀번호 설정
+      MYSQL_DATABASE: aladdinDB # 생성할 데이터베이스 이름
+      MYSQL_USER: test # 생성할 사용자 계정
+      MYSQL_PASSWORD: 1234 # 사용자 계정 비밀번호
+    ports:
+      - "3307:3306" # 로컬 포트와 컨테이너 포트 매핑 (필요에 따라 변경)
+    volumes:
+      - mysql-data:/var/lib/mysql # 데이터베이스 데이터를 호스트에 영구 저장
+volumes:
+  mysql-data:
