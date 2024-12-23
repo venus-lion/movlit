@@ -1,13 +1,13 @@
-package org.venus.movlit;
+package movlit.be;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MovlitApplication {
+public class BeApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MovlitApplication.class, args);
+		SpringApplication.run(BeApplication.class, args);
 	}
 
 }
