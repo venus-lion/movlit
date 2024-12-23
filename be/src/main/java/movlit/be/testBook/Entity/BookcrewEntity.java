@@ -24,9 +24,9 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 public class BookcrewEntity {
     public enum Role {
-        AUTHOR, // 작가
+        AUTHOR, // 지은이
         TRANSLATOR, // 옮긴이
-        EDITOR // 지은이
+        UNKNOWN // 그 외
     }
 
     @Id

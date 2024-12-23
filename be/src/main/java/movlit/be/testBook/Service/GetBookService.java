@@ -10,8 +10,12 @@ import movlit.be.testBook.Entity.BookBestsellerEntity;
 import movlit.be.testBook.Entity.BookEntity;
 import movlit.be.testBook.Entity.BookcrewEntity;
 import movlit.be.testBook.Entity.BookcrewEntity.Role;
+import movlit.be.testBook.Repository.BookBestsellerRepository;
 import movlit.be.testBook.Repository.BookRepository;
+import movlit.be.testBook.Repository.BookcrewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +27,24 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@PropertySource("classpath:application-test.properties")
 public class GetBookService {
     private RestTemplate restTemplate;
-    //private final String BASE_URL = "https://www.aladin.co.kr/ttb/api/ItemList.aspx";
+
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private BookcrewRepository bookcrewRepository ;
+    @Autowired
+    private BookBestsellerRepository bookBestsellerRepository;
 
     // 테스트url
-    String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbhgw0014681535001&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&Cover=Big&output=js&Version=20131101;"
+    String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
+
+    @Value("${aladin.key}")
+    String apiKey;
+    String url = baseUrl + "ttbkey=" + apiKey +
+            "&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
 
     public void insertBook(BookEntity bookEntity){
@@ -70,14 +84,32 @@ public class GetBookService {
 
                     
                     int crewNum = crewArr.length;
-                    for(int i=0; i  <crewNum)
+                    for(int i=0; i < crewNum; i++){
+                        String input = crewArr[i];
+
+                        String regex = "^(.*?)(?:\\\\s*\\\\((.*?)\\\\))?$";
+                        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+                        java.util.regex.Matcher matcher = pattern.matcher(input);
+
+                        if (matcher.matches()) {
+                            String name = matcher.group(1).trim();
+                            Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+
+                            BookcrewEntity savedBookcrew = BookcrewEntity.builder()
+                                    .name(name)
+                                    .role(role)
+                                    .build();
+
+                            bookcrewRepository.save(savedBookcrew);
 
 
+                        } else {
+                            System.out.println( book.getIsbn() +  " " + book.getTitle() +  " " +
+                                    crewArr[i]  + "패턴이 불일치, 크루 저장 실패");
+                        }
+                    }
 
-                    BookcrewEntity savedCrew = BookcrewEntity.builder()
-                            .name(book.getAuthor())
-                            .role()
-                            .build();
+
 
                     BookBestsellerEntity savedBestSeller = BookBestsellerEntity.builder()
                                     .book(savedBookEntity) // FK - BOOKEntity
@@ -85,7 +117,9 @@ public class GetBookService {
                                     .bestDuration(book.getBestDuration())
                                     .build();
 
-                    bookRepository.save(book);
+                    bookBestsellerRepository.save(savedBestSeller);
+
+
 
 
                 }
@@ -100,30 +134,24 @@ public class GetBookService {
 
 
     // 예시: 파싱된 role 값을 설정하는 메서드
-    public void setParsedRole(String roleString) {
+    public Role setParsedRole(String roleString) {
         Role role;
-        enum Role {
-            AUTHOR, // 작가
-            TRANSLATOR, // 옮긴이
-            EDITOR // 지은이
-        }
 
         switch (roleString) {
-            case "작가":
+            case "지은이":
                 role = Role.AUTHOR;
                 break;
             case "옮긴이":
                 role = Role.TRANSLATOR;
                 break;
-            case "지은이":
-                role = Role.EDITOR;
-                break;
             // ... 나머지 role에 대한 파싱 로직 ...
             default:
                 // 파싱할 수 없는 경우 예외 처리 또는 기본값 설정
-                role = null; // 또는 다른 기본 Role 값
+                role = Role.UNKNOWN; // 또는 다른 기본 Role 값 반환
                 break;
         }
+
+        return role; // 역할 반환
     }
 
 
