@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.springframework.boot' version '3.4.1' // Spring Boot 버전 확인 및 필요 시 수정
+	id 'io.spring.dependency-management' version '1.1.7' // Spring Boot 버전과 호환되는 버전 사용
 }
 
 group = 'movlit'
@@ -18,8 +18,28 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	// Spring Web - REST API 개발
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Spring Data JPA - 데이터베이스 연동
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// MySQL Driver - MySQL 연결
+	implementation 'mysql:mysql-connector-java:8.0.33' // MySQL 8 버전에 맞는 드라이버 사용
+
+	// Lombok - 코드 간소화
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok' // 테스트에서도 Lombok 사용
+	testAnnotationProcessor 'org.projectlombok:lombok' // 테스트에서도 Lombok 사용
+
+	// RestTemplate - 외부 API 호출
+	implementation 'org.springframework.boot:spring-boot-starter-web' // RestTemplate 포함
+
+	// Test 관련 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mockito:mockito-core:5.11.0' // Mockito 최신 버전 사용
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0' // Mockito JUnit Jupiter Extension 최신 버전 사용
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
