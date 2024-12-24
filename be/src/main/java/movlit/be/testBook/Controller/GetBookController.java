@@ -21,7 +21,8 @@ public class GetBookController {
 
     @GetMapping("/testBookapi")
     public void testbookapi(){
-        apiTestService.testapiBook();
+        // bookentity save 메서드
+        apiTestService.saveBookDatafromApi();
     }
 }
 

@@ -21,14 +21,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @Getter @Setter
 @Table(name = "book")
-@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class BookEntity {
-    
+
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+//    @GeneratedValue(generator = "uuid2")
+//    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "VARCHAR(255)")
     private String bookId; // isbn, uuid
 
@@ -57,10 +57,10 @@ public class BookEntity {
     private Long heartCount;
 
     @CreatedDate
-    @Column(updatable = false)
     private LocalDateTime regDt;
 
     @LastModifiedDate
+    @Column(insertable = false)
     private LocalDateTime updDt;
 
 }

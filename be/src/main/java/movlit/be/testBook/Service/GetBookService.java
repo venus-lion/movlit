@@ -2,6 +2,7 @@ package movlit.be.testBook.Service;
 
 import java.awt.print.Book;
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @PropertySource("classpath:application-test.properties")
 public class GetBookService {
@@ -41,54 +41,30 @@ public class GetBookService {
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
 
-     @Value("${aladin.key}")
-    String apiKey;
+//    @Value("${aladin.key}")
+    String apiKey = "ttbolivia09291715001";
     String url = baseUrl + "ttbkey=" + apiKey +
             "&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
-    URI url2 = URI.create(url);
 
     public void insertBook(){
-//        // API 데이터 -> ResponseEntity로 처리
-//        ResponseEntity<List<BookResponseDto>> responseEntity = restTemplate.exchange(
-//                url,
-//                HttpMethod.GET,
-//                null,
-//                new ParameterizedTypeReference<List<BookResponseDto>>() {
-//                }
-//        );
 
-        ResponseEntity<BookResponseDto> responseEntity = restTemplate.getForEntity(url2, BookResponseDto.class);
 
-        if(responseEntity.getStatusCode().is2xxSuccessful()){ // -- api보내고 받는 거까지는 성공
+        BookResponseDto bookResponseDto = restTemplate.getForObject(url, BookResponseDto.class);
 
-            // 북 리스트
-            System.out.println("ResponseEntity : " + responseEntity);
-            System.out.println(">> responseEntity는!! "+responseEntity.getBody());
-            BookResponseDto bookResponseDto = responseEntity.getBody();
-            System.out.println("### DTO는 " + bookResponseDto.toString());
-            System.out.println("$$$$$$$$Item은 " + (bookResponseDto.getItem()==null? "null임~" : "null아님" +bookResponseDto.getItem()));
-            System.out.println("다른 값 출력 :::: " + (bookResponseDto.getTitle() == null ? "title null임 ": " title null 아님 " + bookResponseDto.getTitle()));
-
-            if (bookResponseDto == null || bookResponseDto.getItem() == null) {
-                System.out.println("No items found in the response");
-            } else {
-                List<Item> bookList = bookResponseDto.getItem();
-                System.out.println("bookList size: " + bookList.size());
-            }
-
+        if(bookResponseDto != null ){
 
             List<Item> bookList = bookResponseDto.getItem();
 
-            // bookList.getItem() -> itemList (북리스트)
-            if(bookList != null ){
+            if (bookList == null){
+                System.out.println("booklist는 null이다");
+            }
+            if(bookList != null){
 
                 System.out.println("책 목록이 존재함, 책 수: " + bookList.size());
 
-
-                // 북 리스트 저장
+                // booklist 순회하며 bookEntity 저장
                 for(Item book : bookList) {
-
                     try {
                         System.out.println("////////////// 책 \n" + book);
 
@@ -96,8 +72,7 @@ public class GetBookService {
                                 .bookId(book.getIsbn())
                                 .title(book.getTitle())
                                 .publisher(book.getPublisher())
-                                .pubDate(LocalDateTime.parse(book.getPubDate(),
-                                        DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                                .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay())
                                 .description(book.getDescription())
                                 .bookImgUrl(book.getCover().replace("cover200", "cover500"))
                                 .stockStatus(book.getStockStatus() == null ? "in-Stock"
@@ -114,6 +89,7 @@ public class GetBookService {
                         int crewNum = crewArr.length;
                         for (int i = 0; i < crewNum; i++) {
                             String input = crewArr[i];
+                            System.out.println("crew 정보 :"+ i  + " " +input);
 
                             // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
                             String regex = "^(.*?)(?:\\\\s*\\\\((.*?)\\\\))?$";
@@ -122,7 +98,10 @@ public class GetBookService {
 
                             if (matcher.matches()) {
                                 String name = matcher.group(1).trim();
+
                                 Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+
+                                System.out.println("이름 : " + name +"  역할 : " + role);
 
                                 BookcrewEntity savedBookcrew = BookcrewEntity.builder()
                                         .name(name)
@@ -160,9 +139,7 @@ public class GetBookService {
 
             }
         }
-        else{
-            System.out.println("책 api 호출 실패 : " + responseEntity.getStatusCode());
-        }
+
 
 
     }
