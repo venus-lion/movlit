@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.Movie;
+import movlit.be.MovieCrew;
+import movlit.be.MovieRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -35,6 +37,9 @@ public class MovieCollectService {
     @Autowired
     private MovieCollectRepository movieCollectRepository;
 
+    @Autowired
+    private MovieCrewRepository movieCrewRepository;
+
     public MovieCollectService(RestTemplateBuilder builder) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -50,7 +55,7 @@ public class MovieCollectService {
         String region = "&region=KR";
 
         String includeAdult = "&include_adult=false";
-        String sortBy = "&sort_by=popularity.desc";
+        String sortBy = "&sort_by=primary_release_date.desc";
 
         // 개봉일자 between (YYYY-MM-DD)        String dateGte = "2024-12-24";
         LocalDate today = LocalDate.now();
@@ -59,7 +64,7 @@ public class MovieCollectService {
         // 데이터 수집 주기: 1주 -> SYSDATE(수집 날짜) -> date계산 1주일 전?
 
         String apiUrl = "https://api.themoviedb.org/3/discover/movie?api_key=" + key + "&page=" + page
-                + language + region + includeAdult + includeAdult + sortBy;
+                + language + region + includeAdult + releaseDateGte + releaseDateLte + sortBy;
         Map<String, Object> discoverList = restTemplate.getForObject(apiUrl, Map.class);
 
         // discover List에서 id당 detail 뽑아오기
@@ -166,5 +171,84 @@ public class MovieCollectService {
 
         return movieList;
     }
+
+    public List<MovieCrew> getMovieCrewList() {
+        List<MovieCrew> resultList = new ArrayList<>();
+
+        // 언어, 지역
+        String language = "&language=ko";
+        List<Movie> all = movieCollectRepository.findAll();
+
+        all.forEach(movie -> {
+            String apiUrl =
+                    "https://api.themoviedb.org/3/movie/" + movie.getId() + "/credits" + "?api_key=" + key
+                            + language;
+            Map<String, Object> movieCrewInfo = restTemplate.getForObject(apiUrl, Map.class);
+
+            // MovieCrew
+            /**
+             *     private Long id;
+             *     private String name;
+             *     @Enumerated(EnumType.STRING)
+             *     private MovieRole role;
+             *     private String charName;
+             *     private String profileImgUrl;
+             *     private int orderNo; // 감독: -1, 배우: 0부터 정렬
+             */
+
+            // 1. Cast -> Order로 정렬
+            List<Map<String, Object>> castList = (List<Map<String, Object>>) movieCrewInfo.get("cast");
+            castList.forEach(cast -> {
+                Long id = Long.valueOf((Integer) cast.get("id"));
+                String name = (String) cast.get("name");
+                MovieRole role = MovieRole.CAST;
+                String charName = (String) cast.get("character");
+                String profileImgUrl = (String) cast.get("profile_path");
+                int orderNo = (Integer) cast.get("order");
+
+                MovieCrew movieCrew = MovieCrew.builder()
+                        .id(id)
+                        .name(name)
+                        .role(role)
+                        .charName(charName)
+                        .profileImgUrl(profileImgUrl)
+                        .orderNo(orderNo)
+                        .build();
+
+                resultList.add(movieCrew);
+            });
+
+
+            // 2. Crew (DIRECTOR) -> 0번째 배열, job = "Director"
+            List<Map<String, Object>> crewList = (List<Map<String, Object>>) movieCrewInfo.get("crew");
+            if (crewList.isEmpty()) {
+                return;
+            }
+            Map<String, Object> crew = crewList.get(0);
+            Long id = Long.valueOf((Integer) crew.get("id"));
+            String name = (String) crew.get("name");
+            MovieRole role = MovieRole.DIRECTOR;
+            String charName = (String) crew.get("character");
+            String profileImgUrl = (String) crew.get("profile_path");
+            int orderNo = -1;
+
+            MovieCrew movieCrew = MovieCrew.builder()
+                    .id(id)
+                    .name(name)
+                    .role(role)
+                    .charName(charName)
+                    .profileImgUrl(profileImgUrl)
+                    .orderNo(orderNo)
+                    .build();
+
+            resultList.add(movieCrew);
+
+        });
+
+        movieCrewRepository.saveAll(resultList);
+
+        return resultList;
+    }
+
 
 }

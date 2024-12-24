@@ -1,13 +1,15 @@
 package movlit.be;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +22,12 @@ public class Movie {
 
     // Discover
     @Id
+//    @Column(name = "movie_id")
+//    @JsonProperty("id")
     private Long id;
     private String title;
     private String originalTitle;
+
     @Column(length = 60000)
     private String overview;
     private Double popularity;
@@ -40,10 +45,14 @@ public class Movie {
     private String tagline;
 
     // Custom
+    // Time 분리
     private LocalDateTime regDt;
     private LocalDateTime updDt;
     private boolean delYn;
     private Long heartCount;
+
+    @OneToMany(mappedBy = "movie")
+    private List<MovieRCrew> movieRCrews = new ArrayList<>();
 
     @Builder
     public Movie(Long id, String title, String originalTitle, String overview, Double popularity, String posterPath,
