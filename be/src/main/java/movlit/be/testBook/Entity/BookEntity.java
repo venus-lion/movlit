@@ -47,6 +47,9 @@ public class BookEntity {
     @Column
     private String description;
 
+    @Column
+    private String categoryName;
+
     @Column(nullable = false)
     private String bookImgUrl;
 

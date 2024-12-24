@@ -3,10 +3,12 @@ package movlit.be.testBook.Controller;
 import lombok.RequiredArgsConstructor;
 import movlit.be.testBook.Service.GetBookService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/testBook")
 public class GetBookController {
 
     private final GetBookService getBookService;
