@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.Movie;
 import movlit.be.MovieCrew;
 import movlit.be.MovieRole;
+import movlit.be.MovieTag;
+import movlit.be.MovieTagId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -38,6 +40,9 @@ public class MovieCollectService {
     private MovieCollectRepository movieCollectRepository;
 
     @Autowired
+    private MovieTagRepository movieTagRepository;
+
+    @Autowired
     private MovieCrewRepository movieCrewRepository;
 
     public MovieCollectService(RestTemplateBuilder builder) {
@@ -59,7 +64,7 @@ public class MovieCollectService {
 
         // 개봉일자 between (YYYY-MM-DD)        String dateGte = "2024-12-24";
         LocalDate today = LocalDate.now();
-        String releaseDateGte = "&release_date.gte=2024-01-01";
+        String releaseDateGte = "&release_date.gte=2023-01-01";
         String releaseDateLte = "&release_date.lte=2024-12-31";
         // 데이터 수집 주기: 1주 -> SYSDATE(수집 날짜) -> date계산 1주일 전?
 
@@ -172,6 +177,51 @@ public class MovieCollectService {
         return movieList;
     }
 
+    /*
+    Move Tag(Keyword) 수집
+     */
+    public List<MovieTag> getMovieTagList(Movie movie){
+
+        List<MovieTag> movieTagList = new ArrayList<>();
+
+        String apiUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/keywords?api_key=" + key;
+        Map<String, Object> response = restTemplate.getForObject(apiUrl, Map.class);
+
+
+        if(ObjectUtils.isEmpty(response.get("keywords"))){
+            return List.of();
+        }
+
+        List<Map<String, Object>> keywordList = (List<Map<String, Object>>) response.get("keywords");
+
+        for(Map<String, Object> keyword : keywordList){
+            Long id = Long.valueOf((Integer) keyword.get("id"));
+            String name = (String) keyword.get("name");
+            MovieTagId movieTagId = MovieTagId.builder()
+                    .movieId(movie.getId()).movieTagId(id)
+                    .build();
+            MovieTag movieTag = MovieTag.builder()
+                    .movieTagId(movieTagId)
+                    .name(name)
+                    .movie(movie)
+                    .regDt(LocalDateTime.now())
+                    .updDt(LocalDateTime.now())
+                    .delYn(false)
+                    .build();
+
+            movieTagList.add(movieTag);
+        }
+
+
+
+        movieTagRepository.saveAll(movieTagList);
+
+        return movieTagList;
+    }
+
+    public List<Movie> getAllMovieList(){
+        return movieCollectRepository.findAll();
+    }
     public List<MovieCrew> getMovieCrewList() {
         List<MovieCrew> resultList = new ArrayList<>();
 

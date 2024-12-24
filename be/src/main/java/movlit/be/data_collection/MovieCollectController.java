@@ -3,6 +3,7 @@ package movlit.be.data_collection;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.Movie;
 import movlit.be.MovieCrew;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@Slf4j
 public class MovieCollectController {
 
     private final MovieCollectService movieCollectService;
 
     @GetMapping("/discover")
     public ResponseEntity<List<List<Movie>>> getDiscoverMovie() {
-        int MAX_PAGE = 100;
+        int MAX_PAGE = 100; // 변경 가능
         List<List<Movie>> resultList = new ArrayList<>();
 
         for (int i = 1; i <= MAX_PAGE; i++) {
@@ -39,6 +41,28 @@ public class MovieCollectController {
         }
 
         return ResponseEntity.ok(resultList);
+    }
+
+    @GetMapping("/keywords")
+    public void getMovieTagList(){
+        List<Movie> movieList = movieCollectService.getAllMovieList();
+        int cnt = 0;
+        for(Movie movie : movieList){
+
+            movieCollectService.getMovieTagList(movie);
+            try{
+                if (cnt % 40 == 0) {
+                    Thread.sleep(1000);
+                }
+
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            log.info("cnt={}", cnt);
+            log.info("id={}", movie.getId());
+            cnt ++;
+        }
+
     }
 
     @GetMapping("/discover/crew")
