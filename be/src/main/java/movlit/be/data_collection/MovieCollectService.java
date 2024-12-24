@@ -1,6 +1,5 @@
 package movlit.be.data_collection;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,19 +52,22 @@ public class MovieCollectService {
         String includeAdult = "&include_adult=false";
         String sortBy = "&sort_by=popularity.desc";
 
-        // 개봉일자 between (YYYY-MM-DD)
-//        String release_date_gte = "&release_date.gte=";
-//        String release_date_lte = "&release_date.lte=";
-
-        ObjectMapper objectMapper = new ObjectMapper();
+        // 개봉일자 between (YYYY-MM-DD)        String dateGte = "2024-12-24";
+        LocalDate today = LocalDate.now();
+        String releaseDateGte = "&release_date.gte=2024-01-01";
+        String releaseDateLte = "&release_date.lte=2024-12-31";
+        // 데이터 수집 주기: 1주 -> SYSDATE(수집 날짜) -> date계산 1주일 전?
 
         String apiUrl = "https://api.themoviedb.org/3/discover/movie?api_key=" + key + "&page=" + page
                 + language + region + includeAdult + includeAdult + sortBy;
         Map<String, Object> discoverList = restTemplate.getForObject(apiUrl, Map.class);
 
         // discover List에서 id당 detail 뽑아오기
-        List<Map<String, Object>> resultList = (List<Map<String, Object>>) discoverList.get("results");
+        if (ObjectUtils.isEmpty(discoverList.get("results"))) {
+            return List.of();
+        }
 
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) discoverList.get("results");
         List<Movie> movieList = new ArrayList<>();
 
         for (Map<String, Object> result : resultList) {
@@ -97,8 +98,13 @@ public class MovieCollectService {
             Double popularity = (Double) result.get("popularity");
             String posterPath = (String) result.get("poster_path");
             String backdropPath = (String) result.get("backdrop_path");
+
             String releaseDateStr = (String) result.get("release_date");
             LocalDate releaseDate = LocalDate.parse(releaseDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+            if (releaseDate.isAfter(today)) {
+                continue;
+            }
+
             String originalLanguage = (String) result.get("original_language");
             Long voteCount = Long.valueOf((Integer) result.get("vote_count"));
             Double voteAverage = (Double) result.get("vote_average");
@@ -151,11 +157,14 @@ public class MovieCollectService {
                     .build();
 
             movieList.add(movie);
+
+            log.info("page={}", page);
+            log.info("id={}", id);
         }
 
         movieCollectRepository.saveAll(movieList);
-        return movieList;
 
+        return movieList;
     }
 
 }

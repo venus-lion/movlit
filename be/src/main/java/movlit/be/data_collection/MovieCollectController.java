@@ -18,12 +18,17 @@ public class MovieCollectController {
 
     @GetMapping("/discover")
     public ResponseEntity<List<List<Movie>>> getDiscoverMovie() {
-        int MAX_PAGE = 10;
+        int MAX_PAGE = 100;
         List<List<Movie>> resultList = new ArrayList<>();
 
         for (int i = 1; i <= MAX_PAGE; i++) {
             try {
-                resultList.add(movieCollectService.getMovieDiscoverView(Integer.toString(i)));
+                List<Movie> movieList = movieCollectService.getMovieDiscoverView(Integer.toString(i));
+                if (movieList.isEmpty()) {
+                    break;
+                }
+
+                resultList.add(movieList);
                 if (i % 2 == 0) {
                     Thread.sleep(1000);
                 }
