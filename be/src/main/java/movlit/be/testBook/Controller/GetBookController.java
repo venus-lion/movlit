@@ -1,8 +1,6 @@
 package movlit.be.testBook.Controller;
 
 import lombok.RequiredArgsConstructor;
-import movlit.be.testBook.Dto.BookResponseDto;
-import movlit.be.testBook.Service.ApiTestService;
 import movlit.be.testBook.Service.GetBookService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,18 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class GetBookController {
 
     private final GetBookService getBookService;
-    private final ApiTestService apiTestService;
 
     @GetMapping("/saveBooks")
     public void booksapiToDb(){
-        getBookService.insertBook();
+        getBookService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
     }
 
-    @GetMapping("/testBookapi")
-    public void testbookapi(){
-        // bookentity save 메서드
-        apiTestService.saveBookDatafromApi();
-    }
 }
 
 

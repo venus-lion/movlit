@@ -60,7 +60,6 @@ public class BookEntity {
     private LocalDateTime regDt;
 
     @LastModifiedDate
-    @Column(insertable = false)
     private LocalDateTime updDt;
 
 }

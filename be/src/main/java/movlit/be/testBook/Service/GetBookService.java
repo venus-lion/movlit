@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -41,14 +42,20 @@ public class GetBookService {
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
 
-//    @Value("${aladin.key}")
-    String apiKey = "ttbolivia09291715001";
-    String url = baseUrl + "ttbkey=" + apiKey +
-            "&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
+    @Value("${aladin.key}")
+    String apiKey;
 
+    public void repeatGet(int times){
+        for(int i=1; i < times+1; i++){
 
-    public void insertBook(){
+            String url = baseUrl + "ttbkey=" + apiKey +
+                    "&QueryType=Bestseller&MaxResults=50&start="+i+"&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
+            insertBook(url);
+        }
+    }
+
+    public void insertBook(String url){
 
         BookResponseDto bookResponseDto = restTemplate.getForObject(url, BookResponseDto.class);
 
@@ -66,8 +73,6 @@ public class GetBookService {
                 // booklist 순회하며 bookEntity 저장
                 for(Item book : bookList) {
                     try {
-                        System.out.println("////////////// 책 \n" + book);
-
                         BookEntity savedBook = BookEntity.builder()
                                 .bookId(book.getIsbn())
                                 .title(book.getTitle())
@@ -75,10 +80,8 @@ public class GetBookService {
                                 .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay())
                                 .description(book.getDescription())
                                 .bookImgUrl(book.getCover().replace("cover200", "cover500"))
-                                .stockStatus(book.getStockStatus() == null ? "in-Stock"
-                                        : book.getStockStatus()) // 상품재고가 null이면 재고있음
-//                            .regDt(LocalDateTime.now())
-//                            .updDt(LocalDateTime.now())
+                                .stockStatus(book.getStockStatus().length() == 0 ? "판매중" : book.getStockStatus()) // 상품재고가 null이면 재고있음
+                                .mallUrl(book.getLink())
                                 .build();
 
                         // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
@@ -101,11 +104,10 @@ public class GetBookService {
 
                                 Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
 
-                                System.out.println("이름 : " + name +"  역할 : " + role);
-
                                 BookcrewEntity savedBookcrew = BookcrewEntity.builder()
                                         .name(name)
                                         .role(role)
+                                        .profileImageUrl("/book_crew_profile/default_profile.png")
                                         .build();
 
                                 BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);

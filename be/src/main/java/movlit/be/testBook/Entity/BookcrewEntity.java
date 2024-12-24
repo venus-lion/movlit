@@ -42,7 +42,7 @@ public class BookcrewEntity {
     private Role role;
 
     @Column(name = "profile_image_url")
-    private String profileImageUrl = "/book_crew_profile/default_profile.png"; // S3 기본 이미지 경로
+    private String profileImageUrl; // S3 기본 이미지 경로
 
 
 }
