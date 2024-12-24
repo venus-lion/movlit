@@ -74,7 +74,8 @@ public class GetBookService {
                 for(Item book : bookList) {
                     try {
                         BookEntity savedBook = BookEntity.builder()
-                                .bookId(book.getIsbn())
+                                .bookId(book.getIsbn13()) // bookId
+                                .isbn(book.getIsbn())
                                 .title(book.getTitle())
                                 .publisher(book.getPublisher())
                                 .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay())
@@ -92,7 +93,6 @@ public class GetBookService {
                         int crewNum = crewArr.length;
                         for (int i = 0; i < crewNum; i++) {
                             String input = crewArr[i];
-                            System.out.println("crew 정보 :"+ i  + " " +input);
 
                             // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
                             String regex = "(.+?)(?:\\s\\((.*?)\\))?$";

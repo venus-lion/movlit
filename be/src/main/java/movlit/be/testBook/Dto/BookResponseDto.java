@@ -35,6 +35,7 @@ public class BookResponseDto {
         private String author;
         private String cover;
         private String isbn;
+        private String isbn13; // bookId
         private String description;
         private String stockStatus;
         private String categoryName;

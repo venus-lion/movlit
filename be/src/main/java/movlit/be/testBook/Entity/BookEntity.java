@@ -30,7 +30,10 @@ public class BookEntity {
 //    @GeneratedValue(generator = "uuid2")
 //    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "VARCHAR(255)")
-    private String bookId; // isbn, uuid
+    private String bookId; // isbn13 , uuid
+
+    @Column
+    private String isbn; // isbn
 
     @Column(nullable = false)
     private String title;
