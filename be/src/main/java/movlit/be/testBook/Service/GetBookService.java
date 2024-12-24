@@ -1,10 +1,11 @@
 package movlit.be.testBook.Service;
 
 import java.awt.print.Book;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
-import movlit.be.testBook.Config.AladinConfig;
+
 import movlit.be.testBook.Dto.BookResponseDto;
 import movlit.be.testBook.Dto.BookResponseDto.Item;
 import movlit.be.testBook.Entity.BookBestsellerEntity;
@@ -40,11 +41,12 @@ public class GetBookService {
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
 
-    @Value("${aladin.key}")
+     @Value("${aladin.key}")
     String apiKey;
     String url = baseUrl + "ttbkey=" + apiKey +
             "&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
+    URI url2 = URI.create(url);
 
     public void insertBook(){
 //        // API 데이터 -> ResponseEntity로 처리
@@ -56,17 +58,36 @@ public class GetBookService {
 //                }
 //        );
 
-        ResponseEntity<BookResponseDto> responseEntity = restTemplate.getForEntity(url, BookResponseDto.class);
+        ResponseEntity<BookResponseDto> responseEntity = restTemplate.getForEntity(url2, BookResponseDto.class);
 
-        if(responseEntity.getStatusCode().is2xxSuccessful()){
+        if(responseEntity.getStatusCode().is2xxSuccessful()){ // -- api보내고 받는 거까지는 성공
+
             // 북 리스트
-            BookResponseDto bookList = responseEntity.getBody();
+            System.out.println("ResponseEntity : " + responseEntity);
+            System.out.println(">> responseEntity는!! "+responseEntity.getBody());
+            BookResponseDto bookResponseDto = responseEntity.getBody();
+            System.out.println("### DTO는 " + bookResponseDto.toString());
+            System.out.println("$$$$$$$$Item은 " + (bookResponseDto.getItem()==null? "null임~" : "null아님" +bookResponseDto.getItem()));
+            System.out.println("다른 값 출력 :::: " + (bookResponseDto.getTitle() == null ? "title null임 ": " title null 아님 " + bookResponseDto.getTitle()));
+
+            if (bookResponseDto == null || bookResponseDto.getItem() == null) {
+                System.out.println("No items found in the response");
+            } else {
+                List<Item> bookList = bookResponseDto.getItem();
+                System.out.println("bookList size: " + bookList.size());
+            }
+
+
+            List<Item> bookList = bookResponseDto.getItem();
 
             // bookList.getItem() -> itemList (북리스트)
-            if(bookList != null && bookList.getItem() != null){
+            if(bookList != null ){
+
+                System.out.println("책 목록이 존재함, 책 수: " + bookList.size());
+
 
                 // 북 리스트 저장
-                for(BookResponseDto.Item book : bookList.getItem()) {
+                for(Item book : bookList) {
 
                     try {
                         System.out.println("////////////// 책 \n" + book);

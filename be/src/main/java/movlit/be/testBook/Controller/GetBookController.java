@@ -1,24 +1,28 @@
 package movlit.be.testBook.Controller;
 
-import movlit.be.testBook.Entity.BookEntity;
-import movlit.be.testBook.Repository.BookRepository;
+import lombok.RequiredArgsConstructor;
+import movlit.be.testBook.Dto.BookResponseDto;
+import movlit.be.testBook.Service.ApiTestService;
 import movlit.be.testBook.Service.GetBookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class GetBookController {
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private GetBookService getBookService;
+
+    private final GetBookService getBookService;
+    private final ApiTestService apiTestService;
 
     @GetMapping("/saveBooks")
     public void booksapiToDb(){
         getBookService.insertBook();
     }
 
+    @GetMapping("/testBookapi")
+    public void testbookapi(){
+        apiTestService.testapiBook();
+    }
 }
 
 
