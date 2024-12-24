@@ -92,7 +92,7 @@ public class GetBookService {
                             System.out.println("crew 정보 :"+ i  + " " +input);
 
                             // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
-                            String regex = "^(.*?)(?:\\\\s*\\\\((.*?)\\\\))?$";
+                            String regex = "(.+?)(?:\\s\\((.*?)\\))?$";
                             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
                             java.util.regex.Matcher matcher = pattern.matcher(input);
 
