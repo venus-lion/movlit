@@ -6,18 +6,20 @@ import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import movlit.be.testBook.Config.AladinConfig;
 import movlit.be.testBook.Dto.BookResponseDto;
+import movlit.be.testBook.Dto.BookResponseDto.Item;
 import movlit.be.testBook.Entity.BookBestsellerEntity;
 import movlit.be.testBook.Entity.BookEntity;
+import movlit.be.testBook.Entity.BookRCrewEntity;
 import movlit.be.testBook.Entity.BookcrewEntity;
 import movlit.be.testBook.Entity.BookcrewEntity.Role;
 import movlit.be.testBook.Repository.BookBestsellerRepository;
+import movlit.be.testBook.Repository.BookRCrewRepository;
 import movlit.be.testBook.Repository.BookRepository;
 import movlit.be.testBook.Repository.BookcrewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,17 +31,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @PropertySource("classpath:application-test.properties")
 public class GetBookService {
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private BookcrewRepository bookcrewRepository ;
-    @Autowired
-    private BookBestsellerRepository bookBestsellerRepository;
+    private final RestTemplate restTemplate;
+    private final BookRepository bookRepository;
+    private final BookcrewRepository bookcrewRepository ;
+    private final BookBestsellerRepository bookBestsellerRepository;
+    private final BookRCrewRepository bookRCrewRepository;
 
     // 테스트url
-    String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
+    private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
 
     @Value("${aladin.key}")
     String apiKey;
@@ -47,82 +46,97 @@ public class GetBookService {
             "&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
 
-    public void insertBook(BookEntity bookEntity){
-        // API 데이터 -> ResponseEntity로 처리
-        ResponseEntity<List<BookResponseDto>> responseEntity = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<BookResponseDto>>() {
-                }
-        );
+    public void insertBook(){
+//        // API 데이터 -> ResponseEntity로 처리
+//        ResponseEntity<List<BookResponseDto>> responseEntity = restTemplate.exchange(
+//                url,
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<BookResponseDto>>() {
+//                }
+//        );
+
+        ResponseEntity<BookResponseDto> responseEntity = restTemplate.getForEntity(url, BookResponseDto.class);
 
         if(responseEntity.getStatusCode().is2xxSuccessful()){
-            // 북 리스트 출력 및 저장
-            List<BookResponseDto> bookList = responseEntity.getBody();
-            if(bookList != null){
+            // 북 리스트
+            BookResponseDto bookList = responseEntity.getBody();
+
+            // bookList.getItem() -> itemList (북리스트)
+            if(bookList != null && bookList.getItem() != null){
+
                 // 북 리스트 저장
-                for(BookResponseDto book : bookList){
-                    System.out.println("////////////// 책 \n" + book);
-                    BookEntity savedBook = BookEntity.builder()
-                            .bookId(book.getIsbn())
-                            .title(book.getTitle())
-                            .publisher(book.getPublisher())
-                            .pubDate(LocalDateTime.parse(book.getPubDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                            .description(book.getDescription())
-                            .bookImgUrl(book.getCover().replace("cover200", "cover500"))
-                            .stockStatus(book.getStockStatus()==null? "in-Stock":book.getStockStatus())
-                            .regDt(LocalDateTime.now())
-                            .updDt(LocalDateTime.now())
-                            .build();
+                for(BookResponseDto.Item book : bookList.getItem()) {
 
-                    // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
-                    BookEntity savedBookEntity = bookRepository.save(savedBook); 
+                    try {
+                        System.out.println("////////////// 책 \n" + book);
+
+                        BookEntity savedBook = BookEntity.builder()
+                                .bookId(book.getIsbn())
+                                .title(book.getTitle())
+                                .publisher(book.getPublisher())
+                                .pubDate(LocalDateTime.parse(book.getPubDate(),
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                                .description(book.getDescription())
+                                .bookImgUrl(book.getCover().replace("cover200", "cover500"))
+                                .stockStatus(book.getStockStatus() == null ? "in-Stock"
+                                        : book.getStockStatus()) // 상품재고가 null이면 재고있음
+//                            .regDt(LocalDateTime.now())
+//                            .updDt(LocalDateTime.now())
+                                .build();
+
+                        // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
+                        BookEntity savedBookEntity = bookRepository.save(savedBook);
+
+                        String[] crewArr = book.getAuthor().split(", ");
+
+                        int crewNum = crewArr.length;
+                        for (int i = 0; i < crewNum; i++) {
+                            String input = crewArr[i];
+
+                            // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
+                            String regex = "^(.*?)(?:\\\\s*\\\\((.*?)\\\\))?$";
+                            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+                            java.util.regex.Matcher matcher = pattern.matcher(input);
+
+                            if (matcher.matches()) {
+                                String name = matcher.group(1).trim();
+                                Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+
+                                BookcrewEntity savedBookcrew = BookcrewEntity.builder()
+                                        .name(name)
+                                        .role(role)
+                                        .build();
+
+                                BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
+
+                                BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
+                                        .book(savedBookEntity)
+                                        .bookcrewEntity(savedBookcrewEntity)
+                                        .build();
+
+                                bookRCrewRepository.save(savedBookRCrewEntity);
 
 
-                    String[] crewArr = book.getAuthor().split(", ");
-
-                    
-                    int crewNum = crewArr.length;
-                    for(int i=0; i < crewNum; i++){
-                        String input = crewArr[i];
-
-                        String regex = "^(.*?)(?:\\\\s*\\\\((.*?)\\\\))?$";
-                        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-                        java.util.regex.Matcher matcher = pattern.matcher(input);
-
-                        if (matcher.matches()) {
-                            String name = matcher.group(1).trim();
-                            Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
-
-                            BookcrewEntity savedBookcrew = BookcrewEntity.builder()
-                                    .name(name)
-                                    .role(role)
-                                    .build();
-
-                            bookcrewRepository.save(savedBookcrew);
-
-
-                        } else {
-                            System.out.println( book.getIsbn() +  " " + book.getTitle() +  " " +
-                                    crewArr[i]  + "패턴이 불일치, 크루 저장 실패");
+                            } else {
+                                System.out.println(book.getIsbn() + " " + book.getTitle() + " " +
+                                        crewArr[i] + "패턴이 불일치, 크루 저장 실패");
+                            }
                         }
+
+                        BookBestsellerEntity savedBestSeller = BookBestsellerEntity.builder()
+                                .book(savedBookEntity) // FK - BOOKEntity
+                                .bestRank(book.getBestRank())
+                                .bestDuration(book.getBestDuration())
+                                .build();
+
+                        bookBestsellerRepository.save(savedBestSeller);
+
+                    } catch (Exception e){
+                        System.err.println("Error processing book: " + book.getTitle() + ", " + e.getMessage());
                     }
-
-
-
-                    BookBestsellerEntity savedBestSeller = BookBestsellerEntity.builder()
-                                    .book(savedBookEntity) // FK - BOOKEntity
-                                    .bestRank(book.getBestRank())
-                                    .bestDuration(book.getBestDuration())
-                                    .build();
-
-                    bookBestsellerRepository.save(savedBestSeller);
-
-
-
-
                 }
+
             }
         }
         else{

@@ -7,8 +7,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,6 +22,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter @Setter
 @Table(name = "book")
 @EntityListeners(AuditingEntityListener.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookEntity {
     
     @Id
@@ -44,7 +48,7 @@ public class BookEntity {
     private String bookImgUrl;
 
     @Column(nullable = false, name = "stock_status")
-    private String stockStatus = "in-stock"; // 필드 초기화 (재고있음)
+    private String stockStatus;
 
     @Column
     private String mallUrl;

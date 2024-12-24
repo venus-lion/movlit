@@ -15,9 +15,8 @@ public class GetBookController {
     private GetBookService getBookService;
 
     @GetMapping("/saveBooks")
-    public void String booksapiToDb(BookEntity book){
-        getBookService.insertBook(book);
-
+    public void booksapiToDb(){
+        getBookService.insertBook();
     }
 
 }

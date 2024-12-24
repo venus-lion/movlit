@@ -1,5 +1,6 @@
 package movlit.be.testBook.Dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,20 +11,28 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class BookResponseDto {
-    private String title;
-    private String link;
-    private String author;
-    private String pubDate;
-    private String description;
-    private String isbn;
-    private String stockStatus;
-    private String categoryName;
-    private String publisher;
-    private boolean adult;
-    private String bestDuration;
-    private Integer bestRank;
-    private String cover;
 
+    private List<Item> item;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Item {
+        private String title;
+        private String link;
+        private String pubDate;
+        private String author;
+        private String cover;
+        private String isbn;
+        private String description;
+        private String stockStatus;
+        private String categoryName;
+        private String publisher;
+        private boolean adult;
+        private String bestDuration;
+        private Integer bestRank;
+
+    }
 }
