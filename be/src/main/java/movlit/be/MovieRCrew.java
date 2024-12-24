@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-//@Table(name = "movie_r_crew")
+@Table(name = "movie_r_crew")
 public class MovieRCrew {
 
     @EmbeddedId

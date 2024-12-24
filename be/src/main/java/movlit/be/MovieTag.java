@@ -21,9 +21,9 @@ public class MovieTag {
     @Id
     private MovieTagId movieTagId;
 
-    @MapsId("movieId")
+    @MapsId("movieId") // MovieTagId의 필드
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id", updatable = false, insertable = false)
+    @JoinColumn(name="movie_id", updatable = false, insertable = false)
     private Movie movie;
 
     private String name;

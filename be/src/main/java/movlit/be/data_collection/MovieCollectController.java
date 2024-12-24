@@ -20,7 +20,7 @@ public class MovieCollectController {
     private final MovieCollectService movieCollectService;
 
     @GetMapping("/discover")
-    public ResponseEntity<List<List<Movie>>> getDiscoverMovie() {
+    public void getDiscoverMovie() {
         int MAX_PAGE = 100; // 변경 가능
         List<List<Movie>> resultList = new ArrayList<>();
 
@@ -39,8 +39,6 @@ public class MovieCollectController {
                 throw new RuntimeException(e);
             }
         }
-
-        return ResponseEntity.ok(resultList);
     }
 
     @GetMapping("/keywords")
@@ -66,9 +64,8 @@ public class MovieCollectController {
     }
 
     @GetMapping("/discover/crew")
-    public ResponseEntity<List<MovieCrew>> getDiscoverMovieCrew() {
-        List<MovieCrew> resultList = movieCollectService.getMovieCrewList();
-        return ResponseEntity.ok(resultList);
+    public void getDiscoverMovieCrew() {
+        movieCollectService.getMovieCrewList();
     }
 
 }

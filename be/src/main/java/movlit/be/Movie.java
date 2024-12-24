@@ -22,8 +22,8 @@ public class Movie {
 
     // Discover
     @Id
-//    @Column(name = "movie_id")
-//    @JsonProperty("id")
+    @Column(name = "movie_id")
+    @JsonProperty("id")
     private Long id;
     private String title;
     private String originalTitle;
