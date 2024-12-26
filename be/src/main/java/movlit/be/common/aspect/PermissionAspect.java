@@ -1,6 +1,7 @@
 package movlit.be.common.aspect;
 
 import jakarta.servlet.http.HttpSession;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.Member;
 import org.aspectj.lang.JoinPoint;
@@ -28,7 +29,7 @@ public class PermissionAspect {
         HttpSession session = attributes.getRequest().getSession();
 
         String requiredPermission = checkPermission.value();
-        String memberId = (String) session.getAttribute("sessmemberId");
+        MemberId memberId = (MemberId) session.getAttribute("sessmemberId");
         Member currentMember = memberReadService.findByMemberId(memberId);
 
         if (!currentMember.getRole().equals(requiredPermission)) {

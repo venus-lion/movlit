@@ -3,6 +3,9 @@ package movlit.be.member.presentation;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.annotation.CurrentMemberId;
+import movlit.be.common.util.IdFactory;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
@@ -32,10 +35,11 @@ public class MemberController {
     @PostMapping("/register")
     public String registerProc(String memberId, String pwd, String pwd2, String uname, String email,
                                String profileUrl) {
-        if (memberReadService.findByMemberId(memberId) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
+        if (memberReadService.findByMemberEmail(email) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             Member member = Member.builder()
-                    .memberId(memberId).password(hashedPwd).nickname(uname).email(email).profileImgUrl(profileUrl)
+                    .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
+                    .profileImgUrl(profileUrl)
                     .regDt(LocalDateTime.now()).role("ROLE_Member").provider("local")
                     .build();
 
@@ -45,27 +49,27 @@ public class MemberController {
     }
 
     @GetMapping("/delete/{memberId}")
-    public String delete(@PathVariable String memberId) {
+    public String delete(@PathVariable MemberId memberId) {
         memberWriteService.deleteMember(memberId);
         return "redirect:/member/list";
     }
 
     @GetMapping("/update/{memberId}")
-    public String updateForm(@PathVariable String memberId, Model model) {
+    public String updateForm(@PathVariable MemberId memberId, Model model) {
         Member member = memberReadService.findByMemberId(memberId);
         model.addAttribute("member", member);
         return "member/update";
     }
 
     @PostMapping("/update")
-    public String updateProc(String memberId, String pwd, String pwd2, String uname, String email, String profileUrl,
+    public String updateProc(MemberId memberId, String pwd, String pwd2, String uname, String email, String profileUrl,
                              String role, String provider) {
         Member member = memberReadService.findByMemberId(memberId);
         if (pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             member.setPassword(hashedPwd);
         }
-        member.setMemberId(uname);
+        member.setMemberId(memberId);
         member.setEmail(email);
         member.setProfileImgUrl(profileUrl);
         member.setRole(role);
@@ -79,12 +83,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String loginProc(String memberId, String pwd, HttpSession session, Model model) {
+    public String loginProc(String email, String pwd, HttpSession session, Model model) {
         String msg, url;
-        int result = memberReadService.login(memberId, pwd);
+        int result = memberReadService.login(email, pwd);
         if (result == memberReadService.CORRECT_LOGIN) {
-            Member member = memberReadService.findByMemberId(memberId);
-            session.setAttribute("sessmemberId", memberId);
+            Member member = memberReadService.findByMemberEmail(email);
+            session.setAttribute("sessEmail", email);
             session.setAttribute("sessUname", member.getMemberId());
             msg = member.getMemberId() + "님 환영합니다.";
             url = "/member/list";
@@ -101,11 +105,8 @@ public class MemberController {
     }
 
     @GetMapping("/loginSuccess")
-    public String loginSuccess(HttpSession session, Model model) {
+    public String loginSuccess(HttpSession session, Model model, @CurrentMemberId MemberId memberId) {
         // Spring Security 현재 세션의 사용자 아이디
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String memberId = authentication.getName();
-
         Member member = memberReadService.findByMemberId(memberId);
         session.setAttribute("sessmemberId", memberId);
         session.setAttribute("sessUname", member.getMemberId());

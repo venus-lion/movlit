@@ -2,6 +2,7 @@ package movlit.be.member.infra.persistence;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MemberNotFoundException;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
@@ -21,19 +22,24 @@ public class MemberRepositoryImpl implements MemberRepository {
         return MemberConverter.toDomain(memberEntity);
     }
 
-    ;
+    @Override
+    public Member findById(MemberId memberId) {
+        MemberEntity memberEntity = memberJpaRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        return MemberConverter.toDomain(memberEntity);
+    }
 
     @Override
-    public Member findById(String id) {
-        MemberEntity memberEntity = memberJpaRepository.findById(id)
+    public Member findByEmail(String email) {
+        MemberEntity memberEntity = memberJpaRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
 
         return MemberConverter.toDomain(memberEntity);
     }
 
     @Override
-    public void deleteById(String id) {
-        memberJpaRepository.deleteById(id);
+    public void deleteById(MemberId memberId) {
+        memberJpaRepository.deleteById(memberId);
     }
 
 }

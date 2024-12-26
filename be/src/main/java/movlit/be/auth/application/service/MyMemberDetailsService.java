@@ -17,15 +17,15 @@ public class MyMemberDetailsService implements UserDetailsService {
     private MemberReadService memberService;
 
     @Override
-    public UserDetails loadUserByUsername(String memberName) throws UsernameNotFoundException {
-        Member member = memberService.findByMemberId(memberName);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Member member = memberService.findByMemberEmail(email);
 
         if (member == null) {
-            log.warn("Login 실패: 아이디를 찾을 수 없습니다. (Membername: " + memberName + ")");
-            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + memberName);
+            log.warn("Login 실패: 아이디를 찾을 수 없습니다. (MemberEmail: " + email + ")");
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email);
         }
 
-        log.info("Login 시도: " + member.getMemberId());
+        log.info("Login 시도: " + member.getEmail());
         return new MyMemberDetails(member);
     }
 

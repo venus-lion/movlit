@@ -32,6 +32,7 @@ public class MemberConverter {
                 .memberId(memberEntity.getMemberId())
                 .email(memberEntity.getEmail())
                 .nickname(memberEntity.getNickname())
+                .password(memberEntity.getPassword())
                 .dob(memberEntity.getDob())
                 .profileImgId(memberEntity.getProfileImgId())
                 .profileImgUrl(memberEntity.getProfileImgUrl())

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import movlit.be.common.util.ids.MemberId;
 
 @Entity
 @Getter
@@ -14,13 +15,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "member")
 public class MemberEntity {
 
-    @Id         // primary key
-    private String memberId;
-
+    @Id
+    private MemberId memberId;
     private String email;
     private String nickname;
     private String password;
-    private String dob; // 생년월일
+    private String dob;
     private String profileImgId;
     private String profileImgUrl;
     private String role;
@@ -30,7 +30,7 @@ public class MemberEntity {
     private LocalDateTime updDt;
 
     @Builder
-    public MemberEntity(String memberId, String email, String nickname, String password, String dob,
+    public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,
                         String profileImgId,
                         String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt) {
         this.memberId = memberId;

@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import movlit.be.common.util.ids.MemberId;
 
 @NoArgsConstructor
 @Getter
 @Setter
 public class Member {
 
-    private String memberId;
+    private MemberId memberId;
     private String email;
     private String nickname;
     private String password;
@@ -25,7 +26,7 @@ public class Member {
     private LocalDateTime updDt;
 
     @Builder
-    public Member(String memberId, String email, String nickname, String password, String dob, String profileImgId,
+    public Member(MemberId memberId, String email, String nickname, String password, String dob, String profileImgId,
                   String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt) {
         this.memberId = memberId;
         this.email = email;

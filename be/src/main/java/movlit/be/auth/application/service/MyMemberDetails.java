@@ -53,7 +53,7 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return member.getMemberId();
+        return member.getEmail();
     }
 
     @Override

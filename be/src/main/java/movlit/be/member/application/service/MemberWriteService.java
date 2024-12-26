@@ -1,6 +1,7 @@
 package movlit.be.member.application.service;
 
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class MemberWriteService {
         return memberRepository.save(member);
     }
 
-    public void deleteMember(String memberId) {
+    public void deleteMember(MemberId memberId) {
         memberRepository.deleteById(memberId);
     }
 

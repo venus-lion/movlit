@@ -26,17 +26,17 @@ public class AuthSteps {
      *                 "password", 사용자_설리.getPassword());
      *     }
      */
-//    public static ExtractableResponse<Response> 비회원보노가_로그인한다(RequestSpecification spec) {
-//        return 로그인한다(AuthFixture.보노_로그인_요청(), spec);
-//    }
-//
-//    public static ExtractableResponse<Response> 푸반이_로그인한다(RequestSpecification spec) {
-//        return 로그인한다(AuthFixture.푸반_로그인_요청(), spec);
-//    }
-//
-//    public static ExtractableResponse<Response> 회원푸반이_틀린_비밀번호로_로그인한다(RequestSpecification spec) {
-//        return 로그인한다(AuthFixture.푸반_로그인_요청_틀린_비밀번호(), spec);
-//    }
+    public static ExtractableResponse<Response> 비회원보노가_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.보노_로그인_요청(), spec);
+    }
+
+    public static ExtractableResponse<Response> 푸반이_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.푸반_로그인_요청(), spec);
+    }
+
+    public static ExtractableResponse<Response> 회원푸반이_틀린_비밀번호로_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.푸반_로그인_요청_틀린_비밀번호(), spec);
+    }
     public static ExtractableResponse<Response> 로그인한다(Map<String, Object> loginRequest, RequestSpecification spec) {
         return RestAssured
                 .given()
