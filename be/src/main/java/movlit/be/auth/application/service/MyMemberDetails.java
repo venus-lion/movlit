@@ -1,10 +1,9 @@
 package movlit.be.auth.application.service;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import movlit.be.Member;
+import movlit.be.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;

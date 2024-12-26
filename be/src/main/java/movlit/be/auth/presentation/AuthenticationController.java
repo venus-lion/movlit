@@ -1,9 +1,9 @@
 package movlit.be.auth.presentation;
 
-import movlit.be.security.AuthenticationRequest;
-import movlit.be.security.AuthenticationResponse;
-import movlit.be.security.JwtTokenUtil;
-import movlit.be.security.MyMemberDetailsService;
+import movlit.be.auth.application.service.MyMemberDetailsService;
+import movlit.be.common.filter.dto.AuthenticationRequest;
+import movlit.be.common.filter.dto.AuthenticationResponse;
+import movlit.be.common.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

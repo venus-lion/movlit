@@ -2,11 +2,11 @@ package movlit.be.member.presentation;
 
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.List;
-import movlit.be.Member;
-import movlit.be.MemberService;
+import lombok.RequiredArgsConstructor;
+import movlit.be.member.application.service.MemberReadService;
+import movlit.be.member.application.service.MemberWriteService;
+import movlit.be.member.domain.Member;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/member")
+@RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberReadService memberReadService;
+    private final MemberWriteService memberWriteService;
 
     @GetMapping("/register")
     public String registerForm() {
@@ -29,36 +30,29 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String registerProc(String memberId, String pwd, String pwd2, String uname, String email, String profileUrl) {
-        if (memberService.findByMemberId(memberId) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
+    public String registerProc(String memberId, String pwd, String pwd2, String uname, String email,
+                               String profileUrl) {
+        if (memberReadService.findByMemberId(memberId) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             Member member = Member.builder()
                     .memberId(memberId).password(hashedPwd).nickname(uname).email(email).profileImgUrl(profileUrl)
                     .regDt(LocalDateTime.now()).role("ROLE_Member").provider("local")
                     .build();
 
-            memberService.registerMember(member);
+            memberWriteService.registerMember(member);
         }
         return "redirect:/member/list";
     }
 
-    @GetMapping("/list")
-    public String list(HttpSession session, Model model) {
-        List<Member> memberList = memberService.getMembers();
-        session.setAttribute("menu", "member");
-        model.addAttribute("memberList", memberList);
-        return "member/list";
-    }
-
     @GetMapping("/delete/{memberId}")
     public String delete(@PathVariable String memberId) {
-        memberService.deleteMember(memberId);
+        memberWriteService.deleteMember(memberId);
         return "redirect:/member/list";
     }
 
     @GetMapping("/update/{memberId}")
     public String updateForm(@PathVariable String memberId, Model model) {
-        Member member = memberService.findByMemberId(memberId);
+        Member member = memberReadService.findByMemberId(memberId);
         model.addAttribute("member", member);
         return "member/update";
     }
@@ -66,7 +60,7 @@ public class MemberController {
     @PostMapping("/update")
     public String updateProc(String memberId, String pwd, String pwd2, String uname, String email, String profileUrl,
                              String role, String provider) {
-        Member member = memberService.findByMemberId(memberId);
+        Member member = memberReadService.findByMemberId(memberId);
         if (pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             member.setPassword(hashedPwd);
@@ -75,8 +69,7 @@ public class MemberController {
         member.setEmail(email);
         member.setProfileImgUrl(profileUrl);
         member.setRole(role);
-        //member.sets(provider);
-        memberService.updateMember(member);
+        memberWriteService.updateMember(member);
         return "redirect:/member/list";
     }
 
@@ -88,14 +81,14 @@ public class MemberController {
     @PostMapping("/login")
     public String loginProc(String memberId, String pwd, HttpSession session, Model model) {
         String msg, url;
-        int result = memberService.login(memberId, pwd);
-        if (result == memberService.CORRECT_LOGIN) {
-            Member member = memberService.findByMemberId(memberId);
+        int result = memberReadService.login(memberId, pwd);
+        if (result == memberReadService.CORRECT_LOGIN) {
+            Member member = memberReadService.findByMemberId(memberId);
             session.setAttribute("sessmemberId", memberId);
             session.setAttribute("sessUname", member.getMemberId());
             msg = member.getMemberId() + "님 환영합니다.";
             url = "/member/list";
-        } else if (result == memberService.WRONG_PASSWORD) {
+        } else if (result == memberReadService.WRONG_PASSWORD) {
             msg = "패스워드가 틀렸습니다.";
             url = "/member/login";
         } else {
@@ -113,7 +106,7 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();
 
-        Member member = memberService.findByMemberId(memberId);
+        Member member = memberReadService.findByMemberId(memberId);
         session.setAttribute("sessmemberId", memberId);
         session.setAttribute("sessUname", member.getMemberId());
         session.setMaxInactiveInterval(4 * 60 * 60);        // 세션 타임아웃 시간: 4시간

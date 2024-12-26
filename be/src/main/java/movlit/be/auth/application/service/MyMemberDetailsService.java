@@ -1,9 +1,8 @@
 package movlit.be.auth.application.service;
 
-
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.Member;
-import movlit.be.MemberService;
+import movlit.be.member.application.service.MemberReadService;
+import movlit.be.member.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class MyMemberDetailsService implements UserDetailsService {
 
     @Autowired
-    private MemberService memberService;
+    private MemberReadService memberService;
 
     @Override
     public UserDetails loadUserByUsername(String memberName) throws UsernameNotFoundException {

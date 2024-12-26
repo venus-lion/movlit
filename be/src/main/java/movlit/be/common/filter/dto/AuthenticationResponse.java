@@ -1,6 +1,5 @@
 package movlit.be.common.filter.dto;
 
-
 import lombok.Data;
 
 @Data

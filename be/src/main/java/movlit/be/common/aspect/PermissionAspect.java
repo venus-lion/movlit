@@ -1,8 +1,8 @@
 package movlit.be.common.aspect;
 
-import movlit.be.Member;
 import jakarta.servlet.http.HttpSession;
-import movlit.be.MemberService;
+import movlit.be.member.application.service.MemberReadService;
+import movlit.be.member.domain.Member;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -16,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class PermissionAspect {
 
     @Autowired
-    private MemberService memberService;
+    private MemberReadService memberReadService;
 
     @Before("@annotation(checkPermission)")
     public void checkPermission(JoinPoint joinPoint, CheckPermission checkPermission) throws IllegalAccessException {
@@ -29,7 +29,7 @@ public class PermissionAspect {
 
         String requiredPermission = checkPermission.value();
         String memberId = (String) session.getAttribute("sessmemberId");
-        Member currentMember = memberService.findByMemberId(memberId);
+        Member currentMember = memberReadService.findByMemberId(memberId);
 
         if (!currentMember.getRole().equals(requiredPermission)) {
             throw new SecurityException("권한 부족: " + requiredPermission);

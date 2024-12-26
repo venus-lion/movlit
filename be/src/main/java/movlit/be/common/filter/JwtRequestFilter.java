@@ -1,13 +1,12 @@
 package movlit.be.common.filter;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import movlit.be.security.JwtTokenUtil;
-import movlit.be.security.MyMemberDetailsService;
+import movlit.be.auth.application.service.MyMemberDetailsService;
+import movlit.be.common.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,30 +1,39 @@
 package movlit.be.member.infra.persistence;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.MemberNotFoundException;
+import movlit.be.member.application.converter.MemberConverter;
+import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.infra.persistence.jpa.MemberJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
+
     private final MemberJpaRepository memberJpaRepository;
 
     @Override
-    public MemberEntity save(Membery member){
-        return memberJpaRepository.save(memberEntity);
-    };
+    public Member save(Member member) {
+        MemberEntity memberEntity = memberJpaRepository.save(MemberConverter.toEntity(member));
+        return MemberConverter.toDomain(memberEntity);
+    }
+
+    ;
 
     @Override
-    public Optional<MemberEntity> findById(String id){
-        return memberJpaRepository.findById(id);
+    public Member findById(String id) {
+        MemberEntity memberEntity = memberJpaRepository.findById(id)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return MemberConverter.toDomain(memberEntity);
     }
 
     @Override
-    public void deleteById(String id){
+    public void deleteById(String id) {
         memberJpaRepository.deleteById(id);
     }
+
 }

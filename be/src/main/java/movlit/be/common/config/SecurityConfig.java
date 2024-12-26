@@ -1,7 +1,7 @@
 package movlit.be.common.config;
 
-import movlit.be.security.JwtRequestFilter;
-import movlit.be.auth.service.MyOAuth2MemberService;
+import movlit.be.auth.application.service.MyOAuth2MemberService;
+import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

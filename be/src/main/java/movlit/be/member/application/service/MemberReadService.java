@@ -1,31 +1,26 @@
 package movlit.be.member.application.service;
 
-import java.util.List;
-import movlit.be.MemberRepository;
-import movlit.be.MemberService;
+import lombok.RequiredArgsConstructor;
 import movlit.be.member.domain.Member;
+import movlit.be.member.domain.repository.MemberRepository;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberReadService implements MemberService {
+@RequiredArgsConstructor
+public class MemberReadService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Override
+    public static final int CORRECT_LOGIN = 0;
+    public static final int WRONG_PASSWORD = 1;
+    public static final int Member_NOT_EXIST = 2;
+
     public Member findByMemberId(String memberId) {
-        return memberRepository.findById(memberId).orElse(null);
+
+        return memberRepository.findById(memberId);
     }
 
-    @Override
-    public List<Member> getMembers() {
-        return memberRepository.findAll();
-    }
-
-
-    @Override
     public int login(String memberId, String pwd) {
         Member member = findByMemberId(memberId);
         if (member == null) {

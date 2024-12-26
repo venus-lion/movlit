@@ -3,7 +3,6 @@ package movlit.be.acceptance.auth;
 import static com.foodymoody.be.acceptance.notification.NotificationSteps.회원의_모든_알림을_조회한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.foodymoody.be.auth.util.AuthFixture;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
@@ -38,7 +37,6 @@ public class AuthSteps {
 //    public static ExtractableResponse<Response> 회원푸반이_틀린_비밀번호로_로그인한다(RequestSpecification spec) {
 //        return 로그인한다(AuthFixture.푸반_로그인_요청_틀린_비밀번호(), spec);
 //    }
-
     public static ExtractableResponse<Response> 로그인한다(Map<String, Object> loginRequest, RequestSpecification spec) {
         return RestAssured
                 .given()
