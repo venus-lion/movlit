@@ -27,11 +27,11 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String registerProc(String uid, String pwd, String pwd2, String uname, String email, String profileUrl) {
-        if (memberService.findByMemberId(uid) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
+    public String registerProc(String memberId, String pwd, String pwd2, String uname, String email, String profileUrl) {
+        if (memberService.findByMemberId(memberId) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             Member member = Member.builder()
-                    .memberId(uid).password(hashedPwd).nickname(uname).email(email).profileImgUrl(profileUrl)
+                    .memberId(memberId).password(hashedPwd).nickname(uname).email(email).profileImgUrl(profileUrl)
                     .regDt(LocalDateTime.now()).role("ROLE_Member").provider("local")
                     .build();
 
@@ -48,23 +48,23 @@ public class MemberController {
         return "member/list";
     }
 
-    @GetMapping("/delete/{uid}")
-    public String delete(@PathVariable String uid) {
-        memberService.deleteMember(uid);
+    @GetMapping("/delete/{memberId}")
+    public String delete(@PathVariable String memberId) {
+        memberService.deleteMember(memberId);
         return "redirect:/member/list";
     }
 
-    @GetMapping("/update/{uid}")
-    public String updateForm(@PathVariable String uid, Model model) {
-        Member member = memberService.findByMemberId(uid);
+    @GetMapping("/update/{memberId}")
+    public String updateForm(@PathVariable String memberId, Model model) {
+        Member member = memberService.findByMemberId(memberId);
         model.addAttribute("member", member);
         return "member/update";
     }
 
     @PostMapping("/update")
-    public String updateProc(String uid, String pwd, String pwd2, String uname, String email, String profileUrl,
+    public String updateProc(String memberId, String pwd, String pwd2, String uname, String email, String profileUrl,
                              String role, String provider) {
-        Member member = memberService.findByMemberId(uid);
+        Member member = memberService.findByMemberId(memberId);
         if (pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             member.setPassword(hashedPwd);
@@ -84,12 +84,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String loginProc(String uid, String pwd, HttpSession session, Model model) {
+    public String loginProc(String memberId, String pwd, HttpSession session, Model model) {
         String msg, url;
-        int result = memberService.login(uid, pwd);
+        int result = memberService.login(memberId, pwd);
         if (result == memberService.CORRECT_LOGIN) {
-            Member member = memberService.findByMemberId(uid);
-            session.setAttribute("sessUid", uid);
+            Member member = memberService.findByMemberId(memberId);
+            session.setAttribute("sessmemberId", memberId);
             session.setAttribute("sessUname", member.getMemberId());
             msg = member.getMemberId() + "님 환영합니다.";
             url = "/mall/list";
@@ -109,10 +109,10 @@ public class MemberController {
     public String loginSuccess(HttpSession session, Model model) {
         // Spring Security 현재 세션의 사용자 아이디
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
+        String memberId = authentication.getName();
 
-        Member member = memberService.findByMemberId(uid);
-        session.setAttribute("sessUid", uid);
+        Member member = memberService.findByMemberId(memberId);
+        session.setAttribute("sessmemberId", memberId);
         session.setAttribute("sessUname", member.getMemberId());
         session.setMaxInactiveInterval(4 * 60 * 60);        // 세션 타임아웃 시간: 4시간
         String msg = member.getMemberId() + "님 환영합니다.";

@@ -12,8 +12,8 @@ public class MemberServiceImpl implements MemberService {
     private MemberRepository MemberRepository;
 
     @Override
-    public Member findByMemberId(String uid) {
-        return MemberRepository.findById(uid).orElse(null);
+    public Member findByMemberId(String memberId) {
+        return MemberRepository.findById(memberId).orElse(null);
     }
 
     @Override
@@ -32,13 +32,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void deleteMember(String uid) {
-        MemberRepository.deleteById(uid);
+    public void deleteMember(String memberId) {
+        MemberRepository.deleteById(memberId);
     }
 
     @Override
-    public int login(String uid, String pwd) {
-        Member member = findByMemberId(uid);
+    public int login(String memberId, String pwd) {
+        Member member = findByMemberId(memberId);
         if (member == null) {
             return Member_NOT_EXIST;
         }

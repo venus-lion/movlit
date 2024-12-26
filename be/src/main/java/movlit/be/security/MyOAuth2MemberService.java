@@ -25,7 +25,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest memberRequest) throws OAuth2AuthenticationException {
-        String uid, email, uname, profileUrl;
+        String memberId, email, uname, profileUrl;
         String hashedPwd = bCryptPasswordEncoder.encode("Social Login");
         Member member = null;
 
@@ -37,15 +37,15 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
             case "github":
                 int id = oAuth2User.getAttribute("id");
                 // TODO: 잘 실행되면 "provider_" 빼기
-                uid = provider + "_" + id;
-                member = memberService.findByMemberId(uid);
+                memberId = provider + "_" + id;
+                member = memberService.findByMemberId(memberId);
                 if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
                     uname = oAuth2User.getAttribute("name");
                     uname = (uname == null) ? "github_Member" : uname;
                     email = oAuth2User.getAttribute("email");
                     profileUrl = oAuth2User.getAttribute("avatar_url");
                     member = Member.builder()
-                            .memberId(uid).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
                             .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
                             .build();
                     memberService.registerMember(member);
@@ -55,15 +55,15 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
             case "google":
                 String sub = oAuth2User.getAttribute("sub");    // Google ID
-                uid = provider + "_" + sub;
-                member = memberService.findByMemberId(uid);
+                memberId = provider + "_" + sub;
+                member = memberService.findByMemberId(memberId);
                 if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
                     uname = oAuth2User.getAttribute("name");
                     uname = (uname == null) ? "google_Member" : uname;
                     email = oAuth2User.getAttribute("email");
                     profileUrl = oAuth2User.getAttribute("picture");
                     member = Member.builder()
-                            .memberId(uid).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
                             .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
                             .build();
                     memberService.registerMember(member);
@@ -74,15 +74,15 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
             case "naver":
                 Map<String, Object> response = (Map) oAuth2User.getAttribute("response");
                 String nid = (String) response.get("id");
-                uid = provider + "_" + nid;
-                member = memberService.findByMemberId(uid);
+                memberId = provider + "_" + nid;
+                member = memberService.findByMemberId(memberId);
                 if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
                     uname = (String) response.get("nickname");
                     uname = (uname == null) ? "naver_Member" : uname;
                     email = (String) response.get("email");
                     profileUrl = (String) response.get("profile_image");
                     member = Member.builder()
-                            .memberId(uid).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
                             .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
                             .build();
                     memberService.registerMember(member);
@@ -92,8 +92,8 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
             case "kakao":
                 long kid = (long) oAuth2User.getAttribute("id");
-                uid = provider + "_" + kid;
-                member = memberService.findByMemberId(uid);
+                memberId = provider + "_" + kid;
+                member = memberService.findByMemberId(memberId);
                 if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
                     Map<String, String> properties = (Map) oAuth2User.getAttribute("properties");
                     Map<String, Object> account = (Map) oAuth2User.getAttribute("kakao_account");
@@ -102,7 +102,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     email = (String) account.get("email");
                     profileUrl = (String) properties.get("profile_image");
                     member = Member.builder()
-                            .memberId(uid).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
                             .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
                             .build();
                     memberService.registerMember(member);
@@ -112,14 +112,14 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
             case "facebook":
                 String fid = oAuth2User.getAttribute("id");    // Facebook ID
-                uid = provider + "_" + fid;
-                member = memberService.findByMemberId(uid);
+                memberId = provider + "_" + fid;
+                member = memberService.findByMemberId(memberId);
                 if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
                     uname = oAuth2User.getAttribute("name");
                     uname = (uname == null) ? "facebook_Member" : uname;
                     email = oAuth2User.getAttribute("email");
                     member = Member.builder()
-                            .memberId(uid).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
                             .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider)
                             .build();
                     memberService.registerMember(member);

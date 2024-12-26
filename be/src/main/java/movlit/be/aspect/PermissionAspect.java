@@ -28,8 +28,8 @@ public class PermissionAspect {
         HttpSession session = attributes.getRequest().getSession();
 
         String requiredPermission = checkPermission.value();
-        String uid = (String) session.getAttribute("sessUid");
-        Member currentMember = memberService.findByMemberId(uid);
+        String memberId = (String) session.getAttribute("sessmemberId");
+        Member currentMember = memberService.findByMemberId(memberId);
 
         if (!currentMember.getRole().equals(requiredPermission)) {
             throw new SecurityException("권한 부족: " + requiredPermission);

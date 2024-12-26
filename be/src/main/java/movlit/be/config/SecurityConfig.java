@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .formLogin(auth -> auth
                         .loginPage("/member/login")       // login form
                         .loginProcessingUrl("/member/login")      // 스프링이 낚아 챔. MemberDetailsService 구현 객체에서 처리해주어야 함
-                        .usernameParameter("uid")
+                        .usernameParameter("memberId")
                         .passwordParameter("pwd")
                         .defaultSuccessUrl("/member/loginSuccess", true)  // 로그인 후 해야할 일
                         .failureHandler(failureHandler)
