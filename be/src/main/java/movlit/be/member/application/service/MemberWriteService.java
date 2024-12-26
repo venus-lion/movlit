@@ -1,19 +1,39 @@
 package movlit.be.member.application.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import movlit.be.MemberRepository;
+import movlit.be.MemberService;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
-import movlit.be.member.domain.repository.MemberRepository;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberWriteService {
+public class MemberWriteService implements MemberService {
 
-    private final MemberRepository memberRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
-    public void deleteMember(String memberId) {
-        MemberRepository.deleteById(memberId);
+
+    @Override
+    public void registerMember(Member member) {
+        memberRepository.save(member);
     }
 
+    @Override
+    public void updateMember(Member member) {
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void deleteMember(String memberId) {
+        memberRepository.deleteById(memberId);
+    }
+
+
+
 }
+

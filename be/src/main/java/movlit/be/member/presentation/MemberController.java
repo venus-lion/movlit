@@ -94,7 +94,7 @@ public class MemberController {
             session.setAttribute("sessmemberId", memberId);
             session.setAttribute("sessUname", member.getMemberId());
             msg = member.getMemberId() + "님 환영합니다.";
-            url = "/mall/list";
+            url = "/member/list";
         } else if (result == memberService.WRONG_PASSWORD) {
             msg = "패스워드가 틀렸습니다.";
             url = "/member/login";
