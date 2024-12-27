@@ -1,5 +1,6 @@
 package movlit.be.member.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -17,6 +18,8 @@ public class MemberEntity {
 
     @EmbeddedId
     private MemberId memberId;
+
+    @Column(unique = true, nullable = false)
     private String email;
     private String nickname;
     private String password;
