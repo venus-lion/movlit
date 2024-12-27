@@ -29,6 +29,11 @@ public class MemberEntity {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
 
+//    @OneToMany
+//    @JoinTable(name = "member_genre", joinColumns = @JoinColumn(name = "member_id"), // MemberEntity의 외래 키 컬럼 (조인 테이블 내)
+//            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+//    private List<MemberGenreEntity> memberRGenres = new ArrayList<>();
+
     @Builder
     public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,
                         String profileImgId,
