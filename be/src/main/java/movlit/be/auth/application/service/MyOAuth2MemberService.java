@@ -32,7 +32,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest memberRequest) throws OAuth2AuthenticationException {
-        String email, uname, profileUrl;
+        String email, nickname, profileUrl;
         String hashedPwd = bCryptPasswordEncoder.encode("Social Login");
         Member member = null;
 
@@ -44,14 +44,14 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
             case "github":
                 // FIXME. 여기서 throw를 던져버리니까 이 OAuth 로직 자체를 수정해야 함
                 email = oAuth2User.getAttribute("email");
-                try{
+                try {
                     member = memberReadService.findByMemberEmail(email);
-                } catch (MemberNotFoundException e){
-                    uname = oAuth2User.getAttribute("name");
-                    uname = (uname == null) ? "github_Member" : uname;
+                } catch (MemberNotFoundException e) {
+                    nickname = oAuth2User.getAttribute("name");
+                    nickname = (nickname == null) ? "github_Member" : nickname;
                     profileUrl = oAuth2User.getAttribute("avatar_url");
                     member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
                             .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
                             .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
                             .build();
@@ -63,16 +63,16 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
             case "google":
                 email = oAuth2User.getAttribute("email");    // Google Email
-                try{
+                try {
                     member = memberReadService.findByMemberEmail(email);
 
                     log.info("=== findByMemberEmail : {}", member);
-                } catch (MemberNotFoundException e){
-                    uname = oAuth2User.getAttribute("name");
+                } catch (MemberNotFoundException e) {
+                    nickname = oAuth2User.getAttribute("name");
                     profileUrl = oAuth2User.getAttribute("picture");
                     // TODO : 생일 처리
                     member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
                             .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
                             .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
                             .build();
@@ -84,24 +84,24 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
             case "naver":
                 Map<String, Object> response = (Map) oAuth2User.getAttribute("response");
-                email = (String)response.get("email");
+                email = (String) response.get("email");
 
-                try{
+                try {
                     member = memberReadService.findByMemberEmail(email);
-                } catch (MemberNotFoundException e){
-                    uname = Optional.ofNullable((String) response.get("name")).orElse("naver_Member");
-                    profileUrl = Optional.ofNullable((String)response.get("profile_image")).orElse("");
+                } catch (MemberNotFoundException e) {
+                    nickname = Optional.ofNullable((String) response.get("name")).orElse("naver_Member");
+                    profileUrl = Optional.ofNullable((String) response.get("profile_image")).orElse("");
 
                     // 생일 처리
-                    Optional<String> birthday = Optional.ofNullable((String)response.get("birthday"));
-                    Optional<String> birthyear = Optional.ofNullable((String)response.get("birthyear"));
+                    Optional<String> birthday = Optional.ofNullable((String) response.get("birthday"));
+                    Optional<String> birthyear = Optional.ofNullable((String) response.get("birthyear"));
                     String dob = "";
-                    if(birthday.isPresent() && birthyear.isPresent()){
+                    if (birthday.isPresent() && birthyear.isPresent()) {
                         dob = birthyear.get() + "-" + birthday.get();
                     }
 
                     member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
+                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
                             .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
                             .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
                             .build();
@@ -111,27 +111,38 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 break;
 
             case "kakao":
-                long kid = (long) oAuth2User.getAttribute("id");
-//                memberId = provider + "_" + kid;
-//                member = memberReadService.findByMemberId(memberId);
-//                if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
-//                    Map<String, String> properties = (Map) oAuth2User.getAttribute("properties");
-//                    Map<String, Object> account = (Map) oAuth2User.getAttribute("kakao_account");
-//                    uname = (String) properties.get("nickname");
-//                    uname = (uname == null) ? "kakao_Member" : uname;
-//                    email = (String) account.get("email");
-//                    profileUrl = (String) properties.get("profile_image");
-//                    member = Member.builder()
-//                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
-//                            .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
-//                            .build();
-//                    memberWriteService.registerMember(member);
-//                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
-//                }
-                break;
+                Map<String, String> properties = (Map) oAuth2User.getAttribute("properties");
+                Map<String, Object> account = (Map) oAuth2User.getAttribute("kakao_account");
+                email = (String) account.get("email");
+                try {
+                    member = memberReadService.findByMemberEmail(email);
+                } catch (MemberNotFoundException e) {
+                    nickname = Optional.ofNullable((String) properties.get("nickname")).orElse("");
 
-            case "facebook":
-                String fid = oAuth2User.getAttribute("id");    // Facebook ID
+                    Optional<String> birthday = Optional.ofNullable((String) account.get("birthday"));
+                    Optional<String> birthyear = Optional.ofNullable((String) account.get("birthyear"));
+                    String dob = "";
+                    if (birthday.isPresent() && birthyear.isPresent()) {
+                        dob = birthyear + "-"
+                                + birthday.get().substring(0, 2) + "-" + birthday.get().substring(3);
+                    }
+
+                    profileUrl = Optional.ofNullable((String) account.get("profile_image")).orElse("");
+
+                    member = Member.builder()
+                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
+                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
+                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
+                            .build();
+
+                    memberWriteService.registerMember(member);
+                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
+                }
+
+                break;
+        }
+//            case "facebook":
+//                String fid = oAuth2User.getAttribute("id");    // Facebook ID
 //                memberId = provider + "_" + fid;
 //                member = memberReadService.findByMemberId(memberId);
 //                if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
@@ -145,8 +156,8 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 //                    memberWriteService.registerMember(member);
 //                    log.info("페이스북 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
 //                }
-                break;
-        }
+//                break;
+//        }
 
         return new MyMemberDetails(member, oAuth2User.getAttributes());
     }
