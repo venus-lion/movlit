@@ -1,9 +1,7 @@
-package movlit.be.book.testBook.dto;
+package movlit.be.book.getBookApi;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,21 +1,19 @@
-package movlit.be.book.testBook.service;
+package movlit.be.book.getBookApi;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.testBook.dto.BookResponseDto;
-import movlit.be.book.testBook.dto.BookResponseDto.Item;
-import movlit.be.book.testBook.entity.BookBestsellerEntity;
-import movlit.be.book.testBook.entity.BookEntity;
-import movlit.be.book.testBook.entity.BookRCrewEntity;
-import movlit.be.book.testBook.entity.BookcrewEntity;
-import movlit.be.book.testBook.entity.GenerateUUID;
-import movlit.be.book.testBook.repository.BookBestsellerRepository;
-import movlit.be.book.testBook.repository.BookRCrewRepository;
-import movlit.be.book.testBook.repository.BookRepository;
-import movlit.be.book.testBook.repository.BookcrewRepository;
+import movlit.be.book.getBookApi.BookResponseDto.Item;
+import movlit.be.book.domain.entity.BookBestsellerEntity;
+import movlit.be.book.domain.entity.BookEntity;
+import movlit.be.book.domain.entity.BookRCrewEntity;
+import movlit.be.book.domain.entity.BookcrewEntity;
+import movlit.be.book.domain.entity.GenerateUUID;
+import movlit.be.book.infra.persistence.jpa.BookBestsellerJpaRepository;
+import movlit.be.book.infra.persistence.jpa.BookRCrewJpaRepository;
+import movlit.be.book.infra.persistence.jpa.BookJpaRepository;
+import movlit.be.book.infra.persistence.jpa.BookcrewJpaRepository;
 import movlit.be.common.util.ids.BookBestsellerId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.BookRCrewId;
@@ -24,16 +22,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import movlit.be.book.testBook.entity.BookcrewEntity.Role;
+import movlit.be.book.domain.entity.BookcrewEntity.Role;
 @Service
 @RequiredArgsConstructor
 //@PropertySource("classpath:application-test.properties")
 public class GetBookService {
     private final RestTemplate restTemplate;
-    private final BookRepository bookRepository;
-    private final BookcrewRepository bookcrewRepository ;
-    private final BookBestsellerRepository bookBestsellerRepository;
-    private final BookRCrewRepository bookRCrewRepository;
+    private final BookJpaRepository bookRepository;
+    private final BookcrewJpaRepository bookcrewRepository ;
+    private final BookBestsellerJpaRepository bookBestsellerRepository;
+    private final BookRCrewJpaRepository bookRCrewRepository;
 
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";

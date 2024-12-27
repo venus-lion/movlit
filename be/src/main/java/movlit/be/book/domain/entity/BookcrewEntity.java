@@ -1,4 +1,4 @@
-package movlit.be.book.testBook.entity;
+package movlit.be.book.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
