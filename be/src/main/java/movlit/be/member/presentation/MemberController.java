@@ -10,8 +10,6 @@ import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,12 +31,13 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String registerProc(String memberId, String pwd, String pwd2, String uname, String email,
+    public String registerProc(@CurrentMemberId MemberId memberId, String pwd, String pwd2, String uname, String email,
                                String profileUrl) {
-        if (memberReadService.findByMemberEmail(email) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
+        if (memberId == null && pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
+            MemberId generatedMemberId = IdFactory.createMemberId();
             Member member = Member.builder()
-                    .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
+                    .memberId(generatedMemberId).password(hashedPwd).nickname(uname).email(email)
                     .profileImgUrl(profileUrl)
                     .regDt(LocalDateTime.now()).role("ROLE_Member").provider("local")
                     .build();
@@ -105,10 +104,10 @@ public class MemberController {
     }
 
     @GetMapping("/loginSuccess")
-    public String loginSuccess(HttpSession session, Model model, @CurrentMemberId MemberId memberId) {
+    public String loginSuccess(HttpSession session, Model model, String email) {
         // Spring Security 현재 세션의 사용자 아이디
-        Member member = memberReadService.findByMemberId(memberId);
-        session.setAttribute("sessmemberId", memberId);
+        Member member = memberReadService.findByMemberEmail(email);
+        session.setAttribute("sessEmail", email);
         session.setAttribute("sessUname", member.getMemberId());
         session.setMaxInactiveInterval(4 * 60 * 60);        // 세션 타임아웃 시간: 4시간
         String msg = member.getMemberId() + "님 환영합니다.";

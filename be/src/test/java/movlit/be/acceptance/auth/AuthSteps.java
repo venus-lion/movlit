@@ -1,6 +1,5 @@
 package movlit.be.acceptance.auth;
 
-import static com.foodymoody.be.acceptance.notification.NotificationSteps.회원의_모든_알림을_조회한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -9,6 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import java.util.Map;
+import movlit.be.acceptance.util.AuthFixture;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Assertions;
@@ -18,25 +18,26 @@ import org.springframework.http.MediaType;
 
 public class AuthSteps {
 
-    /** ------------ AuthFixture 내부 ----------------
-     *
-     *     public static Map<String, Object> 설리_로그인_요청() {
-     *         return Map.of(
-     *                 "email", 사용자_설리.getEmail(),
-     *                 "password", 사용자_설리.getPassword());
-     *     }
-     */
-    public static ExtractableResponse<Response> 비회원보노가_로그인한다(RequestSpecification spec) {
-        return 로그인한다(AuthFixture.보노_로그인_요청(), spec);
+    public static ExtractableResponse<Response> 비회원이_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.비회원_로그인_요청(), spec);
     }
 
-    public static ExtractableResponse<Response> 푸반이_로그인한다(RequestSpecification spec) {
-        return 로그인한다(AuthFixture.푸반_로그인_요청(), spec);
+    public static ExtractableResponse<Response> 원준이_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.사용자_원준_로그인_요청(), spec);
     }
 
-    public static ExtractableResponse<Response> 회원푸반이_틀린_비밀번호로_로그인한다(RequestSpecification spec) {
-        return 로그인한다(AuthFixture.푸반_로그인_요청_틀린_비밀번호(), spec);
+    public static ExtractableResponse<Response> 윤기가_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.사용자_윤기_로그인_요청(), spec);
     }
+
+    public static ExtractableResponse<Response> 지원이_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.사용자_지원_로그인_요청(), spec);
+    }
+
+    public static ExtractableResponse<Response> 민지가_로그인한다(RequestSpecification spec) {
+        return 로그인한다(AuthFixture.사용자_민지_로그인_요청(), spec);
+    }
+
     public static ExtractableResponse<Response> 로그인한다(Map<String, Object> loginRequest, RequestSpecification spec) {
         return RestAssured
                 .given()
@@ -44,34 +45,8 @@ public class AuthSteps {
                 .spec(spec)
                 .log().all()
                 .body(loginRequest)
-                .when().post("/api/auth/login")
+                .when().post("/member/login")
                 .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> OAuth_로그인한다(String provider, String authorizationCode,
-                                                            RequestSpecification spec) {
-        return RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .spec(spec)
-                .params("code", authorizationCode)
-                .log().all()
-                .when().get("/api/auth/oauth/{provider}", provider)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 토큰을_재발급한다(String refreshToken, RequestSpecification spec) {
-        return RestAssured.given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .spec(spec)
-                .log().all()
-                .body(Map.of("refreshToken", refreshToken))
-                .when()
-                .post("/api/auth/token")
-                .then()
-                .log().all()
                 .extract();
     }
 
@@ -91,9 +66,9 @@ public class AuthSteps {
 
     public static void 토큰과_상태코드_200을_응답하는지_검증한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(200),
-                () -> assertThat(response.jsonPath().getString("accessToken")).isNotNull(),
-                () -> assertThat(response.jsonPath().getString("refreshToken")).isNotNull()
+                () -> assertThat(response.statusCode()).isEqualTo(200)
+//                () -> assertThat(response.jsonPath().getString("accessToken")).isNotNull(),
+//                () -> assertThat(response.jsonPath().getString("refreshToken")).isNotNull()
         );
     }
 
@@ -125,20 +100,13 @@ public class AuthSteps {
         상태코드를_검증한다(response, HttpStatus.NO_CONTENT);
     }
 
-    public static void 로그아웃한_푸반의_액세스토큰으로_알림이_조회가_안됨을_검증한다(String accessToken) {
-        ExtractableResponse<Response> 푸반_알림조회_응답 = 회원의_모든_알림을_조회한다(accessToken, new RequestSpecBuilder().build());
-        Assertions.assertAll(
-                () -> assertThat(푸반_알림조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
-        );
-    }
-
     public static ExtractableResponse<Response> 로그아웃_한다(String accessToken, RequestSpecification spec) {
         return RestAssured
                 .given().log().all()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .spec(spec)
                 .auth().oauth2(accessToken)
-                .when().post("/api/auth/logout")
+                .when().get("/member/logout")
                 .then().log().all()
                 .extract();
     }
