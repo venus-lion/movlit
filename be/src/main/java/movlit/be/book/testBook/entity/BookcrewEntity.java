@@ -1,6 +1,7 @@
 package movlit.be.book.testBook.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import movlit.be.common.util.ids.BookcrewId;
 import org.hibernate.annotations.GenericGenerator;
 
 // RoleType 파싱은 임의로 해서 안될 것임
@@ -29,11 +31,8 @@ public class BookcrewEntity {
         UNKNOWN // 그 외
     }
 
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String crewId;
+    @EmbeddedId
+    private BookcrewId crewId;
 
     @Column(nullable = false)
     private String name;

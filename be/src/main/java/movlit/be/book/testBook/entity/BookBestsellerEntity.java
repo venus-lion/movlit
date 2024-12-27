@@ -1,6 +1,7 @@
 package movlit.be.book.testBook.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import movlit.be.book.testBook.entity.BookEntity;
+import movlit.be.common.util.ids.BookBestsellerId;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -23,11 +26,8 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookBestsellerEntity {
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "VARCHAR(255)", name = "book_best_id")
-    private String bookBestId;
+    @EmbeddedId
+    private BookBestsellerId bookBestsellerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)

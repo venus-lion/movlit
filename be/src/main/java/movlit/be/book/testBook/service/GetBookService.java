@@ -3,6 +3,7 @@ package movlit.be.book.testBook.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.testBook.dto.BookResponseDto;
 import movlit.be.book.testBook.dto.BookResponseDto.Item;
@@ -10,10 +11,15 @@ import movlit.be.book.testBook.entity.BookBestsellerEntity;
 import movlit.be.book.testBook.entity.BookEntity;
 import movlit.be.book.testBook.entity.BookRCrewEntity;
 import movlit.be.book.testBook.entity.BookcrewEntity;
+import movlit.be.book.testBook.entity.GenerateUUID;
 import movlit.be.book.testBook.repository.BookBestsellerRepository;
 import movlit.be.book.testBook.repository.BookRCrewRepository;
 import movlit.be.book.testBook.repository.BookRepository;
 import movlit.be.book.testBook.repository.BookcrewRepository;
+import movlit.be.common.util.ids.BookBestsellerId;
+import movlit.be.common.util.ids.BookId;
+import movlit.be.common.util.ids.BookRCrewId;
+import movlit.be.common.util.ids.BookcrewId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -63,19 +69,19 @@ public class GetBookService {
                 // booklist 순회하며 bookEntity 저장
                 for(Item book : bookList) {
                     try {
+
                         String categoryName = book.getCategoryName();
 
-                        if(!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증"))
-                        {
+                        if(!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증")) {
+
                             BookEntity savedBook = BookEntity.builder()
-                                    .bookId(book.getIsbn13()) // bookId
+                                    .bookId(new BookId(book.getIsbn13())) // bookId
                                     .isbn(book.getIsbn())
                                     .title(book.getTitle())
                                     .publisher(book.getPublisher())
                                     .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE)
                                             .atStartOfDay())
                                     .description(book.getDescription())
-                                    .categoryId(book.getCategoryId())
                                     .categoryName(book.getCategoryName())
                                     .bookImgUrl(book.getCover().replace("cover200", "cover500"))
                                     .stockStatus(book.getStockStatus().length() == 0 ? "판매중"
@@ -85,6 +91,7 @@ public class GetBookService {
 
                             // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
                             BookEntity savedBookEntity = bookRepository.save(savedBook);
+
 
                             String[] crewArr = book.getAuthor().split(", ");
 
@@ -100,18 +107,23 @@ public class GetBookService {
                                 if (matcher.matches()) {
                                     String name = matcher.group(1).trim();
 
-                                    Role role = setParsedRole(
-                                            matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+                                    Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+
+
+
 
                                     BookcrewEntity savedBookcrew = BookcrewEntity.builder()
+                                            .crewId(new BookcrewId(GenerateUUID.generateUUID()))
                                             .name(name)
                                             .role(role)
                                             .profileImageUrl("/book_crew_profile/default_profile.png")
                                             .build();
 
+
                                     BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
 
                                     BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
+                                            .bookRCrewId(new BookRCrewId(GenerateUUID.generateUUID()))
                                             .book(savedBookEntity)
                                             .bookcrewEntity(savedBookcrewEntity)
                                             .build();
@@ -119,13 +131,18 @@ public class GetBookService {
                                     bookRCrewRepository.save(savedBookRCrewEntity);
 
 
+
+
                                 } else {
                                     System.out.println(book.getIsbn() + " " + book.getTitle() + " " +
                                             crewArr[i] + "패턴이 불일치, 크루 저장 실패");
                                 }
+
                             }
 
+
                             BookBestsellerEntity savedBestSeller = BookBestsellerEntity.builder()
+                                    .bookBestsellerId(new BookBestsellerId(GenerateUUID.generateUUID()))
                                     .book(savedBookEntity) // FK - BOOKEntity
                                     .bestRank(book.getBestRank())
                                     .bestDuration(book.getBestDuration())
@@ -133,7 +150,6 @@ public class GetBookService {
 
                             bookBestsellerRepository.save(savedBestSeller);
                         }
-
                     } catch (Exception e){
                         System.err.println("Error processing book: " + book.getTitle() + ", " + e.getMessage());
                     }
