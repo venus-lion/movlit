@@ -3,6 +3,7 @@ package movlit.be.member.presentation;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.annotation.CurrentMemberId;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberReadService memberReadService;
@@ -87,9 +90,10 @@ public class MemberController {
         int result = memberReadService.login(email, pwd);
         if (result == memberReadService.CORRECT_LOGIN) {
             Member member = memberReadService.findByMemberEmail(email);
+            String nickname = member.getNickname();
             session.setAttribute("sessEmail", email);
-            session.setAttribute("sessUname", member.getMemberId());
-            msg = member.getMemberId() + "님 환영합니다.";
+            session.setAttribute("sessNickname", nickname);
+            msg = member.getNickname() + "님 환영합니다.";
             url = "/member/list";
         } else if (result == memberReadService.WRONG_PASSWORD) {
             msg = "패스워드가 틀렸습니다.";
@@ -104,14 +108,10 @@ public class MemberController {
     }
 
     @GetMapping("/loginSuccess")
-    public String loginSuccess(HttpSession session, Model model, String email) {
-        // Spring Security 현재 세션의 사용자 아이디
-        Member member = memberReadService.findByMemberEmail(email);
-        session.setAttribute("sessEmail", email);
-        session.setAttribute("sessUname", member.getMemberId());
+    public String loginSuccess(HttpSession session, Model model) {
         session.setMaxInactiveInterval(4 * 60 * 60);        // 세션 타임아웃 시간: 4시간
-        String msg = member.getMemberId() + "님 환영합니다.";
-        String url = "/mall/list";
+        String msg = "로그인이 완료되었습니다.";
+        String url = "index";
         model.addAttribute("msg", msg);
         model.addAttribute("url", url);
         return "common/alertMsg";
