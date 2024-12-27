@@ -70,6 +70,7 @@ public class GetBookService {
                                 .publisher(book.getPublisher())
                                 .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay())
                                 .description(book.getDescription())
+                                .categoryName(book.getCategoryName())
                                 .bookImgUrl(book.getCover().replace("cover200", "cover500"))
                                 .stockStatus(book.getStockStatus().length() == 0 ? "판매중" : book.getStockStatus()) // 상품재고가 null이면 재고있음
                                 .mallUrl(book.getLink())

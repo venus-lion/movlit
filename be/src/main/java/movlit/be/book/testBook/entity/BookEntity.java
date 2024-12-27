@@ -1,10 +1,12 @@
 package movlit.be.book.testBook.entity;
 
+import com.mysql.cj.protocol.ColumnDefinition;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -44,7 +46,7 @@ public class BookEntity {
     @Column(name = "pub_date")
     private LocalDateTime pubDate;
 
-    @Column
+    @Lob
     private String description;
 
     @Column
