@@ -123,11 +123,11 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     Optional<String> birthyear = Optional.ofNullable((String) account.get("birthyear"));
                     String dob = "";
                     if (birthday.isPresent() && birthyear.isPresent()) {
-                        dob = birthyear + "-"
-                                + birthday.get().substring(0, 2) + "-" + birthday.get().substring(3);
+                        dob = birthyear.get() + "-"
+                                + birthday.get().substring(0, 2) + "-" + birthday.get().substring(2);
                     }
 
-                    profileUrl = Optional.ofNullable((String) account.get("profile_image")).orElse("");
+                    profileUrl = Optional.ofNullable((String) properties.get("profile_image")).orElse("");
 
                     member = Member.builder()
                             .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
