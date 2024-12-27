@@ -63,67 +63,76 @@ public class GetBookService {
                 // booklist 순회하며 bookEntity 저장
                 for(Item book : bookList) {
                     try {
-                        BookEntity savedBook = BookEntity.builder()
-                                .bookId(book.getIsbn13()) // bookId
-                                .isbn(book.getIsbn())
-                                .title(book.getTitle())
-                                .publisher(book.getPublisher())
-                                .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay())
-                                .description(book.getDescription())
-                                .categoryName(book.getCategoryName())
-                                .bookImgUrl(book.getCover().replace("cover200", "cover500"))
-                                .stockStatus(book.getStockStatus().length() == 0 ? "판매중" : book.getStockStatus()) // 상품재고가 null이면 재고있음
-                                .mallUrl(book.getLink())
-                                .build();
+                        String categoryName = book.getCategoryName();
 
-                        // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
-                        BookEntity savedBookEntity = bookRepository.save(savedBook);
+                        if(!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증"))
+                        {
+                            BookEntity savedBook = BookEntity.builder()
+                                    .bookId(book.getIsbn13()) // bookId
+                                    .isbn(book.getIsbn())
+                                    .title(book.getTitle())
+                                    .publisher(book.getPublisher())
+                                    .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE)
+                                            .atStartOfDay())
+                                    .description(book.getDescription())
+                                    .categoryId(book.getCategoryId())
+                                    .categoryName(book.getCategoryName())
+                                    .bookImgUrl(book.getCover().replace("cover200", "cover500"))
+                                    .stockStatus(book.getStockStatus().length() == 0 ? "판매중"
+                                            : book.getStockStatus()) // 상품재고가 null이면 재고있음
+                                    .mallUrl(book.getLink())
+                                    .build();
 
-                        String[] crewArr = book.getAuthor().split(", ");
+                            // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
+                            BookEntity savedBookEntity = bookRepository.save(savedBook);
 
-                        int crewNum = crewArr.length;
-                        for (int i = 0; i < crewNum; i++) {
-                            String input = crewArr[i];
+                            String[] crewArr = book.getAuthor().split(", ");
 
-                            // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
-                            String regex = "(.+?)(?:\\s\\((.*?)\\))?$";
-                            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-                            java.util.regex.Matcher matcher = pattern.matcher(input);
+                            int crewNum = crewArr.length;
+                            for (int i = 0; i < crewNum; i++) {
+                                String input = crewArr[i];
 
-                            if (matcher.matches()) {
-                                String name = matcher.group(1).trim();
+                                // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
+                                String regex = "(.+?)(?:\\s\\((.*?)\\))?$";
+                                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+                                java.util.regex.Matcher matcher = pattern.matcher(input);
 
-                                Role role = setParsedRole(matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+                                if (matcher.matches()) {
+                                    String name = matcher.group(1).trim();
 
-                                BookcrewEntity savedBookcrew = BookcrewEntity.builder()
-                                        .name(name)
-                                        .role(role)
-                                        .profileImageUrl("/book_crew_profile/default_profile.png")
-                                        .build();
+                                    Role role = setParsedRole(
+                                            matcher.group(2) != null ? matcher.group(2).trim() : "기타");
 
-                                BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
+                                    BookcrewEntity savedBookcrew = BookcrewEntity.builder()
+                                            .name(name)
+                                            .role(role)
+                                            .profileImageUrl("/book_crew_profile/default_profile.png")
+                                            .build();
 
-                                BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
-                                        .book(savedBookEntity)
-                                        .bookcrewEntity(savedBookcrewEntity)
-                                        .build();
+                                    BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
 
-                                bookRCrewRepository.save(savedBookRCrewEntity);
+                                    BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
+                                            .book(savedBookEntity)
+                                            .bookcrewEntity(savedBookcrewEntity)
+                                            .build();
+
+                                    bookRCrewRepository.save(savedBookRCrewEntity);
 
 
-                            } else {
-                                System.out.println(book.getIsbn() + " " + book.getTitle() + " " +
-                                        crewArr[i] + "패턴이 불일치, 크루 저장 실패");
+                                } else {
+                                    System.out.println(book.getIsbn() + " " + book.getTitle() + " " +
+                                            crewArr[i] + "패턴이 불일치, 크루 저장 실패");
+                                }
                             }
+
+                            BookBestsellerEntity savedBestSeller = BookBestsellerEntity.builder()
+                                    .book(savedBookEntity) // FK - BOOKEntity
+                                    .bestRank(book.getBestRank())
+                                    .bestDuration(book.getBestDuration())
+                                    .build();
+
+                            bookBestsellerRepository.save(savedBestSeller);
                         }
-
-                        BookBestsellerEntity savedBestSeller = BookBestsellerEntity.builder()
-                                .book(savedBookEntity) // FK - BOOKEntity
-                                .bestRank(book.getBestRank())
-                                .bestDuration(book.getBestDuration())
-                                .build();
-
-                        bookBestsellerRepository.save(savedBestSeller);
 
                     } catch (Exception e){
                         System.err.println("Error processing book: " + book.getTitle() + ", " + e.getMessage());
