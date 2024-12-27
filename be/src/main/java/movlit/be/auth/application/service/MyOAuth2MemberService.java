@@ -9,6 +9,8 @@ import movlit.be.common.util.IdFactory;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
+import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
+import movlit.be.member.presentation.dto.request.MemberRegisterRequest.MemberRegisterRequestBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -46,11 +48,17 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     uname = oAuth2User.getAttribute("name");
                     uname = (uname == null) ? "github_Member" : uname;
                     profileUrl = oAuth2User.getAttribute("avatar_url");
-                    member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
-                            .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
+//                    member = Member.builder()
+//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(uname).email(email)
+//                            .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
+//                            .build();
+                    // FIXME: OAuth쪽은 register 분리
+                    MemberRegisterRequest request = MemberRegisterRequest.builder()
+                            .nickname(uname)
+                            .email(email)
+                            .password(hashedPwd)
                             .build();
-                    memberWriteService.registerMember(member);
+                    memberWriteService.registerMember(request);
                     log.info("깃허브 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
                 }
                 break;

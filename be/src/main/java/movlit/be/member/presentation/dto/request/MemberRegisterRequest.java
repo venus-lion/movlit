@@ -2,6 +2,8 @@ package movlit.be.member.presentation.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import movlit.be.common.annotation.PasswordMatch;
 import movlit.be.common.annotation.PasswordPattern;
@@ -22,5 +24,14 @@ public class MemberRegisterRequest {
     private String repeatPassword;
 
     private String dob;
+
+    @Builder
+    public MemberRegisterRequest(String nickname, String email, String password, String repeatPassword, String dob) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.repeatPassword = repeatPassword;
+        this.dob = dob;
+    }
 
 }

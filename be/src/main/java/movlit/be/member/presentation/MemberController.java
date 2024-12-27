@@ -12,7 +12,10 @@ import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
+import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +24,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/member")
+@RestController
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -31,30 +35,10 @@ public class MemberController {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
 
-    @GetMapping("/register")
-    public String registerForm() {
-        return "member/register";
-    }
-
     @PostMapping("/register")
-    public String registerProc(@CurrentMemberId MemberId memberId, @RequestBody MemberRegisterRequest request) {
-        String dob = request.getDob();
-        String email = request.getEmail();
-        String nickname = request.getNickname();
-        String password = request.getPassword();
-
-        if (memberId == null) {
-            String hashedPwd = BCrypt.hashpw(password, BCrypt.gensalt());
-            Member member = Member.builder()
-                    .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-                    .dob(dob)
-                    .regDt(LocalDateTime.now()).role("ROLE_Member").provider("local")
-                    .build();
-
-            memberWriteService.registerMember(member);
-        }
-
-        return "redirect:/member/list";
+    public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
+        var response = memberWriteService.registerMember(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/delete/{memberId}")
