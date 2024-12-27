@@ -1,7 +1,8 @@
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'movlit'
@@ -38,8 +39,55 @@ dependencies {
 
 	// MySQL
 	implementation 'com.mysql:mysql-connector-j'
+
+	// Test Containers
+	testImplementation 'org.testcontainers:testcontainers:1.18.3'
+	testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
+	testImplementation 'org.testcontainers:mysql:1.18.3'
+
+	// REST Assured
+	testImplementation 'io.rest-assured:rest-assured:4.5.1'
+
+	// Rest Docs
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:2.0.4.RELEASE'
+	// configurations 블록을 dependencies 안으로 이동
+	configurations {
+		asciidoctorExt
+	}
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE'
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
+tasks.named('asciidoctor') {
+	inputs.dir snippetsDir
+	outputDir file("src/main/resources/static/docs")
+	configurations "asciidoctorExt"
+	dependsOn test
+}
+
+tasks.named("jar") {
+	enabled = false
+}
+
+tasks.named("bootJar") {
+	dependsOn asciidoctor
+	from("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated/annotationProcessor/java/main"]
+		}
+	}
 }
