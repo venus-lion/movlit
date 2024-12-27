@@ -1,7 +1,7 @@
 package movlit.be.member.domain.entity;
 
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import movlit.be.common.util.ids.MemberId;
 @Table(name = "member")
 public class MemberEntity {
 
-    @Id
+    @EmbeddedId
     private MemberId memberId;
     private String email;
     private String nickname;

@@ -23,6 +23,7 @@ public class MemberReadService {
 
     public int login(String email, String pwd) {
         Member member = findByMemberEmail(email);
+        // TODO: login 실패 로직 짜기
         if (member == null) {
             return Member_NOT_EXIST;
         }

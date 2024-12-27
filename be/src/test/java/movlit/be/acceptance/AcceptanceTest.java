@@ -1,12 +1,12 @@
 package movlit.be.acceptance;
 
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import java.util.List;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import movlit.be.acceptance.util.DatabaseCleanup;
 import movlit.be.acceptance.util.SqlFileExecutor;
 import movlit.be.acceptance.util.TableCleanup;
@@ -20,7 +20,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
-import org.springframework.restdocs.restassured3.RestAssuredRestDocumentation;
+import org.springframework.restdocs.restassured.RestAssuredRestDocumentation;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
