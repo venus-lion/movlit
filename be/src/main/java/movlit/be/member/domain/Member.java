@@ -27,6 +27,8 @@ public class Member {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
 
+//    private List<MemberGenreEntity> memberRGenres;
+
     @Builder
     public Member(MemberId memberId, String email, String nickname, String password, String dob, String profileImgId,
                   String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt) {

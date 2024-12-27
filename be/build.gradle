@@ -45,7 +45,7 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
 	testImplementation 'org.testcontainers:mysql:1.18.3'
 
-// REST Assured
+	// REST Assured
 	testImplementation 'io.rest-assured:rest-assured:5.3.2'
 
 	// Rest Docs
@@ -56,6 +56,9 @@ dependencies {
 		asciidoctorExt
 	}
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
+
+	// Spring Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 ext {

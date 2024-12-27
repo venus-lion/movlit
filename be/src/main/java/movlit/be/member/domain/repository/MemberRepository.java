@@ -13,4 +13,8 @@ public interface MemberRepository {
 
     Member findById(MemberId memberId);
 
+    boolean existsByNickname(String nickname);
+
+    boolean existsByEmail(String email);
+
 }

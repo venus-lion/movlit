@@ -11,4 +11,8 @@ public interface MemberJpaRepository extends JpaRepository<MemberEntity, MemberI
     //@Query("SELECT m FROM MemberEntity m WHERE m.email = :email")
     Optional<MemberEntity> findByEmail(String email);
 
+    boolean existsByNickname(String nickname);
+
+    boolean existsByEmail(String email);
+
 }

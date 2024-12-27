@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -22,12 +23,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(auth -> auth.disable())       // CSRF 방어 기능 비활성화
+        http.csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(y -> y.disable()))     // H2-console
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/book/list", "/book/detail/**", "/bookEs/list", "/bookEs/detail/**",
-                                "/misc/**", "/actuator/**", "/restaurant/list", "/restaurant/detail/**",
-                                "/websocket/**", "/echo", "/personal",
+                        .requestMatchers("/websocket/**", "/echo", "/personal",
                                 "/mall/list", "/mall/detail/**", "/member/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**").permitAll()
                         .requestMatchers("/book/insert", "/book/yes24", "/bookEs/yes24", "/order/listAll",
@@ -36,7 +35,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(auth -> auth
-                        .loginPage("/member/login")       // login form
+                        .loginPage("/api/member/login")       // login form
                         .loginProcessingUrl("/member/login")      // 스프링이 낚아 챔. MemberDetailsService 구현 객체에서 처리해주어야 함
                         .usernameParameter("email")
                         .passwordParameter("pwd")

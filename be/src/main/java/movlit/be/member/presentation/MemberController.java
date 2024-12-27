@@ -10,17 +10,24 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
+import movlit.be.member.presentation.dto.request.MemberLoginRequest;
+import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
+import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/member")
+@RestController
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -28,26 +35,10 @@ public class MemberController {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
 
-    @GetMapping("/register")
-    public String registerForm() {
-        return "member/register";
-    }
-
     @PostMapping("/register")
-    public String registerProc(@CurrentMemberId MemberId memberId, String pwd, String pwd2, String uname, String email,
-                               String profileUrl) {
-        if (memberId == null && pwd.equals(pwd2) && pwd.length() >= 4) {
-            String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
-            MemberId generatedMemberId = IdFactory.createMemberId();
-            Member member = Member.builder()
-                    .memberId(generatedMemberId).password(hashedPwd).nickname(uname).email(email)
-                    .profileImgUrl(profileUrl)
-                    .regDt(LocalDateTime.now()).role("ROLE_Member").provider("local")
-                    .build();
-
-            memberWriteService.registerMember(member);
-        }
-        return "redirect:/member/list";
+    public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
+        var response = memberWriteService.registerMember(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/delete/{memberId}")
@@ -85,9 +76,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String loginProc(String email, String pwd, HttpSession session, Model model) {
+    public String loginProc(HttpSession session, Model model, @RequestBody MemberLoginRequest request) {
+        String email = request.getEmail();
+        String password = request.getPassword();
+
         String msg, url;
-        int result = memberReadService.login(email, pwd);
+        int result = memberReadService.login(email, password);
         if (result == memberReadService.CORRECT_LOGIN) {
             Member member = memberReadService.findByMemberEmail(email);
             String nickname = member.getNickname();
