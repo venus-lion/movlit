@@ -1,7 +1,6 @@
-package movlit.be.book.testBook.controller;
+package movlit.be.book.getBookApi;
 
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.testBook.service.GetBookService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

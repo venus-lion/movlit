@@ -1,4 +1,4 @@
-package movlit.be.book.testBook.entity;
+package movlit.be.book.domain.entity;
 
 import com.mysql.cj.protocol.ColumnDefinition;
 import jakarta.persistence.Column;
