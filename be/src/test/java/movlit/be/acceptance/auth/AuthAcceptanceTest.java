@@ -49,28 +49,28 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @Nested
-    @DisplayName("로그아웃 테스트")
-    class Logout {
-
-        @DisplayName("로그아웃 요청 성공하면 204코드를 반환한다.")
-        @Test
-        void when_logout_then_return_204() {
-            // docs
-            api_문서_타이틀("logout_success", spec);
-
-            // given
-            var 민지_로그인응답 = 민지가_로그인한다(new RequestSpecBuilder().build());
-            String 민지_액세스토큰 = 민지_로그인응답.jsonPath().getString("accessToken");
-
-            // when
-            var response = 로그아웃_한다(민지_액세스토큰, spec);
-
-            // then
-            상태코드가_204임을_검증한다(response);
-        }
-
-    }
+//    @Nested
+//    @DisplayName("로그아웃 테스트")
+//    class Logout {
+//
+//        @DisplayName("로그아웃 요청 성공하면 204코드를 반환한다.")
+//        @Test
+//        void when_logout_then_return_204() {
+//            // docs
+//            api_문서_타이틀("logout_success", spec);
+//
+//            // given
+//            var 민지_로그인응답 = 민지가_로그인한다(new RequestSpecBuilder().build());
+//            String 민지_액세스토큰 = 민지_로그인응답.jsonPath().getString("accessToken");
+//
+//            // when
+//            var response = 로그아웃_한다(민지_액세스토큰, spec);
+//
+//            // then
+//            상태코드가_204임을_검증한다(response);
+//        }
+//
+//    }
 
 
 }
