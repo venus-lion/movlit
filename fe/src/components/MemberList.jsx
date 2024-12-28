@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
 const MemberList = () => {
@@ -20,7 +20,7 @@ const MemberList = () => {
     return (
         <div>
             {/* ... 상단 및 사이드바 ... */}
-            <div className="container" style={{ marginTop: '80px' }}>
+            <div className="container" style={{marginTop: '80px'}}>
                 <div className="row">
                     <div className="col-3">
                         {/* ... 사이드바 ... */}
@@ -30,18 +30,18 @@ const MemberList = () => {
                             <h3>
                                 <strong>사용자 목록</strong>
                             </h3>
-                            <hr />
+                            <hr/>
                             <table className="table">
                                 <thead>
                                 <tr>
-                                    <th style={{ width: '8%' }}>사진</th>
-                                    <th style={{ width: '20%' }}>memberId</th>
-                                    <th style={{ width: '14%' }}>이름</th>
-                                    <th style={{ width: '18%' }}>이메일</th>
-                                    <th style={{ width: '10%' }}>등록일</th>
-                                    <th style={{ width: '8%' }}>권한</th>
-                                    <th style={{ width: '10%' }}>Provider</th>
-                                    <th style={{ width: '10%' }}>액션</th>
+                                    <th style={{width: '8%'}}>사진</th>
+                                    <th style={{width: '20%'}}>memberId</th>
+                                    <th style={{width: '14%'}}>이름</th>
+                                    <th style={{width: '18%'}}>이메일</th>
+                                    <th style={{width: '10%'}}>등록일</th>
+                                    <th style={{width: '8%'}}>권한</th>
+                                    <th style={{width: '10%'}}>Provider</th>
+                                    <th style={{width: '10%'}}>액션</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -52,7 +52,7 @@ const MemberList = () => {
                                                 src={member.profileImgUrl}
                                                 alt="picture"
                                                 height="48"
-                                                style={{ borderRadius: '50%' }}
+                                                style={{borderRadius: '50%'}}
                                             />
                                         </td>
                                         <td>{member.memberId}</td>
