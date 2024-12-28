@@ -79,8 +79,9 @@ const MemberLogin = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan="2"  className="center-buttons">
-                                                <button className="btn btn-primary" type="submit" style={{marginRight: '5px'}}>
+                                            <td colSpan="2" className="center-buttons">
+                                                <button className="btn btn-primary" type="submit"
+                                                        style={{marginRight: '5px'}}>
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">
@@ -95,11 +96,27 @@ const MemberLogin = () => {
                                 {error && <p style={{color: 'red'}}>{error}</p>}
 
                                 <p className="mt-3">
-                                    <span className="me-3">사용자 계정이 없으신가요?</span>
-                                    <a href="/member/register">사용자 가입</a>
+                                    <span className="me-3">계정이 없으신가요? </span>
+                                    <a href="/member/register">회원 가입</a>
                                 </p>
 
-                                {/* ... 소셜 로그인 ... */}
+                                {/* 소셜 로그인 버튼 */}
+                                <div className="mt-3 mb-3">
+                                    <div className="social-login-header">
+                                        <span>소셜 계정으로 가입</span>
+                                    </div>
+                                    <div className="social-login-buttons">
+                                        <a href="/oauth2/authorization/google" className="social-login-button">
+                                            <img src="/images/google-logo.png" alt="Google" className="social-login-icon" />
+                                        </a>
+                                        <a href="/oauth2/authorization/naver" className="social-login-button">
+                                            <img src="/images/naver-logo.jpg" alt="Naver" className="social-login-icon" />
+                                        </a>
+                                        <a href="/oauth2/authorization/kakao" className="social-login-button">
+                                            <img src="/images/kakao-logo.png" alt="Kakao" className="social-login-icon" />
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

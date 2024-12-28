@@ -3106,3 +3106,39 @@ body {
     text-align: center !important;
     border-top: 20px solid transparent;
 }
+
+/* MemberRegister.css */
+.social-login-header {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* 버튼 사이 간격 */
+    margin-bottom: 30px;
+}
+
+.social-login-button {
+    display: flex; /* 이미지와 텍스트 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center;
+    width: 56px; /* 버튼 크기 조정 */
+    height: 56px;
+    border: 1px solid #ccc;
+    border-radius: 8px; /* 둥근 모서리 */
+    background-color: white;
+    transition: transform 0.2s ease-in-out; /* 확대 효과를 위한 transition */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+.social-login-button:hover {
+    transform: scale(1.1); /* 마우스 오버 시 확대 */
+}
+
+.social-login-icon {
+    width: 32px;
+    height: 32px;
+}

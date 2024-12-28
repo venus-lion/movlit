@@ -140,7 +140,8 @@ const MemberRegister = () => {
                                         </tr>
                                         <tr>
                                             <td colSpan="2" className="center-buttons">
-                                                <button className="btn btn-primary" type="submit" style={{marginRight: '5px'}}>
+                                                <button className="btn btn-primary" type="submit"
+                                                        style={{marginRight: '5px'}}>
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">
@@ -153,30 +154,26 @@ const MemberRegister = () => {
                                 </form>
 
                                 <p className="mt-3">
-                                    <span className="me-3">이미 사용자 계정이 있으신가요?</span>
+                                    <span className="me-3">이미 계정이 있으신가요? </span>
                                     <Link to="/member/login">로그인</Link>
                                 </p>
 
                                 {/* 소셜 로그인 버튼 */}
                                 <div className="mt-3 mb-3">
-                                    <span className="me-3">소셜 계정으로 가입</span>
-                                    <span>
-                    <a href="/oauth2/authorization/google">
-                      <img src="/img/google-logo.png" alt="Google" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/github">
-                      <img src="/img/github-logo.png" alt="GitHub" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/naver">
-                      <img src="/img/naver-logo.jpg" alt="Naver" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/kakao">
-                      <img src="/img/kakao-logo.png" alt="Kakao" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/facebook">
-                      <img src="/img/facebook-logo.png" alt="Facebook" height="32"/>
-                    </a>
-                  </span>
+                                    <div className="social-login-header">
+                                        <span>소셜 계정으로 가입</span>
+                                    </div>
+                                    <div className="social-login-buttons">
+                                        <a href="/oauth2/authorization/google" className="social-login-button">
+                                            <img src="/images/google-logo.png" alt="Google" className="social-login-icon" />
+                                        </a>
+                                        <a href="/oauth2/authorization/naver" className="social-login-button">
+                                            <img src="/images/naver-logo.jpg" alt="Naver" className="social-login-icon" />
+                                        </a>
+                                        <a href="/oauth2/authorization/kakao" className="social-login-button">
+                                            <img src="/images/kakao-logo.png" alt="Kakao" className="social-login-icon" />
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
