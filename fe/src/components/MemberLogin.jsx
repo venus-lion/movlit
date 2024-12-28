@@ -79,8 +79,8 @@ const MemberLogin = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan="2">
-                                                <button className="btn btn-primary" type="submit">
+                                            <td colSpan="2"  className="center-buttons">
+                                                <button className="btn btn-primary" type="submit" style={{marginRight: '5px'}}>
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">

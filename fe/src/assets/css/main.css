@@ -3101,3 +3101,8 @@ body {
     background-color: #b1ddab; /* 원하는 배경색으로 변경 */
     color: #fff; /* 원하는 글자색으로 변경 */
 }
+
+.center-buttons {
+    text-align: center !important;
+    border-top: 20px solid transparent;
+}

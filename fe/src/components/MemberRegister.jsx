@@ -61,7 +61,7 @@ const MemberRegister = () => {
                             <div className="card-body">
                                 <div className="card-title">
                                     <h3>
-                                        <strong>사용자 가입</strong>
+                                        <strong>회원 가입</strong>
                                     </h3>
                                 </div>
                                 <hr/>
@@ -139,8 +139,8 @@ const MemberRegister = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan="2">
-                                                <button className="btn btn-primary" type="submit">
+                                            <td colSpan="2" className="center-buttons">
+                                                <button className="btn btn-primary" type="submit" style={{marginRight: '5px'}}>
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">
