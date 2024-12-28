@@ -25,7 +25,7 @@ const MemberLogin = () => {
             updateLoginStatus(true);
 
             // 로그인 성공 후 페이지 리디렉션
-            navigate('/member/list');
+            navigate('/');
         } catch (error) {
             setError('로그인 정보가 올바르지 않습니다.');
             console.error('Login error:', error);

@@ -33,9 +33,6 @@ function App() {
             <nav id="nav">
                 <ul>
                     <li className="current"><Link to="/">Home</Link></li>
-                    <li>
-                        <Link to="/member/list">Member List</Link>
-                    </li>
                     <li><Link to="/member/register">Register</Link></li>
                     <li><Link to="/member/login">Login</Link></li>
                     {isLoggedIn && (
