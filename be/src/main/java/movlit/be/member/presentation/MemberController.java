@@ -1,6 +1,7 @@
 package movlit.be.member.presentation;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
@@ -32,7 +33,7 @@ public class MemberController {
     private final MemberWriteService memberWriteService;
 
     @PostMapping("/register")
-    public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
+    public ResponseEntity<MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest request) {
         var response = memberWriteService.registerMember(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
