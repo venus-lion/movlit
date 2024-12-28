@@ -1,8 +1,5 @@
 import React, {useState} from 'react';
-import {Link, Outlet} from 'react-router-dom';
 
-// 기존 App.jsx의 내용 (Vite + React 로고 및 카운터)을
-// 별도의 컴포넌트로 분리
 function Home() {
     const [count, setCount] = useState(0);
 
@@ -22,7 +19,7 @@ function Home() {
                     count is {count}
                 </button>
                 <p>
-                    Edit <code>src/App.jsx</code> and save to test HMR
+                    Edit <code>src/Home.jsx</code> and save to test HMR
                 </p>
             </div>
             <p className="read-the-docs">
@@ -32,29 +29,4 @@ function Home() {
     );
 }
 
-function App() {
-    return (
-        <div>
-            {/* 네비게이션 메뉴 */}
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/member/list">Member List</Link>
-                    </li>
-                    <li>
-                        <Link to="/member/register">Register</Link>
-                    </li>
-                    <li>
-                        <Link to="/member/login">Login</Link>
-                    </li>
-                </ul>
-            </nav>
-            <Outlet/>
-        </div>
-    );
-}
-
-export default App;
+export default Home;

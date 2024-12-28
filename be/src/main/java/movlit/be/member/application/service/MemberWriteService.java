@@ -2,12 +2,16 @@ package movlit.be.member.application.service;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import movlit.be.auth.application.service.AuthTokenService;
+import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
 import movlit.be.common.exception.DuplicateEmailException;
 import movlit.be.common.exception.DuplicateNicknameException;
+import movlit.be.common.exception.MemberPasswordMismatchException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.repository.MemberRepository;
+import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
@@ -20,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberWriteService {
 
     private final MemberRepository memberRepository;
+    private final MemberReadService memberReadService;
+    private final AuthTokenService authTokenService;
 
     public MemberRegisterResponse registerMember(MemberRegisterRequest request) {
         String dob = request.getDob();
@@ -66,6 +72,18 @@ public class MemberWriteService {
         memberRepository.deleteById(memberId);
     }
 
+    public AuthTokenIssueResponse login(MemberLoginRequest request) {
+        // TODO: usecase를 안 쓰니 write 서비스에서 read 서비스를 참조하는 일이 생김
+        Member member = memberReadService.findByMemberEmail(request.getEmail());
+        checkPasswordMatch(request, member);
+        return authTokenService.issue(member.getEmail());
+    }
+
+    private void checkPasswordMatch(MemberLoginRequest request, Member member) {
+        if (!BCrypt.checkpw(request.getPassword(), member.getPassword())) {
+            throw new MemberPasswordMismatchException();
+        }
+    }
 
 }
 

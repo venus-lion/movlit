@@ -1,8 +1,24 @@
-import {StrictMode} from 'react'
-import {createRoot} from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import './index.css';
+import App from './App.jsx';
+import MemberLogin from './components/MemberLogin';
+import MemberList from './components/MemberList';
+import MemberRegister from './components/MemberRegister';
+import Home from './Home';
 
-createRoot(document.getElementById('root')).render(<StrictMode>
-    <App/>
-</StrictMode>,)
+createRoot(document.getElementById('root')).render(
+    <StrictMode>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<App/>}>
+                    <Route index element={<Home/>}/>
+                    <Route path="member/list" element={<MemberList/>}/>
+                    <Route path="member/register" element={<MemberRegister/>}/>
+                    <Route path="member/login" element={<MemberLogin/>}/>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    </StrictMode>
+);

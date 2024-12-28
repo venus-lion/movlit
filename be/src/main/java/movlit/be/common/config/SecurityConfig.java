@@ -1,54 +1,53 @@
 package movlit.be.common.config;
 
+import java.util.Arrays;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private AuthenticationFailureHandler failureHandler;
-
-    @Autowired
-    private MyOAuth2MemberService myOAuth2MemberService;
+    private final AuthenticationFailureHandler failureHandler;
+    private final MyOAuth2MemberService myOAuth2MemberService;
+    private final JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
-                .headers(x -> x.frameOptions(y -> y.disable()))     // H2-console
+        http
+                .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
+                .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/websocket/**", "/echo", "/personal",
-                                "/mall/list", "/mall/detail/**", "/member/register", "/h2-console", "/demo/**",
+                                "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**").permitAll()
-                        .requestMatchers("/book/insert", "/book/yes24", "/bookEs/yes24", "/order/listAll",
-                                "/restaurant/init",
-                                "/order/bookStat", "/member/delete", "/member/list").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(auth -> auth
-                        .loginPage("/api/member/login")       // login form
-                        .loginProcessingUrl("/member/login")      // 스프링이 낚아 챔. MemberDetailsService 구현 객체에서 처리해주어야 함
-                        .usernameParameter("email")
-                        .passwordParameter("pwd")
-                        .defaultSuccessUrl("/member/loginSuccess", true)  // 로그인 후 해야할 일
-                        .failureHandler(failureHandler)
-                        .permitAll()
-                )
-                .logout(auth -> auth
-                        .logoutUrl("/member/logout")
-                        .invalidateHttpSession(true)        // 로그아웃시 세션 삭제
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/member/login")
-                )
+                .formLogin(AbstractHttpConfigurer::disable)
+//                .logout(auth -> auth
+//                        .logoutUrl("/member/logout")
+//                        .invalidateHttpSession(true)        // 로그아웃시 세션 삭제
+//                        .deleteCookies("JSESSIONID")
+//                        .logoutSuccessUrl("/member/login")
+//                )
                 .oauth2Login(auth -> auth
                         .loginPage("/member/login")
                         // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
@@ -58,15 +57,28 @@ public class SecurityConfig {
                                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
                         .defaultSuccessUrl("/member/loginSuccess", true)
                 )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         ;
 
         return http.build();
     }
 
     // JWT Filter Bean 등록
+//    @Bean
+//    public JwtRequestFilter jwtRequestFilter() {
+//        return new JwtRequestFilter();
+//    }
     @Bean
-    public JwtRequestFilter jwtRequestFilter() {
-        return new JwtRequestFilter();
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vite-React 앱의 출처
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     // Authentication Manager 빈 등록

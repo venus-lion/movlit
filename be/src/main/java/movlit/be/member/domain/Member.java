@@ -1,11 +1,13 @@
 package movlit.be.member.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import movlit.be.common.exception.MemberPasswordMismatchException;
 import movlit.be.common.util.ids.MemberId;
 
 @NoArgsConstructor

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import {Link, useNavigate} from 'react-router-dom'; // useNavigate 훅 import
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -7,6 +8,7 @@ const MemberRegister = () => {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [nickname, setNickname] = useState('');
     const [dob, setDob] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -17,7 +19,7 @@ const MemberRegister = () => {
         }
 
         try {
-            const response = await axios.post('/api/member/register', {
+            const response = await axios.post('/api/members/register', {
                 email,
                 password,
                 repeatPassword,
@@ -28,7 +30,7 @@ const MemberRegister = () => {
             console.log('Registration successful:', response.data);
             alert(response.data.message);
 
-            window.location.href = '/member/login';
+            navigate('/member/login'); // window.location.href 대신 navigate 사용
         } catch (error) {
             console.error('Registration error:', error);
             if (error.response) {
@@ -152,7 +154,7 @@ const MemberRegister = () => {
 
                                 <p className="mt-3">
                                     <span className="me-3">이미 사용자 계정이 있으신가요?</span>
-                                    <a href="/member/login">로그인</a>
+                                    <Link to="/member/login">로그인</Link>
                                 </p>
 
                                 {/* 소셜 로그인 버튼 */}
