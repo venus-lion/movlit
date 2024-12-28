@@ -1,5 +1,6 @@
 package movlit.be.common.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
+                        .logoutUrl("/api/members/logout")
+                        .permitAll()
+                        .logoutSuccessHandler(((request, response, authentication) -> response.setStatus(
+                                HttpServletResponse.SC_OK)))
+                        .deleteCookies("refreshToken")
+                )
 //                .logout(auth -> auth
 //                        .logoutUrl("/member/logout")
 //                        .invalidateHttpSession(true)        // 로그아웃시 세션 삭제
@@ -58,6 +66,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/member/loginSuccess", true)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
         ;
 
         return http.build();

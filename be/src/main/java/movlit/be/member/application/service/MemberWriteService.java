@@ -85,5 +85,9 @@ public class MemberWriteService {
         }
     }
 
+    public void logout(String accessToken) {
+        authTokenService.revoke(accessToken);
+    }
+
 }
 

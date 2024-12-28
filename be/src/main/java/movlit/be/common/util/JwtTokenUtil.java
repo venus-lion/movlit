@@ -1,15 +1,4 @@
 package movlit.be.common.util;
-/*
-    For JWT (JSON Web Token)
-    정의 - 두 시스템 간에 인증 정보를 안전하게 전송하기 위한 토큰 기반 인증 방식
-    Base64Url로 인코딩된 JSON 객체
-    1. 의존성 추가 - pom.xml
-    2. JWT 토큰 생성 및 검증 유틸리티 클래스 작성 (JwtTokenUtil)
-    3. JWT 발급 - 로그인 요청이 성공하면 JWT를 발급하여 클라이언트에 전달하는 로직을 구현 (AuthenticationController)
-    4. JWT 검증 - 요청이 들어올 때마다 토큰을 검증 (JwtRequestFilter)
-    5. Configuration 수정 (SecurityConfig)
-    6. AuthenticationRequest, AuthenticationResponse DTO 클래스 작성
- */
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -52,9 +41,16 @@ public class JwtTokenUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // 토큰 만료여부 확인
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
+    }
+
+    public long extractExpirationAsLong(String token) {
+        return extractExpiration(token).getTime();
+    }
+
+    public boolean isTokenExpiredLong(String token) {
+        return extractExpirationAsLong(token) < System.currentTimeMillis();
     }
 
     // Access Token 생성 로직

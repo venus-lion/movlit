@@ -106,7 +106,7 @@ public class AuthSteps {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .spec(spec)
                 .auth().oauth2(accessToken)
-                .when().get("/member/logout")
+                .when().get("/api/members/logout")
                 .then().log().all()
                 .extract();
     }
