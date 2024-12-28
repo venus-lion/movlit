@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useOutletContext} from 'react-router-dom';
 
 const MemberLogin = () => {
     const navigate = useNavigate();
@@ -8,15 +8,8 @@ const MemberLogin = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        // 페이지 로드 시 저장된 Access Token 확인 (옵션)
-        const accessToken = sessionStorage.getItem('accessToken');
-        if (accessToken) {
-            // Access Token이 유효한 경우, 자동으로 /member/list로 리다이렉트
-            // (필요한 경우, 서버에 Access Token 유효성 검증 요청 추가)
-            navigate('/member/list');
-        }
-    }, []);
+    // App 컴포넌트에서 Outlet을 통해 전달받은 updateLoginStatus를 사용
+    const {updateLoginStatus} = useOutletContext();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -28,52 +21,14 @@ const MemberLogin = () => {
             sessionStorage.setItem('accessToken', accessToken);
             document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`; // 2주
 
+            // 로그인 성공 후 updateLoginStatus를 true로 업데이트
+            updateLoginStatus(true);
+
             // 로그인 성공 후 페이지 리디렉션
             navigate('/member/list');
         } catch (error) {
             setError('로그인 정보가 올바르지 않습니다.');
             console.error('Login error:', error);
-        }
-    };
-
-    // API 요청에 Access Token을 포함하는 함수 (예시)
-    const fetchMemberList = async () => {
-        try {
-            const accessToken = sessionStorage.getItem('accessToken');
-            const response = await axios.get('/member/list', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-            // ... API 응답 처리 ...
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                // Access Token 만료 시 Refresh Token으로 재발급 요청
-                await refreshAccessToken();
-                // ... 새로운 Access Token으로 API 요청 다시 시도 ...
-            } else {
-                console.error('API 요청 에러:', error);
-            }
-        }
-    };
-
-    // Refresh Token으로 Access Token을 재발급 받는 함수
-    const refreshAccessToken = async () => {
-        try {
-            const refreshToken = document.cookie
-                .split('; ')
-                .find((row) => row.startsWith('refreshToken='))
-                ?.split('=')[1];
-
-            const response = await axios.post('/refresh', {refreshToken}); // /refresh 엔드포인트
-            const {accessToken: newAccessToken} = response.data;
-
-            // 새로운 Access Token 저장
-            sessionStorage.setItem('accessToken', newAccessToken);
-        } catch (error) {
-            console.error('Refresh Token 에러:', error);
-            // Refresh Token 만료 시 로그인 페이지로 리다이렉트
-            navigate('/member/login');
         }
     };
 
