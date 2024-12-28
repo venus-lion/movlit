@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: be
+server:
+  servlet:
+    session:
+      persistent: false
