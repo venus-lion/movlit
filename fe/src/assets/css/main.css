@@ -2113,6 +2113,7 @@ form textarea {
     width: 100%;
     border-radius: 8px;
     border: solid 2px #E7EAE8;
+    background-color: #fff; /* 배경색을 흰색으로 추가 */
 }
 
 form input[type="text"]:focus,
