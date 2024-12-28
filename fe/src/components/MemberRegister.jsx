@@ -112,7 +112,7 @@ const MemberRegister = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <label className="col-form-label">사용자 이름</label>
+                                                <label className="col-form-label">닉네임</label>
                                             </td>
                                             <td>
                                                 <input
