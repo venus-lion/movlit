@@ -44,14 +44,14 @@ const MemberRegister = () => {
     return (
         <div className="bg-light">
             {/* 상단 네비게이션 (필요에 따라 추가) */}
-            <nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-                <div className="container-fluid">
-                    <img src="/img/ck-logo.png" alt="Logo" height="60"/>
-                    <div className="p-2 bg-dard justify-content-center">
-                        <img src="https://picsum.photos/1500/180" alt="Banner" width="100%"/>
-                    </div>
-                </div>
-            </nav>
+            {/*<nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">*/}
+            {/*    <div className="container-fluid">*/}
+            {/*        <img src="/img/ck-logo.png" alt="Logo" height="60"/>*/}
+            {/*        <div className="p-2 bg-dard justify-content-center">*/}
+            {/*            <img src="https://picsum.photos/1500/180" alt="Banner" width="100%"/>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</nav>*/}
 
             <div className="container" style={{marginTop: '250px'}}>
                 <div className="row">
@@ -61,7 +61,7 @@ const MemberRegister = () => {
                             <div className="card-body">
                                 <div className="card-title">
                                     <h3>
-                                        <strong>사용자 가입</strong>
+                                        <strong>회원 가입</strong>
                                     </h3>
                                 </div>
                                 <hr/>
@@ -112,7 +112,7 @@ const MemberRegister = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <label className="col-form-label">사용자 이름</label>
+                                                <label className="col-form-label">닉네임</label>
                                             </td>
                                             <td>
                                                 <input
@@ -139,8 +139,9 @@ const MemberRegister = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan="2">
-                                                <button className="btn btn-primary" type="submit">
+                                            <td colSpan="2" className="center-buttons">
+                                                <button className="btn btn-primary" type="submit"
+                                                        style={{marginRight: '5px'}}>
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">
@@ -153,30 +154,26 @@ const MemberRegister = () => {
                                 </form>
 
                                 <p className="mt-3">
-                                    <span className="me-3">이미 사용자 계정이 있으신가요?</span>
+                                    <span className="me-3">이미 계정이 있으신가요? </span>
                                     <Link to="/member/login">로그인</Link>
                                 </p>
 
                                 {/* 소셜 로그인 버튼 */}
                                 <div className="mt-3 mb-3">
-                                    <span className="me-3">소셜 계정으로 가입</span>
-                                    <span>
-                    <a href="/oauth2/authorization/google">
-                      <img src="/img/google-logo.png" alt="Google" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/github">
-                      <img src="/img/github-logo.png" alt="GitHub" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/naver">
-                      <img src="/img/naver-logo.jpg" alt="Naver" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/kakao">
-                      <img src="/img/kakao-logo.png" alt="Kakao" height="32"/>
-                    </a>
-                    <a href="/oauth2/authorization/facebook">
-                      <img src="/img/facebook-logo.png" alt="Facebook" height="32"/>
-                    </a>
-                  </span>
+                                    <div className="social-login-header">
+                                        <span>소셜 계정으로 가입</span>
+                                    </div>
+                                    <div className="social-login-buttons">
+                                        <a href="/oauth2/authorization/google" className="social-login-button">
+                                            <img src="/images/google-logo.png" alt="Google" className="social-login-icon" />
+                                        </a>
+                                        <a href="/oauth2/authorization/naver" className="social-login-button">
+                                            <img src="/images/naver-logo.jpg" alt="Naver" className="social-login-icon" />
+                                        </a>
+                                        <a href="/oauth2/authorization/kakao" className="social-login-button">
+                                            <img src="/images/kakao-logo.png" alt="Kakao" className="social-login-icon" />
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
