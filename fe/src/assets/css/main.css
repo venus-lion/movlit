@@ -2413,9 +2413,9 @@ body {
     color: #fff;
 }
 
-#nav li.current a {
-    background: #b1ddab;
-    color: #fff;
+#nav ul li a.current { /* #nav ul li.current a 대신 #nav ul li a.current 사용 */
+    background-color: #b1ddab; /* 초록색 배경 (이미지에 맞게 조정) */
+    color: #fff; /* 흰색 글자색 (이미지에 맞게 조정) */
 }
 
 /* 로그아웃 버튼 추가 */

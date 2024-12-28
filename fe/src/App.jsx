@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Link, Outlet, useNavigate} from 'react-router-dom';
+import {NavLink, Outlet, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 function App() {
@@ -31,16 +31,31 @@ function App() {
         <>
             <nav id="nav">
                 <ul>
-                    <li className="current">
-                        <Link to="/">Home</Link>
+                    <li>
+                        <NavLink
+                            to="/"
+                            className={({isActive}) => (isActive ? 'current' : '')}
+                        >
+                            Home
+                        </NavLink>
                     </li>
                     {!isLoggedIn && (
                         <>
                             <li>
-                                <Link to="/member/register">Register</Link>
+                                <NavLink
+                                    to="/member/register"
+                                    className={({isActive}) => (isActive ? 'current' : '')}
+                                >
+                                    Register
+                                </NavLink>
                             </li>
                             <li>
-                                <Link to="/member/login">Login</Link>
+                                <NavLink
+                                    to="/member/login"
+                                    className={({isActive}) => (isActive ? 'current' : '')}
+                                >
+                                    Login
+                                </NavLink>
                             </li>
                         </>
                     )}
