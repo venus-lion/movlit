@@ -1,0 +1,43 @@
+= Venus Application API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+
+[[auth]]
+== 인증/인가
+
+=== 로그인
+
+==== 성공
+
+operation::login_success[snippets='http-request,http-response']
+
+[[member]]
+== 회원
+
+=== 회원 가입
+
+==== 성공
+
+operation::signupMember_success[snippets='http-request,http-response']
+
+==== 입력값이 잘못됐을 때
+
+operation::signupMember_failedByMultipleInvalidInput[snippets='http-response']
+
+==== 이미 가입된 이메일일 때
+
+operation::signupMember_failedByDuplicateEmail[snippets='http-response']
+
+==== 이미 가입된 닉네임일 때
+
+operation::signupMember_failedByDuplicateNickname[snippets='http-response']
+
+==== 재입력한 비밀번호가 다를 때
+
+operation::signupMember_failedByReconfirmPasswordUnmatch[snippets='http-response']
+

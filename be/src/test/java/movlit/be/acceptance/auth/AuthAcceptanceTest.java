@@ -1,14 +1,10 @@
 package movlit.be.acceptance.auth;
 
-import static movlit.be.acceptance.auth.AuthSteps.로그아웃_한다;
-import static movlit.be.acceptance.auth.AuthSteps.민지가_로그인한다;
 import static movlit.be.acceptance.auth.AuthSteps.비회원이_로그인한다;
 import static movlit.be.acceptance.auth.AuthSteps.상태코드_404와_오류코드_m001을_반환하는지_검증한다;
-import static movlit.be.acceptance.auth.AuthSteps.상태코드가_204임을_검증한다;
 import static movlit.be.acceptance.auth.AuthSteps.원준이_로그인한다;
 import static movlit.be.acceptance.auth.AuthSteps.토큰과_상태코드_200을_응답하는지_검증한다;
 
-import io.restassured.builder.RequestSpecBuilder;
 import movlit.be.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
