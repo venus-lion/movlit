@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .logoutUrl("/api/members/logout")
                         .permitAll()
                         .logoutSuccessHandler(((request, response, authentication) -> response.setStatus(
-                                HttpServletResponse.SC_OK)))
+                                HttpServletResponse.SC_NO_CONTENT)))
                         .deleteCookies("refreshToken")
                 )
 //                .logout(auth -> auth
