@@ -45,7 +45,7 @@ public class AuthSteps {
                 .spec(spec)
                 .log().all()
                 .body(loginRequest)
-                .when().post("/member/login")
+                .when().post("/api/members/login")
                 .then().log().all()
                 .extract();
     }
@@ -66,9 +66,9 @@ public class AuthSteps {
 
     public static void 토큰과_상태코드_200을_응답하는지_검증한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(200)
-//                () -> assertThat(response.jsonPath().getString("accessToken")).isNotNull(),
-//                () -> assertThat(response.jsonPath().getString("refreshToken")).isNotNull()
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(response.jsonPath().getString("accessToken")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("refreshToken")).isNotNull()
         );
     }
 
