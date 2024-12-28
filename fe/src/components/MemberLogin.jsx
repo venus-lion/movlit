@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 const MemberLogin = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -12,7 +14,7 @@ const MemberLogin = () => {
         if (accessToken) {
             // Access Token이 유효한 경우, 자동으로 /member/list로 리다이렉트
             // (필요한 경우, 서버에 Access Token 유효성 검증 요청 추가)
-            window.location.href = '/member/list';
+            navigate('/member/list');
         }
     }, []);
 
@@ -27,7 +29,7 @@ const MemberLogin = () => {
             document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`; // 2주
 
             // 로그인 성공 후 페이지 리디렉션
-            window.location.href = '/member/list';
+            navigate('/member/list');
         } catch (error) {
             setError('로그인 정보가 올바르지 않습니다.');
             console.error('Login error:', error);
@@ -71,7 +73,7 @@ const MemberLogin = () => {
         } catch (error) {
             console.error('Refresh Token 에러:', error);
             // Refresh Token 만료 시 로그인 페이지로 리다이렉트
-            window.location.href = '/member/login';
+            navigate('/member/login');
         }
     };
 
