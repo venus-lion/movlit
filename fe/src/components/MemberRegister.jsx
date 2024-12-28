@@ -44,14 +44,14 @@ const MemberRegister = () => {
     return (
         <div className="bg-light">
             {/* 상단 네비게이션 (필요에 따라 추가) */}
-            <nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-                <div className="container-fluid">
-                    <img src="/img/ck-logo.png" alt="Logo" height="60"/>
-                    <div className="p-2 bg-dard justify-content-center">
-                        <img src="https://picsum.photos/1500/180" alt="Banner" width="100%"/>
-                    </div>
-                </div>
-            </nav>
+            {/*<nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">*/}
+            {/*    <div className="container-fluid">*/}
+            {/*        <img src="/img/ck-logo.png" alt="Logo" height="60"/>*/}
+            {/*        <div className="p-2 bg-dard justify-content-center">*/}
+            {/*            <img src="https://picsum.photos/1500/180" alt="Banner" width="100%"/>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</nav>*/}
 
             <div className="container" style={{marginTop: '250px'}}>
                 <div className="row">

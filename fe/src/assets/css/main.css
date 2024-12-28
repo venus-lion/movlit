@@ -2418,6 +2418,16 @@ body {
     color: #fff;
 }
 
+/* 로그아웃 버튼 추가 */
+#nav .logout-button {
+    float: right; /* 버튼을 우측으로 정렬 */
+    background-color: #000; /* 버튼 배경색 (이미지에 맞게 조정) */
+    color: #fff; /* 버튼 글자색 (이미지에 맞게 조정) */
+    border: none; /* 버튼 테두리 제거 */
+    padding: 0.5em 1em; /* 버튼 내부 여백 (이미지에 맞게 조정) */
+    cursor: pointer; /* 마우스 오버 시 커서 변경 */
+}
+
 .dropotron {
     list-style: none;
     background: #6B7770;

@@ -21,7 +21,6 @@ function Home() {
                     </ul>
                     <header>
                         <h2>A random assortment of icons in circles</h2>
-                        {isLoggedIn && <p>로그인이 된 상태입니다.</p>}
                         <p>And some text that attempts to explain their significance</p>
                     </header>
                     <p>

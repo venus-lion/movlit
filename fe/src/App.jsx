@@ -29,25 +29,31 @@ function App() {
 
     return (
         <>
-            {/* 네비게이션 메뉴 */}
             <nav id="nav">
                 <ul>
-                    <li className="current"><Link to="/">Home</Link></li>
-                    <li><Link to="/member/register">Register</Link></li>
-                    <li><Link to="/member/login">Login</Link></li>
+                    <li className="current">
+                        <Link to="/">Home</Link>
+                    </li>
+                    {!isLoggedIn && (
+                        <>
+                            <li>
+                                <Link to="/member/register">Register</Link>
+                            </li>
+                            <li>
+                                <Link to="/member/login">Login</Link>
+                            </li>
+                        </>
+                    )}
                     {isLoggedIn && (
                         <li>
-                            <button onClick={handleLogout}>Logout</button>
+                            <button onClick={handleLogout} className="logout-button">
+                                Logout
+                            </button>
                         </li>
                     )}
                 </ul>
             </nav>
-            {/* Outlet에 props로 isLoggedIn과 updateLoginStatus 전달 */}
-            <section id="main">
-                <div className="container">
-                    <Outlet context={{isLoggedIn, updateLoginStatus}}/>
-                </div>
-            </section>
+            <Outlet context={{isLoggedIn, updateLoginStatus}}/>
         </>
     );
 }
