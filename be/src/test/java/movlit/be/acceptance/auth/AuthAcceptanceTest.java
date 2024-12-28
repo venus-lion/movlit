@@ -1,10 +1,13 @@
 package movlit.be.acceptance.auth;
 
+import static movlit.be.acceptance.auth.AuthSteps.로그아웃_한다;
 import static movlit.be.acceptance.auth.AuthSteps.비회원이_로그인한다;
 import static movlit.be.acceptance.auth.AuthSteps.상태코드_404와_오류코드_m001을_반환하는지_검증한다;
+import static movlit.be.acceptance.auth.AuthSteps.상태코드가_204임을_검증한다;
 import static movlit.be.acceptance.auth.AuthSteps.원준이_로그인한다;
 import static movlit.be.acceptance.auth.AuthSteps.토큰과_상태코드_200을_응답하는지_검증한다;
 
+import io.restassured.builder.RequestSpecBuilder;
 import movlit.be.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -45,28 +48,28 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-//    @Nested
-//    @DisplayName("로그아웃 테스트")
-//    class Logout {
-//
-//        @DisplayName("로그아웃 요청 성공하면 204코드를 반환한다.")
-//        @Test
-//        void when_logout_then_return_204() {
-//            // docs
-//            api_문서_타이틀("logout_success", spec);
-//
-//            // given
-//            var 민지_로그인응답 = 민지가_로그인한다(new RequestSpecBuilder().build());
-//            String 민지_액세스토큰 = 민지_로그인응답.jsonPath().getString("accessToken");
-//
-//            // when
-//            var response = 로그아웃_한다(민지_액세스토큰, spec);
-//
-//            // then
-//            상태코드가_204임을_검증한다(response);
-//        }
-//
-//    }
+    @Nested
+    @DisplayName("로그아웃 테스트")
+    class Logout {
+
+        @DisplayName("로그아웃 요청이 성공하면, 204코드를 반환한다.")
+        @Test
+        void when_logout_then_return_204() {
+            // docs
+            api_문서_타이틀("logout_success", spec);
+
+            // given
+            var 원준_로그인응답 = 원준이_로그인한다(new RequestSpecBuilder().build());
+            String 원준_액세스토큰 = 원준_로그인응답.jsonPath().getString("accessToken");
+
+            // when
+            var response = 로그아웃_한다(원준_액세스토큰, spec);
+
+            // then
+            상태코드가_204임을_검증한다(response);
+        }
+
+    }
 
 
 }

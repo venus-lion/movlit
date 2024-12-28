@@ -28,7 +28,7 @@ const MemberRegister = () => {
             });
 
             console.log('Registration successful:', response.data);
-            alert(response.data.message);
+            alert('회원 가입이 완료되었습니다.');
 
             navigate('/member/login'); // window.location.href 대신 navigate 사용
         } catch (error) {

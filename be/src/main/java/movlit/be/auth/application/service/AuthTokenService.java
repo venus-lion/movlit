@@ -21,4 +21,9 @@ public class AuthTokenService {
         return new AuthTokenIssueResponse(accessToken, refreshToken);
     }
 
+    public void revoke(String accessToken) {
+        long exp = jwtTokenUtil.extractExpirationAsLong(accessToken);
+        refreshTokenStorage.addBlacklist(accessToken, exp);
+    }
+
 }
