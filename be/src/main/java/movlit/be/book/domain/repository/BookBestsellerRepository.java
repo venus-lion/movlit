@@ -1,5 +1,9 @@
 package movlit.be.book.domain.repository;
 
-public interface BookBestsellerRepository {
+import java.util.List;
+import movlit.be.book.domain.BookBestseller;
+import org.springframework.data.domain.Pageable;
 
+public interface BookBestsellerRepository {
+    List<BookBestseller> findAllBestsellers(Pageable pageable);
 }

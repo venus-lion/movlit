@@ -1,6 +1,7 @@
 package movlit.be.book.domain.entity;
 
 import com.mysql.cj.protocol.ColumnDefinition;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -8,8 +9,11 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,4 +74,6 @@ public class BookEntity {
     @LastModifiedDate
     private LocalDateTime updDt;
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookRCrewEntity> bookRCrewEntities = new ArrayList<>();
 }

@@ -29,6 +29,7 @@ public class BookConverter {
                 .heartCount(book.getHeartCount())
                 .regDt(book.getRegDt())
                 .updDt(book.getUpdDt())
+                .bookRCrewEntities(BookRCrewConverter.toEntityList(book.getBookRCrews()))
                 .build();
     }
 
@@ -48,6 +49,7 @@ public class BookConverter {
                 .heartCount(bookEntity.getHeartCount())
                 .regDt(bookEntity.getRegDt())
                 .updDt(bookEntity.getUpdDt())
+                .bookRCrews(BookRCrewConverter.toDomainList(bookEntity.getBookRCrewEntities()))
                 .build();
     }
 
