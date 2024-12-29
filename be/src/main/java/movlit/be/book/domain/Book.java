@@ -1,6 +1,7 @@
 package movlit.be.book.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,6 @@ public class Book {
     private Long heartCount;
     private LocalDateTime regDt;
     private LocalDateTime updDt;
+    private List<BookRCrew> bookRCrews;
 
 }
