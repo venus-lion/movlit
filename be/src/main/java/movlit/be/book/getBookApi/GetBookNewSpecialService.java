@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.entity.BookNewSpeicialEntity;
+import movlit.be.book.domain.entity.BookNewSpecialEntity;
 import movlit.be.book.getBookApi.dto.BookResponseDto.Item;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.entity.BookRCrewEntity;
@@ -139,7 +139,7 @@ public class GetBookNewSpecialService {
 
                                 }
 
-                                BookNewSpeicialEntity bookNewSpeicialEntity = BookNewSpeicialEntity.builder()
+                                BookNewSpecialEntity bookNewSpeicialEntity = BookNewSpecialEntity.builder()
                                         .bookNewSpecialId(new BookNewSpecialId(GenerateUUID.generateUUID()))
                                         .bookEntity(savedBookEntity) // FK - Bookentity
                                         .build();

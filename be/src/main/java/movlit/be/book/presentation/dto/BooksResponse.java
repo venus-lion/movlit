@@ -3,17 +3,16 @@ package movlit.be.book.presentation.dto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import movlit.be.common.util.ids.BookBestsellerId;
 
 @Data
 @Builder
-public class BookBestsellersResponse {
+public class BooksResponse {
 
-    private List<BookBestsellerDto> books;
+    private List<BookItemDto> books;
     @Data
     @Builder
-    public static class BookBestsellerDto {
-        private BookBestsellerId bookId; // ISBN
+    public static class BookItemDto {
+        private String bookId; // ISBN13
         private String title;
         private List<WriterDto> writers;
         private String pubDate;

@@ -20,7 +20,7 @@ import movlit.be.common.util.ids.BookNewSpecialId;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookNewSpeicialEntity {
+public class BookNewSpecialEntity {
     @EmbeddedId
     private BookNewSpecialId bookNewSpecialId;
 

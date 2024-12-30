@@ -34,7 +34,10 @@ public enum ErrorMessage {
     MOVIE_NOT_FOUND("메시지", "m001"),
 
     // book
-    BESTSELLERS_NOT_FOUND("bestseller가 존재하지 않습니다.", "b001");
+    BESTSELLERS_NOT_FOUND("bestseller가 존재하지 않습니다.", "b001"),
+    BOOKNEW_NOT_FOUND("bookNew가 존재하지 않습니다.", "b002"),
+    BOOKNEWSPECIAL_NOT_FOUND("bookNewSpecial이 존재하지 않습니다", "b003"),
+    UNKNOWN_BOOK_ENTITY_TYPE("알 수 없는 BookEntity 타입입니다.", "b004");
 
     private final String message;
     private final String code;
