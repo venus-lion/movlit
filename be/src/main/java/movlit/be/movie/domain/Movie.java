@@ -1,12 +1,12 @@
 package movlit.be.movie.domain;
 
+import jakarta.persistence.Lob;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import movlit.be.common.util.ids.MovieId;
 
 @Getter
 public class Movie {
@@ -16,6 +16,7 @@ public class Movie {
     private String title;
     private String originalTitle;
 
+    @Lob
     private String overview;
     private Double popularity;
     private String posterPath;

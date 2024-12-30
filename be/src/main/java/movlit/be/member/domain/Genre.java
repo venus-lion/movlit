@@ -15,9 +15,10 @@ public enum Genre {
     ROMANCE(11, "로맨스"),
     SCIENCE_FICTION(12, "SF"),
     TV_MOVIE(13, "TV 영화"),
-    THRILLER(14, "스릴러"), // + 공포
+    THRILLER(14, "공포, 스릴러"), // + 공포
     WAR(15, "전쟁"),
-    WESTERN(16, "서부");
+    WESTERN(16, "서부"),
+    ETC(99999, "ETC");
 
     private final int id;
     private final String name;
