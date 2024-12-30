@@ -80,7 +80,7 @@ public abstract class AcceptanceTest {
 
     protected void 데이터베이스를_초기화한다() {
         databaseCleanup.execute();
-//        sqlFileExecutor.execute("data.sql");
+        sqlFileExecutor.execute("data.sql");
     }
 
     protected void 테이블을_비운다(String tableName) {
