@@ -1,5 +1,6 @@
 package movlit.be.data_collection;
 
+import jakarta.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,8 +8,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.member.domain.Genre;
 import movlit.be.movie.domain.entity.MovieEntity;
+import movlit.be.movie.domain.entity.MovieGenreEntity;
+import movlit.be.movie.domain.entity.MovieGenreIdForEntity;
 import movlit.be.movie.domain.entity.MovieTagEntity;
 import movlit.be.movie.domain.entity.MovieTagIdForEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
+@Transactional
 public class MovieCollectService {
 
     @Value("${tmdb.key}")
@@ -37,6 +43,8 @@ public class MovieCollectService {
 
     @Autowired
     private MovieTagRepository movieTagRepository;
+    @Autowired
+    private MovieGenreRepository movieGenreRepository;
 
     public MovieCollectService(RestTemplateBuilder builder) {
         HttpHeaders headers = new HttpHeaders();
@@ -173,24 +181,22 @@ public class MovieCollectService {
     /*
     Move Tag(Keyword) 수집
      */
-    public List<MovieTagEntity> getMovieTagList(MovieEntity movie){
+    public List<MovieTagEntity> getMovieTagList(MovieEntity movie) {
 
         List<MovieTagEntity> movieTagList = new ArrayList<>();
 
         String apiUrl = "https://api.themoviedb.org/3/movie/" + movie.getMovieId() + "/keywords?api_key=" + key;
         Map<String, Object> response = restTemplate.getForObject(apiUrl, Map.class);
-
-
-        if(ObjectUtils.isEmpty(response.get("keywords"))){
+        log.info("=== response : {}", response);
+        if (ObjectUtils.isEmpty(response.get("keywords"))) {
             return List.of();
         }
 
         List<Map<String, Object>> keywordList = (List<Map<String, Object>>) response.get("keywords");
-
-        for(Map<String, Object> keyword : keywordList){
+        keywordList.forEach(keyword -> {
             Long id = Long.valueOf((Integer) keyword.get("id"));
             String name = (String) keyword.get("name");
-            MovieTagIdForEntity movieTagId = new MovieTagIdForEntity(movie.getMovieId(), id);
+            MovieTagIdForEntity movieTagId = new MovieTagIdForEntity(id, movie.getMovieId());
 
             MovieTagEntity movieTag = MovieTagEntity.builder()
                     .movieTagIdForEntity(movieTagId)
@@ -202,16 +208,125 @@ public class MovieCollectService {
                     .build();
 
             movieTagList.add(movieTag);
-        }
+        });
 
-
+//        for (Map<String, Object> keyword : keywordList) {
+//            Long id = Long.valueOf((Integer) keyword.get("id"));
+//            String name = (String) keyword.get("name");
+//            MovieTagIdForEntity movieTagId = new MovieTagIdForEntity(id, movie.getMovieId());
+//
+//            MovieTagEntity movieTag = MovieTagEntity.builder()
+//                    .movieTagIdForEntity(movieTagId)
+//                    .name(name)
+//                    .movieEntity(movie)
+//                    .regDt(LocalDateTime.now())
+//                    .updDt(LocalDateTime.now())
+//                    .delYn(false)
+//                    .build();
+//
+//            movieTagList.add(movieTag);
+//        }
 
         movieTagRepository.saveAll(movieTagList);
 
         return movieTagList;
     }
 
-    public List<MovieEntity> getAllMovieList(){
+    public List<MovieEntity> getAllMovieList() {
         return movieCollectRepository.findAll();
+    }
+
+    public List<MovieGenreEntity> getMovieGenreList(MovieEntity movie) {
+        List<MovieGenreEntity> genreList = new ArrayList<>();
+
+        String detailApiUrl =
+                "https://api.themoviedb.org/3/movie/" + movie.getMovieId() + "?api_key=" + key + "&language=ko-KR";
+        Map<String, Object> response = restTemplate.getForObject(detailApiUrl, Map.class);
+        Optional<List<Map<String, Object>>> genres = Optional.ofNullable(
+                (List<Map<String, Object>>) response.get("genres"));
+
+        if (genres.isPresent()) {
+            genres.get().forEach(genre -> {
+                Integer apiGenreId = (Integer) genre.get("id");
+                genreList.add(this.mappingGenreEntityFromApiGenreId(apiGenreId, movie));
+            });
+        }
+
+        movieGenreRepository.saveAll(genreList);
+        return genreList;
+    }
+
+
+    private MovieGenreEntity mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie){
+        return switch (apiGenreId) {
+            case 28, 12 ->    // 액션(28), 모험(12)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(1L, movie.getMovieId())
+                            , movie);
+            case 16 ->        // 애니매이션(16)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(2L, movie.getMovieId())
+                            , movie);
+            case 35 ->        // 코미디(35)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(3L, movie.getMovieId())
+                            , movie);
+            case 80 ->        // 범죄(80)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(4L, movie.getMovieId())
+                            , movie);
+            case 99 ->        // 다큐멘터리(99)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(5L, movie.getMovieId())
+                            , movie);
+            case 18, 10751 ->        // 드라마(18), 가족(10751)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(6L, movie.getMovieId())
+                            , movie);
+            case 14 ->        // 판타지(14)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(7L, movie.getMovieId())
+                            , movie);
+            case 36 ->        // 역사(36)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(8L, movie.getMovieId())
+                            , movie);
+            case 10402 ->        // 음악(10402)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(9L, movie.getMovieId())
+                            , movie);
+            case 9648 ->        // 미스테리(9648)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(10L, movie.getMovieId())
+                            , movie);
+            case 10749 ->        // 로맨스(10749)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(11L, movie.getMovieId())
+                            , movie);
+            case 878 ->        // SF(878)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(12L, movie.getMovieId())
+                            , movie);
+            case 10770 ->        // TV 영화(10770)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(13L, movie.getMovieId())
+                            , movie);
+            case 27, 53 ->        // 공포(27), 스릴러(53)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(14L, movie.getMovieId())
+                            , movie);
+            case 10752 ->        // 전쟁(10752)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(15L, movie.getMovieId())
+                            , movie);
+            case 37 ->        // 서부(37)
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(16L, movie.getMovieId())
+                            , movie);
+            default ->
+                    new MovieGenreEntity(
+                            new MovieGenreIdForEntity(99999L, movie.getMovieId())
+                            , movie);
+        };
     }
 }
