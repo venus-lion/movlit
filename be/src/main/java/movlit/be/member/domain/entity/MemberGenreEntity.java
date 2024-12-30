@@ -17,12 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberGenreEntity {
 
-    @Id
-    @Column(name = "genre_id")
-    private Long genreId;
+    @EmbeddedId
+    private MemberGenreIdEntity memberGenreIdEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
+    @JoinColumn(name = "member_id", referencedColumnName = "id", updatable = false, insertable = false)
     private MemberEntity memberEntity;
 
 }
