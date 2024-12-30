@@ -1,9 +1,7 @@
 package movlit.be.movie.infra.persistence;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieNotFoundException;
-import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.repository.MovieDetailRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieDetailJpaRepository;
 import movlit.be.movie.presentation.dto.MovieDetailResponse;
