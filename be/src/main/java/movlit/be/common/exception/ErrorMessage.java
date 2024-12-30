@@ -31,7 +31,7 @@ public enum ErrorMessage {
     EXPIRED_TOKEN("세션이 만료되었습니다. 다시 로그인해 주세요.", "a008"),
 
     // movie
-    MOVIE_NOT_FOUND("메시지", "m001");
+    MOVIE_NOT_FOUND("메시지", "m101");
 
     private final String message;
     private final String code;

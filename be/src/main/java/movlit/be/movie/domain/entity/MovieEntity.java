@@ -29,7 +29,6 @@ public class MovieEntity {
     private String title;
     private String originalTitle;
 
-    @Column(length = 60000)
     private String overview;
     private Double popularity;
     private String posterPath;
