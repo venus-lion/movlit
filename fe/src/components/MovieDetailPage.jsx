@@ -7,6 +7,8 @@ function MovieDetailPage() {
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
     const [isWish, setIsWish] = useState(false);
+    const [showCommentInput, setShowCommentInput] = useState(false);
+    const [comment, setComment] = useState('');
 
     useEffect(() => {
         fetch(`/api/movies/${movieId}/detail`)
@@ -42,16 +44,31 @@ function MovieDetailPage() {
 
     const handleRatingChange = (newRating) => {
         if (myRating === newRating) {
-            setMyRating(0); // 같은 별점을 다시 누르면 0으로 설정 (취소)
+            setMyRating(0);
+            setShowCommentInput(false);
         } else {
             setMyRating(newRating);
+            setShowCommentInput(true);
         }
-        // 여기에 별점 저장 로직 추가 (예: API 호출)
     };
 
     const handleWishClick = () => {
         setIsWish(!isWish);
         // 여기에 찜하기/찜해제 로직 추가 (예: API 호출)
+    };
+
+    const handleCommentChange = (event) => {
+        setComment(event.target.value);
+    };
+
+    const handleSubmitComment = () => {
+        // 여기에 코멘트 저장 로직 추가 (예: API 호출)
+        console.log('코멘트 제출:', comment, '별점:', myRating);
+
+        // 코멘트 제출 후 초기화
+        setComment('');
+        setMyRating(0);
+        setShowCommentInput(false);
     };
 
     if (!movieData) {
@@ -109,6 +126,21 @@ function MovieDetailPage() {
                             </button>
                         </div>
                     </div>
+
+                    {/* 코멘트 입력란 */}
+                    {showCommentInput && (
+                        <div style={styles.commentSection}>
+                            <textarea
+                                style={styles.commentInput}
+                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                                value={comment}
+                                onChange={handleCommentChange}
+                            />
+                            <button style={styles.submitButton} onClick={handleSubmitComment}>
+                                코멘트 남기기
+                            </button>
+                        </div>
+                    )}
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -305,6 +337,28 @@ const styles = {
     crewRole: {
         fontSize: '0.9em',
         color: '#000000'
+    },
+    commentSection: {
+        marginTop: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    commentInput: {
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        marginBottom: '10px',
+        resize: 'vertical',
+        height: '100px',
+    },
+    submitButton: {
+        padding: '10px 20px',
+        backgroundColor: '#4080ff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        alignSelf: 'flex-end',
     },
 };
 
