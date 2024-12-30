@@ -1,30 +1,27 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import {useNavigate, useOutletContext} from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const MemberLogin = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
-    // App 컴포넌트에서 Outlet을 통해 전달받은 updateLoginStatus를 사용
-    const {updateLoginStatus} = useOutletContext();
+    const { updateLoginStatus } = useOutletContext();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('/api/members/login', {email, password});
-            const {accessToken, refreshToken} = response.data;
+            const response = await axios.post('/api/members/login', {
+                email,
+                password,
+            });
+            const { accessToken, refreshToken } = response.data;
 
-            // 토큰 저장
             sessionStorage.setItem('accessToken', accessToken);
-            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`; // 2주
+            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
 
-            // 로그인 성공 후 updateLoginStatus를 true로 업데이트
             updateLoginStatus(true);
-
-            // 로그인 성공 후 페이지 리디렉션
             navigate('/');
         } catch (error) {
             setError('로그인 정보가 올바르지 않습니다.');
@@ -34,8 +31,7 @@ const MemberLogin = () => {
 
     return (
         <div className="bg-light">
-            {/* ... 상단 네비게이션 ... */}
-            <div className="container" style={{marginTop: '270px'}}>
+            <div className="container" style={{ marginTop: '270px' }}>
                 <div className="row">
                     <div className="col-4"></div>
                     <div className="col-4">
@@ -46,15 +42,15 @@ const MemberLogin = () => {
                                         <strong>로그인</strong>
                                     </h3>
                                 </div>
-                                <hr/>
+                                <hr />
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{width: '45%'}}>
+                                            <td style={{ width: '45%' }}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{width: '55%'}}>
+                                            <td style={{ width: '55%' }}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -80,8 +76,11 @@ const MemberLogin = () => {
                                         </tr>
                                         <tr>
                                             <td colSpan="2" className="center-buttons">
-                                                <button className="btn btn-primary" type="submit"
-                                                        style={{marginRight: '5px'}}>
+                                                <button
+                                                    className="btn btn-primary"
+                                                    type="submit"
+                                                    style={{ marginRight: '5px' }}
+                                                >
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">
@@ -93,7 +92,7 @@ const MemberLogin = () => {
                                     </table>
                                 </form>
 
-                                {error && <p style={{color: 'red'}}>{error}</p>}
+                                {error && <p style={{ color: 'red' }}>{error}</p>}
 
                                 <p className="mt-3">
                                     <span className="me-3">계정이 없으신가요? </span>
@@ -106,14 +105,35 @@ const MemberLogin = () => {
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">
-                                        <a href="/oauth2/authorization/google" className="social-login-button">
-                                            <img src="/images/google-logo.png" alt="Google" className="social-login-icon" />
+                                        <a
+                                            href="/oauth2/authorization/google"
+                                            className="social-login-button"
+                                        >
+                                            <img
+                                                src="/images/google-logo.png"
+                                                alt="Google"
+                                                className="social-login-icon"
+                                            />
                                         </a>
-                                        <a href="/oauth2/authorization/naver" className="social-login-button">
-                                            <img src="/images/naver-logo.jpg" alt="Naver" className="social-login-icon" />
+                                        <a
+                                            href="/oauth2/authorization/naver"
+                                            className="social-login-button"
+                                        >
+                                            <img
+                                                src="/images/naver-logo.jpg"
+                                                alt="Naver"
+                                                className="social-login-icon"
+                                            />
                                         </a>
-                                        <a href="/oauth2/authorization/kakao" className="social-login-button">
-                                            <img src="/images/kakao-logo.png" alt="Kakao" className="social-login-icon" />
+                                        <a
+                                            href="/oauth2/authorization/kakao"
+                                            className="social-login-button"
+                                        >
+                                            <img
+                                                src="/images/kakao-logo.png"
+                                                alt="Kakao"
+                                                className="social-login-icon"
+                                            />
                                         </a>
                                     </div>
                                 </div>

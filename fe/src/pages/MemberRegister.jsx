@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import {Link, useNavigate} from 'react-router-dom'; // useNavigate 훅 import
+import { Link, useNavigate } from 'react-router-dom';
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -30,7 +30,7 @@ const MemberRegister = () => {
             console.log('Registration successful:', response.data);
             alert('회원 가입이 완료되었습니다.');
 
-            navigate('/member/login'); // window.location.href 대신 navigate 사용
+            navigate('/member/login');
         } catch (error) {
             console.error('Registration error:', error);
             if (error.response) {
@@ -43,17 +43,7 @@ const MemberRegister = () => {
 
     return (
         <div className="bg-light">
-            {/* 상단 네비게이션 (필요에 따라 추가) */}
-            {/*<nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">*/}
-            {/*    <div className="container-fluid">*/}
-            {/*        <img src="/img/ck-logo.png" alt="Logo" height="60"/>*/}
-            {/*        <div className="p-2 bg-dard justify-content-center">*/}
-            {/*            <img src="https://picsum.photos/1500/180" alt="Banner" width="100%"/>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</nav>*/}
-
-            <div className="container" style={{marginTop: '250px'}}>
+            <div className="container" style={{ marginTop: '250px' }}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">
@@ -64,15 +54,15 @@ const MemberRegister = () => {
                                         <strong>회원 가입</strong>
                                     </h3>
                                 </div>
-                                <hr/>
+                                <hr />
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{width: '45%'}}>
+                                            <td style={{ width: '45%' }}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{width: '55%'}}>
+                                            <td style={{ width: '55%' }}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -98,7 +88,9 @@ const MemberRegister = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <label className="col-form-label">패스워드 확인</label>
+                                                <label className="col-form-label">
+                                                    패스워드 확인
+                                                </label>
                                             </td>
                                             <td>
                                                 <input
@@ -140,8 +132,11 @@ const MemberRegister = () => {
                                         </tr>
                                         <tr>
                                             <td colSpan="2" className="center-buttons">
-                                                <button className="btn btn-primary" type="submit"
-                                                        style={{marginRight: '5px'}}>
+                                                <button
+                                                    className="btn btn-primary"
+                                                    type="submit"
+                                                    style={{ marginRight: '5px' }}
+                                                >
                                                     확인
                                                 </button>
                                                 <button className="btn btn-secondary" type="reset">
@@ -164,14 +159,35 @@ const MemberRegister = () => {
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">
-                                        <a href="/oauth2/authorization/google" className="social-login-button">
-                                            <img src="/images/google-logo.png" alt="Google" className="social-login-icon" />
+                                        <a
+                                            href="/oauth2/authorization/google"
+                                            className="social-login-button"
+                                        >
+                                            <img
+                                                src="/images/google-logo.png"
+                                                alt="Google"
+                                                className="social-login-icon"
+                                            />
                                         </a>
-                                        <a href="/oauth2/authorization/naver" className="social-login-button">
-                                            <img src="/images/naver-logo.jpg" alt="Naver" className="social-login-icon" />
+                                        <a
+                                            href="/oauth2/authorization/naver"
+                                            className="social-login-button"
+                                        >
+                                            <img
+                                                src="/images/naver-logo.jpg"
+                                                alt="Naver"
+                                                className="social-login-icon"
+                                            />
                                         </a>
-                                        <a href="/oauth2/authorization/kakao" className="social-login-button">
-                                            <img src="/images/kakao-logo.png" alt="Kakao" className="social-login-icon" />
+                                        <a
+                                            href="/oauth2/authorization/kakao"
+                                            className="social-login-button"
+                                        >
+                                            <img
+                                                src="/images/kakao-logo.png"
+                                                alt="Kakao"
+                                                className="social-login-icon"
+                                            />
                                         </a>
                                     </div>
                                 </div>
