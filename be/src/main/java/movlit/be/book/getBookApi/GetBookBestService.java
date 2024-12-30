@@ -1,9 +1,15 @@
 package movlit.be.book.getBookApi;
 
+
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import movlit.be.book.domain.Genre;
+import movlit.be.book.domain.entity.BookGenreEntity;
 import movlit.be.book.getBookApi.dto.BookBestResponseDto;
 import movlit.be.book.getBookApi.dto.BookBestResponseDto.Item;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
@@ -12,6 +18,7 @@ import movlit.be.book.domain.entity.BookRCrewEntity;
 import movlit.be.book.domain.entity.BookcrewEntity;
 import movlit.be.book.domain.entity.GenerateUUID;
 import movlit.be.book.infra.persistence.jpa.BookBestsellerJpaRepository;
+import movlit.be.book.infra.persistence.jpa.BookGenreJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookRCrewJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookcrewJpaRepository;
@@ -19,13 +26,16 @@ import movlit.be.common.util.ids.BookBestsellerId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.BookRCrewId;
 import movlit.be.common.util.ids.BookcrewId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import movlit.be.book.domain.entity.BookcrewEntity.Role;
 @Service
 @RequiredArgsConstructor
+@Transactional
 @PropertySource("classpath:application-test.properties")
 public class GetBookBestService {
     private final RestTemplate restTemplate;
@@ -34,8 +44,11 @@ public class GetBookBestService {
     private final BookBestsellerJpaRepository bookBestsellerRepository;
     private final BookRCrewJpaRepository bookRCrewRepository;
 
+    private final BookGenreJpaRepository bookGenreJpaRepository;
+
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
+    static BookEntity savedBookEntity;
 
     @Value("${aladin.key}")
     String apiKey;
@@ -54,6 +67,7 @@ public class GetBookBestService {
 
         BookBestResponseDto bookResponseDto = restTemplate.getForObject(url, BookBestResponseDto.class);
 
+
         if(bookResponseDto != null ){
 
             List<Item> bookList = bookResponseDto.getItem();
@@ -68,6 +82,7 @@ public class GetBookBestService {
                 // booklist 순회하며 bookEntity 저장
                 for(Item book : bookList) {
                     try {
+                        savedBookEntity = null;
 
                         String categoryName = book.getCategoryName();
 
@@ -86,6 +101,7 @@ public class GetBookBestService {
                                         .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE)
                                                 .atStartOfDay())
                                         .description(book.getDescription())
+                                        .categoryId(book.getCategoryId()) // test용
                                         .categoryName(book.getCategoryName())
                                         .bookImgUrl(book.getCover().replace("cover200", "cover500"))
                                         .stockStatus(book.getStockStatus().length() == 0 ? "판매중"
@@ -94,7 +110,13 @@ public class GetBookBestService {
                                         .build();
 
                                 // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
-                                BookEntity savedBookEntity = bookRepository.save(savedBook);
+                                savedBookEntity = bookRepository.save(savedBook);
+
+                                String categoryCode = book.getCategoryId();
+                                // 분류하기
+                                BookCategory bookCategory = new BookCategory(this);
+                                bookCategory.classifyAndSaveBooks(categoryCode);
+
 
                                 String[] crewArr = book.getAuthor().split(", ");
 
@@ -104,8 +126,8 @@ public class GetBookBestService {
 
                                     // 정규표현식 -> "한강 (지은이)" : 괄호밖 -> 이름, 공백+괄호안 -> 역할
                                     String regex = "(.+?)(?:\\s\\((.*?)\\))?$";
-                                    java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-                                    java.util.regex.Matcher matcher = pattern.matcher(input);
+                                    Pattern pattern = Pattern.compile(regex);
+                                    Matcher matcher = pattern.matcher(input);
 
                                     if (matcher.matches()) {
                                         String name = matcher.group(1).trim();
@@ -158,6 +180,24 @@ public class GetBookBestService {
             }
         }
 
+
+
+    }
+
+    public void saveBookToDatabase(String bookCode, Genre genre){
+
+        int genreId = genre.getId();
+        String genreName = genre.getName();
+        System.out.println("&&&&&&&&원래코드 : " + bookCode +  "\n&&&&&&&&원래분류" + savedBookEntity.getCategoryName() +
+                "\n\n%%%%%%%%%장르 ID : " + genreId + "\n%%%%%%%%%장르명 :" + genreName);
+
+        BookGenreEntity bookGenreEntity = BookGenreEntity.builder()
+                .bookEntity(savedBookEntity)
+                .genreId((long) genreId)
+                .build();
+
+        System.out.println("*******장르엔티티" + bookGenreEntity);
+        bookGenreJpaRepository.save(bookGenreEntity);
 
 
     }

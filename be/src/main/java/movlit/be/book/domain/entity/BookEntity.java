@@ -74,6 +74,11 @@ public class BookEntity {
     @LastModifiedDate
     private LocalDateTime updDt;
 
+    // 테스트용으로 categoryId
+    @Column(name = "categoryId")
+    private String categoryId;
+
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookRCrewEntity> bookRCrewEntities = new ArrayList<>();
+
 }

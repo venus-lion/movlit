@@ -36,6 +36,7 @@ public class BookBestResponseDto {
         private String isbn13; // bookId
         private String description;
         private String stockStatus;
+        private String categoryId;
         private String categoryName; // 대,중,소분류 포함
         private String publisher;
         private boolean adult;
