@@ -7,14 +7,13 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import movlit.be.common.util.ids.MovieId;
 import movlit.be.common.util.ids.MovieTagId;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode
-public class MovieTagIdREntity implements Serializable {
+public class MovieTagIdForEntity implements Serializable {
 
     @Column(name = "movie_tag_id")
     private MovieTagId movieTagId;
@@ -22,7 +21,7 @@ public class MovieTagIdREntity implements Serializable {
     @Column(name = "movie_id")
     private Long movieId;
 
-    public MovieTagIdREntity(MovieTagId movieTagId, Long movieId) {
+    public MovieTagIdForEntity(MovieTagId movieTagId, Long movieId) {
         this.movieTagId = movieTagId;
         this.movieId = movieId;
     }

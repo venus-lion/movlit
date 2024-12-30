@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class MovieTagEntity {
 
     @EmbeddedId
-    private MovieTagIdREntity movieTagIdREntity;
+    private MovieTagIdForEntity movieTagIdForEntity;
 
     @MapsId("movieId") // MovieTagId의 필드
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,10 +31,10 @@ public class MovieTagEntity {
     private boolean delYn;
 
     @Builder
-    public MovieTagEntity(MovieTagIdREntity movieTagIdREntity, MovieEntity movieEntity, String name,
+    public MovieTagEntity(MovieTagIdForEntity movieTagIdForEntity, MovieEntity movieEntity, String name,
                           LocalDateTime regDt, LocalDateTime updDt,
                           boolean delYn) {
-        this.movieTagIdREntity = movieTagIdREntity;
+        this.movieTagIdForEntity = movieTagIdForEntity;
         this.movieEntity = movieEntity;
         this.name = name;
         this.regDt = regDt;

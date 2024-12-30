@@ -2,12 +2,12 @@ package movlit.be.movie.domain;
 
 import java.time.LocalDateTime;
 import lombok.Getter;
-import movlit.be.movie.domain.entity.MovieTagIdREntity;
+import movlit.be.movie.domain.entity.MovieTagIdForEntity;
 
 @Getter
 public class MovieTag {
 
-    private MovieTagIdREntity movieTagIdR;
+    private MovieTagIdForEntity movieTagIdR;
     private Movie movie;
     private String name;
     private LocalDateTime regDt;

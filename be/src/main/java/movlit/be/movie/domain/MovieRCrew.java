@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class MovieRCrew {
 
-    private MovieRCrewIdR movieRCrewIdR;
+    private MovieRCrewId movieRCrewId;
     private MovieCrew movieCrew;
     private Movie movie;
 
