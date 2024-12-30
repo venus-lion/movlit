@@ -10,11 +10,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/testBook")
 public class GetBookController {
 
-    private final GetBookService getBookService;
+    private final GetBookBestService getBookBestService;
+    private final GetBookNewService getBookNewService;
+    private final GetBookNewSpecialService getBookNewSpecialService;
 
-    @GetMapping("/saveBooks")
-    public void booksapiToDb(){
-        getBookService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
+    // BookBestseller 저장 api
+    @GetMapping("/saveBooks/bestseller")
+    public void BestsellersApiToDb(){
+        getBookBestService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
+    }
+
+    // BookNew 저장 api
+    @GetMapping("/saveBooks/bookNew")
+    public void BookNewApiToDb(){
+        getBookNewService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
+    }
+
+    @GetMapping("/saveBooks/bookNewSpecial")
+    public void BookNewSpecialApiToDb(){
+        getBookNewSpecialService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
     }
 
 }

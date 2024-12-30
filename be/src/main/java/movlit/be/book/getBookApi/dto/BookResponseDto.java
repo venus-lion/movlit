@@ -1,5 +1,6 @@
-package movlit.be.book.getBookApi;
+package movlit.be.book.getBookApi.dto;
 
+// 신간, 주목할만한 신간 도서 Dto
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookResponseDto {
-
 
     //    private String version;
     private String logo;
@@ -39,8 +39,6 @@ public class BookResponseDto {
         private String categoryName; // 대,중,소분류 포함
         private String publisher;
         private boolean adult;
-        private String bestDuration;
-        private Integer bestRank;
 
     }
 
