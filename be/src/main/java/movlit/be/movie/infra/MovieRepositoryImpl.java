@@ -55,9 +55,9 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     // TODO : 반환 데이터 타입(RequestDto) 만들어서 {id : '장르id', genreName : '장르이름', data: 'MovieEntity'} 형식으로 반환
     @Override
-    public List<MovieEntity> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
+    public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
         Page<MovieGenreEntity> movieGenreEntityPage = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
-        return movieGenreEntityPage.stream().map(m -> m.getMovieEntity()).toList();
+        return movieGenreEntityPage.stream().map(m -> MovieConverter.toDomain(m.getMovieEntity())).toList();
     }
 
 }

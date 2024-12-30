@@ -3,6 +3,8 @@ package movlit.be.movie.presentation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.annotation.CurrentMemberId;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.service.MovieMainService;
 import movlit.be.movie.domain.Movie;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class MovieMainController {
 
         List<Movie> movieList = movieMainService.getMovieLatest(page, pageSize);
 
-        return ResponseEntity.ok(movieList);
+        return ResponseEntity.ok().body(movieList);
     }
 
     /**
@@ -44,7 +46,7 @@ public class MovieMainController {
 
         List<Movie> movieList = movieMainService.getMoviePopular(page, pageSize);
 
-        return ResponseEntity.ok(movieList);
+        return ResponseEntity.ok().body(movieList);
     }
 
     /**
@@ -58,13 +60,22 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
         List<Movie> movieList = movieMainService.getMovieGroupbyGenre(genreId, page, pageSize);
-        return ResponseEntity.ok(movieList);
+        return ResponseEntity.ok().body(movieList);
     }
 
     /**
-    * TODO : 사용자 별 취향 (키워드, 장르, 배우) 가져오기
-    *
+    * 사용자 별 취향 (장르) 가져오기
+    * TODO : 키워드, 배우 별도 고려
     * */
+    public ResponseEntity<List<Movie>> getMovieUserInterestByGenre(
+            @CurrentMemberId MemberId memberId,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "10") int pageSize){
+
+        movieMainService.getMovieUserInterestByGenre(memberId, page, pageSize);
+
+        return ResponseEntity.ok().body(null);
+    }
 
 
     /**
