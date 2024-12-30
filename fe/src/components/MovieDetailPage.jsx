@@ -6,6 +6,7 @@ function MovieDetailPage() {
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
+    const [isWish, setIsWish] = useState(false);
 
     useEffect(() => {
         fetch(`/api/movies/${movieId}/detail`)
@@ -28,7 +29,7 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
-                    genre: data.genre, // 이 부분 추가
+                    genre: data.genre,
                 });
             })
             .catch((error) => console.error('Error fetching movie data:', error));
@@ -40,8 +41,17 @@ function MovieDetailPage() {
     }, [movieId]);
 
     const handleRatingChange = (newRating) => {
-        setMyRating(newRating);
+        if (myRating === newRating) {
+            setMyRating(0); // 같은 별점을 다시 누르면 0으로 설정 (취소)
+        } else {
+            setMyRating(newRating);
+        }
         // 여기에 별점 저장 로직 추가 (예: API 호출)
+    };
+
+    const handleWishClick = () => {
+        setIsWish(!isWish);
+        // 여기에 찜하기/찜해제 로직 추가 (예: API 호출)
     };
 
     if (!movieData) {
@@ -75,23 +85,29 @@ function MovieDetailPage() {
                 </div>
 
                 <div style={styles.info}>
-                    <div style={styles.myRating}>
-                        <span style={styles.ratingLabel}>내 별점</span>
-                        <div style={styles.stars}>
-                            {[...Array(5)].map((_, index) => (
-                                <span
-                                    key={index}
-                                    style={index < myRating ? styles.starFilled : styles.starEmpty}
-                                    onClick={() => handleRatingChange(index + 1)}
-                                >
-                                    ★
-                                </span>
-                            ))}
+                    <div style={styles.ratingAndWish}>
+                        <div style={styles.myRating}>
+                            <span style={styles.ratingLabel}>내 별점</span>
+                            <div style={styles.stars}>
+                                {[...Array(5)].map((_, index) => (
+                                    <span
+                                        key={index}
+                                        style={index < myRating ? styles.starFilled : styles.starEmpty}
+                                        onClick={() => handleRatingChange(index + 1)}
+                                    >
+                                        <span style={styles.starIcon}>★</span>
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-
-                    <div style={styles.buttonGroup}>
-                        <button style={styles.button}>찜</button>
+                        <div style={styles.buttonGroup}>
+                            <button
+                                style={{ ...styles.button, backgroundColor: isWish ? '#FF3366' : '#4080ff' }}
+                                onClick={handleWishClick}
+                            >
+                                {isWish ? '찜 완료' : '찜'}
+                            </button>
+                        </div>
                     </div>
 
                     <div style={styles.details}>
@@ -190,12 +206,24 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
     },
-    myRating: {
+    ratingAndWish: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: '20px',
+    },
+    myRating: {
+        //marginBottom: '20px',
+    },
+    ratingLabel: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginRight: '10px',
+        color: '#000000'
     },
     stars: {
         display: 'inline-block',
-        marginLeft: '10px',
+        //marginLeft: '10px',
     },
     starFilled: {
         color: '#f8d90f',
@@ -205,14 +233,17 @@ const styles = {
         color: '#ccc',
         cursor: 'pointer',
     },
+    starIcon: {
+        fontSize: '40px',
+    },
     buttonGroup: {
-        display: 'flex',
-        marginBottom: '20px',
+        //display: 'flex',
+        //marginBottom: '20px',
     },
     button: {
-        marginRight: '10px',
+        //marginRight: '10px',
         padding: '10px 20px',
-        backgroundColor: '#4080ff',
+        //backgroundColor: '#4080ff',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
