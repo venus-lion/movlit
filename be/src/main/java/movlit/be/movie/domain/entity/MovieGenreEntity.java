@@ -1,28 +1,26 @@
-package movlit.be.member.domain.entity;
+package movlit.be.movie.domain.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "member_genre")
+@Table(name = "movie_genre")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberGenreEntity {
+public class MovieGenreEntity {
 
     @Id
     @Column(name = "genre_id")
     private Long genreId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
-    private MemberEntity memberEntity;
+    @JoinColumn(name = "movie_id", referencedColumnName = "id")
+    private MovieEntity movieEntity;
 
 }

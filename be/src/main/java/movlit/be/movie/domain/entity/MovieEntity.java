@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import movlit.be.member.domain.entity.MemberGenreEntity;
 
 @Table(name = "movie")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -53,6 +54,9 @@ public class MovieEntity {
 
     @OneToMany(mappedBy = "movieEntity")
     private List<MovieRCrewEntity> movieRCrewEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movieEntity")
+    private List<MovieGenreEntity> movieGenreEntities = new ArrayList<>();
 
     @Builder
     public MovieEntity(Long movieId, String title, String originalTitle, String overview, Double popularity,
