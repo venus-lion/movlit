@@ -31,7 +31,8 @@ public enum ErrorMessage {
     EXPIRED_TOKEN("세션이 만료되었습니다. 다시 로그인해 주세요.", "a008"),
 
     // movie
-    MOVIE_NOT_FOUND("존재하지 않는 영화입니다.", "m101");
+    MOVIE_NOT_FOUND("해당 영화를 찾을 수 없습니다.", "m101"),
+    MOVIE_CREW_NOT_FOUND("해당 movieId에 해당하는 crew를 찾을 수 없습니다.", "m102");
 
     private final String message;
     private final String code;
