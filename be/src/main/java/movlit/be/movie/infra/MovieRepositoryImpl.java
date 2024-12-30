@@ -6,8 +6,11 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.MovieGenre;
 import movlit.be.movie.domain.entity.MovieEntity;
+import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
+import movlit.be.movie.infra.persistence.MovieGenreJpaRepository;
 import movlit.be.movie.infra.persistence.MovieJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Repository;
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
+    private final MovieGenreJpaRepository movieGenreJpaRepository;
 
     @Override
     public Movie save(Movie movie) {
@@ -47,6 +51,13 @@ public class MovieRepositoryImpl implements MovieRepository {
         Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(pageable);
 
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
+    }
+
+    // TODO : 반환 데이터 타입(RequestDto) 만들어서 {id : '장르id', genreName : '장르이름', data: 'MovieEntity'} 형식으로 반환
+    @Override
+    public List<MovieEntity> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
+        Page<MovieGenreEntity> movieGenreEntityPage = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
+        return movieGenreEntityPage.stream().map(m -> m.getMovieEntity()).toList();
     }
 
 }

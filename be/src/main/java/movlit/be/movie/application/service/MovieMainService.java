@@ -1,6 +1,7 @@
 package movlit.be.movie.application.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.movie.domain.Movie;
@@ -15,15 +16,19 @@ public class MovieMainService {
 
     private final MovieRepository movieRepository;
 
-    public final int PAGE_SIZE = 10;
-
-    public List<Movie> getMoviePopular(String page){
-        Pageable pageable = Pageable.ofSize(PAGE_SIZE).withPage(Integer.parseInt(page) - 1);
+    public List<Movie> getMoviePopular(int page, int pageSize){
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
         return movieRepository.findAllOrderByHeartCountDescVoteCountDescPopularityDesc(pageable);
     }
 
-    public List<Movie> getMovieLatest(String page){
-        Pageable pageable = Pageable.ofSize(PAGE_SIZE).withPage(Integer.parseInt(page) - 1);
+    public List<Movie> getMovieLatest(int page, int pageSize){
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
         return movieRepository.findAllOrderByReleaseDateDesc(pageable);
+    }
+
+    public List<Movie> getMovieGroupbyGenre(Long genreId, int page, int pageSize){
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
+
+        return movieRepository.findByMovieGenreIdForEntity_GenreId(genreId, pageable);
     }
 }
