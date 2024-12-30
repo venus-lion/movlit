@@ -6,6 +6,9 @@ function MovieDetailPage() {
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
+    const [isWish, setIsWish] = useState(false);
+    const [showCommentInput, setShowCommentInput] = useState(false);
+    const [comment, setComment] = useState('');
 
     useEffect(() => {
         fetch(`/api/movies/${movieId}/detail`)
@@ -28,7 +31,7 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
-                    genre: data.genre, // 이 부분 추가
+                    genre: data.genre,
                 });
             })
             .catch((error) => console.error('Error fetching movie data:', error));
@@ -40,8 +43,32 @@ function MovieDetailPage() {
     }, [movieId]);
 
     const handleRatingChange = (newRating) => {
-        setMyRating(newRating);
-        // 여기에 별점 저장 로직 추가 (예: API 호출)
+        if (myRating === newRating) {
+            setMyRating(0);
+            setShowCommentInput(false);
+        } else {
+            setMyRating(newRating);
+            setShowCommentInput(true);
+        }
+    };
+
+    const handleWishClick = () => {
+        setIsWish(!isWish);
+        // 여기에 찜하기/찜해제 로직 추가 (예: API 호출)
+    };
+
+    const handleCommentChange = (event) => {
+        setComment(event.target.value);
+    };
+
+    const handleSubmitComment = () => {
+        // 여기에 코멘트 저장 로직 추가 (예: API 호출)
+        console.log('코멘트 제출:', comment, '별점:', myRating);
+
+        // 코멘트 제출 후 초기화
+        setComment('');
+        setMyRating(0);
+        setShowCommentInput(false);
     };
 
     if (!movieData) {
@@ -75,24 +102,45 @@ function MovieDetailPage() {
                 </div>
 
                 <div style={styles.info}>
-                    <div style={styles.myRating}>
-                        <span style={styles.ratingLabel}>내 별점</span>
-                        <div style={styles.stars}>
-                            {[...Array(5)].map((_, index) => (
-                                <span
-                                    key={index}
-                                    style={index < myRating ? styles.starFilled : styles.starEmpty}
-                                    onClick={() => handleRatingChange(index + 1)}
-                                >
-                                    ★
-                                </span>
-                            ))}
+                    <div style={styles.ratingAndWish}>
+                        <div style={styles.myRating}>
+                            <span style={styles.ratingLabel}>내 별점</span>
+                            <div style={styles.stars}>
+                                {[...Array(5)].map((_, index) => (
+                                    <span
+                                        key={index}
+                                        style={index < myRating ? styles.starFilled : styles.starEmpty}
+                                        onClick={() => handleRatingChange(index + 1)}
+                                    >
+                                        <span style={styles.starIcon}>★</span>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={styles.buttonGroup}>
+                            <button
+                                style={{ ...styles.button, backgroundColor: isWish ? '#FF3366' : '#4080ff' }}
+                                onClick={handleWishClick}
+                            >
+                                {isWish ? '찜 완료' : '찜'}
+                            </button>
                         </div>
                     </div>
 
-                    <div style={styles.buttonGroup}>
-                        <button style={styles.button}>찜</button>
-                    </div>
+                    {/* 코멘트 입력란 */}
+                    {showCommentInput && (
+                        <div style={styles.commentSection}>
+                            <textarea
+                                style={styles.commentInput}
+                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                                value={comment}
+                                onChange={handleCommentChange}
+                            />
+                            <button style={styles.submitButton} onClick={handleSubmitComment}>
+                                코멘트 남기기
+                            </button>
+                        </div>
+                    )}
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -190,12 +238,24 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
     },
-    myRating: {
+    ratingAndWish: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: '20px',
+    },
+    myRating: {
+        //marginBottom: '20px',
+    },
+    ratingLabel: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginRight: '10px',
+        color: '#000000'
     },
     stars: {
         display: 'inline-block',
-        marginLeft: '10px',
+        //marginLeft: '10px',
     },
     starFilled: {
         color: '#f8d90f',
@@ -205,14 +265,17 @@ const styles = {
         color: '#ccc',
         cursor: 'pointer',
     },
+    starIcon: {
+        fontSize: '40px',
+    },
     buttonGroup: {
-        display: 'flex',
-        marginBottom: '20px',
+        //display: 'flex',
+        //marginBottom: '20px',
     },
     button: {
-        marginRight: '10px',
+        //marginRight: '10px',
         padding: '10px 20px',
-        backgroundColor: '#4080ff',
+        //backgroundColor: '#4080ff',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
@@ -274,6 +337,28 @@ const styles = {
     crewRole: {
         fontSize: '0.9em',
         color: '#000000'
+    },
+    commentSection: {
+        marginTop: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    commentInput: {
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        marginBottom: '10px',
+        resize: 'vertical',
+        height: '100px',
+    },
+    submitButton: {
+        padding: '10px 20px',
+        backgroundColor: '#4080ff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        alignSelf: 'flex-end',
     },
 };
 
