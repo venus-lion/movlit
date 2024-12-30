@@ -13,7 +13,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import movlit.be.common.util.ids.MovieId;
 
 @Table(name = "movie")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
