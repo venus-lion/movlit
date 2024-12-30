@@ -2,11 +2,12 @@ package movlit.be.movie.domain;
 
 import lombok.Getter;
 import movlit.be.movie.domain.entity.MovieEntity;
+import movlit.be.movie.domain.entity.MovieGenreIdEntity;
 
 @Getter
 public class MovieGenre {
 
-    private Long genreId;
+    private MovieGenreIdEntity movieGenreIdEntity;
     private MovieEntity movieEntity;
 
 }
