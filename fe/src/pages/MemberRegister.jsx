@@ -43,7 +43,7 @@ const MemberRegister = () => {
 
     return (
         <div className="bg-light">
-            <div className="container" style={{ marginTop: '250px' }}>
+            <div className="container" style={{ marginTop: '30px' }}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">

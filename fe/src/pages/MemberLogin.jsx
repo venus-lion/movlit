@@ -31,7 +31,7 @@ const MemberLogin = () => {
 
     return (
         <div className="bg-light">
-            <div className="container" style={{ marginTop: '270px' }}>
+            <div className="container" style={{ marginTop: '30px' }}>
                 <div className="row">
                     <div className="col-4"></div>
                     <div className="col-4">

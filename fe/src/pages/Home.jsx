@@ -1,264 +1,157 @@
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 
 function Home() {
-    const { isLoggedIn } = useOutletContext();
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [boxOfficeMovies, setBoxOfficeMovies] = useState([]);
+
+    useEffect(() => {
+        // Trending 영화 데이터 가져오기 (예시)
+        fetch('/api/movies/trending')
+            .then((response) => response.json())
+            .then((data) => setTrendingMovies(data))
+            .catch((error) => console.error('Error fetching trending movies:', error));
+
+        // 박스 오피스 데이터 가져오기 (예시)
+        fetch('/api/movies/boxoffice')
+            .then((response) => response.json())
+            .then((data) => setBoxOfficeMovies(data))
+            .catch((error) => console.error('Error fetching box office movies:', error));
+    }, []);
 
     return (
-        <div className="row gtr-200">
-            <div className="col-12">
-                {/* Highlight */}
-                <section className="box highlight">
-                    <ul className="special">
-                        <li>
-                            <a href="#" className="icon solid fa-search">
-                                <span className="label">Magnifier</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="icon solid fa-tablet-alt">
-                                <span className="label">Tablet</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="icon solid fa-flask">
-                                <span className="label">Flask</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="icon solid fa-cog">
-                                <span className="label">Cog?</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <header>
-                        <h2>A random assortment of icons in circles</h2>
-                        <p>And some text that attempts to explain their significance</p>
-                    </header>
-                    <p>
-                        Phasellus quam turpis, feugiat sit amet ornare in, hendrerit in
-                        lectus. Praesent semper mod quis eget mi. Etiam eu
-                        <br />
-                        ante risus. Aliquam erat volutpat. Aliquam luctus et mattis lectus
-                        amet pulvinar. Nam nec turpis consequat.
-                    </p>
-                </section>
+        <div style={styles.container}>
+            <div style={styles.topBanner}>
+                {/* 이 부분에 크게 공지사항, 이벤트 등의 배너 추가 */}
             </div>
-            <div className="col-12">
-                {/* Features */}
-                <section className="box features">
-                    <h2 className="major">
-                        <span>A Major Heading</span>
-                    </h2>
-                    <div>
-                        <div className="row">
-                            <div className="col-3 col-6-medium col-12-small">
-                                {/* Feature */}
-                                <section className="box feature">
-                                    <a href="#" className="image featured">
-                                        <img src="../images/pic01.jpg" alt="" />
-                                    </a>
-                                    <h3>
-                                        <a href="#">A Subheading</a>
-                                    </h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a
-                                        hendrerit in lectus dolore. Praesent semper mod quis eget sed
-                                        etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div className="col-3 col-6-medium col-12-small">
-                                {/* Feature */}
-                                <section className="box feature">
-                                    <a href="#" className="image featured">
-                                        <img src="../images/pic02.jpg" alt="" />
-                                    </a>
-                                    <h3>
-                                        <a href="#">Another Subheading</a>
-                                    </h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a
-                                        hendrerit in lectus dolore. Praesent semper mod quis eget sed
-                                        etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div className="col-3 col-6-medium col-12-small">
-                                {/* Feature */}
-                                <section className="box feature">
-                                    <a href="#" className="image featured">
-                                        <img src="../images/pic03.jpg" alt="" />
-                                    </a>
-                                    <h3>
-                                        <a href="#">And Another</a>
-                                    </h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a
-                                        hendrerit in lectus dolore. Praesent semper mod quis eget sed
-                                        etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div className="col-3 col-6-medium col-12-small">
-                                {/* Feature */}
-                                <section className="box feature">
-                                    <a href="#" className="image featured">
-                                        <img src="../images/pic04.jpg" alt="" />
-                                    </a>
-                                    <h3>
-                                        <a href="#">And One More</a>
-                                    </h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a
-                                        hendrerit in lectus dolore. Praesent semper mod quis eget sed
-                                        etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div className="col-12">
-                                <ul className="actions">
-                                    <li>
-                                        <a href="#" className="button large">
-                                            Do Something
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" className="button alt large">
-                                            Think About It
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+
+            <div style={styles.content}>
+                <div style={styles.section}>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>요즘 뜨는 영화</h2>
+                        <Link to="/movies/trending" style={styles.moreLink}>더보기</Link>
                     </div>
-                </section>
-            </div>
-            <div className="col-12">
-                {/* Blog */}
-                <section className="box blog">
-                    <h2 className="major">
-                        <span>Another Major Heading</span>
-                    </h2>
-                    <div>
-                        <div className="row">
-                            <div className="col-9 col-12-medium">
-                                <div className="content">
-                                    {/* Featured Post */}
-                                    <article className="box post">
-                                        <header>
-                                            <h3>
-                                                <a href="#">Here's a really big heading</a>
-                                            </h3>
-                                            <p>
-                                                With a smaller subtitle that attempts to elaborate
-                                            </p>
-                                            <ul className="meta">
-                                                <li className="icon fa-clock">15 minutes ago</li>
-                                                <li className="icon fa-comments">
-                                                    <a href="#">8</a>
-                                                </li>
-                                            </ul>
-                                        </header>
-                                        <a href="#" className="image featured">
-                                            <img src="../images/pic05.jpg" alt="" />
-                                        </a>
-                                        <p>
-                                            Phasellus quam turpis, feugiat sit amet ornare in, a
-                                            hendrerit in lectus. Praesent semper mod quis eget mi.
-                                            Etiam sed ante risus aliquam erat et volutpat. Praesent a
-                                            dapibus velit. Curabitur sed nisi nunc, accumsan
-                                            vestibulum lectus. Lorem ipsum dolor sit non aliquet sed,
-                                            tempor et dolor. Praesent a dapibus velit. Curabitur
-                                            accumsan.
-                                        </p>
-                                        <a href="#" className="button">
-                                            Continue Reading
-                                        </a>
-                                    </article>
+                    <div style={styles.movieList}>
+                        {trendingMovies.map((movie) => (
+                            <Link to={`/movie/${movie.id}`} key={movie.id} style={styles.movie}>
+                                {/* 포스터 이미지 (movie.posterPath가 URL 형식이라고 가정) */}
+                                <img src={movie.posterPath} alt={movie.title} style={styles.poster}/>
+                                <div style={styles.movieInfo}>
+                                    <div style={styles.movieTitle}>{movie.title}</div>
+                                    {/* 평점 정보가 있다면 표시 (movie.voteAverage가 0~10 사이라고 가정) */}
+                                    {movie.voteAverage && (
+                                        <div style={styles.movieRating}>★ {(movie.voteAverage / 2).toFixed(1)}</div>
+                                    )}
                                 </div>
-                            </div>
-                            <div className="col-3 col-12-medium">
-                                <div className="sidebar">
-                                    {/* Archives */}
-                                    <ul className="divided">
-                                        <li>
-                                            <article className="box post-summary">
-                                                <h3>
-                                                    <a href="#">A Subheading</a>
-                                                </h3>
-                                                <ul className="meta">
-                                                    <li className="icon fa-clock">6 hours ago</li>
-                                                    <li className="icon fa-comments">
-                                                        <a href="#">34</a>
-                                                    </li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article className="box post-summary">
-                                                <h3>
-                                                    <a href="#">Another Subheading</a>
-                                                </h3>
-                                                <ul className="meta">
-                                                    <li className="icon fa-clock">9 hours ago</li>
-                                                    <li className="icon fa-comments">
-                                                        <a href="#">27</a>
-                                                    </li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article className="box post-summary">
-                                                <h3>
-                                                    <a href="#">And Another</a>
-                                                </h3>
-                                                <ul className="meta">
-                                                    <li className="icon fa-clock">Yesterday</li>
-                                                    <li className="icon fa-comments">
-                                                        <a href="#">184</a>
-                                                    </li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article className="box post-summary">
-                                                <h3>
-                                                    <a href="#">And Another</a>
-                                                </h3>
-                                                <ul className="meta">
-                                                    <li className="icon fa-clock">2 days ago</li>
-                                                    <li className="icon fa-comments">
-                                                        <a href="#">286</a>
-                                                    </li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article className="box post-summary">
-                                                <h3>
-                                                    <a href="#">And One More</a>
-                                                </h3>
-                                                <ul className="meta">
-                                                    <li className="icon fa-clock">3 days ago</li>
-                                                    <li className="icon fa-comments">
-                                                        <a href="#">8,086</a>
-                                                    </li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                    </ul>
-                                    <a href="#" className="button alt">
-                                        Archives
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                            </Link>
+                        ))}
                     </div>
-                </section>
+                </div>
+
+                <div style={styles.section}>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>일간 박스 오피스</h2>
+                        <Link to="/movies/boxoffice" style={styles.moreLink}>더보기</Link>
+                    </div>
+                    <div style={styles.boxOfficeList}>
+                        {boxOfficeMovies.map((movie) => (
+                            <Link to={`/movie/${movie.id}`} key={movie.id} style={styles.boxOfficeMovie}>
+                                {/* 포스터 이미지 (movie.posterPath가 URL 형식이라고 가정) */}
+                                <img src={movie.posterPath} alt={movie.title} style={styles.boxOfficePoster}/>
+                                <div style={styles.boxOfficeRank}>{movie.rank}</div>
+                                {/* 순위 표시 */}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 다른 섹션들 (예: TV 프로그램, 책)도 유사하게 추가 */}
             </div>
         </div>
     );
 }
+
+const styles = {
+    container: {
+        fontFamily: 'Arial, sans-serif',
+    },
+    topBanner: {
+        // 상단 배너 스타일
+        backgroundColor: '#f0f0f0',
+        padding: '20px',
+        textAlign: 'center',
+        marginBottom: '20px',
+    },
+    content: {
+        padding: '0 20px',
+    },
+    section: {
+        marginBottom: '40px',
+    },
+    sectionHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '20px',
+    },
+    sectionTitle: {
+        fontSize: '24px',
+        fontWeight: 'bold',
+    },
+    moreLink: {
+        fontSize: '16px',
+        color: '#0077cc',
+    },
+    movieList: {
+        display: 'flex',
+        overflowX: 'auto',
+    },
+    movie: {
+        marginRight: '15px',
+        textDecoration: 'none',
+        color: 'inherit',
+    },
+    poster: {
+        width: '150px',
+        height: '225px',
+        objectFit: 'cover',
+        marginBottom: '10px',
+    },
+    movieInfo: {
+        textAlign: 'center',
+    },
+    movieTitle: {
+        fontSize: '16px',
+        fontWeight: 'bold',
+    },
+    movieRating: {
+        fontSize: '14px',
+        color: '#666',
+    },
+    boxOfficeList: {
+        display: 'flex',
+        overflowX: 'auto',
+    },
+    boxOfficeMovie: {
+        position: 'relative',
+        marginRight: '15px',
+        textDecoration: 'none',
+        color: 'inherit',
+    },
+    boxOfficePoster: {
+        width: '100px',
+        height: '150px',
+        objectFit: 'cover',
+    },
+    boxOfficeRank: {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        color: 'white',
+        padding: '5px',
+        fontWeight: 'bold',
+    },
+};
 
 export default Home;
