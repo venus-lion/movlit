@@ -1,12 +1,10 @@
 package movlit.be.movie.infra;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
-import movlit.be.movie.domain.MovieGenre;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.repository.MovieRepository;

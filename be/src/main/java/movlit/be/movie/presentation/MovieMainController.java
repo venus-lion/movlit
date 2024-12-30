@@ -52,6 +52,7 @@ public class MovieMainController {
     /**
      * 장르별 개봉날짜 내림차순 리스트
      * RequestParam - {조회 장르 ID, 조회 page 번호, 조회 page size 갯수}
+     * TODO : RequestDto 만들기
      * */
     @GetMapping("/genre")
     public ResponseEntity<List<Movie>> getMovieGroupbyGenre(

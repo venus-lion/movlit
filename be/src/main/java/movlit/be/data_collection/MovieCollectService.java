@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.member.domain.Genre;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.entity.MovieGenreIdForEntity;
@@ -43,8 +42,9 @@ public class MovieCollectService {
 
     @Autowired
     private MovieTagRepository movieTagRepository;
+
     @Autowired
-    private MovieGenreRepository movieGenreRepository;
+    private MovieGenreCollectRepository movieGenreCollectRepository;
 
     public MovieCollectService(RestTemplateBuilder builder) {
         HttpHeaders headers = new HttpHeaders();
@@ -252,7 +252,7 @@ public class MovieCollectService {
             });
         }
 
-        movieGenreRepository.saveAll(genreList);
+        movieGenreCollectRepository.saveAll(genreList);
         return genreList;
     }
 
