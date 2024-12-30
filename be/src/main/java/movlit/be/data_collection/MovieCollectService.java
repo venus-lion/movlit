@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
-@PropertySource("classpath:application.properties")
 public class MovieCollectService {
 
     @Value("${tmdb.key}")
