@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail").permitAll()
+                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail", "/api/movies/*/crews").permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
