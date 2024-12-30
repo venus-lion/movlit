@@ -39,3 +39,4 @@ out/
 # Exclude sensitive configuration file
 src/main/resources/application-jwt.yml
 src/main/resources/application-oauth2.yml
+src/main/resources/application-api-key.yml
