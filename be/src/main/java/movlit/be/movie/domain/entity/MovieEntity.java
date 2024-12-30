@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class MovieEntity {
     private String title;
     private String originalTitle;
 
+    @Lob
     private String overview;
     private Double popularity;
     private String posterPath;
