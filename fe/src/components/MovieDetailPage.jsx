@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 function MovieDetailPage() {
-    const {movieId} = useParams();
+    const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
+    const [crews, setCrews] = useState([]);
 
     useEffect(() => {
         fetch(`/api/movies/${movieId}/detail`)
@@ -27,9 +28,15 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
+                    genre: data.genre, // 이 부분 추가
                 });
             })
             .catch((error) => console.error('Error fetching movie data:', error));
+
+        fetch(`/api/movies/${movieId}/crews`)
+            .then((response) => response.json())
+            .then((data) => setCrews(data))
+            .catch((error) => console.error('Error fetching crew data:', error));
     }, [movieId]);
 
     const handleRatingChange = (newRating) => {
@@ -49,7 +56,7 @@ function MovieDetailPage() {
                     backgroundImage: `url(http://image.tmdb.org/t/p/original${movieData.backdropUrl})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    color: 'white', // 텍스트 색상
+                    color: 'white',
                 }}
             >
                 <div style={styles.breadcrumbs}>
@@ -62,10 +69,9 @@ function MovieDetailPage() {
                 </div>
             </div>
 
-            {/* 나머지 부분은 이전과 동일 */}
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title}/>
+                    <img src={movieData.posterUrl} alt={movieData.title} />
                 </div>
 
                 <div style={styles.info}>
@@ -97,10 +103,22 @@ function MovieDetailPage() {
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>출연/제작</div>
                             <div style={styles.sectionContent}>
-                                {movieData.cast &&
-                                    movieData.cast.map((actor) => (
-                                        <div key={actor.id}>{actor.name}</div>
+                                <div style={styles.crewGrid}>
+                                    {crews.map((crew) => (
+                                        <div key={crew.name} style={styles.crewMember}>
+                                            <img
+                                                src={crew.profileImgUrl ? ('http://image.tmdb.org/t/p/w200' + crew.profileImgUrl) : '/default-profile-image.jpg'}
+                                                alt={crew.name}
+                                                style={styles.crewImage}
+                                            />
+                                            <div style={styles.crewInfo}>
+                                                <div style={styles.crewName}>{crew.name}</div>
+                                                <div style={styles.crewCharName}>{crew.charName}</div>
+                                                <div style={styles.crewRole}>{crew.role === "CAST" ? "출연" : crew.role === "DIRECTOR" ? "감독" : crew.role}</div>
+                                            </div>
+                                        </div>
                                     ))}
+                                </div>
                             </div>
                         </div>
 
@@ -120,7 +138,7 @@ function MovieDetailPage() {
                                 {movieData.relatedBooks &&
                                     movieData.relatedBooks.map((book) => (
                                         <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title}/>
+                                            <img src={book.coverUrl} alt={book.title} />
                                             <div>{book.title}</div>
                                         </div>
                                     ))}
@@ -139,7 +157,7 @@ const styles = {
         fontFamily: 'Arial, sans-serif',
     },
     header: {
-        padding: '210px 20px', // 위아래 패딩을 60px로 조정 (원하는 값으로 수정)
+        padding: '210px 20px',
         borderBottom: '1px solid #e7e7e7',
         marginBottom: '20px',
     },
@@ -225,6 +243,37 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
+    },
+    crewGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+        gap: '10px',
+    },
+    crewMember: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+    },
+    crewImage: {
+        width: '100px',
+        height: '100px',
+        borderRadius: '50%',
+        objectFit: 'cover',
+        marginBottom: '5px',
+    },
+    crewInfo: {
+    },
+    crewName: {
+        fontWeight: 'bold',
+        color: '#000000'
+    },
+    crewCharName: {
+        color: '#000000'
+    },
+    crewRole: {
+        fontSize: '0.9em',
+        color: '#000000'
     },
 };
 
