@@ -1,12 +1,11 @@
 package movlit.be.movie.infra;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieNotFoundException;
+import movlit.be.common.util.Genre;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
-import movlit.be.movie.domain.MovieGenre;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
@@ -57,7 +56,10 @@ public class MovieRepositoryImpl implements MovieRepository {
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
         Page<MovieGenreEntity> movieGenreEntityPage = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
-        return movieGenreEntityPage.stream().map(m -> MovieConverter.toDomain(m.getMovieEntity())).toList();
+        List<Movie> movieList = movieGenreEntityPage.stream().map(m -> MovieConverter.toDomain(m.getMovieEntity())).toList();
+
+
+        return null;
     }
 
 }

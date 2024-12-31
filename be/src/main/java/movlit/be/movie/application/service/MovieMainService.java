@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.InvalidGenreIdException;
+import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
+import movlit.be.movie.presentation.dto.MovieListByGenreResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +30,15 @@ public class MovieMainService {
         return movieRepository.findAllOrderByReleaseDateDesc(pageable);
     }
 
-    public List<Movie> getMovieGroupbyGenre(Long genreId, int page, int pageSize){
+    public MovieListByGenreResponseDto getMovieGroupbyGenre(Long genreId, int page, int pageSize){
+        // genreId -> Genre Enum객체
+        Genre genre = Genre.of(genreId);
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
-        return movieRepository.findByMovieGenreIdForEntity_GenreId(genreId, pageable);
+        List<Movie> movieLsit = movieRepository.findByMovieGenreIdForEntity_GenreId(genre.getId(), pageable);
+
+        MovieListByGenreResponseDto responseDto = new MovieListByGenreResponseDto(genreId, genre.getName(), movieLsit);
+        return responseDto;
     }
 
     public List<Movie> getMovieUserInterestByGenre(MemberId memberId, int page, int pageSize){
