@@ -7,6 +7,7 @@ import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.common.util.ids.BookCommentId;
+import movlit.be.member.application.converter.MemberConverter;
 
 public class BookCommentConverter {
 
@@ -14,21 +15,12 @@ public class BookCommentConverter {
         // TODO : 공통적인 예외처리 등록해주기
     }
 
-
-    private BookCommentId bookCommentId;
-    private BookEntity book;
-    private String comment; //  리뷰 - 코멘트
-    private BigDecimal score; // 리뷰 - 별점 (not null)
-    private LocalDateTime regDt;
-    private LocalDateTime updDt;
-    private String delYn; // 삭제여부 (default : N)
-
-
     // Domain -> Entity
     public static BookCommentEntity toEntity(BookComment bookComment) {
         return BookCommentEntity.builder()
                 .bookCommentId(bookComment.getBookCommentId())
-                .book(bookComment.getBook())
+                .bookEntity(BookConverter.toEntity(bookComment.getBook()))
+                .memberEntity(MemberConverter.toEntity(bookComment.getMember()))
                 .comment(bookComment.getComment())
                 .score(bookComment.getScore())
                 .regDt(bookComment.getRegDt())
@@ -41,7 +33,8 @@ public class BookCommentConverter {
     public static BookComment toDomain(BookCommentEntity bookCommentEntity) {
         return BookComment.builder()
                 .bookCommentId(bookCommentEntity.getBookCommentId())
-                .book(bookCommentEntity.getBook())
+                .book(BookConverter.toDomain(bookCommentEntity.getBookEntity()))
+                .member(MemberConverter.toDomain(bookCommentEntity.getMemberEntity()))
                 .comment(bookCommentEntity.getComment())
                 .score(bookCommentEntity.getScore())
                 .regDt(bookCommentEntity.getRegDt())

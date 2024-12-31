@@ -37,7 +37,8 @@ public enum ErrorMessage {
 
     // book
     BOOK_NOT_FOUND("해당 도서가 존재하지 않습니다.", "b001"),
-    BOOK_COMMENT_FOUND("해당 도서 리뷰가 존재하지 않습니다.", "b005");
+    BOOK_COMMENT_FOUND("해당 도서 리뷰가 존재하지 않습니다.", "b010"),
+    BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b011");
 
     private final String message;
     private final String code;

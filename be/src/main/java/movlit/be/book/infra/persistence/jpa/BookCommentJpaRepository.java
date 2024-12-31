@@ -15,4 +15,5 @@ public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntit
 
 
 
+
 }

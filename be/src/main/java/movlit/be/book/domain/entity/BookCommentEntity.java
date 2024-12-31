@@ -3,6 +3,7 @@ package movlit.be.book.domain.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,9 +19,12 @@ import lombok.Setter;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookRCrewId;
 import movlit.be.common.util.ids.BookcrewId;
+import movlit.be.member.domain.entity.MemberEntity;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -29,6 +33,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert  // DefaultValue Insert
+@EntityListeners(AuditingEntityListener.class)  // Created/Modifed Date
 public class BookCommentEntity {
 
     @EmbeddedId
@@ -36,8 +42,12 @@ public class BookCommentEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private BookEntity book;
+    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
+    private BookEntity bookEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
+    private MemberEntity memberEntity;
 
     @Column(name = "comment")
     private String comment; //  리뷰 - 코멘트
@@ -51,7 +61,8 @@ public class BookCommentEntity {
     @LastModifiedDate
     private LocalDateTime updDt;
 
-    @ColumnDefault("N")
-    private String delYn; // 삭제여부 (default : N)
+    @Column(name = "del_yn", columnDefinition = "bit default 0")
+    @ColumnDefault("0")
+    private Boolean delYn; // 삭제여부 (default : 0)
 
 }

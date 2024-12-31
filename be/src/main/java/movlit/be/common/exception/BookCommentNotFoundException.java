@@ -6,4 +6,5 @@ public class BookCommentNotFoundException extends ResourceNotFoundException {
         super(ErrorMessage.BOOK_COMMENT_FOUND);
     }
 
+
 }
