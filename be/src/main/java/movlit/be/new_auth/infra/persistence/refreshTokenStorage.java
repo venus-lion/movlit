@@ -1,26 +1,26 @@
-package movlit.be.auth.infra.persistence;
+package movlit.be.new_auth.infra.persistence;
 
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
-import movlit.be.auth.domain.repository.RefreshTokenStorage;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.new_auth.domain.RefreshTokenStorage;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ConcurrentRefreshTokenStorage implements RefreshTokenStorage {
+public class refreshTokenStorage implements RefreshTokenStorage {
 
     private final ConcurrentHashMap<String, String> refreshTokens = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> blacklist = new ConcurrentHashMap<>();
 
     @Override
-    public void saveRefreshToken(String email, String refreshToken) {
-        refreshTokens.put(email, refreshToken);
+    public void saveRefreshToken(MemberId memberId, String refreshToken) {
+        refreshTokens.put(memberId.getValue(), refreshToken);
     }
 
     @Override
-    public String findByToken(String email) {
-        return refreshTokens.get(email);
+    public String findByMemberId(String memberId) {
+        return refreshTokens.get(memberId);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class ConcurrentRefreshTokenStorage implements RefreshTokenStorage {
     }
 
     @Override
-    public void deleteByToken(String email) {
-        refreshTokens.remove(email);
+    public void deleteByMemberId(String memberId) {
+        refreshTokens.remove(memberId);
     }
 
 }

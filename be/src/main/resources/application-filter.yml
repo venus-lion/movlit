@@ -1,0 +1,11 @@
+filter:
+  whitelist: GET /api/.*, POST /api/.*,
+    GET /api/movies/.*/comments,
+    POST /api/movies/.*/comments,
+    GET /api/movies/.*/detail,
+    GET /api/movies/.*/crews,
+    POST /api/movies/.*/detail,
+    POST /api/movies/.*/crews,
+    POST /discover,
+    POST /api/members/.*,
+    GET /api/members/.*

@@ -1,5 +1,5 @@
 spring:
   profiles:
     group:
-      local: db-local, oauth2, jwt, core, api-key
+      local: db-local, oauth2, jwt, core, api-key, filter
     active: local

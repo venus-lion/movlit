@@ -1,9 +1,8 @@
 package movlit.be.member.application.service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
-import movlit.be.auth.application.service.AuthTokenService;
-import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
 import movlit.be.common.exception.DuplicateEmailException;
 import movlit.be.common.exception.DuplicateNicknameException;
 import movlit.be.common.exception.MemberPasswordMismatchException;
@@ -14,6 +13,8 @@ import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
+import movlit.be.new_auth.application.dto.response.TokenIssueResponse;
+import movlit.be.new_auth.application.service.TokenService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class MemberWriteService {
 
     private final MemberRepository memberRepository;
     private final MemberReadService memberReadService;
-    private final AuthTokenService authTokenService;
+    private final TokenService tokenService;
 
     public MemberRegisterResponse registerMember(MemberRegisterRequest request) {
         String dob = request.getDob();
@@ -72,11 +73,11 @@ public class MemberWriteService {
         memberRepository.deleteById(memberId);
     }
 
-    public AuthTokenIssueResponse login(MemberLoginRequest request) {
+    public TokenIssueResponse login(MemberLoginRequest request) {
         // TODO: usecase를 안 쓰니 write 서비스에서 read 서비스를 참조하는 일이 생김
         Member member = memberReadService.findByMemberEmail(request.getEmail());
         checkPasswordMatch(request, member);
-        return authTokenService.issue(member.getEmail());
+        return tokenService.issue(new Date(), member);
     }
 
     private void checkPasswordMatch(MemberLoginRequest request, Member member) {
@@ -86,7 +87,7 @@ public class MemberWriteService {
     }
 
     public void logout(String accessToken) {
-        authTokenService.revoke(accessToken);
+        tokenService.revoke(accessToken);
     }
 
 }

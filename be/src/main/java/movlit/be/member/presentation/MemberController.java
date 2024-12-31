@@ -3,7 +3,6 @@ package movlit.be.member.presentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
 import movlit.be.common.util.HttpHeaderParser;
 import movlit.be.common.util.HttpHeaderType;
 import movlit.be.common.util.ids.MemberId;
@@ -13,6 +12,7 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
+import movlit.be.new_auth.application.dto.response.TokenIssueResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthTokenIssueResponse> login(@RequestBody MemberLoginRequest request) {
+    public ResponseEntity<TokenIssueResponse> login(@RequestBody MemberLoginRequest request) {
         var response = memberWriteService.login(request);
         return ResponseEntity.ok().body(response);
     }
