@@ -14,61 +14,68 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BookCategory {
+    // private final Object serviceObject;
+
     private final GetBookBestService getBookBestService;
     public void classifyAndSaveBooks(String bookCode) {
+
+//        if (serviceObject instanceof GetBookBestService){
+//            GetBookBestService service = (GetBookBestService ) serviceObject;
+//        }
+
         // Save the category if applicable
         if (isActionCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.ACTION);
+            getBookBestService.saveBookToDatabase(Genre.ACTION);
         }
         if (isAnimationCategory(bookCode)) {
            // GetBookBestService.saveBookToDatabase(bookCode, Genre.ANIMATION);
-            getBookBestService.saveBookToDatabase(bookCode, Genre.ANIMATION);
+            getBookBestService.saveBookToDatabase(Genre.ANIMATION);
         }
         if (isComedyCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.COMEDY);
+            getBookBestService.saveBookToDatabase(Genre.COMEDY);
         }
         if (isCrimeCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.CRIME);
+            getBookBestService.saveBookToDatabase(Genre.CRIME);
         }
         //ㅁ완
         if (isCrimeCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.CRIME);
+            getBookBestService.saveBookToDatabase(Genre.CRIME);
         }
         if (isDocumentaryCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.DOCUMENTARY);
+            getBookBestService.saveBookToDatabase(Genre.DOCUMENTARY);
         }
         if (isDramaCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.DRAMA);
+            getBookBestService.saveBookToDatabase(Genre.DRAMA);
         }
         if (isFantasyCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.FANTASY);
+            getBookBestService.saveBookToDatabase(Genre.FANTASY);
         }
         if (isHistoryCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.HISTORY);
+            getBookBestService.saveBookToDatabase(Genre.HISTORY);
         }
         if (isMusicCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.MUSIC);
+            getBookBestService.saveBookToDatabase(Genre.MUSIC);
         }
         if (isMysteryCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.MYSTERY);
+            getBookBestService.saveBookToDatabase(Genre.MYSTERY);
         }
         if (isRomanceCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.ROMANCE);
+            getBookBestService.saveBookToDatabase(Genre.ROMANCE);
         }
         if (isSFCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.SCIENCE_FICTION);
+            getBookBestService.saveBookToDatabase(Genre.SCIENCE_FICTION);
         }
         if (isTV_MOVIECategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.TV_MOVIE);
+            getBookBestService.saveBookToDatabase(Genre.TV_MOVIE);
         }
         if (isTHRILLERCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.THRILLER);
+            getBookBestService.saveBookToDatabase(Genre.THRILLER);
         }
         if (isWARCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(bookCode, Genre.WAR);
+            getBookBestService.saveBookToDatabase(Genre.WAR);
         }
         if(isUNKNOWNCategory(bookCode)){
-            getBookBestService.saveBookToDatabase(bookCode, Genre.UNKNOWN);
+            getBookBestService.saveBookToDatabase(Genre.ETC);
         }
     }
 

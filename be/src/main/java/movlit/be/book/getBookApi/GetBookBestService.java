@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Genre;
 import movlit.be.book.domain.entity.BookGenreEntity;
+import movlit.be.book.domain.entity.BookGenreIdEntity;
 import movlit.be.book.getBookApi.dto.BookBestResponseDto;
 import movlit.be.book.getBookApi.dto.BookBestResponseDto.Item;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
@@ -112,7 +113,7 @@ public class GetBookBestService {
                                 // BookEntity 먼저 저장 - savedBestSeller 값 설정을 위해
                                 savedBookEntity = bookRepository.save(savedBook);
 
-                                String categoryCode = book.getCategoryId();
+                                String categoryCode = book.getCategoryId(); // 51107 -- 로맨스
                                 // 분류하기
                                 BookCategory bookCategory = new BookCategory(this);
                                 bookCategory.classifyAndSaveBooks(categoryCode);
@@ -184,16 +185,19 @@ public class GetBookBestService {
 
     }
 
-    public void saveBookToDatabase(String bookCode, Genre genre){
+    public void saveBookToDatabase(Genre genre){
 
-        int genreId = genre.getId();
+        Long genreId = genre.getId();
+        BookId bookId = savedBookEntity.getBookId();
+
         String genreName = genre.getName();
-        System.out.println("&&&&&&&&원래코드 : " + bookCode +  "\n&&&&&&&&원래분류" + savedBookEntity.getCategoryName() +
+        System.out.println("&&&&&&&&&&&&&&&&원래분류" + savedBookEntity.getCategoryName() +
                 "\n\n%%%%%%%%%장르 ID : " + genreId + "\n%%%%%%%%%장르명 :" + genreName);
 
+        BookGenreIdEntity bookGenreIdEntity = new BookGenreIdEntity(genreId, bookId);
         BookGenreEntity bookGenreEntity = BookGenreEntity.builder()
                 .bookEntity(savedBookEntity)
-                .genreId((long) genreId)
+                .bookGenreIdEntity(bookGenreIdEntity)
                 .build();
 
         System.out.println("*******장르엔티티" + bookGenreEntity);

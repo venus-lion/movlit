@@ -33,6 +33,10 @@ public enum ErrorMessage {
     // movie
     MOVIE_NOT_FOUND("메시지", "m001"),
 
+
+    // Genre
+    INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g101"),
+
     // book
     BESTSELLERS_NOT_FOUND("bestseller가 존재하지 않습니다.", "b001"),
     BOOKNEW_NOT_FOUND("bookNew가 존재하지 않습니다.", "b002"),
