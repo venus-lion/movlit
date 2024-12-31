@@ -2,7 +2,7 @@ package movlit.be.movie.infra.persistence.jpa;
 
 import java.util.Optional;
 import movlit.be.movie.domain.entity.MovieEntity;
-import movlit.be.movie.presentation.dto.MovieDetailResponse;
+import movlit.be.movie.presentation.dto.response.MovieDetailResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +15,7 @@ public interface MovieDetailJpaRepository extends JpaRepository<MovieEntity, Lon
      * LocalDate releaseDate, String productionCountry, String originalLanguage,
      * Integer runtime, String status, Long voteCount, String tagline
      */
-    @Query("SELECT new movlit.be.movie.presentation.dto.MovieDetailResponse "
+    @Query("SELECT new movlit.be.movie.presentation.dto.response.MovieDetailResponse "
             + "(m.movieId, m.title, m.originalTitle, m.overview, "
             + "m.popularity, m.heartCount, m.posterPath, m.backdropPath, "
             + "m.releaseDate, m.productionCountry, m.originalLanguage, "

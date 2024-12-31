@@ -1,4 +1,4 @@
-package movlit.be.movie.presentation.dto;
+package movlit.be.movie.presentation.dto.response;
 
 import java.time.LocalDate;
 

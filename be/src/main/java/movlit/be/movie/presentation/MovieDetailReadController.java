@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.common.annotation.CurrentMemberId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.service.MovieDetailReadService;
-import movlit.be.movie.presentation.dto.MovieDetailCrewResponse;
-import movlit.be.movie.presentation.dto.MovieDetailResponse;
+import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
+import movlit.be.movie.presentation.dto.response.MovieDetailResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class MovieDetailController {
+public class MovieDetailReadController {
 
     private final MovieDetailReadService movieDetailReadService;
 

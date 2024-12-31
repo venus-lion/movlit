@@ -16,7 +16,7 @@ public class MemberGenreIdEntity {
     @Column(name = "genre_id")
     private Long genreId;
 
-    @Column(name = "member_id")
+    @Column(name = "id")
     private Long memberId;
 
 }
