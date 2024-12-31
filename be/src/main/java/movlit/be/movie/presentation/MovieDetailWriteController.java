@@ -1,7 +1,9 @@
 package movlit.be.movie.presentation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.annotation.CurrentMemberId;
+import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie.application.service.MovieDetailWriteService;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class MovieDetailWriteController {
 
     private final MovieDetailWriteService movieDetailWriteService;
@@ -23,6 +26,11 @@ public class MovieDetailWriteController {
     public ResponseEntity<MovieCommentResponse> createComment(@PathVariable Long movieId,
                                                               @CurrentMemberId MemberId memberId,
                                                               @RequestBody MovieCommentRequest request) {
+        log.info("memberId={}", memberId);
+
+        if (memberId == null) {
+            throw new MemberNotFoundException();
+        }
 
         var data = MovieConvertor.toMovieDetailCommentData(movieId, memberId, request);
         var response = movieDetailWriteService.createComment(data);

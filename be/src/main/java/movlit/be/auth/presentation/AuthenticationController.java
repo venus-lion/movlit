@@ -1,6 +1,8 @@
 package movlit.be.auth.presentation;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.auth.application.service.MyMemberDetailsService;
 import movlit.be.auth.presentation.dto.RefreshTokenRequest;
 import movlit.be.common.filter.dto.AuthenticationRequest;
@@ -11,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,11 +37,13 @@ public class AuthenticationController {
             throw new Exception("Incorrect email or password", e);
         }
 
-        final UserDetails userDetails = myMemberDetailsService
+        final MyMemberDetails userDetails = myMemberDetailsService
                 .loadUserByUsername(authenticationRequest.getEmail());
+        String id = userDetails.getMember().getMemberId().getValue();
+        String email = userDetails.getMember().getEmail();
 
-        final String accessToken = jwtTokenUtil.generateAccessToken(userDetails.getUsername()); // email
-        final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails.getUsername()); // email
+        final String accessToken = jwtTokenUtil.generateAccessToken(id, email); // email
+        final String refreshToken = jwtTokenUtil.generateRefreshToken(id, email); // email
 
         return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
     }
@@ -50,10 +53,13 @@ public class AuthenticationController {
         String refreshToken = request.getRefreshToken();
 
         // Refresh Token 검증
-        String memberName = jwtTokenUtil.extractEmail(refreshToken);
-        if (jwtTokenUtil.validateToken(refreshToken, memberName)) {
+        Map<String, String> token = jwtTokenUtil.parseAccessToken(refreshToken);
+        String id = token.get("id");
+        String email = token.get("email");
+
+        if (jwtTokenUtil.validateToken(refreshToken, id)) {
             // 새로운 Acces Token 생성
-            String newAccessToken = jwtTokenUtil.generateAccessToken(memberName);
+            String newAccessToken = jwtTokenUtil.generateAccessToken(id, email);
             return ResponseEntity.ok(new AuthenticationResponse(newAccessToken, refreshToken));
         }
 

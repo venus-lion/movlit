@@ -1,30 +1,28 @@
 package movlit.be.auth.application.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import lombok.Getter;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-// 스프링 시큐리티가 로그인 포스트 요청을 낚아채서 로그인을 진행시킴
-// 로컬 로그인 - MemberDetails 구현
-// 소셜 로그인 - OAuth2Member 구현
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 @Getter
 public class MyMemberDetails implements UserDetails, OAuth2User {
 
-    // 로컬 로그인
-    private Member member;
-    // 소셜 로그인
-    private Map<String, Object> attributes;
+    private final Member member;
+    private Map<String, Object> attributes; // OAuth2 속성
 
+    // 일반 로그인 생성자
     public MyMemberDetails(Member member) {
         this.member = member;
     }
 
+    // OAuth2 로그인 생성자
     public MyMemberDetails(Member member, Map<String, Object> attributes) {
         this.member = member;
         this.attributes = attributes;
@@ -38,12 +36,7 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return member.getRole();
-            }
-        });
+        collection.add(() -> member.getRole());
         return collection;
     }
 
@@ -54,15 +47,16 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return member.getEmail(); // 이메일을 사용자 이름으로 사용
     }
 
     @Override
     public String getName() {
-        return member.getNickname();
+        // OAuth2User 인터페이스를 위한 구현 (일반 로그인에서는 사용되지 않음)
+        return (attributes == null) ? null : attributes.get("name").toString();
     }
 
-    // 버전 문제로 기존 default 메서드 추가
+    // 나머지 메서드들은 그대로 유지
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -82,5 +76,4 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
     public boolean isEnabled() {
         return true;
     }
-
 }

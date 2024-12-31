@@ -18,7 +18,7 @@ public class MyMemberDetailsService implements UserDetailsService {
     private final MemberReadService memberService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public MyMemberDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberService.findByMemberEmail(email);
 
         if (member == null) {

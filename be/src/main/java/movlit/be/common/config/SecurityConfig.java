@@ -37,11 +37,13 @@ public class SecurityConfig {
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail",
-                                "/api/movies/*/crews", "/api/movies/*/comments")
+                                "/api/movies/*/crews")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/movies/{movieId}/comments").authenticated() // 이 부분 수정
+                                .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // 추가
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout
                         .logoutUrl("/api/members/logout")
@@ -72,11 +74,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // JWT Filter Bean 등록
-//    @Bean
-//    public JwtRequestFilter jwtRequestFilter() {
-//        return new JwtRequestFilter();
-//    }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
