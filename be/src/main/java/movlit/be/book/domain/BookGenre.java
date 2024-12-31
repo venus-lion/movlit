@@ -1,23 +1,17 @@
 package movlit.be.book.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import movlit.be.common.util.ids.BookRCrewId;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class BookRCrew {
-
-    private BookRCrewId bookRCrewId;
-    private Book book;
-    private Bookcrew bookcrew;
-
+public class BookGenre {
+    private Long genreId;
+    private Book book; // 해당 genreId에 매핑되는 Book 도메인
 }

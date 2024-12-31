@@ -6,6 +6,7 @@ import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.BookId;
 
@@ -13,6 +14,7 @@ import movlit.be.common.util.ids.BookId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode
+@Getter
 public class BookGenreIdEntity implements Serializable {
     @Column(name = "genre_id")
     private Long genreId;
