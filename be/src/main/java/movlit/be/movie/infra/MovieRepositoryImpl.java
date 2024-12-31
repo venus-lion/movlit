@@ -58,8 +58,7 @@ public class MovieRepositoryImpl implements MovieRepository {
         Page<MovieGenreEntity> movieGenreEntityPage = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
         List<Movie> movieList = movieGenreEntityPage.stream().map(m -> MovieConverter.toDomain(m.getMovieEntity())).toList();
 
-
-        return null;
+        return movieList;
     }
 
 }

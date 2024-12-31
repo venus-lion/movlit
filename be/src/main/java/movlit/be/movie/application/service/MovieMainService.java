@@ -1,14 +1,10 @@
 package movlit.be.movie.application.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import movlit.be.common.exception.InvalidGenreIdException;
 import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.domain.Movie;
-import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
 import movlit.be.movie.presentation.dto.MovieListByGenreResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -35,9 +31,9 @@ public class MovieMainService {
         Genre genre = Genre.of(genreId);
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
-        List<Movie> movieLsit = movieRepository.findByMovieGenreIdForEntity_GenreId(genre.getId(), pageable);
+        List<Movie> movieList = movieRepository.findByMovieGenreIdForEntity_GenreId(genre.getId(), pageable);
 
-        MovieListByGenreResponseDto responseDto = new MovieListByGenreResponseDto(genreId, genre.getName(), movieLsit);
+        MovieListByGenreResponseDto responseDto = new MovieListByGenreResponseDto(genreId, genre.getName(), movieList);
         return responseDto;
     }
 

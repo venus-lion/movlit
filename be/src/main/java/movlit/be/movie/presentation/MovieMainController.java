@@ -69,6 +69,7 @@ public class MovieMainController {
     * 사용자 별 취향 (장르) 가져오기
     * TODO : 키워드, 배우 별도 고려
     * */
+    @GetMapping("/user-interest")
     public ResponseEntity<List<Movie>> getMovieUserInterestByGenre(
             @CurrentMemberId MemberId memberId,
             @RequestParam(required = false, defaultValue = "1") int page,

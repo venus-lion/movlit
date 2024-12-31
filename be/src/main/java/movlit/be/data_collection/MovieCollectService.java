@@ -6,9 +6,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
@@ -238,95 +240,56 @@ public class MovieCollectService {
 
     public List<MovieGenreEntity> getMovieGenreList(MovieEntity movie) {
         List<MovieGenreEntity> genreList = new ArrayList<>();
+        Set<MovieGenreIdForEntity> genreIdSet = new LinkedHashSet<>();
 
         String detailApiUrl =
                 "https://api.themoviedb.org/3/movie/" + movie.getMovieId() + "?api_key=" + key + "&language=ko-KR";
         Map<String, Object> response = restTemplate.getForObject(detailApiUrl, Map.class);
         Optional<List<Map<String, Object>>> genres = Optional.ofNullable(
                 (List<Map<String, Object>>) response.get("genres"));
+//        log.info("=== genres : {}", genres.orElse(List.of()) );
 
-        if (genres.isPresent()) {
-            genres.get().forEach(genre -> {
-                Integer apiGenreId = (Integer) genre.get("id");
-                genreList.add(this.mappingGenreEntityFromApiGenreId(apiGenreId, movie));
-            });
-        }
+        // API 장르ID -> 서비스 장르ID 매핑
+        genres.ifPresent(list -> list.forEach(genre -> {
+            Integer apiGenreId = (Integer) genre.get("id");
+            Long genreId = this.mappingGenreEntityFromApiGenreId(apiGenreId, movie);
+            genreIdSet.add(new MovieGenreIdForEntity(movie.getMovieId(), genreId));
+        }));
+        log.info("==== genreIdSet : {}", genreIdSet);
+
+        genreIdSet.forEach(id -> {
+            MovieGenreEntity movieGenreEntity = new MovieGenreEntity(id, movie);
+            genreList.add(movieGenreEntity);
+        });
 
         movieGenreCollectRepository.saveAll(genreList);
         return genreList;
     }
 
 
-    private MovieGenreEntity mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie){
+    private Long mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie){
         return switch (apiGenreId) {
-            case 28, 12 ->    // 액션(28), 모험(12)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(1L, movie.getMovieId())
-                            , movie);
-            case 16 ->        // 애니매이션(16)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(2L, movie.getMovieId())
-                            , movie);
-            case 35 ->        // 코미디(35)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(3L, movie.getMovieId())
-                            , movie);
-            case 80 ->        // 범죄(80)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(4L, movie.getMovieId())
-                            , movie);
-            case 99 ->        // 다큐멘터리(99)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(5L, movie.getMovieId())
-                            , movie);
-            case 18, 10751 ->        // 드라마(18), 가족(10751)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(6L, movie.getMovieId())
-                            , movie);
-            case 14 ->        // 판타지(14)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(7L, movie.getMovieId())
-                            , movie);
-            case 36 ->        // 역사(36)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(8L, movie.getMovieId())
-                            , movie);
-            case 10402 ->        // 음악(10402)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(9L, movie.getMovieId())
-                            , movie);
-            case 9648 ->        // 미스테리(9648)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(10L, movie.getMovieId())
-                            , movie);
-            case 10749 ->        // 로맨스(10749)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(11L, movie.getMovieId())
-                            , movie);
-            case 878 ->        // SF(878)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(12L, movie.getMovieId())
-                            , movie);
-            case 10770 ->        // TV 영화(10770)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(13L, movie.getMovieId())
-                            , movie);
-            case 27, 53 ->        // 공포(27), 스릴러(53)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(14L, movie.getMovieId())
-                            , movie);
-            case 10752 ->        // 전쟁(10752)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(15L, movie.getMovieId())
-                            , movie);
-            case 37 ->        // 서부(37)
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(16L, movie.getMovieId())
-                            , movie);
-            default ->
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(99999L, movie.getMovieId())
-                            , movie);
+//            case 28, 12 ->    // 액션(28), 모험(12)
+//                    new MovieGenreEntity(
+//                            new MovieGenreIdForEntity(1L, movie.getMovieId())
+//                            , movie);
+            case 28, 12 -> 1L;    // 액션(28), 모험(12)
+            case 16 -> 2L;        // 애니매이션(16)
+            case 35 -> 3L;       // 코미디(35)
+            case 80 -> 4L;        // 범죄(80)
+            case 99 -> 5L;        // 다큐멘터리(99)
+            case 18, 10751 -> 6L;       // 드라마(18), 가족(10751)
+            case 14 -> 7L;       // 판타지(14)
+            case 36 -> 8L;       // 역사(36)
+            case 10402 -> 9L;       // 음악(10402)
+            case 9648 -> 10L;       // 미스테리(9648)
+            case 10749 -> 11L;       // 로맨스(10749)
+            case 878 -> 12L;       // SF(878)
+            case 10770 -> 13L;       // TV 영화(10770)
+            case 27, 53 -> 14L;       // 공포(27), 스릴러(53)
+            case 10752 -> 15L;       // 전쟁(10752)
+            case 37 -> 16L;       // 서부(37)
+            default -> 99999L;
         };
     }
 }
