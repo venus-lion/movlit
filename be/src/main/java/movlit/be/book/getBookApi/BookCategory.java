@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Genre;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.entity.BookGenreEntity;
+import movlit.be.book.domain.entity.BookGenreIdEntity;
 import movlit.be.book.infra.persistence.jpa.BookGenreJpaRepository;
+import movlit.be.common.util.ids.BookId;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,8 +18,8 @@ import org.springframework.stereotype.Service;
 public class BookCategory {
     // private final Object serviceObject;
 
-    private final GetBookBestService getBookBestService;
-    public void classifyAndSaveBooks(String bookCode) {
+    private final BookGenreJpaRepository bookGenreJpaRepository;
+    public void classifyAndSaveBooks(String bookCode, BookEntity savedBookEntity) {
 
 //        if (serviceObject instanceof GetBookBestService){
 //            GetBookBestService service = (GetBookBestService ) serviceObject;
@@ -25,57 +27,57 @@ public class BookCategory {
 
         // Save the category if applicable
         if (isActionCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.ACTION);
+            saveBookToDatabase(Genre.ACTION, savedBookEntity);
         }
         if (isAnimationCategory(bookCode)) {
            // GetBookBestService.saveBookToDatabase(bookCode, Genre.ANIMATION);
-            getBookBestService.saveBookToDatabase(Genre.ANIMATION);
+            saveBookToDatabase(Genre.ANIMATION, savedBookEntity);
         }
         if (isComedyCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.COMEDY);
+            saveBookToDatabase(Genre.COMEDY, savedBookEntity);
         }
         if (isCrimeCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.CRIME);
+            saveBookToDatabase(Genre.CRIME, savedBookEntity);
         }
         //ㅁ완
         if (isCrimeCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.CRIME);
+            saveBookToDatabase(Genre.CRIME, savedBookEntity);
         }
         if (isDocumentaryCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.DOCUMENTARY);
+            saveBookToDatabase(Genre.DOCUMENTARY, savedBookEntity);
         }
         if (isDramaCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.DRAMA);
+            saveBookToDatabase(Genre.DRAMA, savedBookEntity);
         }
         if (isFantasyCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.FANTASY);
+            saveBookToDatabase(Genre.FANTASY, savedBookEntity);
         }
         if (isHistoryCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.HISTORY);
+            saveBookToDatabase(Genre.HISTORY, savedBookEntity);
         }
         if (isMusicCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.MUSIC);
+            saveBookToDatabase(Genre.MUSIC, savedBookEntity);
         }
         if (isMysteryCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.MYSTERY);
+            saveBookToDatabase(Genre.MYSTERY, savedBookEntity);
         }
         if (isRomanceCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.ROMANCE);
+            saveBookToDatabase(Genre.ROMANCE, savedBookEntity);
         }
         if (isSFCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.SCIENCE_FICTION);
+            saveBookToDatabase(Genre.SCIENCE_FICTION, savedBookEntity);
         }
         if (isTV_MOVIECategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.TV_MOVIE);
+            saveBookToDatabase(Genre.TV_MOVIE, savedBookEntity);
         }
         if (isTHRILLERCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.THRILLER);
+            saveBookToDatabase(Genre.THRILLER, savedBookEntity);
         }
         if (isWARCategory(bookCode)) {
-            getBookBestService.saveBookToDatabase(Genre.WAR);
+            saveBookToDatabase(Genre.WAR, savedBookEntity);
         }
         if(isUNKNOWNCategory(bookCode)){
-            getBookBestService.saveBookToDatabase(Genre.ETC);
+            saveBookToDatabase(Genre.ETC, savedBookEntity);
         }
     }
 
@@ -252,5 +254,26 @@ public class BookCategory {
                 !isTV_MOVIECategory(bookCode) ||
                 !isTHRILLERCategory(bookCode) ||
                 !isWARCategory(bookCode);
+    }
+
+    private void saveBookToDatabase(Genre genre, BookEntity savedBookEntity){
+
+        Long genreId = genre.getId();
+        BookId bookId = savedBookEntity.getBookId();
+
+        String genreName = genre.getName();
+        System.out.println("&&&&&&&&&&&&&&&&원래분류" + savedBookEntity.getCategoryName() +
+                "\n\n%%%%%%%%%장르 ID : " + genreId + "\n%%%%%%%%%장르명 :" + genreName);
+
+        BookGenreIdEntity bookGenreIdEntity = new BookGenreIdEntity(genreId, bookId);
+        BookGenreEntity bookGenreEntity = BookGenreEntity.builder()
+                .bookEntity(savedBookEntity)
+                .bookGenreIdEntity(bookGenreIdEntity)
+                .build();
+
+        System.out.println("*******장르엔티티" + bookGenreEntity);
+        bookGenreJpaRepository.save(bookGenreEntity);
+
+
     }
 }

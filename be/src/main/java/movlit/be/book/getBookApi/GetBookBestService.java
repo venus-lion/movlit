@@ -49,7 +49,7 @@ public class GetBookBestService {
 
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
-    static BookEntity savedBookEntity;
+    public BookEntity savedBookEntity;
 
     @Value("${aladin.key}")
     String apiKey;
@@ -115,8 +115,8 @@ public class GetBookBestService {
 
                                 String categoryCode = book.getCategoryId(); // 51107 -- 로맨스
                                 // 분류하기
-                                BookCategory bookCategory = new BookCategory(this);
-                                bookCategory.classifyAndSaveBooks(categoryCode);
+                                BookCategory bookCategory = new BookCategory(bookGenreJpaRepository);
+                                bookCategory.classifyAndSaveBooks(categoryCode, savedBookEntity);
 
 
                                 String[] crewArr = book.getAuthor().split(", ");
@@ -185,26 +185,6 @@ public class GetBookBestService {
 
     }
 
-    public void saveBookToDatabase(Genre genre){
-
-        Long genreId = genre.getId();
-        BookId bookId = savedBookEntity.getBookId();
-
-        String genreName = genre.getName();
-        System.out.println("&&&&&&&&&&&&&&&&원래분류" + savedBookEntity.getCategoryName() +
-                "\n\n%%%%%%%%%장르 ID : " + genreId + "\n%%%%%%%%%장르명 :" + genreName);
-
-        BookGenreIdEntity bookGenreIdEntity = new BookGenreIdEntity(genreId, bookId);
-        BookGenreEntity bookGenreEntity = BookGenreEntity.builder()
-                .bookEntity(savedBookEntity)
-                .bookGenreIdEntity(bookGenreIdEntity)
-                .build();
-
-        System.out.println("*******장르엔티티" + bookGenreEntity);
-        bookGenreJpaRepository.save(bookGenreEntity);
-
-
-    }
 
 
     // 예시: 파싱된 role 값을 설정하는 메서드

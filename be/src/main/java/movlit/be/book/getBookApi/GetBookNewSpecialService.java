@@ -12,6 +12,7 @@ import movlit.be.book.domain.entity.BookRCrewEntity;
 import movlit.be.book.domain.entity.BookcrewEntity;
 import movlit.be.book.domain.entity.GenerateUUID;
 import movlit.be.book.getBookApi.dto.BookResponseDto;
+import movlit.be.book.infra.persistence.jpa.BookGenreJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookNewSpecialJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookRCrewJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookJpaRepository;
@@ -35,8 +36,11 @@ public class GetBookNewSpecialService {
     private final BookRCrewJpaRepository bookRCrewRepository;
     private final BookNewSpecialJpaRepository bookNewSpecialRepository;
 
+    private final BookGenreJpaRepository bookGenreJpaRepository;
     // 테스트url
     private static final String baseUrl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?";
+
+    public BookEntity savedBookEntity;
 
     @Value("${aladin.key}")
     String apiKey;
@@ -69,6 +73,7 @@ public class GetBookNewSpecialService {
                 // booklist 순회하며 bookEntity 저장
                 for(Item book : bookList) {
                     try {
+                        savedBookEntity = null;
 
                         String categoryName = book.getCategoryName();
 
@@ -96,6 +101,11 @@ public class GetBookNewSpecialService {
 
                                 // BookEntity 먼저 저장 - savedBookNewEntity 값 설정을 위해
                                 BookEntity savedBookEntity = bookRepository.save(savedBook);
+
+                                String categoryCode = book.getCategoryId(); // 51107 -- 로맨스
+                                // 분류하기
+                                BookCategory bookCategory = new BookCategory(bookGenreJpaRepository);
+                                bookCategory.classifyAndSaveBooks(categoryCode, savedBookEntity);
 
                                 String[] crewArr = book.getAuthor().split(", ");
 
