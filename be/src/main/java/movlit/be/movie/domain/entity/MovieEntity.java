@@ -1,10 +1,11 @@
 package movlit.be.movie.domain.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -15,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import movlit.be.member.domain.entity.MemberGenreEntity;
 
 @Table(name = "movie")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -64,7 +64,7 @@ public class MovieEntity {
                        String posterPath, String backdropPath, LocalDate releaseDate, String originalLanguage,
                        Long voteCount, Double voteAverage, String productionCountry, Integer runtime, String status,
                        String tagline, LocalDateTime regDt, LocalDateTime updDt, boolean delYn, Long heartCount,
-                       List<MovieRCrewEntity> movieRCrewEntityList) {
+                       List<MovieRCrewEntity> movieRCrewEntityList, List<MovieGenreEntity> movieGenreEntities) {
         this.movieId = movieId;
         this.title = title;
         this.originalTitle = originalTitle;
@@ -85,6 +85,7 @@ public class MovieEntity {
         this.delYn = delYn;
         this.heartCount = heartCount;
         this.movieRCrewEntityList = movieRCrewEntityList;
+        this.movieGenreEntities = movieGenreEntities;
     }
 
 }

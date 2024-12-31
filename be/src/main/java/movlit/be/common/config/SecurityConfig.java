@@ -6,11 +6,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.common.filter.JwtRequestFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,7 +36,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail", "/api/movies/*/crews").permitAll()
+                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail",
+                                "/api/movies/*/crews", "/api/movies/*/comments")
+                        .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -81,7 +81,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vite-React 앱의 출처
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
