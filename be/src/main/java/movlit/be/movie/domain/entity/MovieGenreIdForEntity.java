@@ -12,9 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class MovieGenreIdForEntity implements Serializable {
+
     @Column(name = "movie_id")
     private Long movieId;
 
     @Column(name = "genre_id")
     private Long genreId;
+
 }

@@ -1,13 +1,12 @@
 package movlit.be.member.domain;
 
 import lombok.Getter;
-import movlit.be.movie.domain.entity.MovieEntity;
-import movlit.be.movie.domain.entity.MovieGenreIdEntity;
+import movlit.be.member.domain.entity.MemberEntity;
 
 @Getter
 public class MemberGenre {
 
-    private MovieGenreIdEntity movieGenreIdEntity;
-    private MovieEntity movieEntity;
+    private MemberGenreId memberGenreId;
+    private MemberEntity memberEntity;
 
 }
