@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import movlit.be.common.util.ids.MovieId;
 
 @Getter
 public class Movie {
