@@ -8,6 +8,7 @@ import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,13 +35,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail",
                                 "/api/movies/*/crews", "/api/movies/*/comments")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated()
+//                        .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout
@@ -56,15 +58,15 @@ public class SecurityConfig {
 //                        .deleteCookies("JSESSIONID")
 //                        .logoutSuccessUrl("/member/login")
 //                )
-                .oauth2Login(auth -> auth
-                        .loginPage("/member/login")
-                        // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
-                        // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
-                        // 5. 프로바이더가 제공하는 정보
-                        .userInfoEndpoint(
-                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
-                        .defaultSuccessUrl("/member/loginSuccess", true)
-                )
+//                .oauth2Login(auth -> auth
+//                        .loginPage("/member/login")
+//                        // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
+//                        // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
+//                        // 5. 프로바이더가 제공하는 정보
+//                        .userInfoEndpoint(
+//                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
+//                        .defaultSuccessUrl("/member/loginSuccess", true)
+//                )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         ;

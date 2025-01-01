@@ -13,12 +13,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ArgumentResolverConfig implements WebMvcConfigurer {
 
     private final MemberEmailArgumentResolver memberEmailArgumentResolver;
-    private final CurrentMemberIdArgumentResolver currentMemberIdArgumentResolver;
+//    private final CurrentMemberIdArgumentResolver currentMemberIdArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(memberEmailArgumentResolver);
-        resolvers.add(currentMemberIdArgumentResolver);
+//        resolvers.add(currentMemberIdArgumentResolver);
     }
 
 }

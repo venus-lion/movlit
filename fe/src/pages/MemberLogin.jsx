@@ -1,33 +1,96 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import {useToast} from "@/recoil/toast/useToast";
+
+// Axios 인스턴스 생성 및 설정
+const api = axios.create({
+    baseURL: '/',
+});
+
+// Axios 요청 인터셉터 추가: 모든 API 요청에 Authorization 헤더 추가
+api.interceptors.request.use(
+    (config) => {
+        const accessToken = localStorage.getItem('accessToken');
+        console.log('accessToken=', accessToken);
+        if (accessToken) {
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
+            console.log('Axios Request Config: ', config);
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// 로그인 폼 스키마 (yup 사용)
+const loginFormSchema = yup.object().shape({
+    email: yup.string().email('올바른 이메일 형식이 아닙니다.').required('이메일을 입력해 주세요.'),
+    password: yup.string().required('비밀번호를 입력해 주세요.'),
+});
 
 const MemberLogin = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const { updateLoginStatus } = useOutletContext();
+    const toast = useToast();
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            const response = await axios.post('/api/members/login', {
-                email,
-                password,
-            });
-            const { accessToken, refreshToken } = response.data;
+    // react-hook-form 설정
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm({
+        resolver: yupResolver(loginFormSchema),
+        mode: 'onSubmit',
+    });
 
-            sessionStorage.setItem('accessToken', accessToken);
-            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
+    // 로그인 뮤테이션 (react-query)
+    const loginMutation = useMutation({
+        mutationFn: (body) => api.post('/api/members/login', body), // 타입 지정 제거
+        onSuccess: (data) => {
+            const { accessToken, refreshToken } = data.data;
+            const payload = jwtDecode(accessToken);
 
-            updateLoginStatus(true);
-            navigate('/');
-        } catch (error) {
-            setError('로그인 정보가 올바르지 않습니다.');
-            console.error('Login error:', error);
-        }
-    };
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('userInfo', JSON.stringify(payload));
+
+            reset();
+            toast.success('로그인 되었습니다.');
+            navigate('/', { replace: true });
+        },
+        onError: (error) => {
+            let errorMessage = '로그인에 실패했습니다.';
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                switch (errorData.code) {
+                    case 'm001':
+                        errorMessage = '이메일이 올바르지 않습니다.';
+                        break;
+                    case 'a005':
+                        errorMessage = '비밀번호가 올바르지 않습니다.';
+                        break;
+                    default:
+                        errorMessage = errorData.message || errorMessage;
+                }
+            }
+            toast.error(errorMessage);
+        },
+    });
+
+    // 폼 제출 처리
+    const onSubmit = handleSubmit((data) => {
+        loginMutation.mutate({
+            email: data.email,
+            password: data.password,
+        });
+    });
 
     return (
         <div className="bg-light">
@@ -43,7 +106,7 @@ const MemberLogin = () => {
                                     </h3>
                                 </div>
                                 <hr />
-                                <form onSubmit={handleSubmit}>
+                                <form onSubmit={onSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
@@ -53,11 +116,17 @@ const MemberLogin = () => {
                                             <td style={{ width: '55%' }}>
                                                 <input
                                                     type="text"
-                                                    name="email"
-                                                    className="form-control"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    placeholder="이메일"
+                                                    className={`form-control ${
+                                                        errors.email ? 'is-invalid' : ''
+                                                    }`}
+                                                    {...register('email')}
                                                 />
+                                                {errors.email && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.email.message}
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                         <tr>
@@ -67,11 +136,17 @@ const MemberLogin = () => {
                                             <td>
                                                 <input
                                                     type="password"
-                                                    name="password"
-                                                    className="form-control"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    placeholder="비밀번호"
+                                                    className={`form-control ${
+                                                        errors.password ? 'is-invalid' : ''
+                                                    }`}
+                                                    {...register('password')}
                                                 />
+                                                {errors.password && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.password.message}
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                         <tr>
@@ -80,10 +155,16 @@ const MemberLogin = () => {
                                                     className="btn btn-primary"
                                                     type="submit"
                                                     style={{ marginRight: '5px' }}
+                                                    disabled={isSubmitting}
                                                 >
                                                     확인
                                                 </button>
-                                                <button className="btn btn-secondary" type="reset">
+                                                <button
+                                                    className="btn btn-secondary"
+                                                    type="button"
+                                                    onClick={() => reset()}
+                                                    disabled={isSubmitting}
+                                                >
                                                     취소
                                                 </button>
                                             </td>
@@ -91,8 +172,6 @@ const MemberLogin = () => {
                                         </tbody>
                                     </table>
                                 </form>
-
-                                {error && <p style={{ color: 'red' }}>{error}</p>}
 
                                 <p className="mt-3">
                                     <span className="me-3">계정이 없으신가요? </span>
