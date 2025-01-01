@@ -2,9 +2,14 @@ package movlit.be.movie.domain.document;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import movlit.be.movie.domain.entity.MovieGenreEntity;
+import movlit.be.movie.domain.entity.MovieRCrewEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -74,4 +79,10 @@ public class MovieDocument {
 
     @Field(type = FieldType.Long)
     private Long heartCount;
+
+    @Field(type = FieldType.Nested)
+    private List<MovieRCrewEntity> movieRCrewEntityList = new ArrayList<>();
+
+    @Field(type = FieldType.Nested)
+    private List<MovieGenreEntity> movieGenreEntities = new ArrayList<>();
 }
