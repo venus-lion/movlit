@@ -10,6 +10,8 @@ import movlit.be.book.application.converter.service.BookDetailWriteService;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentRequestDto;
+import movlit.be.book.domain.BookDetailResponseDto;
+import movlit.be.book.domain.Bookcrew;
 import movlit.be.common.annotation.CurrentMemberId;
 import movlit.be.common.exception.BookCommentAccessDenied;
 import movlit.be.common.util.ids.BookCommentId;
@@ -34,19 +36,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookDetailController {
     private final BookDetailReadService bookDetailReadService;
     private final BookDetailWriteService bookDetailWriteService;
-    private final BookCommentReadService bookCommentReadService;
-    private final BookCommentWriteService bookCommentWriteService;
     private final MemberReadService memberReadService;
 
 
     // 해당 도서 상세 내역
     @GetMapping("{bookId}/detail")
-    public Book findBook(@PathVariable BookId bookId){
-        Book book = bookDetailReadService.findByBookId(bookId);
-        long heartCount = bookDetailReadService.countHeartsByBookId(bookId);
-        book.setHeartCount(heartCount);
+    public BookDetailResponseDto getBookDetail(@PathVariable BookId bookId){
+        BookDetailResponseDto bookDetailResponse = bookDetailReadService.getBookDetail(bookId);
 
-        return book;
+        return bookDetailResponse;
     }
 
 

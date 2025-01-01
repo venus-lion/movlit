@@ -13,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BookCommentRequestDto {
 
-
     private String bookCommentId;
 
     @JsonProperty("book_id")
     private String bookId;
+
     @JsonProperty("member_id")
     private String memberId;
 

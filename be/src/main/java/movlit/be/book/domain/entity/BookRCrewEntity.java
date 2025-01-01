@@ -28,9 +28,9 @@ public class BookRCrewEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
-    private BookEntity book;
+    private BookEntity bookEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "crew_id")
+    @JoinColumn(name = "crew_id", referencedColumnName = "id")
     private BookcrewEntity bookcrewEntity;
 }

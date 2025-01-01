@@ -122,7 +122,7 @@ public class GetBookService {
 
                                     BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
                                             .bookRCrewId(new BookRCrewId(GenerateUUID.generateUUID()))
-                                            .book(savedBookEntity)
+                                            .bookEntity(savedBookEntity)
                                             .bookcrewEntity(savedBookcrewEntity)
                                             .build();
 

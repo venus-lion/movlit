@@ -17,7 +17,7 @@ public class BookRCrewConverter {
     public static BookRCrewEntity toEntity(BookRCrew bookRCrew) {
         return BookRCrewEntity.builder()
                 .bookRCrewId(bookRCrew.getBookRCrewId())
-                .book(BookConverter.toEntity(bookRCrew.getBook()))
+                .bookEntity(BookConverter.toEntity(bookRCrew.getBook()))
                 .bookcrewEntity(BookcrewConverter.toEntity(bookRCrew.getBookcrew()))
                 .build();
     }
@@ -26,7 +26,7 @@ public class BookRCrewConverter {
     public static BookRCrew toDomain(BookRCrewEntity bookRCrewEntity) {
         return BookRCrew.builder()
                 .bookRCrewId(bookRCrewEntity.getBookRCrewId())
-                .book(BookConverter.toDomain(bookRCrewEntity.getBook()))
+                .book(BookConverter.toDomain(bookRCrewEntity.getBookEntity()))
                 .bookcrew(BookcrewConverter.toDomain(bookRCrewEntity.getBookcrewEntity()))
                 .build();
     }
