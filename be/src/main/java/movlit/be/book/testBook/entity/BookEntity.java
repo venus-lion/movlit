@@ -1,10 +1,8 @@
 package movlit.be.book.testBook.entity;
 
-import com.mysql.cj.protocol.ColumnDefinition;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
@@ -14,14 +12,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Builder
-@Getter @Setter
+@Getter
+@Setter
 @Table(name = "book")
 @AllArgsConstructor
 @NoArgsConstructor

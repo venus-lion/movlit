@@ -1,9 +1,7 @@
 package movlit.be.book.testBook.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookResponseDto {
-
 
     //    private String version;
     private String logo;
@@ -45,7 +42,6 @@ public class BookResponseDto {
         private Integer bestRank;
 
     }
-
 
     @Override
     public String toString() {

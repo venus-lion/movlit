@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
         Map<String, String> errors = getErrors(e);
-        return new ErrorResponse(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE  .getCode(), errors);
+        return new ErrorResponse(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getCode(), errors);
     }
 
     @ResponseStatus(value = BAD_REQUEST)

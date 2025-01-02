@@ -23,6 +23,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookcrewEntity {
+
     public enum Role {
         AUTHOR, // 지은이
         TRANSLATOR, // 옮긴이

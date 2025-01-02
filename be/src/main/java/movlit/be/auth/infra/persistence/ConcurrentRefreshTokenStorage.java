@@ -3,7 +3,6 @@ package movlit.be.auth.infra.persistence;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.domain.repository.RefreshTokenStorage;
-import movlit.be.common.util.ids.MemberId;
 import org.springframework.stereotype.Service;
 
 @Service

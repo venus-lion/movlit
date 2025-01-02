@@ -8,6 +8,7 @@ import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,10 +35,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/*/crews").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail",
-                                "/api/movies/*/crews", "/api/movies/*/comments")
+                                "/img/**", "/js/**", "/css/**", "/error/**")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()

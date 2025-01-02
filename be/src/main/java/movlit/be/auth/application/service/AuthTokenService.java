@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
 import movlit.be.auth.domain.repository.RefreshTokenStorage;
 import movlit.be.common.util.JwtTokenUtil;
-import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service

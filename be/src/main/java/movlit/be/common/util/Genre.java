@@ -1,7 +1,6 @@
 package movlit.be.common.util;
 
 import java.util.Arrays;
-import java.util.Optional;
 import movlit.be.common.exception.InvalidGenreIdException;
 
 public enum Genre {
@@ -28,7 +27,7 @@ public enum Genre {
     private final String name;
 
     // Id 값으로 값 접근
-    public static Genre of(final Long id){
+    public static Genre of(final Long id) {
         return Arrays.stream(Genre.values())
                 .filter(g -> id == g.getId())
                 .findFirst().orElseThrow(InvalidGenreIdException::new);

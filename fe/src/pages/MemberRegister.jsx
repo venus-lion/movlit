@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import axiosInstance from '../axiosInstance';
+import {Link, useNavigate} from 'react-router-dom';
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -19,7 +19,7 @@ const MemberRegister = () => {
         }
 
         try {
-            const response = await axios.post('/api/members/register', {
+            const response = await axiosInstance.post('/members/register', {
                 email,
                 password,
                 repeatPassword,
@@ -43,7 +43,7 @@ const MemberRegister = () => {
 
     return (
         <div className="bg-light">
-            <div className="container" style={{ marginTop: '30px' }}>
+            <div className="container" style={{marginTop: '30px'}}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">
@@ -54,15 +54,15 @@ const MemberRegister = () => {
                                         <strong>회원 가입</strong>
                                     </h3>
                                 </div>
-                                <hr />
+                                <hr/>
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{ width: '45%' }}>
+                                            <td style={{width: '45%'}}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{ width: '55%' }}>
+                                            <td style={{width: '55%'}}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -135,7 +135,7 @@ const MemberRegister = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     type="submit"
-                                                    style={{ marginRight: '5px' }}
+                                                    style={{marginRight: '5px'}}
                                                 >
                                                     확인
                                                 </button>
