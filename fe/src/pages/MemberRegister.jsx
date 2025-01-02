@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 
 const MemberRegister = () => {
@@ -19,7 +19,7 @@ const MemberRegister = () => {
         }
 
         try {
-            const response = await axios.post('/api/members/register', {
+            const response = await axiosInstance.post('/members/register', {
                 email,
                 password,
                 repeatPassword,

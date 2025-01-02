@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axiosInstance from '../axiosInstance'; // axiosInstance 임포트
 
 function MovieDetailPage() {
-    const {movieId} = useParams();
+    const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
@@ -11,9 +12,10 @@ function MovieDetailPage() {
     const [comment, setComment] = useState('');
 
     useEffect(() => {
-        fetch(`/api/movies/${movieId}/detail`)
-            .then((response) => response.json())
-            .then((data) => {
+        axiosInstance
+            .get(`/movies/${movieId}/detail`)
+            .then((response) => {
+                const data = response.data;
                 setMovieData({
                     id: data.movieId,
                     title: data.title,
@@ -21,7 +23,7 @@ function MovieDetailPage() {
                     overview: data.overview,
                     popularity: data.popularity,
                     heartCount: data.heartCount,
-                    posterUrl: "http://image.tmdb.org/t/p/w200" + data.posterPath,
+                    posterUrl: 'http://image.tmdb.org/t/p/w200' + data.posterPath,
                     backdropUrl: data.backdropPath,
                     releaseDate: data.releaseDate,
                     country: data.productionCountry,
@@ -36,9 +38,9 @@ function MovieDetailPage() {
             })
             .catch((error) => console.error('Error fetching movie data:', error));
 
-        fetch(`/api/movies/${movieId}/crews`)
-            .then((response) => response.json())
-            .then((data) => setCrews(data))
+        axiosInstance
+            .get(`/movies/${movieId}/crews`)
+            .then((response) => setCrews(response.data))
             .catch((error) => console.error('Error fetching crew data:', error));
     }, [movieId]);
 
@@ -63,46 +65,30 @@ function MovieDetailPage() {
 
     const handleSubmitComment = () => {
         if (myRating === 0) {
-            alert("별점을 입력해주세요.");
+            alert('별점을 입력해주세요.');
             return;
         }
         if (comment.trim() === '') {
-            alert("코멘트를 입력해주세요.");
+            alert('코멘트를 입력해주세요.');
             return;
         }
 
         const requestBody = {
             score: myRating,
-            comment: comment
+            comment: comment,
         };
 
-        fetch(`/api/movies/${movieId}/comments`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // 필요한 경우 인증 헤더 추가
-            },
-            body: JSON.stringify(requestBody)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
+        axiosInstance
+            .post(`/movies/${movieId}/comments`, requestBody)
+            .then((response) => {
+                console.log('코멘트 저장 성공:', response.data);
+                alert('코멘트가 저장되었습니다.');
             })
-            .then(data => {
-                console.log('코멘트 저장 성공:', data);
-                // 성공적으로 코멘트를 저장한 후 필요한 작업 수행
-                // 예: 코멘트 목록 업데이트, 사용자에게 성공 메시지 표시 등
-                alert("코멘트가 저장되었습니다.");
-            })
-            .catch(error => {
+            .catch((error) => {
                 console.error('코멘트 저장 실패:', error);
-                // 에러 처리
-                alert("코멘트 저장에 실패했습니다.");
+                alert('코멘트 저장에 실패했습니다.');
             })
             .finally(() => {
-                // 코멘트 제출 후 상태 초기화
                 setComment('');
                 setMyRating(0);
                 setShowCommentInput(false);
@@ -124,19 +110,18 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
-                <div style={styles.breadcrumbs}>
-                    홈 / 영화 / {movieData.title}
-                </div>
+                <div style={styles.breadcrumbs}>홈 / 영화 / {movieData.title}</div>
                 <div style={styles.title}>{movieData.title}</div>
                 <div style={styles.subtitle}>
                     {movieData.releaseDate ? movieData.releaseDate.substring(0, 4) : ''}
-                    {' '}・ {movieData.genre} ・ {movieData.country}
+                    {' ・ '}
+                    {movieData.genre} ・ {movieData.country}
                 </div>
             </div>
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title}/>
+                    <img src={movieData.posterUrl} alt={movieData.title} />
                 </div>
 
                 <div style={styles.info}>
@@ -150,14 +135,17 @@ function MovieDetailPage() {
                                         style={index < myRating ? styles.starFilled : styles.starEmpty}
                                         onClick={() => handleRatingChange(index + 1)}
                                     >
-                                        <span style={styles.starIcon}>★</span>
-                                    </span>
+                    <span style={styles.starIcon}>★</span>
+                  </span>
                                 ))}
                             </div>
                         </div>
                         <div style={styles.buttonGroup}>
                             <button
-                                style={{...styles.button, backgroundColor: isWish ? '#FF3366' : '#4080ff'}}
+                                style={{
+                                    ...styles.button,
+                                    backgroundColor: isWish ? '#FF3366' : '#4080ff',
+                                }}
                                 onClick={handleWishClick}
                             >
                                 {isWish ? '찜 완료' : '찜'}
@@ -168,12 +156,12 @@ function MovieDetailPage() {
                     {/* 코멘트 입력란 */}
                     {showCommentInput && (
                         <div style={styles.commentSection}>
-                            <textarea
-                                style={styles.commentInput}
-                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-                                value={comment}
-                                onChange={handleCommentChange}
-                            />
+              <textarea
+                  style={styles.commentInput}
+                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                  value={comment}
+                  onChange={handleCommentChange}
+              />
                             <button style={styles.submitButton} onClick={handleSubmitComment}>
                                 코멘트 남기기
                             </button>
@@ -193,15 +181,25 @@ function MovieDetailPage() {
                                     {crews.map((crew) => (
                                         <div key={crew.name} style={styles.crewMember}>
                                             <img
-                                                src={crew.profileImgUrl ? ('http://image.tmdb.org/t/p/w200' + crew.profileImgUrl) : '/default-profile-image.jpg'}
+                                                src={
+                                                    crew.profileImgUrl
+                                                        ? 'http://image.tmdb.org/t/p/w200' +
+                                                        crew.profileImgUrl
+                                                        : '/default-profile-image.jpg'
+                                                }
                                                 alt={crew.name}
                                                 style={styles.crewImage}
                                             />
                                             <div style={styles.crewInfo}>
                                                 <div style={styles.crewName}>{crew.name}</div>
                                                 <div style={styles.crewCharName}>{crew.charName}</div>
-                                                <div
-                                                    style={styles.crewRole}>{crew.role === "CAST" ? "출연" : crew.role === "DIRECTOR" ? "감독" : crew.role}</div>
+                                                <div style={styles.crewRole}>
+                                                    {crew.role === 'CAST'
+                                                        ? '출연'
+                                                        : crew.role === 'DIRECTOR'
+                                                            ? '감독'
+                                                            : crew.role}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -225,7 +223,7 @@ function MovieDetailPage() {
                                 {movieData.relatedBooks &&
                                     movieData.relatedBooks.map((book) => (
                                         <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title}/>
+                                            <img src={book.coverUrl} alt={book.title} />
                                             <div>{book.title}</div>
                                         </div>
                                     ))}
@@ -290,7 +288,7 @@ const styles = {
         fontSize: '18px',
         fontWeight: 'bold',
         marginRight: '10px',
-        color: '#000000'
+        color: '#000000',
     },
     stars: {
         display: 'inline-block',
@@ -330,10 +328,10 @@ const styles = {
         fontSize: '20px',
         fontWeight: 'bold',
         marginBottom: '10px',
-        color: '#000000'
+        color: '#000000',
     },
     sectionContent: {
-        color: '#000000'
+        color: '#000000',
     },
     book: {
         display: 'flex',
@@ -367,14 +365,14 @@ const styles = {
     crewInfo: {},
     crewName: {
         fontWeight: 'bold',
-        color: '#000000'
+        color: '#000000',
     },
     crewCharName: {
-        color: '#000000'
+        color: '#000000',
     },
     crewRole: {
         fontSize: '0.9em',
-        color: '#000000'
+        color: '#000000',
     },
     commentSection: {
         marginTop: '20px',

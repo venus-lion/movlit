@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance'; // axiosInstance 임포트
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const MemberLogin = () => {
@@ -12,14 +12,16 @@ const MemberLogin = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('/api/members/login', {
+            const response = await axiosInstance.post('/members/login', {
                 email,
                 password,
             });
-            const { accessToken, refreshToken } = response.data;
+            const { refreshToken } = response.data;
 
-            sessionStorage.setItem('accessToken', accessToken);
-            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
+            console.log('refreshToken = ', refreshToken);
+
+            document.cookie = `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=1209600`;
+            // Secure; <- Https 후 꼭 추가해주기
 
             updateLoginStatus(true);
             navigate('/');
