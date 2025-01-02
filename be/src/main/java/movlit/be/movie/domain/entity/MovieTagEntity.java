@@ -20,9 +20,9 @@ public class MovieTagEntity {
     @EmbeddedId
     private MovieTagIdForEntity movieTagIdForEntity;
 
-    @MapsId("movieId") // MovieTagId의 필드
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", updatable = false, insertable = false)
+    @MapsId("movieId") // MovieTagId의 필드
+    @JoinColumn(name = "movie_id", referencedColumnName = "id", updatable = false, insertable = false)
     private MovieEntity movieEntity;
 
     private String name;
