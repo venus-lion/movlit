@@ -313,3 +313,6 @@ INSERT INTO venus.movie_r_crew (movie_id, movie_crew_id)
 VALUES (767, '11355');
 INSERT INTO venus.movie_r_crew (movie_id, movie_crew_id)
 VALUES (767, '10967');
+
+INSERT INTO venus.movie_genre (genre_id, movie_id) VALUES (1 ,767);
+INSERT INTO venus.movie_genre (genre_id, movie_id) VALUES (7 ,767);
