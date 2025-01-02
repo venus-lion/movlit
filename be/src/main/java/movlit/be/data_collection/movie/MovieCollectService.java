@@ -268,8 +268,7 @@ public class MovieCollectService {
         return genreList;
     }
 
-
-    private Long mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie){
+    private Long mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie) {
         return switch (apiGenreId) {
 //            case 28, 12 ->    // 액션(28), 모험(12)
 //                    new MovieGenreEntity(
@@ -294,4 +293,5 @@ public class MovieCollectService {
             default -> 99999L;
         };
     }
+
 }

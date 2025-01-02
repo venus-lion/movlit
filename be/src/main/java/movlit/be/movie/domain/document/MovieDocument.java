@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,12 +17,13 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document( indexName = "movies")
+@Document(indexName = "movies")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class MovieDocument {
+
     @Id
     private Long movieId;
 
@@ -91,4 +91,5 @@ public class MovieDocument {
 
     @Field(type = FieldType.Nested)
     private List<MovieGenreEntity> movieGenreEntityList = new ArrayList<>();
+
 }

@@ -6,9 +6,12 @@ import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.entity.MovieEntity;
 
 public class MovieConverter {
+
     // Domain -> Entity
     public static MovieEntity toEntity(Movie movie) {
-        if(Objects.isNull(movie)) return null;
+        if (Objects.isNull(movie)) {
+            return null;
+        }
 
         return MovieEntity.builder()
                 .movieId(movie.getMovieId())
@@ -34,8 +37,10 @@ public class MovieConverter {
     }
 
     // Entity -> Domain
-    public static Movie toDomain(MovieEntity movieEntity){
-        if(Objects.isNull(movieEntity)) return null;
+    public static Movie toDomain(MovieEntity movieEntity) {
+        if (Objects.isNull(movieEntity)) {
+            return null;
+        }
 
         return Movie.builder()
                 .movieId(movieEntity.getMovieId())
@@ -61,8 +66,10 @@ public class MovieConverter {
     }
 
     // Entity -> Document
-    public static MovieDocument entityToDocument(MovieEntity movieEntity){
-        if(Objects.isNull(movieEntity)) return null;
+    public static MovieDocument entityToDocument(MovieEntity movieEntity) {
+        if (Objects.isNull(movieEntity)) {
+            return null;
+        }
 
         return MovieDocument.builder()
                 .movieId(movieEntity.getMovieId())
@@ -89,4 +96,5 @@ public class MovieConverter {
                 .movieTagEntityList(movieEntity.getMovieTagEntityList())
                 .build();
     }
+
 }
