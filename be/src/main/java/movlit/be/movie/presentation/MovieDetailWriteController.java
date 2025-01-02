@@ -28,6 +28,7 @@ public class MovieDetailWriteController {
                                                               @AuthenticationPrincipal MyMemberDetails details,
                                                               @RequestBody MovieCommentRequest request) {
         MemberId memberId = details.getMemberId();
+
         var data = MovieConvertor.toMovieDetailCommentData(movieId, memberId, request);
         var response = movieDetailWriteService.createComment(data);
         return ResponseEntity.ok(response);

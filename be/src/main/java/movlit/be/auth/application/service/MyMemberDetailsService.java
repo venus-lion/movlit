@@ -26,8 +26,8 @@ public class MyMemberDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email);
         }
 
-        log.info("Login 시도 memberId: " + member.getMemberId());
-        return new MyMemberDetails(member.getMemberId());
+        log.info("Login 시도 memberId: " + member);
+        return new MyMemberDetails(member);
     }
 
 }
