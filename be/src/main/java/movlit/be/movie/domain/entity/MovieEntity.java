@@ -57,7 +57,10 @@ public class MovieEntity {
     private List<MovieRCrewEntity> movieRCrewEntityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "movieEntity")
-    private List<MovieGenreEntity> movieGenreEntities = new ArrayList<>();
+    private List<MovieTagEntity> movieTagEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movieEntity")
+    private List<MovieGenreEntity> movieGenreEntityList = new ArrayList<>();
 
     @Builder
     public MovieEntity(Long movieId, String title, String originalTitle, String overview, Double popularity,
@@ -85,7 +88,8 @@ public class MovieEntity {
         this.delYn = delYn;
         this.heartCount = heartCount;
         this.movieRCrewEntityList = movieRCrewEntityList;
-        this.movieGenreEntities = movieGenreEntities;
+        this.movieTagEntityList = movieTagEntityList;
+        this.movieGenreEntityList = movieGenreEntityList;
     }
 
 }
