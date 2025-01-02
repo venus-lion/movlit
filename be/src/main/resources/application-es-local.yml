@@ -1,0 +1,9 @@
+spring:
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      rest:
+        uri: http://localhost:9200
+        username: elastic
+        password: elastic

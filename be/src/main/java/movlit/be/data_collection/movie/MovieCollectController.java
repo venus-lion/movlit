@@ -1,4 +1,4 @@
-package movlit.be.data_collection;
+package movlit.be.data_collection.movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,7 @@ public class MovieCollectController {
 
     @GetMapping("/discover")
     public void getDiscoverMovie() {
-//        int MAX_PAGE = 100; // 변경 가능
-        int MAX_PAGE = 1;
+        int MAX_PAGE = 5; // 변경 가능
         List<List<MovieEntity>> resultList = new ArrayList<>();
 
         for (int i = 1; i <= MAX_PAGE; i++) {

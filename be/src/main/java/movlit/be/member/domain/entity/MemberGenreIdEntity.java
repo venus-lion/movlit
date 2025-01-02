@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import movlit.be.common.util.ids.MemberId;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,6 +18,6 @@ public class MemberGenreIdEntity {
     private Long genreId;
 
     @Column(name = "id")
-    private Long memberId;
+    private MemberId memberId;
 
 }
