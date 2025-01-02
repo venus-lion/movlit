@@ -6,7 +6,7 @@ import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.repository.MovieRepository;
-import movlit.be.movie.presentation.dto.MovieListByGenreResponseDto;
+import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

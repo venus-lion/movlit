@@ -42,6 +42,20 @@ public class MovieDetailSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 영화_상세페이지_내에_있는_장르들을_조회한다(String movieId,
+                                                                         RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .when()
+                .get("/api/movies/" + movieId + "/genres")
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static void 상태코드가_200이고_응답에_예상된_movieId가_존재한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK)

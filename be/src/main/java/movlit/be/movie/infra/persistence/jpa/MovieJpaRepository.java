@@ -1,4 +1,4 @@
-package movlit.be.movie.infra.persistence;
+package movlit.be.movie.infra.persistence.jpa;
 
 import movlit.be.movie.domain.entity.MovieEntity;
 import org.springframework.data.domain.Page;

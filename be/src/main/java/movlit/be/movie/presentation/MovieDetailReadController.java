@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.service.MovieDetailReadService;
 import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
+import movlit.be.movie.presentation.dto.response.MovieDetailGenreResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,12 @@ public class MovieDetailReadController {
     @GetMapping("/api/movies/{movieId}/crews")
     public ResponseEntity<List<MovieDetailCrewResponse>> fetchMovieDetailCrews(@PathVariable Long movieId) {
         var response = movieDetailReadService.fetchMovieDetailCrews(movieId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/movies/{movieId}/genres")
+    public ResponseEntity<List<MovieDetailGenreResponse>> fetchMovieDetailGenres(@PathVariable Long movieId) {
+        var response = movieDetailReadService.fetchMovieDetailGenres(movieId);
         return ResponseEntity.ok(response);
     }
 

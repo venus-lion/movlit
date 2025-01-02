@@ -7,6 +7,7 @@ function MovieDetailPage() {
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
+    const [genres, setGenres] = useState([]);
     const [isWish, setIsWish] = useState(false);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
@@ -33,7 +34,6 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
-                    genre: data.genre,
                 });
             })
             .catch((error) => console.error('Error fetching movie data:', error));
@@ -42,6 +42,17 @@ function MovieDetailPage() {
             .get(`/movies/${movieId}/crews`)
             .then((response) => setCrews(response.data))
             .catch((error) => console.error('Error fetching crew data:', error));
+
+        axiosInstance
+            .get(`/movies/${movieId}/genres`)
+            .then((response) => {
+                // response.data를 가공하여 name 속성을 가진 객체들의 배열로 변환
+                const formattedGenres = response.data.map((genre) => ({
+                    name: genre.genreName,
+                }));
+                setGenres(formattedGenres);
+            })
+            .catch((error) => console.error('Error fetching genre data', error));
     }, [movieId]);
 
     const handleRatingChange = (newRating) => {
@@ -115,7 +126,15 @@ function MovieDetailPage() {
                 <div style={styles.subtitle}>
                     {movieData.releaseDate ? movieData.releaseDate.substring(0, 4) : ''}
                     {' ・ '}
-                    {movieData.genre} ・ {movieData.country}
+                    {/* 장르 목록 출력 */}
+                    {genres.map((genre, index) => (
+                        <span key={index}>{genre.name}
+                            {/* 마지막 장르 뒤에는 쉼표를 붙이지 않음 */}
+                            {index < genres.length - 1 ? ', ' : ''}
+                        </span>
+                    ))}
+                    {' ・ '}
+                    {movieData.country}
                 </div>
             </div>
 

@@ -37,8 +37,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/crews").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
-                        .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
+                        .requestMatchers("/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**")
                         .permitAll()

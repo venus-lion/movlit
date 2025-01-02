@@ -8,8 +8,8 @@ import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
-import movlit.be.movie.infra.persistence.MovieGenreJpaRepository;
-import movlit.be.movie.infra.persistence.MovieJpaRepository;
+import movlit.be.movie.infra.persistence.jpa.MovieGenreJpaRepository;
+import movlit.be.movie.infra.persistence.jpa.MovieJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -62,5 +62,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
         return null;
     }
+
+
 
 }
