@@ -86,7 +86,8 @@ public class GetBookNewService {
                         String categoryName = book.getCategoryName();
 
                         // 잘 안 쓰는 데이터는 필터링 (외국어, 자격증 책..)
-                        if(!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증")) {
+                        if( (book.getIsbn13() != null) && (!book.getIsbn13().equals("")) &&
+                                (!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증"))) {
 
                             BookId bookIdObject = new BookId(book.getIsbn13());
 
@@ -108,7 +109,7 @@ public class GetBookNewService {
                                         .build();
 
                                 // BookEntity 먼저 저장 - savedBookNewEntity 값 설정을 위해
-                                BookEntity savedBookEntity = bookRepository.save(savedBook);
+                                savedBookEntity = bookRepository.save(savedBook);
 
                                 String categoryCode = book.getCategoryId(); // 51107 -- 로맨스
                                 // 분류하기
@@ -132,14 +133,22 @@ public class GetBookNewService {
                                         Role role = setParsedRole(
                                                 matcher.group(2) != null ? matcher.group(2).trim() : "기타");
 
-                                        BookcrewEntity savedBookcrew = BookcrewEntity.builder()
-                                                .crewId(new BookcrewId(GenerateUUID.generateUUID()))
-                                                .name(name)
-                                                .role(role)
-                                                .profileImageUrl("/book_crew_profile/default_profile.png")
-                                                .build();
+                                        BookcrewId bookCrewId = null;
+                                        BookcrewEntity savedBookcrewEntity = null;
 
-                                        BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
+                                        if (!bookcrewRepository.existsByName(name).isPresent()) {
+
+                                            BookcrewEntity savedBookcrew = BookcrewEntity.builder()
+                                                    .crewId(new BookcrewId(GenerateUUID.generateUUID()))
+                                                    .name(name)
+                                                    .role(role)
+                                                    .profileImageUrl("/book_crew_profile/default_profile.png")
+                                                    .build();
+
+                                            savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
+                                        } else {
+                                            savedBookcrewEntity = bookcrewRepository.existsByName(name).orElseThrow();
+                                        }
 
                                         BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
                                                 .bookRCrewId(new BookRCrewId(GenerateUUID.generateUUID()))
