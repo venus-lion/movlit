@@ -2,4 +2,33 @@ spring:
   profiles:
     group:
       local: db-local, oauth2, jwt, core, api-key
-    active: local
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/aladdinDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+#
+#jwt:
+#  secret: x-7BZrD.Zq4t7w-z$C&F)J@NcRfUjXn2r5u8x.A%D*G-KaPdSgVkYp3s6v9y$B&E)H+
+
+jwt:
+  secret: 823e399822c5170927c9802b3feb60b1fe54debefb406ca5f4eaf05e0014ea63
+
+server:
+  servlet:
+    session:
+      persistent: false
+
+aladin:
+  key: ttbolivia09291715001
+tmdb:
+  key: f22124aadf1db63b236d4c779fbd97d6
+  accessToken: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMjIxMjRhYWRmMWRiNjNiMjM2ZDRjNzc5ZmJkOTdkNiIsIm5iZiI6MTczNDM5ODIwNy40NjMsInN1YiI6IjY3NjBkMGZmNjY5Njc1YzVhZmJhZmU2MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.HCKuqu5YS0HNgUlDlZaFR2l5IN5UwmjdRby9Icotld4
+
+

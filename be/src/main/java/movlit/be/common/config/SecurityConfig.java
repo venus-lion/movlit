@@ -32,6 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .httpBasic(AbstractHttpConfigurer::disable) // -- 추가
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
@@ -39,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail",
-                                "/api/movies/*/crews", "/api/movies/*/comments")
+                                "/api/movies/*/crews", "/api/movies/*/comments", "/api/members/test")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
 //                        .anyRequest().authenticated()
@@ -67,18 +68,14 @@ public class SecurityConfig {
 //                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
 //                        .defaultSuccessUrl("/member/loginSuccess", true)
 //                )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // JwtRequestFilter는 요청을 가로채어, JWT 검증 수행
 
         ;
 
         return http.build();
     }
 
-    // JWT Filter Bean 등록
-//    @Bean
-//    public JwtRequestFilter jwtRequestFilter() {
-//        return new JwtRequestFilter();
-//    }
+    // 클라이언트 - 서버 간의 CORS 문제 해결
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

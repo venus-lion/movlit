@@ -6,6 +6,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetailsService;
@@ -41,9 +43,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 2. Bearer 토큰 형식 검사
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            log.info("2. JWT Token: {}", jwt); // 2. JWT 토큰 확인
+
+            log.info("2. JWT Token: {}", jwt); // 2. JWT 토큰 확인 -- Bearer 제거
 
             try {
+//                jwt = jwt.replace("-", "+").replace("_", "/"); // Base64 URL-safe 디코딩
+//
+//                byte[] decodedBytes = Base64.getDecoder().decode(jwt); // Base64 디코딩
+//                jwt = new String(decodedBytes, StandardCharsets.UTF_8); // Decoded JWT 토큰
+
                 email = jwtTokenUtil.extractEmail(jwt);
                 log.info("3. Extracted Email: {}", email); // 3. Email 추출 확인
             } catch (ExpiredJwtException e) {
@@ -79,6 +87,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     log.info("SecurityContext Authentication: {}",
                             SecurityContextHolder.getContext().getAuthentication()); // SecurityContext 저장 확인
+
+
                 } else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");

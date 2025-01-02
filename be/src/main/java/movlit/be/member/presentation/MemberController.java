@@ -3,7 +3,9 @@ package movlit.be.member.presentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
+import movlit.be.common.annotation.CurrentMemberId;
 import movlit.be.common.util.HttpHeaderParser;
 import movlit.be.common.util.HttpHeaderType;
 import movlit.be.common.util.ids.MemberId;
@@ -17,6 +19,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,5 +88,14 @@ public class MemberController {
         memberWriteService.updateMember(member);
         return "redirect:/member/list";
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> getCurrentMemberId(@AuthenticationPrincipal
+                                                     MyMemberDetails myMemberDetails){
+
+        System.out.println("MyMemberDetails :: " + myMemberDetails.getUsername());
+        return ResponseEntity.ok("MyMemberDetails ::: " + myMemberDetails.getUsername());
+    }
+
 
 }
