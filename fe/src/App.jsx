@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import React, {useCallback, useState} from 'react';
+import {NavLink, Outlet, useNavigate} from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
                     <li>
                         <NavLink
                             to="/"
-                            className={({ isActive }) => (isActive ? 'current' : '')}
+                            className={({isActive}) => (isActive ? 'current' : '')}
                         >
                             Home
                         </NavLink>
@@ -42,7 +42,7 @@ function App() {
                             <li>
                                 <NavLink
                                     to="/member/register"
-                                    className={({ isActive }) => (isActive ? 'current' : '')}
+                                    className={({isActive}) => (isActive ? 'current' : '')}
                                 >
                                     Register
                                 </NavLink>
@@ -50,7 +50,7 @@ function App() {
                             <li>
                                 <NavLink
                                     to="/member/login"
-                                    className={({ isActive }) => (isActive ? 'current' : '')}
+                                    className={({isActive}) => (isActive ? 'current' : '')}
                                 >
                                     Login
                                 </NavLink>
@@ -68,7 +68,7 @@ function App() {
             </nav>
 
             {/* Outlet에 context prop으로 updateLoginStatus 전달 */}
-            <Outlet context={{ updateLoginStatus }} />
+            <Outlet context={{updateLoginStatus}}/>
         </>
     );
 }

@@ -3,7 +3,6 @@ package movlit.be.movie.presentation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
-import movlit.be.common.annotation.CurrentMemberId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie.application.service.MovieDetailWriteService;
@@ -28,7 +27,6 @@ public class MovieDetailWriteController {
                                                               @AuthenticationPrincipal MyMemberDetails details,
                                                               @RequestBody MovieCommentRequest request) {
         MemberId memberId = details.getMemberId();
-
         var data = MovieConvertor.toMovieDetailCommentData(movieId, memberId, request);
         var response = movieDetailWriteService.createComment(data);
         return ResponseEntity.ok(response);

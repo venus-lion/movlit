@@ -7,5 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieGenreJpaRepository extends JpaRepository<MovieGenreEntity, MovieGenreIdForEntity> {
-    Page<MovieGenreEntity> findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(Long genreId, Pageable pageable);
+
+    Page<MovieGenreEntity> findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(Long genreId,
+                                                                                                 Pageable pageable);
+
 }

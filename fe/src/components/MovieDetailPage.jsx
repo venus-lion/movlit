@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance'; // axiosInstance 임포트
 
 function MovieDetailPage() {
-    const { movieId } = useParams();
+    const {movieId} = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
@@ -121,7 +121,7 @@ function MovieDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title} />
+                    <img src={movieData.posterUrl} alt={movieData.title}/>
                 </div>
 
                 <div style={styles.info}>
@@ -223,7 +223,7 @@ function MovieDetailPage() {
                                 {movieData.relatedBooks &&
                                     movieData.relatedBooks.map((book) => (
                                         <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title} />
+                                            <img src={book.coverUrl} alt={book.title}/>
                                             <div>{book.title}</div>
                                         </div>
                                     ))}

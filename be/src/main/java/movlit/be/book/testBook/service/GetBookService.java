@@ -10,22 +10,23 @@ import movlit.be.book.testBook.entity.BookBestsellerEntity;
 import movlit.be.book.testBook.entity.BookEntity;
 import movlit.be.book.testBook.entity.BookRCrewEntity;
 import movlit.be.book.testBook.entity.BookcrewEntity;
+import movlit.be.book.testBook.entity.BookcrewEntity.Role;
 import movlit.be.book.testBook.repository.BookBestsellerRepository;
 import movlit.be.book.testBook.repository.BookRCrewRepository;
 import movlit.be.book.testBook.repository.BookRepository;
 import movlit.be.book.testBook.repository.BookcrewRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import movlit.be.book.testBook.entity.BookcrewEntity.Role;
+
 @Service
 @RequiredArgsConstructor
 //@PropertySource("classpath:application-test.properties")
 public class GetBookService {
+
     private final RestTemplate restTemplate;
     private final BookRepository bookRepository;
-    private final BookcrewRepository bookcrewRepository ;
+    private final BookcrewRepository bookcrewRepository;
     private final BookBestsellerRepository bookBestsellerRepository;
     private final BookRCrewRepository bookRCrewRepository;
 
@@ -35,44 +36,47 @@ public class GetBookService {
     @Value("${aladin.key}")
     String apiKey;
 
-    public void repeatGet(int times){
-        for(int i=1; i < times+1; i++){
+    public void repeatGet(int times) {
+        for (int i = 1; i < times + 1; i++) {
 
             String url = baseUrl + "ttbkey=" + apiKey +
-                    "&QueryType=Bestseller&MaxResults=50&start="+i+"&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
+                    "&QueryType=Bestseller&MaxResults=50&start=" + i
+                    + "&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
             insertBook(url);
         }
     }
 
-    public void insertBook(String url){
+    public void insertBook(String url) {
 
         BookResponseDto bookResponseDto = restTemplate.getForObject(url, BookResponseDto.class);
 
-        if(bookResponseDto != null ){
+        if (bookResponseDto != null) {
 
             List<Item> bookList = bookResponseDto.getItem();
 
-            if (bookList == null){
+            if (bookList == null) {
                 System.out.println("booklist는 null이다");
             }
-            if(bookList != null){
+            if (bookList != null) {
 
                 System.out.println("책 목록이 존재함, 책 수: " + bookList.size());
 
                 // booklist 순회하며 bookEntity 저장
-                for(Item book : bookList) {
+                for (Item book : bookList) {
                     try {
                         BookEntity savedBook = BookEntity.builder()
                                 .bookId(book.getIsbn13()) // bookId
                                 .isbn(book.getIsbn())
                                 .title(book.getTitle())
                                 .publisher(book.getPublisher())
-                                .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay())
+                                .pubDate(LocalDate.parse(book.getPubDate(), DateTimeFormatter.ISO_LOCAL_DATE)
+                                        .atStartOfDay())
                                 .description(book.getDescription())
                                 .categoryName(book.getCategoryName())
                                 .bookImgUrl(book.getCover().replace("cover200", "cover500"))
-                                .stockStatus(book.getStockStatus().length() == 0 ? "판매중" : book.getStockStatus()) // 상품재고가 null이면 재고있음
+                                .stockStatus(book.getStockStatus().length() == 0 ? "판매중"
+                                        : book.getStockStatus()) // 상품재고가 null이면 재고있음
                                 .mallUrl(book.getLink())
                                 .build();
 
@@ -125,7 +129,7 @@ public class GetBookService {
 
                         bookBestsellerRepository.save(savedBestSeller);
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         System.err.println("Error processing book: " + book.getTitle() + ", " + e.getMessage());
                     }
                 }
@@ -134,9 +138,7 @@ public class GetBookService {
         }
 
 
-
     }
-
 
     // 예시: 파싱된 role 값을 설정하는 메서드
     public Role setParsedRole(String roleString) {

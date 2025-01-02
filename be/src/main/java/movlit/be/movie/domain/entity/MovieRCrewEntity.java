@@ -25,7 +25,7 @@ public class MovieRCrewEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("movieId")
-    @JoinColumn(name = "movie_id" )
+    @JoinColumn(name = "movie_id")
     private MovieEntity movieEntity;
 
 }

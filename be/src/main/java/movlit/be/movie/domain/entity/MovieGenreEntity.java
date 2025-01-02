@@ -1,6 +1,5 @@
 package movlit.be.movie.domain.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,4 +26,5 @@ public class MovieGenreEntity {
     @MapsId("movieId")
     @JoinColumn(name = "movie_id", referencedColumnName = "id", updatable = false, insertable = false)
     private MovieEntity movieEntity;
+
 }

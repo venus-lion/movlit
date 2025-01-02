@@ -1,6 +1,6 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'; // 변경
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'; // 변경
 import App from './App';
 import Home from './pages/Home';
 import MemberRegister from './pages/MemberRegister';
@@ -10,23 +10,23 @@ import MovieDetailPage from './components/MovieDetailPage';
 const router = createBrowserRouter([ // createBrowserRouter 사용
     {
         path: '/',
-        element: <App />,
+        element: <App/>,
         children: [
             {
                 index: true,
-                element: <Home />,
+                element: <Home/>,
             },
             {
                 path: 'member/register',
-                element: <MemberRegister />,
+                element: <MemberRegister/>,
             },
             {
                 path: 'member/login',
-                element: <MemberLogin />,
+                element: <MemberLogin/>,
             },
             {
                 path: 'movie/:movieId',
-                element: <MovieDetailPage />,
+                element: <MovieDetailPage/>,
             },
         ],
     },
@@ -34,6 +34,6 @@ const router = createBrowserRouter([ // createBrowserRouter 사용
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
-        <RouterProvider router={router} /> {/* RouterProvider 사용 */}
+        <RouterProvider router={router}/> {/* RouterProvider 사용 */}
     </StrictMode>
 );

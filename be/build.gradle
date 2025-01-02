@@ -1,97 +1,97 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'movlit'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-	// JWT (JSON Web Token)
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    // JWT (JSON Web Token)
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
-	implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// MySQL
-	implementation 'com.mysql:mysql-connector-j'
+    // MySQL
+    implementation 'com.mysql:mysql-connector-j'
 
-	// Test Containers
-	testImplementation 'org.testcontainers:testcontainers:1.18.3'
-	testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
-	testImplementation 'org.testcontainers:mysql:1.18.3'
+    // Test Containers
+    testImplementation 'org.testcontainers:testcontainers:1.18.3'
+    testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
+    testImplementation 'org.testcontainers:mysql:1.18.3'
 
-	// REST Assured
-	testImplementation 'io.rest-assured:rest-assured:5.3.2'
+    // REST Assured
+    testImplementation 'io.rest-assured:rest-assured:5.3.2'
 
-	// Rest Docs
-	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
+    // Rest Docs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
 
-	// configurations 블록을 dependencies 안으로 이동 (수정 필요)
-	configurations {
-		asciidoctorExt
-	}
-	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
+    // configurations 블록을 dependencies 안으로 이동 (수정 필요)
+    configurations {
+        asciidoctorExt
+    }
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
 
-	// Spring Validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 ext {
-	snippetsDir = file('build/generated-snippets')
+    snippetsDir = file('build/generated-snippets')
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
-	outputs.dir snippetsDir
+    useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	outputDir file("src/main/resources/static/docs")
-	configurations "asciidoctorExt"
-	dependsOn test
+    inputs.dir snippetsDir
+    outputDir file("src/main/resources/static/docs")
+    configurations "asciidoctorExt"
+    dependsOn test
 }
 
 tasks.named("jar") {
-	enabled = false
+    enabled = false
 }
 
 tasks.named("bootJar") {
-	dependsOn asciidoctor
-	from("${asciidoctor.outputDir}") {
-		into 'static/docs'
-	}
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }
 
 sourceSets {
-	main {
-		java {
-			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated/annotationProcessor/java/main"]
-		}
-	}
+    main {
+        java {
+            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated/annotationProcessor/java/main"]
+        }
+    }
 }

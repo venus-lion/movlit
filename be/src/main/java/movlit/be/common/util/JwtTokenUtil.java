@@ -3,17 +3,12 @@ package movlit.be.common.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,11 +20,9 @@ public class JwtTokenUtil {
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10시간
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 14; // 2주
 
-
-    public JwtTokenUtil(@Value("${jwt.secret}") String secret){
+    public JwtTokenUtil(@Value("${jwt.secret}") String secret) {
         this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
-
 
     // 수정: Claims 추출 로직 변경
     private Claims extractAllClaims(String token) {

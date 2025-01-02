@@ -4,6 +4,7 @@ import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 
 public class MovieConverter {
+
     // Domain -> Entity
     public static MovieEntity toEntity(Movie movie) {
         return MovieEntity.builder()
@@ -30,7 +31,7 @@ public class MovieConverter {
     }
 
     // Entity -> Domain
-    public static Movie toDomain(MovieEntity movieEntity){
+    public static Movie toDomain(MovieEntity movieEntity) {
         return Movie.builder()
                 .movieId(movieEntity.getMovieId())
                 .title(movieEntity.getTitle())
@@ -53,4 +54,5 @@ public class MovieConverter {
                 .heartCount(movieEntity.getHeartCount())
                 .build();
     }
+
 }

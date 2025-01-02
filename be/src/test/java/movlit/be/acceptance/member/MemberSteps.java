@@ -35,7 +35,6 @@ public class MemberSteps {
         회원가입한다(MemberFixture.사용자_민지_회원가입_요청(), new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
     }
 
-
     public static ExtractableResponse<Response> 비회원이_회원가입한다(RequestSpecification spec) {
         Map<String, Object> memberRegisterRequest = Map.of(
                 "nickname", "원준정",
@@ -73,7 +72,6 @@ public class MemberSteps {
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
-
 
     public static ExtractableResponse<Response> 비회원이_회원_원준의_이메일로_회원가입한다(RequestSpecification spec) {
         Map<String, Object> memberRegisterRequest = Map.of(
