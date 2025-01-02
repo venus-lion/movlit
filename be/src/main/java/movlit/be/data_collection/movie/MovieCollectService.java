@@ -1,4 +1,4 @@
-package movlit.be.data_collection;
+package movlit.be.data_collection.movie;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.data_collection.movie.jpa.MovieCollectRepository;
+import movlit.be.data_collection.movie.jpa.MovieTagRepository;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieTagEntity;
 import movlit.be.movie.domain.entity.MovieTagIdForEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
