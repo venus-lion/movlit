@@ -14,9 +14,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookcrewJpaRepository extends JpaRepository<BookcrewEntity, BookcrewId> {
 
-    @Query("SELECT r FROM BookRCrewEntity r " +
-            "LEFT JOIN BookcrewEntity c ON r.bookcrewEntity = c.crewId " +
-            "WHERE r.bookEntity = :bookId")
+    @Query("SELECT c FROM BookRCrewEntity r " +
+            "LEFT JOIN r.bookcrewEntity c " +
+            "WHERE r.bookEntity.bookId = :bookId")
     List<BookcrewEntity> findcrewByBookId(@Param("bookId") BookId bookId);
 
+
 }
+
+

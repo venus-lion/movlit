@@ -1,8 +1,11 @@
 package movlit.be.book.infra.persistence.jpa;
 
+import java.util.List;
 import java.util.Optional;
+import movlit.be.book.domain.Book;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.entity.BookHeartEntity;
+import movlit.be.book.domain.entity.BookcrewEntity;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.member.domain.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +16,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookHeartJpaRepository extends JpaRepository<BookHeartEntity, Long> {
 
-   @Query("SELECT COUNT(*) FROM BookHeartEntity l WHERE l.bookEntity = :bookId")
-    Optional<Long> countLikesByBookId(@Param("bookId")BookId BookId);
+
+    @Query("SELECT COUNT(h) FROM BookHeartEntity h WHERE h.bookEntity.bookId = :bookId")
+    Optional<Long> countHeartsByBookId(@Param("bookId") BookId bookId);
+
+
 
 
 

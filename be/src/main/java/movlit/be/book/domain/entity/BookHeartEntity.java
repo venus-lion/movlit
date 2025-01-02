@@ -29,6 +29,7 @@ public class BookHeartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookHeartId;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
     private BookEntity bookEntity;

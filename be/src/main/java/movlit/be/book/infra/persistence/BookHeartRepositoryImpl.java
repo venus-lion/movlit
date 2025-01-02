@@ -31,7 +31,7 @@ public class BookHeartRepositoryImpl implements BookHeartRepository {
 
     @Override
     public Long countHeartsByBookId(BookId bookId) {
-        Long heartCount = bookHeartJpaRepository.countLikesByBookId(bookId).orElse(0L);
+        Long heartCount = bookHeartJpaRepository.countHeartsByBookId(bookId).orElse(0L);
         return heartCount;
     }
 

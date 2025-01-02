@@ -30,8 +30,8 @@ public class BookHeartCountEntity {
     private Long bookHeartCountId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_heart_id", nullable = false)
-    private BookHeartEntity bookHeartEntity;
+    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
+    private BookEntity bookEntity;
 
     @Column(nullable = false)
     private Long count; // 해당 책의 "찜"(heart) 갯수

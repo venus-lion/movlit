@@ -1,5 +1,6 @@
 package movlit.be.book.application.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import movlit.be.book.domain.Bookcrew;
 import movlit.be.book.domain.entity.BookcrewEntity;
@@ -13,7 +14,7 @@ public class BookcrewConverter {
 
     // DomainList -> EntityList
     public static List<BookcrewEntity> toEntityList(List<Bookcrew> bookcrewList) {
-        List<BookcrewEntity> bookcrewEntityList = null;
+        List<BookcrewEntity> bookcrewEntityList = new ArrayList<>();;
 
         for(Bookcrew bookcrew : bookcrewList){
             BookcrewEntity bookcrewEntity = BookcrewEntity.builder()
@@ -41,7 +42,7 @@ public class BookcrewConverter {
 
     // EntityList -> DomainList
     public static List<Bookcrew> toDomainList(List<BookcrewEntity> bookcrewEntityList) {
-        List<Bookcrew> bookcrewList = null;
+        List<Bookcrew> bookcrewList = new ArrayList<>();;
 
         for(BookcrewEntity crewEntity : bookcrewEntityList){
             Bookcrew bookcrew = Bookcrew.builder()
