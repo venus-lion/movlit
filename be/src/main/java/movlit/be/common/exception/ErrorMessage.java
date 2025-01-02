@@ -30,8 +30,10 @@ public enum ErrorMessage {
     INVALID_OAUTH_RESPONSE("OAuth 클라이언트로부터의 응답이 유효하지 않습니다", "a007"),
     EXPIRED_TOKEN("세션이 만료되었습니다. 다시 로그인해 주세요.", "a008"),
 
+
     // movie
     MOVIE_NOT_FOUND("메시지", "m001"),
+
 
 
     // Genre
@@ -41,7 +43,16 @@ public enum ErrorMessage {
     BESTSELLERS_NOT_FOUND("bestseller가 존재하지 않습니다.", "b001"),
     BOOKNEW_NOT_FOUND("bookNew가 존재하지 않습니다.", "b002"),
     BOOKNEWSPECIAL_NOT_FOUND("bookNewSpecial이 존재하지 않습니다", "b003"),
-    UNKNOWN_BOOK_ENTITY_TYPE("알 수 없는 BookEntity 타입입니다.", "b004");
+    UNKNOWN_BOOK_ENTITY_TYPE("알 수 없는 BookEntity 타입입니다.", "b004"),
+
+    // book
+    BOOK_NOT_FOUND("해당 도서가 존재하지 않습니다.", "b010"),
+
+    BOOK_CREW_NOT_FOUND("해당 도서의 작가 정보가 존재하지 않습니다", "b012"),
+    BOOK_COMMENT_NOT_FOUND("해당 도서 리뷰가 존재하지 않습니다.", "b020"),
+    BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b021");
+
+
 
     private final String message;
     private final String code;
