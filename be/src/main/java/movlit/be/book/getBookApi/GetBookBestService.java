@@ -132,19 +132,30 @@ public class GetBookBestService {
 
                                     if (matcher.matches()) {
                                         String name = matcher.group(1).trim();
-
                                         Role role = setParsedRole(
                                                 matcher.group(2) != null ? matcher.group(2).trim() : "기타");
+                                        BookcrewId bookCrewId = null;
+                                        BookcrewEntity savedBookcrewEntity = null;
 
-                                        BookcrewEntity savedBookcrew = BookcrewEntity.builder()
-                                                .crewId(new BookcrewId(GenerateUUID.generateUUID()))
-                                                .name(name)
-                                                .role(role)
-                                                .profileImageUrl("/book_crew_profile/default_profile.png")
-                                                .build();
+                                        if(!bookcrewRepository.existsByName(name).isPresent()){ // 처음 나오는 작가 -- bookcrewRepository.save
 
-                                        BookcrewEntity savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
 
+                                            BookcrewEntity savedBookcrew = BookcrewEntity.builder()
+                                                    .crewId(new BookcrewId(GenerateUUID.generateUUID()))
+                                                    .name(name)
+                                                    .role(role)
+                                                    .profileImageUrl("/book_crew_profile/default_profile.png")
+                                                    .build();
+
+                                            savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
+
+                                        }else{ // 중복해서 나오는 작가
+                                            savedBookcrewEntity = bookcrewRepository.existsByName(name).orElseThrow();
+
+
+                                        }
+
+                                        // 작가가 쓴 또다른 책 저장하기 위함
                                         BookRCrewEntity savedBookRCrewEntity = BookRCrewEntity.builder()
                                                 .bookRCrewId(new BookRCrewId(GenerateUUID.generateUUID()))
                                                 .book(savedBookEntity)

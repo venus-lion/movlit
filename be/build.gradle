@@ -51,10 +51,11 @@ dependencies {
 	// Rest Docs
 	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
 
-	// elasticsearch
+	// Spring Data Elasticsearch Starter
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-elasticsearch
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-elasticsearch', version: '5.4.1'
+	implementation 'org.springframework.data:spring-data-elasticsearch:5.4.0'
+	implementation 'co.elastic.clients:elasticsearch-java:8.15.5'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 
 	// configurations 블록을 dependencies 안으로 이동 (수정 필요)

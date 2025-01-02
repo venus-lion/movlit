@@ -120,7 +120,7 @@ public class BookESBestsellerService {
 
                         }
                     } catch (Exception e) {
-                        System.err.println("Error processing book: " + savedEsBook.getTitle() + ", " + e.getMessage());
+                        System.err.println("Error processing book: " + book.getIsbn13() + " > " +book.getTitle() + ", " + e.getMessage());
                     }
                 }
 
