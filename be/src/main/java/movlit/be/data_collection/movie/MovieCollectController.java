@@ -81,4 +81,9 @@ public class MovieCollectController {
         }
     }
 
+    @GetMapping("/discover/crew")
+    public void getDiscoverMovieCrew() {
+        movieCollectService.getMovieCrewEntityList();
+    }
+
 }

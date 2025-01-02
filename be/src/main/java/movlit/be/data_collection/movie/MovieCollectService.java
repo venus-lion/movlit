@@ -12,14 +12,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.exception.MovieNotFoundException;
+import movlit.be.common.util.IdFactory;
+import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.data_collection.MovieGenreCollectRepository;
 import movlit.be.data_collection.movie.jpa.MovieCollectRepository;
 import movlit.be.data_collection.movie.jpa.MovieTagRepository;
+import movlit.be.movie.domain.MovieRole;
+import movlit.be.movie.domain.entity.MovieCrewEntity;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.entity.MovieGenreIdForEntity;
+import movlit.be.movie.domain.entity.MovieRCrewEntity;
+import movlit.be.movie.domain.entity.MovieRCrewIdForEntity;
 import movlit.be.movie.domain.entity.MovieTagEntity;
 import movlit.be.movie.domain.entity.MovieTagIdForEntity;
+import movlit.be.movie.infra.persistence.jpa.MovieCrewJpaRepository;
+import movlit.be.movie.infra.persistence.jpa.MovieRCrewJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -50,6 +59,12 @@ public class MovieCollectService {
 
     @Autowired
     private MovieGenreCollectRepository movieGenreCollectRepository;
+
+    @Autowired
+    private MovieCrewJpaRepository movieCrewJpaRepository;
+
+    @Autowired
+    private MovieRCrewJpaRepository movieRCrewJpaRepository;
 
     public MovieCollectService(RestTemplateBuilder builder) {
         HttpHeaders headers = new HttpHeaders();
@@ -292,6 +307,98 @@ public class MovieCollectService {
             case 37 -> 16L;       // 서부(37)
             default -> 99999L;
         };
+    }
+
+    public void getMovieCrewEntityList() {
+        List<MovieCrewEntity> movieCrewResultList = new ArrayList<>();
+        List<MovieRCrewEntity> movieRCrewResultList = new ArrayList<>();
+
+        // 언어, 지역
+        String language = "&language=ko";
+        List<MovieEntity> all = movieCollectRepository.findAll();
+
+        all.forEach(movie -> {
+            Long movieId = movie.getMovieId();
+            String apiUrl =
+                    "https://api.themoviedb.org/3/movie/" + movieId + "/credits" + "?api_key=" + key
+                            + language;
+            Map<String, Object> MovieCrewEntityInfo = restTemplate.getForObject(apiUrl, Map.class);
+
+            // MovieCrewEntity
+            /**
+             *     private Long id;
+             *     private String name;
+             *     @Enumerated(EnumType.STRING)
+             *     private MovieRole role;
+             *     private String charName;
+             *     private String profileImgUrl;
+             *     private int orderNo; // 감독: -1, 배우: 0부터 정렬
+             */
+
+            // 1. Cast -> Order로 정렬
+            List<Map<String, Object>> castList = (List<Map<String, Object>>) MovieCrewEntityInfo.get("cast");
+            castList.forEach(cast -> {
+                MovieCrewId movieCrewId = IdFactory.createMovieCrewId();
+                String name = (String) cast.get("name");
+                MovieRole role = MovieRole.CAST;
+                String charName = (String) cast.get("character");
+                String profileImgUrl = (String) cast.get("profile_path");
+                int orderNo = (Integer) cast.get("order");
+
+                MovieCrewEntity movieCrewEntity = MovieCrewEntity.builder()
+                        .movieCrewId(movieCrewId)
+                        .name(name)
+                        .role(role)
+                        .charName(charName)
+                        .profileImgUrl(profileImgUrl)
+                        .orderNo(orderNo)
+                        .build();
+
+                MovieRCrewIdForEntity movieRCrewIdForEntity = new MovieRCrewIdForEntity(movieId, movieCrewId);
+                MovieEntity movieEntity = movieCollectRepository.findById(movieId).orElseThrow(
+                        MovieNotFoundException::new);
+                MovieRCrewEntity movieRCrewEntity = new MovieRCrewEntity(movieRCrewIdForEntity, movieCrewEntity,
+                        movieEntity);
+
+                movieCrewResultList.add(movieCrewEntity);
+                movieRCrewResultList.add(movieRCrewEntity);
+                log.info("name={}", name);
+            });
+
+            // 2. Crew (DIRECTOR) -> 0번째 배열, job = "Director"
+            List<Map<String, Object>> crewList = (List<Map<String, Object>>) MovieCrewEntityInfo.get("crew");
+            if (crewList.isEmpty()) {
+                return;
+            }
+            Map<String, Object> crew = crewList.get(0);
+            MovieCrewId movieCrewId = IdFactory.createMovieCrewId();
+            String name = (String) crew.get("name");
+            MovieRole role = MovieRole.DIRECTOR;
+            String charName = (String) crew.get("character");
+            String profileImgUrl = (String) crew.get("profile_path");
+            int orderNo = -1;
+
+            MovieCrewEntity movieCrewEntity = MovieCrewEntity.builder()
+                    .movieCrewId(movieCrewId)
+                    .name(name)
+                    .role(role)
+                    .charName(charName)
+                    .profileImgUrl(profileImgUrl)
+                    .orderNo(orderNo)
+                    .build();
+
+            MovieRCrewIdForEntity movieRCrewIdForEntity = new MovieRCrewIdForEntity(movieId, movieCrewId);
+            MovieEntity movieEntity = movieCollectRepository.findById(movieId).orElseThrow(MovieNotFoundException::new);
+            MovieRCrewEntity movieRCrewEntity = new MovieRCrewEntity(movieRCrewIdForEntity, movieCrewEntity,
+                    movieEntity);
+
+            movieCrewResultList.add(movieCrewEntity);
+            movieRCrewResultList.add(movieRCrewEntity);
+            log.info("name={}", name);
+        });
+
+        movieCrewJpaRepository.saveAll(movieCrewResultList);
+        movieRCrewJpaRepository.saveAll(movieRCrewResultList);
     }
 
 }

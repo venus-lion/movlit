@@ -6,6 +6,7 @@ import movlit.be.common.util.ids.BaseId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
+import movlit.be.common.util.ids.MovieCrewId;
 
 public class IdFactory {
 
@@ -35,6 +36,14 @@ public class IdFactory {
 
     public static MovieCommentId createMovieCommentId() {
         return createId(MovieCommentId.class);
+    }
+
+    public static MovieCrewId createMovieCrewId(String id) {
+        return createId(MovieCrewId.class, id);
+    }
+
+    public static MovieCrewId createMovieCrewId() {
+        return createId(MovieCrewId.class);
     }
 
     private static <T extends BaseId> T createId(Class<T> idClass, String id) {
