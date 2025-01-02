@@ -8,6 +8,7 @@ import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,9 +37,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/movies/*/detail",
-                                "/api/movies/*/crews", "/api/movies/*/comments")
+                                "/img/**", "/js/**", "/css/**", "/error/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

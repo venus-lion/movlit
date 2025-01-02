@@ -1,10 +1,10 @@
 package movlit.be.common.annotation;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
 

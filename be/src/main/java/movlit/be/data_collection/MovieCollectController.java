@@ -41,44 +41,45 @@ public class MovieCollectController {
     }
 
     @GetMapping("/keywords")
-    public void getMovieTagList(){
+    public void getMovieTagList() {
         List<MovieEntity> movieList = movieCollectService.getAllMovieList();
         int cnt = 0;
-        for(MovieEntity movie : movieList){
+        for (MovieEntity movie : movieList) {
 
             movieCollectService.getMovieTagList(movie);
-            try{
+            try {
                 if (cnt % 40 == 0) {
                     Thread.sleep(1000);
                 }
 
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             log.info("cnt={}", cnt);
             log.info("id={}", movie.getMovieId());
-            cnt ++;
+            cnt++;
         }
     }
 
     @GetMapping("/genres")
-    public void getMovieGenreList(){
+    public void getMovieGenreList() {
         int cnt = 0;
         List<MovieEntity> movieList = movieCollectService.getAllMovieList();
-        for(MovieEntity movie : movieList){
+        for (MovieEntity movie : movieList) {
 
             movieCollectService.getMovieGenreList(movie);
-            try{
+            try {
                 if (cnt % 40 == 0) {
                     Thread.sleep(1000);
                 }
 
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             log.info("cnt={}", cnt);
             log.info("id={}", movie.getMovieId());
-            cnt ++;
+            cnt++;
         }
     }
+
 }

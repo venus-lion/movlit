@@ -14,11 +14,13 @@ public class MovieConvertor {
         // TODO:
     }
 
-    public static MovieCommentData toMovieDetailCommentData(Long movieId, MemberId memberId, MovieCommentRequest request) {
+    public static MovieCommentData toMovieDetailCommentData(Long movieId, MemberId memberId,
+                                                            MovieCommentRequest request) {
         return new MovieCommentData(movieId, memberId, request);
     }
 
-    public static MovieCommentEntity toMovieCommentEntity(MovieCommentData data, MovieCommentId movieCommentId, LocalDateTime now) {
+    public static MovieCommentEntity toMovieCommentEntity(MovieCommentData data, MovieCommentId movieCommentId,
+                                                          LocalDateTime now) {
         return MovieCommentEntity.builder()
                 .movieCommentId(movieCommentId)
                 .delYn(false)

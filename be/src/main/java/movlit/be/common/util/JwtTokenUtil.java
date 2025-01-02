@@ -3,9 +3,7 @@ package movlit.be.common.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +12,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+//@PropertySource("classpath:application-jwt.yml")
 public class JwtTokenUtil {
 
     @Value("${jwt.secret}")
     private String secret;
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10시간
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 14; // 2주
+
+    public JwtTokenUtil(@Value("${jwt.secret}") String secret) {
+        this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
+    }
 
     // 수정: Claims 추출 로직 변경
     private Claims extractAllClaims(String token) {
@@ -66,15 +69,14 @@ public class JwtTokenUtil {
     // Access Token 생성 로직
     private String createToken(Map<String, Object> claims, String email, long time) {
         // Secret Key를 UTF-8 인코딩의 바이트 배열로 변환
-        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
-        Key key = Keys.hmacShaKeyFor(secretBytes);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + time))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                //.signWith(secret, SignatureAlgorithm.HS512)
                 .compact();
     }
 

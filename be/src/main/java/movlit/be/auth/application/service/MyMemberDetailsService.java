@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.Member;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +25,7 @@ public class MyMemberDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email);
         }
 
-        log.info("Login 시도: " + member.getEmail());
+        log.info("Login 시도 memberId: " + member);
         return new MyMemberDetails(member);
     }
 

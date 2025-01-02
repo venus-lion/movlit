@@ -3,12 +3,13 @@ package movlit.be.movie.presentation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.annotation.CurrentMemberId;
+import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.service.MovieMainService;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.presentation.dto.MovieListByGenreResponseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,24 +67,20 @@ public class MovieMainController {
     }
 
     /**
-    * 사용자 별 취향 (장르) 가져오기
-    * TODO : 키워드, 배우 별도 고려
-    * */
+     * 사용자 별 취향 (장르) 가져오기
+     * TODO : 키워드, 배우 별도 고려
+     * */
     public ResponseEntity<List<Movie>> getMovieUserInterestByGenre(
-            @CurrentMemberId MemberId memberId,
+            @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "10") int pageSize){
-
-        movieMainService.getMovieUserInterestByGenre(memberId, page, pageSize);
-
+            @RequestParam(required = false, defaultValue = "10") int pageSize) {
+        movieMainService.getMovieUserInterestByGenre(details.getMemberId(), page, pageSize);
         return ResponseEntity.ok().body(null);
     }
-
 
     /**
      * TODO : 사용자 로그인 유무에 따른 처리를 Spring에서 할지? 한다면 여기에 구현
      *
      * */
-
 
 }

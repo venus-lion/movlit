@@ -1,20 +1,14 @@
 package movlit.be.auth.application.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MemberNotFoundException;
-import movlit.be.common.exception.MovieNotFoundException;
-import movlit.be.common.util.IdFactory;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

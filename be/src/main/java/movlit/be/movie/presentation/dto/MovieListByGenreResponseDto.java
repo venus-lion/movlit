@@ -7,4 +7,6 @@ public record MovieListByGenreResponseDto(
         Long genreId,
         String genreName,
         List<Movie> data
-) {}
+) {
+
+}

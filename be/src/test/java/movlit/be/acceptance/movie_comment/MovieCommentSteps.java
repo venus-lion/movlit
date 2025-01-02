@@ -13,7 +13,6 @@ import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class MovieCommentSteps {
 

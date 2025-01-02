@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import React, {useState} from 'react';
+import axiosInstance from '../axiosInstance'; // axiosInstance 임포트
+import {useNavigate, useOutletContext} from 'react-router-dom';
 
 const MemberLogin = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { updateLoginStatus } = useOutletContext();
+    const {updateLoginStatus} = useOutletContext();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('/api/members/login', {
+            const response = await axiosInstance.post('/members/login', {
                 email,
                 password,
             });
-            const { accessToken, refreshToken } = response.data;
+            const {refreshToken} = response.data;
 
-            sessionStorage.setItem('accessToken', accessToken);
-            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
+            console.log('refreshToken = ', refreshToken);
+
+            document.cookie = `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=1209600`;
+            // Secure; <- Https 후 꼭 추가해주기
 
             updateLoginStatus(true);
             navigate('/');
@@ -31,7 +33,7 @@ const MemberLogin = () => {
 
     return (
         <div className="bg-light">
-            <div className="container" style={{ marginTop: '30px' }}>
+            <div className="container" style={{marginTop: '30px'}}>
                 <div className="row">
                     <div className="col-4"></div>
                     <div className="col-4">
@@ -42,15 +44,15 @@ const MemberLogin = () => {
                                         <strong>로그인</strong>
                                     </h3>
                                 </div>
-                                <hr />
+                                <hr/>
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{ width: '45%' }}>
+                                            <td style={{width: '45%'}}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{ width: '55%' }}>
+                                            <td style={{width: '55%'}}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -79,7 +81,7 @@ const MemberLogin = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     type="submit"
-                                                    style={{ marginRight: '5px' }}
+                                                    style={{marginRight: '5px'}}
                                                 >
                                                     확인
                                                 </button>
@@ -92,7 +94,7 @@ const MemberLogin = () => {
                                     </table>
                                 </form>
 
-                                {error && <p style={{ color: 'red' }}>{error}</p>}
+                                {error && <p style={{color: 'red'}}>{error}</p>}
 
                                 <p className="mt-3">
                                     <span className="me-3">계정이 없으신가요? </span>

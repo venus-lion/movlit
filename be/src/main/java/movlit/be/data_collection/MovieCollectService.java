@@ -256,8 +256,7 @@ public class MovieCollectService {
         return genreList;
     }
 
-
-    private MovieGenreEntity mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie){
+    private MovieGenreEntity mappingGenreEntityFromApiGenreId(int apiGenreId, MovieEntity movie) {
         return switch (apiGenreId) {
             case 28, 12 ->    // 액션(28), 모험(12)
                     new MovieGenreEntity(
@@ -323,10 +322,10 @@ public class MovieCollectService {
                     new MovieGenreEntity(
                             new MovieGenreIdForEntity(16L, movie.getMovieId())
                             , movie);
-            default ->
-                    new MovieGenreEntity(
-                            new MovieGenreIdForEntity(99999L, movie.getMovieId())
-                            , movie);
+            default -> new MovieGenreEntity(
+                    new MovieGenreIdForEntity(99999L, movie.getMovieId())
+                    , movie);
         };
     }
+
 }
