@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 
 function MovieDetailPage() {
-    const { movieId } = useParams();
+    const {movieId} = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
@@ -62,13 +62,51 @@ function MovieDetailPage() {
     };
 
     const handleSubmitComment = () => {
-        // 여기에 코멘트 저장 로직 추가 (예: API 호출)
-        console.log('코멘트 제출:', comment, '별점:', myRating);
+        if (myRating === 0) {
+            alert("별점을 입력해주세요.");
+            return;
+        }
+        if (comment.trim() === '') {
+            alert("코멘트를 입력해주세요.");
+            return;
+        }
 
-        // 코멘트 제출 후 초기화
-        setComment('');
-        setMyRating(0);
-        setShowCommentInput(false);
+        const requestBody = {
+            score: myRating,
+            comment: comment
+        };
+
+        fetch(`/api/movies/${movieId}/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // 필요한 경우 인증 헤더 추가
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('코멘트 저장 성공:', data);
+                // 성공적으로 코멘트를 저장한 후 필요한 작업 수행
+                // 예: 코멘트 목록 업데이트, 사용자에게 성공 메시지 표시 등
+                alert("코멘트가 저장되었습니다.");
+            })
+            .catch(error => {
+                console.error('코멘트 저장 실패:', error);
+                // 에러 처리
+                alert("코멘트 저장에 실패했습니다.");
+            })
+            .finally(() => {
+                // 코멘트 제출 후 상태 초기화
+                setComment('');
+                setMyRating(0);
+                setShowCommentInput(false);
+            });
     };
 
     if (!movieData) {
@@ -98,7 +136,7 @@ function MovieDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title} />
+                    <img src={movieData.posterUrl} alt={movieData.title}/>
                 </div>
 
                 <div style={styles.info}>
@@ -119,7 +157,7 @@ function MovieDetailPage() {
                         </div>
                         <div style={styles.buttonGroup}>
                             <button
-                                style={{ ...styles.button, backgroundColor: isWish ? '#FF3366' : '#4080ff' }}
+                                style={{...styles.button, backgroundColor: isWish ? '#FF3366' : '#4080ff'}}
                                 onClick={handleWishClick}
                             >
                                 {isWish ? '찜 완료' : '찜'}
@@ -162,7 +200,8 @@ function MovieDetailPage() {
                                             <div style={styles.crewInfo}>
                                                 <div style={styles.crewName}>{crew.name}</div>
                                                 <div style={styles.crewCharName}>{crew.charName}</div>
-                                                <div style={styles.crewRole}>{crew.role === "CAST" ? "출연" : crew.role === "DIRECTOR" ? "감독" : crew.role}</div>
+                                                <div
+                                                    style={styles.crewRole}>{crew.role === "CAST" ? "출연" : crew.role === "DIRECTOR" ? "감독" : crew.role}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -186,7 +225,7 @@ function MovieDetailPage() {
                                 {movieData.relatedBooks &&
                                     movieData.relatedBooks.map((book) => (
                                         <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title} />
+                                            <img src={book.coverUrl} alt={book.title}/>
                                             <div>{book.title}</div>
                                         </div>
                                     ))}
@@ -325,8 +364,7 @@ const styles = {
         objectFit: 'cover',
         marginBottom: '5px',
     },
-    crewInfo: {
-    },
+    crewInfo: {},
     crewName: {
         fontWeight: 'bold',
         color: '#000000'
