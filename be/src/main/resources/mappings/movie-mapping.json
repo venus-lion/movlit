@@ -5,15 +5,11 @@
     },
     "title": {
       "type": "text",
-      "analyzer": "korean_analyzer",
+      "analyzer": "english_analyzer",
       "fields": {
         "english": {
           "type": "text",
-          "analyzer": "english_analyzer"
-        },
-        "keyword": {
-          "type": "keyword",
-          "normalizer": "lowercase_normalizer"
+          "analyzer": "korean_analyzer"
         }
       }
     },
@@ -28,10 +24,6 @@
         "english": {
           "type": "text",
           "analyzer": "english_analyzer"
-        },
-        "keyword": {
-          "type": "keyword",
-          "normalizer": "lowercase_normalizer"
         }
       }
     },
@@ -78,10 +70,6 @@
         "english": {
           "type": "text",
           "analyzer": "english_analyzer"
-        },
-        "keyword": {
-          "type": "keyword",
-          "normalizer": "lowercase_normalizer"
         }
       }
     },
@@ -100,13 +88,7 @@
         },
         "genreName": {
           "type": "text",
-          "analyzer": "korean_analyzer",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "normalizer": "lowercase_normalizer"
-            }
-          }
+          "analyzer": "korean_analyzer"
         }
       }
     },
@@ -119,15 +101,11 @@
         },
         "tagName": {
           "type": "text",
-          "analyzer": "korean_analyzer",
+          "analyzer": "english_analyzer",
           "fields": {
             "english": {
               "type": "text",
-              "analyzer": "english_analyzer"
-            },
-            "keyword": {
-              "type": "keyword",
-              "normalizer": "lowercase_normalizer"
+              "analyzer": "korean_analyzer"
             }
           }
         }

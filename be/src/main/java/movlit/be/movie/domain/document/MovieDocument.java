@@ -32,7 +32,7 @@ public class MovieDocument {
 
     @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer")
+                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
             })
     private String title;
 
@@ -44,9 +44,6 @@ public class MovieDocument {
                     @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer")
             })
     private String overview;
-
-//    @Field(type = FieldType.Text)
-//    private String overview;
 
     @Field(type = FieldType.Double)
     private Double popularity;
@@ -80,7 +77,10 @@ public class MovieDocument {
     @Field(type = FieldType.Keyword)
     private String status;
 
-    @Field(type = FieldType.Text)
+    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
+            otherFields = {
+                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer")
+            })
     private String tagline;
 
     @Field(type = FieldType.Boolean)
