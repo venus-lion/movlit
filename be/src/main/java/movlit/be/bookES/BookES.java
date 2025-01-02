@@ -31,7 +31,7 @@ public class BookES {
 
 
     @Id
-    private Long bookId; // isbn13, uuid
+    private String bookId; // isbn13, uuid
 
     @Field(type = FieldType.Keyword)  // 필드 타입을 'Keyword'로 지정
     private String isbn;  // isbn
@@ -40,7 +40,7 @@ public class BookES {
     private String title;
 
     @Field(type = FieldType.Text)  // 텍스트로 처리, 전체 텍스트 검색 가능
-    private String crew; // 작가, 편집자, 기타..
+    private List<String> crew; // 작가, 편집자, 기타..
 
     @Field(type = FieldType.Text)  // 텍스트로 처리
     private String publisher;
@@ -50,9 +50,6 @@ public class BookES {
 
     @Field(type = FieldType.Text)  // 긴 설명을 텍스트로 처리
     private String description;
-
-    @Field(type = FieldType.Keyword)  // 카테고리 ID
-    private String categoryId;
 
     @Field(type = FieldType.Text)  // 카테고리 이름
     private String categoryName;

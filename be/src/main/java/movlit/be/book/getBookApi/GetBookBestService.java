@@ -87,7 +87,8 @@ public class GetBookBestService {
 
                         String categoryName = book.getCategoryName();
 
-                        if(!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증")) {
+                        if( (book.getIsbn13() != null) && (!book.getIsbn13().equals("")) &&
+                                (!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증"))) {
 
                             BookId bookId = new BookId(book.getIsbn13());
 
