@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './MovieHome.css';
+import {Link} from "react-router-dom";
 
 function MovieHome() {
     const [populars, setPopulars] = useState([]);
@@ -81,7 +82,7 @@ function MovieHome() {
                 )}
                 <div className="book-list">
                     {populars.slice(startPopularIndex, startPopularIndex + 5).map((popular, index) => (
-                        <div className="book-card" key={popular.movieId}>
+                        <Link className="book-card" key={popular.movieId} to={`/movie/${popular.movieId}`}>
                             <div className="book-rank">{startPopularIndex + index + 1}</div>
                             <img src={popular.posterPath} alt={popular.title} className="book-image"/>
                             <div className="book-info">
@@ -91,7 +92,7 @@ function MovieHome() {
                                 {/*    {movie.tagList.map((tag) => tag.name).join(', ')}*/}
                                 {/*</p>*/}
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
                 {startPopularIndex + 5 < populars.length && (
@@ -110,7 +111,7 @@ function MovieHome() {
                 )}
                 <div className="book-list">
                     {latests.slice(startLatestIndex, startLatestIndex + 5).map((latest, index) => (
-                        <div className="book-card" key={latest.movieId}>
+                        <Link className="book-card" key={latest.movieId} to={`/movie/${latest.movieId}`}>
                             <div className="book-rank">{startLatestIndex + index + 1}</div>
                             <img src={latest.posterPath} alt={latest.title} className="book-image"/>
                             <div className="book-info">
@@ -120,7 +121,7 @@ function MovieHome() {
                                 {/*    {movie.tagList.map((tag) => tag.name).join(', ')}*/}
                                 {/*</p>*/}
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
                 {startLatestIndex + 5 < latests.length && (
