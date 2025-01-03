@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 
@@ -18,6 +18,8 @@ function MovieDetailPage() {
     const [showLessComments, setShowLessComments] = useState(false); // 코멘트 접기 버튼
     const [totalComments, setTotalComments] = useState(0);
     const [page, setPage] = useState(0);
+    const [isInitialLoad, setIsInitialLoad] = useState(true); // 최초 로드 상태 (더보기 버튼 활성화 여부)
+    const loader = useRef(null); // 로딩 감지 Element Ref
 
     const initialVisibleCrews = 14; // 최초로 보여줄 출연/제작진 수
 
@@ -77,19 +79,39 @@ function MovieDetailPage() {
         fetchComments(0);
     }, [movieId]);
 
+    // Intersection Observer 설정 (코멘트 무한 스크롤)
+    useEffect(() => {
+        if (!isInitialLoad) { // isInitialLoad가 false일 때만 observer 생성
+            var options = {
+                root: null,
+                rootMargin: '20px',
+                threshold: 1.0,
+            };
+
+            const observer = new IntersectionObserver(handleObserver, options);
+            if (loader.current) {
+                observer.observe(loader.current);
+            }
+
+            return () => observer.disconnect(); // 컴포넌트 언마운트 시 옵저버 해제
+        }
+    }, [comments, hasMore, isInitialLoad]);
+
+    // 코멘트 불러오기 함수
     const fetchComments = (currentPage = 0) => {
         axiosInstance
             .get(`/movies/${movieId}/comments?page=${currentPage}`)
             .then((response) => {
-                if (response.data.content && response.data.content.length > 0) {
-                    setTotalComments(response.data.content[0].commentCount);
-                } else {
-                    setTotalComments(0);
-                }
+                // 댓글 수(totalComments)를 API 응답에서 가져와서 설정
+                const fetchedTotalComments = response.data.content && response.data.content.length > 0
+                    ? response.data.content[0].commentCount
+                    : 0;
+                setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
-                    setComments(response.data.content);
-                    setHasMore(response.data.content.length >= 4);
+                    setComments(response.data.content.slice(0, 4)); // 최초 4개만 로드
+                    // 더보기 버튼 표시 여부 설정
+                    setHasMore(response.data.content.length > 4 || fetchedTotalComments > 4);
                 } else {
                     setComments((prevComments) => [
                         ...prevComments,
@@ -100,6 +122,15 @@ function MovieDetailPage() {
                 setPage(currentPage + 1);
             })
             .catch((error) => console.error('Error fetching comments:', error));
+    };
+
+    // Intersection Observer 콜백 함수
+    const handleObserver = (entities) => {
+        const target = entities[0];
+        // isInitialLoad가 false일 때만 무한 스크롤 동작
+        if (target.isIntersecting && hasMore && !isInitialLoad) {
+            fetchComments(page);
+        }
     };
 
     const handleRatingChange = (newRating) => {
@@ -154,12 +185,6 @@ function MovieDetailPage() {
             });
     };
 
-    const handleLoadMore = () => {
-        fetchComments(page);
-        setShowLessComments(true); // 코멘트 더보기 취소 버튼 표시
-        setHasMore(false);
-    };
-
     // 출연/제작진 더보기/취소 처리
     const handleShowMoreCrews = () => {
         setShowMoreCrews(true);
@@ -171,12 +196,20 @@ function MovieDetailPage() {
         setVisibleCrews(crews.slice(0, initialVisibleCrews));
     };
 
+    // 코멘트 더보기 처리
+    const handleLoadMore = () => {
+        setIsInitialLoad(false); // 더보기 버튼 클릭 시 무한 스크롤 활성화
+        fetchComments(page); // 즉시 다음 페이지 로드
+        setShowLessComments(true); // 코멘트 더보기 취소 버튼 표시
+    };
+
     // 코멘트 더보기 취소 처리
     const handleShowLessComments = () => {
         setComments(comments.slice(0, 4)); // 처음 4개만 표시
         setShowLessComments(false); // 코멘트 더보기 취소 버튼 숨김
         setHasMore(true); // 코멘트 더보기 버튼 표시
         setPage(1); // 페이지 번호를 1로 초기화
+        setIsInitialLoad(true); // 더보기 버튼 다시 활성화
     };
 
     if (!movieData) {
@@ -223,19 +256,21 @@ function MovieDetailPage() {
                         <div style={styles.myRating}>
                             <span style={styles.ratingLabel}>내 별점</span>
                             <div style={styles.stars}>
-                                {Array(5).fill().map((_, index) => (
-                                    <span
-                                        key={index}
-                                        style={
-                                            index < myRating
-                                                ? styles.starFilled
-                                                : styles.starEmpty
-                                        }
-                                        onClick={() => handleRatingChange(index + 1)}
-                                    >
-                                <span style={styles.starIcon}>★</span>
-                            </span>
-                                ))}
+                                {Array(5)
+                                    .fill()
+                                    .map((_, index) => (
+                                        <span
+                                            key={index}
+                                            style={
+                                                index < myRating
+                                                    ? styles.starFilled
+                                                    : styles.starEmpty
+                                            }
+                                            onClick={() => handleRatingChange(index + 1)}
+                                        >
+                      <span style={styles.starIcon}>★</span>
+                    </span>
+                                    ))}
                             </div>
                         </div>
                         <div style={styles.buttonGroup}>
@@ -253,13 +288,16 @@ function MovieDetailPage() {
 
                     {showCommentInput && (
                         <div style={styles.commentSection}>
-          <textarea
-              style={styles.commentInput}
-              placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-              value={comment}
-              onChange={handleCommentChange}
-          />
-                            <button style={styles.submitButton} onClick={handleSubmitComment}>
+              <textarea
+                  style={styles.commentInput}
+                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                  value={comment}
+                  onChange={handleCommentChange}
+              />
+                            <button
+                                style={styles.submitButton}
+                                onClick={handleSubmitComment}
+                            >
                                 코멘트 남기기
                             </button>
                         </div>
@@ -280,7 +318,8 @@ function MovieDetailPage() {
                                             <img
                                                 src={
                                                     crew.profileImgUrl
-                                                        ? 'http://image.tmdb.org/t/p/w200' + crew.profileImgUrl
+                                                        ? 'http://image.tmdb.org/t/p/w200' +
+                                                        crew.profileImgUrl
                                                         : '/default-profile-image.jpg'
                                                 }
                                                 alt={crew.name}
@@ -302,14 +341,20 @@ function MovieDetailPage() {
                                 </div>
                                 {!showMoreCrews && crews.length > initialVisibleCrews && (
                                     <div style={styles.moreButtonContainer}>
-                                        <button style={styles.moreButton} onClick={handleShowMoreCrews}>
+                                        <button
+                                            style={styles.moreButton}
+                                            onClick={handleShowMoreCrews}
+                                        >
                                             더보기
                                         </button>
                                     </div>
                                 )}
                                 {showMoreCrews && (
                                     <div style={styles.moreButtonContainer}>
-                                        <button style={styles.moreButton} onClick={handleShowLessCrews}>
+                                        <button
+                                            style={styles.moreButton}
+                                            onClick={handleShowLessCrews}
+                                        >
                                             더보기 취소
                                         </button>
                                     </div>
@@ -319,31 +364,49 @@ function MovieDetailPage() {
 
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>
-                                코멘트 <span style={styles.commentCount}>{totalComments.toLocaleString()}</span>
+                                코멘트{' '}
+                                <span style={styles.commentCount}>
+                  {totalComments.toLocaleString()}
+                </span>
                             </div>
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                  <span style={styles.commentUser}>
-                    {comment.nickname}
-                      <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>★</span>
-                      {comment.score}
-                  </span>
+                      <span style={styles.commentUser}>
+                        {comment.nickname}
+                          <span
+                              style={
+                                  comment.score >= 1
+                                      ? styles.commentStarFilled
+                                      : styles.commentStarEmpty
+                              }
+                          >
+                          ★
+                        </span>
+                          {comment.score}
+                      </span>
                                         </div>
                                         <div style={styles.commentText}>{comment.comment}</div>
                                     </div>
                                 ))}
-                                {hasMore && (
+                                {/* 무한 스크롤 로딩 감지 Element */}
+                                <div ref={loader} />
+                                {/* 더보기 버튼 */}
+                                {hasMore && isInitialLoad && (
                                     <div style={styles.moreButtonContainer}>
                                         <button style={styles.moreButton} onClick={handleLoadMore}>
                                             더보기
                                         </button>
                                     </div>
                                 )}
+                                {/* 더보기 취소 버튼 */}
                                 {showLessComments && (
                                     <div style={styles.moreButtonContainer}>
-                                        <button style={styles.moreButton} onClick={handleShowLessComments}>
+                                        <button
+                                            style={styles.moreButton}
+                                            onClick={handleShowLessComments}
+                                        >
                                             더보기 취소
                                         </button>
                                     </div>
