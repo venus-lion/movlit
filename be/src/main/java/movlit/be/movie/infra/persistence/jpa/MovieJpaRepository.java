@@ -11,4 +11,7 @@ public interface MovieJpaRepository extends JpaRepository<MovieEntity, Long> {
 
     Page<MovieEntity> findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable);    // 인기순
 
+    // 장르별
+    Page<MovieEntity> findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc (Long genreId, Pageable pageable);
+
 }

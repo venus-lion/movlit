@@ -7,6 +7,7 @@ import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.movie.application.service.MovieMainService;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
+import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +28,13 @@ public class MovieMainController {
      * RequestParam - {조회 page 번호, 조회 page size 갯수}
      */
     @GetMapping("/latest")
-    public ResponseEntity<List<Movie>> getMovieLatest(
+    public ResponseEntity<MovieListResponseDto> getMovieLatest(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-        List<Movie> movieList = movieMainService.getMovieLatest(page, pageSize);
+        MovieListResponseDto result = movieMainService.getMovieLatest(page, pageSize);
 
-        return ResponseEntity.ok().body(movieList);
+        return ResponseEntity.ok().body(result);
     }
 
     /**
@@ -41,13 +42,13 @@ public class MovieMainController {
      * RequestParam - {조회 page 번호, 조회 page size 갯수}
      */
     @GetMapping("/popular")
-    public ResponseEntity<List<Movie>> getMoviePopular(
+    public ResponseEntity<MovieListResponseDto> getMoviePopular(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-        List<Movie> movieList = movieMainService.getMoviePopular(page, pageSize);
+        MovieListResponseDto result = movieMainService.getMoviePopular(page, pageSize);
 
-        return ResponseEntity.ok().body(movieList);
+        return ResponseEntity.ok().body(result);
     }
 
     /**
