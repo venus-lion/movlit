@@ -2,12 +2,10 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'; // 변경
 import App from './App';
-<<<<<<< HEAD
+
 import MovieHome from './pages/MovieHome.jsx';
 import BookHome from "./pages/BookHome.jsx";
-=======
-import Home from './pages/MovieHome';
->>>>>>> a2aea4e61d66ddd9cbee96d52b4e46dd7cf48400
+
 import MemberRegister from './pages/MemberRegister';
 import MemberLogin from './pages/MemberLogin';
 import MovieDetailPage from './components/MovieDetailPage';
@@ -38,18 +36,12 @@ const router = createBrowserRouter([ // createBrowserRouter 사용
                 path: 'movie/:movieId',
                 element: <MovieDetailPage/>,
             },
-<<<<<<< HEAD
-            // BookDetail 라우팅용
-            // {
-            //     path: 'movie/:bookId',
-            //     element: <BookDetailPage/>,
-            // },
-=======
+
             {
                 path: 'book/:bookId',
                 element: <BookDetailPage/>,
             },
->>>>>>> a2aea4e61d66ddd9cbee96d52b4e46dd7cf48400
+
         ],
     },
 ]);
