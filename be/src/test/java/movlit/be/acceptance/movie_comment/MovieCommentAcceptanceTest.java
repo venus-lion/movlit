@@ -2,6 +2,7 @@ package movlit.be.acceptance.movie_comment;
 
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.로그인_후_영화_코멘트_목록_조회를_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_200이다;
+import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_404이고_오류코드는_m105이다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_목록_조회를_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_수정을_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다;
@@ -44,6 +45,23 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
 
             // then
             상태코드가_200이다(response);
+        }
+
+        @DisplayName("한 멤버가 영화 코멘트를 이미 작성을 했는데도 불구하고 또 작성한다면, 테스트는 실패하고 상태코드 404를 반환한다.")
+        @Test
+        void when_create_movie_comment_twice_then_response_404() {
+            // docs
+            api_문서_타이틀("createMovieComment_failed_duplicated_404", spec);
+
+            // given
+            String accessToken = 회원_원준_액세스토큰;
+
+            // when
+            영화_코멘트_작성을_요청한다(accessToken, movieId, spec);
+            var response = 영화_코멘트_작성을_요청한다(accessToken, movieId, spec);
+
+            // then
+            상태코드가_404이고_오류코드는_m105이다(response);
         }
 
     }

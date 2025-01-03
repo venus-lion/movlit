@@ -139,6 +139,12 @@ public class MovieCommentSteps {
                 () -> 상태코드를_검증한다(response, HttpStatus.OK));
     }
 
+    public static void 상태코드가_404이고_오류코드는_m105이다(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.NOT_FOUND),
+                () -> 오류코드를_검증한다(response, "m105"));
+    }
+
     public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,
                                                       HttpStatus expectedHttpStatus) {
         return assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());

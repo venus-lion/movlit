@@ -1,5 +1,6 @@
 package movlit.be.movie.infra.persistence.jpa;
 
+import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.movie.domain.entity.MovieCommentEntity;
@@ -37,5 +38,7 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
     Slice<MovieCommentReadResponse> findAllCommentsWithMemberId(@Param("movieId") Long movieId,
                                                                 @Param("memberId") MemberId memberId,
                                                                 @Param("pageable") Pageable pageable);
+
+    Optional<MovieCommentEntity> findByMemberId(MemberId memberId);
 
 }

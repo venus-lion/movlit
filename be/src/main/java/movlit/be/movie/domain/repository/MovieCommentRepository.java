@@ -1,5 +1,6 @@
 package movlit.be.movie.domain.repository;
 
+import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.movie.domain.entity.MovieCommentEntity;
@@ -18,5 +19,7 @@ public interface MovieCommentRepository {
     Slice<MovieCommentReadResponse> fetchComments(Long movieId, MemberId memberId, Pageable pageable);
 
     Slice<MovieCommentReadResponse> fetchComments(Long movieId, Pageable pageable);
+
+    Optional<MovieCommentEntity> fetchByMemberId(MemberId memberId);
 
 }

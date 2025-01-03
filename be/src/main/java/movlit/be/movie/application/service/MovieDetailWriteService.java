@@ -3,6 +3,7 @@ package movlit.be.movie.application.service;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.MemberExistsInMovieCommentException;
 import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
@@ -25,10 +26,17 @@ public class MovieDetailWriteService {
     private final MovieCommentRepository movieCommentRepository;
 
     public MovieCommentResponse createComment(MovieCommentData data) {
+        validateMemberExistsInMovieComment(data);
         MovieCommentId movieCommentId = IdFactory.createMovieCommentId();
         LocalDateTime now = LocalDateTime.now();
         MovieCommentEntity movieCommentEntity = MovieConvertor.toMovieCommentEntity(data, movieCommentId, now);
         return MovieConvertor.toMovieCommentResponse(movieCommentRepository.createComment(movieCommentEntity));
+    }
+
+    private void validateMemberExistsInMovieComment(MovieCommentData data) {
+        if (movieCommentRepository.fetchByMemberId(data.memberId()).isPresent()) {
+            throw new MemberExistsInMovieCommentException();
+        }
     }
 
     public void deleteComment(MovieCommentDataForDelete data) {
