@@ -53,3 +53,9 @@ operation::fetchMovieComment_success[snippets='http-request,http-response']
 operation::fetchMovieDetailCrews_success[snippets='http-request,http-response']
 
 operation::fetchMovieDetailGenres_success[snippets='http-request,http-response']
+
+=== 코멘트
+
+==== 코멘트 작성
+
+operation::createMovieComment_success[snippets='http-request,http-response']

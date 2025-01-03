@@ -24,6 +24,21 @@ public class MovieCommentSteps {
         return 영화_코멘트를_작성한다(accessToken, movieId, spec, body);
     }
 
+    public static ExtractableResponse<Response> 영화_코멘트를_삭제한다(String accessToken, String movieCommentId,
+                                                             RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/api/movies/comments/{movieCommentId}", movieCommentId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 영화_코멘트를_작성한다(String accessToken, String movieId,
                                                              RequestSpecification spec, Map<String, Object> body) {
         return RestAssured

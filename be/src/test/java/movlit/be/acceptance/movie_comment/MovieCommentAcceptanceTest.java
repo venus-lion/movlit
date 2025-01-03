@@ -1,6 +1,7 @@
 package movlit.be.acceptance.movie_comment;
 
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_200이고_응답에_movieCommentId가_존재한다;
+import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트를_삭제한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다;
 
 import movlit.be.acceptance.AcceptanceTest;
@@ -33,6 +34,38 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
 
             // when
             var response = 영화_코멘트_작성을_요청한다(accessToken, movieId, spec);
+
+            // then
+            상태코드가_200이고_응답에_movieCommentId가_존재한다(response);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("영화 코멘트 삭제 인수 테스트")
+    class DeleteMovieComment {
+
+        String movieCommentId;
+
+        @BeforeEach
+        public void before() {
+            String accessToken = 회원_원준_액세스토큰;
+            String movieId = String.valueOf(767L);
+            movieCommentId = 영화_코멘트_작성을_요청한다(accessToken, movieId, spec)
+                    .body().jsonPath().getString("commentId");
+        }
+
+        @DisplayName("영화 코멘트를 삭제하는 데 성공하면, 상태코드 200과 body를 반환한다.")
+        @Test
+        void when_create_movie_comment_then_response_200_and_body() {
+            // docs
+            api_문서_타이틀("createMovieComment_success", spec);
+
+            // given
+            String accessToken = 회원_원준_액세스토큰;
+
+            // when
+            var response = 영화_코멘트를_삭제한다(accessToken, movieCommentId, spec);
 
             // then
             상태코드가_200이고_응답에_movieCommentId가_존재한다(response);

@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie.application.service.MovieDetailWriteService;
 import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +32,15 @@ public class MovieDetailWriteController {
         var data = MovieConvertor.toMovieDetailCommentData(movieId, memberId, request);
         var response = movieDetailWriteService.createComment(data);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/api/movies/comments/{movieCommentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable MovieCommentId movieCommentId,
+                                              @AuthenticationPrincipal MyMemberDetails details) {
+        MemberId currentMemberId = details.getMemberId();
+        var data = MovieConvertor.toMovieDetailCommentDataForDelete(currentMemberId, movieCommentId);
+        movieDetailWriteService.deleteComment(data);
+        return ResponseEntity.ok().build();
     }
 
 }
