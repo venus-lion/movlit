@@ -135,7 +135,7 @@ public class MovieCollectService {
 
             String backdropPath = Optional.ofNullable((String) result.get("backdrop_path")).orElse("");
             if (!backdropPath.isEmpty()) {
-                backdropPath = "http://image.tmdb.org/t/p/w200" + backdropPath;
+                backdropPath = "http://image.tmdb.org/t/p/original" + backdropPath;
             }
 
             String releaseDateStr = (String) result.get("release_date");
