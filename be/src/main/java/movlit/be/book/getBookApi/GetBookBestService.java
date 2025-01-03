@@ -37,7 +37,7 @@ import movlit.be.book.domain.entity.BookcrewEntity.Role;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@PropertySource("classpath:application-test.properties")
+//@PropertySource("classpath:application-test.properties")
 public class GetBookBestService {
     private final RestTemplate restTemplate;
     private final BookJpaRepository bookRepository;

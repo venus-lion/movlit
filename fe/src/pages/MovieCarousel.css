@@ -1,0 +1,50 @@
+.carousel-wrapper {
+    margin: 20px;
+}
+
+.theme-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.carousel-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-content {
+    display: flex;
+    gap: 10px;
+    overflow: hidden; /* 좌우 버튼으로 페이징할 것이므로 scroll은 숨김 */
+    width: 90%;
+    margin: 0 auto;
+}
+
+.movie-card {
+    min-width: 150px;
+    text-align: center;
+    background-color: #eee;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.movie-card img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.arrow-button {
+    background-color: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.arrow-button.left {
+    margin-right: 10px;
+}
+
+.arrow-button.right {
+    margin-left: 10px;
+}

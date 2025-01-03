@@ -12,7 +12,7 @@ import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentRequestDto;
 import movlit.be.book.domain.BookDetailResponseDto;
 import movlit.be.book.domain.Bookcrew;
-import movlit.be.common.annotation.CurrentMemberId;
+
 import movlit.be.common.exception.BookCommentAccessDenied;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
@@ -51,7 +51,7 @@ public class BookDetailController {
 
     // 도서 찜(heart)하기
     @PostMapping("{bookId}/hearts/{memberTemp}")
-    public ResponseEntity addHearts(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId,
+    public ResponseEntity addHearts( @PathVariable BookId bookId,
                                     @PathVariable String memberTemp){
         //임시 - @CurrentMemberId 혹은 세션의 memberId로 원복필요
         System.out.println("####멤버ID#### --> " + memberTemp);
@@ -66,7 +66,7 @@ public class BookDetailController {
 
     // 도서 찜(heart) 삭제
     @DeleteMapping("{bookId}/hearts/{memberTemp}")
-    public ResponseEntity removeHearts(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId,
+    public ResponseEntity removeHearts(@PathVariable BookId bookId,
                                        @PathVariable String memberTemp) throws Exception {
         //임시 - @CurrentMemberId 혹은 세션의 memberId로 원복필요
         System.out.println("####멤버ID#### --> " + memberTemp);

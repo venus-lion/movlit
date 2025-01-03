@@ -1,5 +1,16 @@
 spring:
   profiles:
     group:
-      local: db-local, oauth2, jwt, core, api-key
+      local: db-local, oauth2, jwt, core, api-key, ec2
     active: local
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      rest:
+        uri: http://localhost:9200
+        username: elastic
+        password: 123456
+
+aladin:
+  key: ttbolivia09291715001

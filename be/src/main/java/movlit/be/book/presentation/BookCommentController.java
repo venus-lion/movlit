@@ -9,7 +9,7 @@ import movlit.be.book.application.converter.service.BookDetailWriteService;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentRequestDto;
-import movlit.be.common.annotation.CurrentMemberId;
+
 import movlit.be.common.exception.BookCommentAccessDenied;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
@@ -53,7 +53,7 @@ public class BookCommentController {
 
     // 도서 리뷰 작성
     @PostMapping("{bookId}/comments")
-    public String registerComment(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId, @RequestBody BookCommentRequestDto commentDto) {
+    public String registerComment(@PathVariable BookId bookId, @RequestBody BookCommentRequestDto commentDto) {
         // 임시 (추후 requestbody대신 session으로 memberId/email 받아오기)
         MemberId memberIdTemp = new MemberId(commentDto.getMemberId());
         System.out.println("############# memberID : " +memberIdTemp);
@@ -70,7 +70,7 @@ public class BookCommentController {
 
     // 도서 리뷰 수정
     @PostMapping("{bookId}/comments/{bookCommentId}")
-    public ResponseEntity updateComment(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId,
+    public ResponseEntity updateComment(@PathVariable BookId bookId,
                                         @PathVariable BookCommentId bookCommentId, @RequestBody BookCommentRequestDto commentDto)
             throws BookCommentAccessDenied {
         // 임시 (추후 requestbody대신 session으로 memberId/email 받아오기)
@@ -90,7 +90,7 @@ public class BookCommentController {
 
     // 도서 리뷰 삭제 - commentDto reuestBody 추후 삭제
     @PostMapping("{bookId}/comments/{bookCommentId}/delete")
-    public ResponseEntity deleteComment(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId,
+    public ResponseEntity deleteComment(@PathVariable BookId bookId,
                                         @PathVariable BookCommentId bookCommentId, @RequestBody BookCommentRequestDto commentDto)
             throws BookCommentAccessDenied {
 
@@ -111,7 +111,7 @@ public class BookCommentController {
 
     // 해당 도서 리뷰 좋아요(like) 하기
     @PostMapping("{bookId}/comments/{bookCommentId}/likes/{memberTemp}")
-    public ResponseEntity addHearts(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId,
+    public ResponseEntity addHearts(@PathVariable BookId bookId,
                                     @PathVariable BookCommentId bookCommentId, @PathVariable String memberTemp){
         //임시 - @CurrentMemberId 혹은 세션의 memberId로 원복필요
         System.out.println("####멤버ID#### --> " + memberTemp);
@@ -128,7 +128,7 @@ public class BookCommentController {
 
     // 해당 도서 리뷰 좋아요(like) 삭제
     @DeleteMapping("{bookId}/comments/{bookCommentId}/likes/{memberTemp}")
-    public ResponseEntity removeHearts(@CurrentMemberId MemberId memberId, @PathVariable BookId bookId,
+    public ResponseEntity removeHearts(@PathVariable BookId bookId,
                                        @PathVariable BookCommentId bookCommentId, @PathVariable String memberTemp)
             throws Exception {
         //임시 - @CurrentMemberId 혹은 세션의 memberId로 원복필요
