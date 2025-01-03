@@ -28,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 import movlit.be.book.domain.entity.BookcrewEntity.Role;
 @Service
 @RequiredArgsConstructor
-@PropertySource("classpath:application-test.properties")
 public class GetBookNewSpecialService {
     private final RestTemplate restTemplate;
     private final BookJpaRepository bookRepository;
