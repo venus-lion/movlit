@@ -48,7 +48,7 @@ public class MovieDetailReadController {
             @PathVariable Long movieId,
             @AuthenticationPrincipal
             MyMemberDetails details,
-            @PageableDefault(size = 8, sort = "regDt", direction = Direction.DESC)
+            @PageableDefault(size = 4, sort = "regDt", direction = Direction.DESC)
             Pageable pageable
     ) {
         if (details == null) {

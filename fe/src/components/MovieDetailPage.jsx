@@ -7,16 +7,19 @@ function MovieDetailPage() {
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
-    const [visibleCrews, setVisibleCrews] = useState([]); // 보여지는 출연/제작진 목록
-    const [showMoreCrews, setShowMoreCrews] = useState(false); // 더보기 버튼 표시 여부
+    const [visibleCrews, setVisibleCrews] = useState([]);
+    const [showMoreCrews, setShowMoreCrews] = useState(false);
     const [genres, setGenres] = useState([]);
     const [isWish, setIsWish] = useState(false);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(true); // 코멘트 더보기 상태
+    const [showLessComments, setShowLessComments] = useState(false); // 코멘트 접기 버튼
     const [totalComments, setTotalComments] = useState(0);
     const [page, setPage] = useState(0);
+
+    const initialVisibleCrews = 14; // 최초로 보여줄 출연/제작진 수
 
     useEffect(() => {
         axiosInstance
@@ -47,7 +50,6 @@ function MovieDetailPage() {
         axiosInstance
             .get(`/movies/${movieId}/crews`)
             .then((response) => {
-                // 감독 우선 정렬
                 const sortedCrews = response.data.sort((a, b) => {
                     if (a.role === 'DIRECTOR' && b.role !== 'DIRECTOR') {
                         return -1;
@@ -58,7 +60,7 @@ function MovieDetailPage() {
                     }
                 });
                 setCrews(sortedCrews);
-                setVisibleCrews(sortedCrews.slice(0, 14)); // 최초 14명만 표시
+                setVisibleCrews(sortedCrews.slice(0, initialVisibleCrews));
             })
             .catch((error) => console.error('Error fetching crew data:', error));
 
@@ -70,29 +72,25 @@ function MovieDetailPage() {
                 }));
                 setGenres(formattedGenres);
             })
-            .catch((error) => console.error('Error fetching genre data', error));
+            .catch((error) => console.error('Error fetching genre data:', error));
 
-        fetchComments(0); // 첫 페이지 로드
+        fetchComments(0);
     }, [movieId]);
 
     const fetchComments = (currentPage = 0) => {
-        // 기본값 0으로 설정
         axiosInstance
-            .get(`/movies/${movieId}/comments?page=${currentPage}`) // size 파라미터 제거
+            .get(`/movies/${movieId}/comments?page=${currentPage}`)
             .then((response) => {
                 if (response.data.content && response.data.content.length > 0) {
-                    // 첫 번째 댓글의 commentCount 사용 (모두 동일하다는 가정)
                     setTotalComments(response.data.content[0].commentCount);
                 } else {
                     setTotalComments(0);
                 }
 
                 if (currentPage === 0) {
-                    // 첫 페이지는 무조건 새로고침
                     setComments(response.data.content);
-                    setHasMore(response.data.content.length >= 8);
+                    setHasMore(response.data.content.length >= 4);
                 } else {
-                    // 그 외의 경우에는 이전 목록에 추가
                     setComments((prevComments) => [
                         ...prevComments,
                         ...response.data.content,
@@ -116,7 +114,7 @@ function MovieDetailPage() {
 
     const handleWishClick = () => {
         setIsWish(!isWish);
-        // 여기에 찜하기/찜해제 로직 추가 (예: API 호출)
+        // TODO: 찜하기/찜해제 API 호출
     };
 
     const handleCommentChange = (event) => {
@@ -152,17 +150,33 @@ function MovieDetailPage() {
                 setComment('');
                 setMyRating(0);
                 setShowCommentInput(false);
-                fetchComments(0); // 코멘트 저장 후 첫 페이지 로드
+                fetchComments(0);
             });
     };
 
     const handleLoadMore = () => {
-        fetchComments(page); // 다음 페이지 로드
+        fetchComments(page);
+        setShowLessComments(true); // 코멘트 더보기 취소 버튼 표시
+        setHasMore(false);
     };
 
+    // 출연/제작진 더보기/취소 처리
     const handleShowMoreCrews = () => {
         setShowMoreCrews(true);
-        setVisibleCrews(crews); // 전체 출연/제작진 목록 표시
+        setVisibleCrews(crews);
+    };
+
+    const handleShowLessCrews = () => {
+        setShowMoreCrews(false);
+        setVisibleCrews(crews.slice(0, initialVisibleCrews));
+    };
+
+    // 코멘트 더보기 취소 처리
+    const handleShowLessComments = () => {
+        setComments(comments.slice(0, 4)); // 처음 4개만 표시
+        setShowLessComments(false); // 코멘트 더보기 취소 버튼 숨김
+        setHasMore(true); // 코멘트 더보기 버튼 표시
+        setPage(1); // 페이지 번호를 1로 초기화
     };
 
     if (!movieData) {
@@ -211,153 +225,149 @@ function MovieDetailPage() {
                             <div style={styles.stars}>
                                 {Array(5).fill().map((_, index) => (
                                     <span
-                                    key={index}
-                                 style={
-                                     index < myRating
-                                         ? styles.starFilled
-                                         : styles.starEmpty
-                                 }
-                                 onClick={() => handleRatingChange(index + 1)}
-                            >
+                                        key={index}
+                                        style={
+                                            index < myRating
+                                                ? styles.starFilled
+                                                : styles.starEmpty
+                                        }
+                                        onClick={() => handleRatingChange(index + 1)}
+                                    >
                                 <span style={styles.starIcon}>★</span>
                             </span>
-                            ))}
-                        </div>
-                    </div>
-                    <div style={styles.buttonGroup}>
-                        <button
-                            style={{
-                                ...styles.button,
-                                backgroundColor: isWish ? '#FF3366' : '#4080ff',
-                            }}
-                            onClick={handleWishClick}
-                        >
-                            {isWish ? '찜 완료' : '찜'}
-                        </button>
-                    </div>
-                </div>
-
-                {showCommentInput && (
-                    <div style={styles.commentSection}>
-              <textarea
-                  style={styles.commentInput}
-                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-                  value={comment}
-                  onChange={handleCommentChange}
-              />
-                        <button
-                            style={styles.submitButton}
-                            onClick={handleSubmitComment}
-                        >
-                            코멘트 남기기
-                        </button>
-                    </div>
-                )}
-
-                <div style={styles.details}>
-                    <div style={styles.section}>
-                        <div style={styles.sectionTitle}>줄거리</div>
-                        <div style={styles.sectionContent}>{movieData.overview}</div>
-                    </div>
-
-                    <div style={styles.section}>
-                        <div style={styles.sectionTitle}>출연/제작</div>
-                        <div style={styles.sectionContent}>
-                            <div style={styles.crewGrid}>
-                                {visibleCrews.map((crew) => (
-                                    <div key={crew.name} style={styles.crewMember}>
-                                        <img
-                                            src={
-                                                crew.profileImgUrl
-                                                    ? 'http://image.tmdb.org/t/p/w200' +
-                                                    crew.profileImgUrl
-                                                    : '/default-profile-image.jpg'
-                                            }
-                                            alt={crew.name}
-                                            style={styles.crewImage}
-                                        />
-                                        <div style={styles.crewInfo}>
-                                            <div style={styles.crewName}>{crew.name}</div>
-                                            <div style={styles.crewCharName}>{crew.charName}</div>
-                                            <div style={styles.crewRole}>
-                                                {crew.role === 'CAST'
-                                                    ? '출연'
-                                                    : crew.role === 'DIRECTOR'
-                                                        ? '감독'
-                                                        : crew.role}
-                                            </div>
-                                        </div>
-                                    </div>
                                 ))}
                             </div>
-                            {!showMoreCrews && crews.length > 14 && (
-                                <div style={styles.moreButtonContainer}>
-                                    <button
-                                        style={styles.moreButton}
-                                        onClick={handleShowMoreCrews}
-                                    >
-                                        더보기
-                                    </button>
-                                </div>
-                            )}
+                        </div>
+                        <div style={styles.buttonGroup}>
+                            <button
+                                style={{
+                                    ...styles.button,
+                                    backgroundColor: isWish ? '#FF3366' : '#4080ff',
+                                }}
+                                onClick={handleWishClick}
+                            >
+                                {isWish ? '찜 완료' : '찜'}
+                            </button>
                         </div>
                     </div>
 
-                    <div style={styles.section}>
-                        <div style={styles.sectionTitle}>
-                            코멘트{' '}
-                            <span style={styles.commentCount}>
-                  {totalComments.toLocaleString()}
-                </span>
+                    {showCommentInput && (
+                        <div style={styles.commentSection}>
+          <textarea
+              style={styles.commentInput}
+              placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+              value={comment}
+              onChange={handleCommentChange}
+          />
+                            <button style={styles.submitButton} onClick={handleSubmitComment}>
+                                코멘트 남기기
+                            </button>
                         </div>
-                        <div style={styles.sectionContent}>
-                            {comments.map((comment, index) => (
-                                <div key={comment.movieCommentId} style={styles.commentItem}>
-                                    <div style={styles.commentHeader}>
-                      <span style={styles.commentUser}>
-                        {comment.nickname}
-                          <span
-                              style={
-                                  index < myRating
-                                      ? styles.commentStarFilled
-                                      : styles.commentStarEmpty
-                              }
-                          >
-                          ★
-                        </span>
-                          {comment.score}
-                      </span>
+                    )}
+
+                    <div style={styles.details}>
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>줄거리</div>
+                            <div style={styles.sectionContent}>{movieData.overview}</div>
+                        </div>
+
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>출연/제작</div>
+                            <div style={styles.sectionContent}>
+                                <div style={styles.crewGrid}>
+                                    {visibleCrews.map((crew) => (
+                                        <div key={crew.name} style={styles.crewMember}>
+                                            <img
+                                                src={
+                                                    crew.profileImgUrl
+                                                        ? 'http://image.tmdb.org/t/p/w200' + crew.profileImgUrl
+                                                        : '/default-profile-image.jpg'
+                                                }
+                                                alt={crew.name}
+                                                style={styles.crewImage}
+                                            />
+                                            <div style={styles.crewInfo}>
+                                                <div style={styles.crewName}>{crew.name}</div>
+                                                <div style={styles.crewCharName}>{crew.charName}</div>
+                                                <div style={styles.crewRole}>
+                                                    {crew.role === 'CAST'
+                                                        ? '출연'
+                                                        : crew.role === 'DIRECTOR'
+                                                            ? '감독'
+                                                            : crew.role}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                {!showMoreCrews && crews.length > initialVisibleCrews && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button style={styles.moreButton} onClick={handleShowMoreCrews}>
+                                            더보기
+                                        </button>
                                     </div>
-                                    <div style={styles.commentText}>{comment.comment}</div>
-                                </div>
-                            ))}
-                            {hasMore && (
-                                <div style={styles.moreButtonContainer}>
-                                    <button style={styles.moreButton} onClick={handleLoadMore}>
-                                        더보기
-                                    </button>
-                                </div>
-                            )}
+                                )}
+                                {showMoreCrews && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button style={styles.moreButton} onClick={handleShowLessCrews}>
+                                            더보기 취소
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
 
-                    <div style={styles.section}>
-                        <div style={styles.sectionTitle}>관련 도서</div>
-                        <div style={styles.sectionContent}>
-                            {movieData.relatedBooks &&
-                                movieData.relatedBooks.map((book) => (
-                                    <div key={book.id} style={styles.book}>
-                                        <img src={book.coverUrl} alt={book.title} />
-                                        <div>{book.title}</div>
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>
+                                코멘트 <span style={styles.commentCount}>{totalComments.toLocaleString()}</span>
+                            </div>
+                            <div style={styles.sectionContent}>
+                                {comments.map((comment) => (
+                                    <div key={comment.movieCommentId} style={styles.commentItem}>
+                                        <div style={styles.commentHeader}>
+                  <span style={styles.commentUser}>
+                    {comment.nickname}
+                      <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>★</span>
+                      {comment.score}
+                  </span>
+                                        </div>
+                                        <div style={styles.commentText}>{comment.comment}</div>
                                     </div>
                                 ))}
+                                {hasMore && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button style={styles.moreButton} onClick={handleLoadMore}>
+                                            더보기
+                                        </button>
+                                    </div>
+                                )}
+                                {showLessComments && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button style={styles.moreButton} onClick={handleShowLessComments}>
+                                            더보기 취소
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>관련 도서</div>
+                            <div style={styles.sectionContent}>
+                                {movieData.relatedBooks &&
+                                    movieData.relatedBooks.map((book) => (
+                                        <div key={book.id} style={styles.book}>
+                                            <img src={book.coverUrl} alt={book.title} />
+                                            <div>{book.title}</div>
+                                        </div>
+                                    ))}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-</div>
-);
+    );
 }
 
 const styles = {
