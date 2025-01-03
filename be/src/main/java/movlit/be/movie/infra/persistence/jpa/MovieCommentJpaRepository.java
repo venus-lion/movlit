@@ -4,6 +4,7 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.movie.domain.entity.MovieCommentEntity;
 import movlit.be.movie.presentation.dto.response.MovieCommentReadResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +22,7 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
                     + "WHERE mc.movieId = :movieId "
                     + "ORDER BY mc.regDt DESC"
     )
-    Slice<MovieCommentReadResponse> findAllComment(@Param("movieId") Long movieId);
+    Slice<MovieCommentReadResponse> findAllComment(@Param("movieId") Long movieId, @Param("pageable") Pageable pageable);
 
     // TODO: 좋아요 추가 후, 현재 로그인한 멤버 id가 좋아요 했는지 안 했는지 비교하여 boolean 값 주기 + 서브 쿼리 분리
     @Query(
@@ -34,6 +35,7 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
                     + "ORDER BY mc.regDt DESC"
     )
     Slice<MovieCommentReadResponse> findAllCommentsWithMemberId(@Param("movieId") Long movieId,
-                                                                @Param("memberId") MemberId memberId);
+                                                                @Param("memberId") MemberId memberId,
+                                                                @Param("pageable") Pageable pageable);
 
 }

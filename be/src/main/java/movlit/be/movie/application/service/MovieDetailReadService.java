@@ -11,6 +11,7 @@ import movlit.be.movie.presentation.dto.response.MovieCommentReadResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailGenreResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +38,12 @@ public class MovieDetailReadService {
         return movieGenreRepository.fetchMovieDetailGenresByMovieId(movieId);
     }
 
-    public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId) {
-        return movieCommentRepository.fetchComments(movieId);
+    public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId, Pageable pageable) {
+        return movieCommentRepository.fetchComments(movieId, pageable);
     }
 
-    public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId, MemberId memberId) {
-        return movieCommentRepository.fetchComments(movieId, memberId);
+    public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId, MemberId memberId, Pageable pageable) {
+        return movieCommentRepository.fetchComments(movieId, memberId, pageable);
     }
 
 }

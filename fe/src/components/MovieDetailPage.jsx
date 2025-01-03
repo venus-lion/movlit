@@ -12,9 +12,9 @@ function MovieDetailPage() {
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
-    const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [totalComments, setTotalComments] = useState(0);
+    const [page, setPage] = useState(0);
 
     useEffect(() => {
         axiosInstance
@@ -57,34 +57,35 @@ function MovieDetailPage() {
             })
             .catch((error) => console.error('Error fetching genre data', error));
 
-        fetchComments(); // 초기 코멘트 로드
+        fetchComments(0); // 첫 페이지 로드
     }, [movieId]);
 
-    const fetchComments = () => {
+    const fetchComments = (currentPage = 0) => { // 기본값 0으로 설정
         axiosInstance
-            .get(`/movies/${movieId}/comments?page=${page}&size=8`)
+            .get(`/movies/${movieId}/comments?page=${currentPage}`) // size 파라미터 제거
             .then((response) => {
                 if (response.data.content && response.data.content.length > 0) {
+                    // 첫 번째 댓글의 commentCount 사용 (모두 동일하다는 가정)
                     setTotalComments(response.data.content[0].commentCount);
                 } else {
                     setTotalComments(0);
                 }
 
-                if (page === 1) {
-                    setComments(response.data.content.slice(0, 8));
+                if (currentPage === 0) {
+                    // 첫 페이지는 무조건 새로고침
+                    setComments(response.data.content);
                     setHasMore(response.data.content.length >= 8);
                 } else {
+                    // 그 외의 경우에는 이전 목록에 추가
                     setComments((prevComments) => [
                         ...prevComments,
                         ...response.data.content,
                     ]);
                     setHasMore(!response.data.last);
                 }
-                setPage(page + 1);
+                setPage(currentPage + 1);
             })
-            .catch((error) =>
-                console.error('Error fetching comments:', error),
-            );
+            .catch((error) => console.error('Error fetching comments:', error));
     };
 
     const handleRatingChange = (newRating) => {
@@ -135,13 +136,12 @@ function MovieDetailPage() {
                 setComment('');
                 setMyRating(0);
                 setShowCommentInput(false);
-                setPage(1); // 코멘트 저장 후 페이지 초기화
-                fetchComments(1); // 코멘트 저장 후 다시 로드
+                fetchComments(0); // 코멘트 저장 후 첫 페이지 로드
             });
     };
 
     const handleLoadMore = () => {
-        fetchComments();
+        fetchComments(page); // 다음 페이지 로드
     };
 
     if (!movieData) {
