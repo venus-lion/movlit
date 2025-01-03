@@ -1,0 +1,115 @@
+{
+  "properties": {
+    "movieId": {
+      "type": "long"
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "english_analyzer",
+      "fields": {
+        "english": {
+          "type": "text",
+          "analyzer": "korean_analyzer"
+        }
+      }
+    },
+    "originalTitle": {
+      "type": "text",
+      "analyzer": "korean_analyzer"
+    },
+    "overview": {
+      "type": "text",
+      "analyzer": "korean_analyzer",
+      "fields": {
+        "english": {
+          "type": "text",
+          "analyzer": "english_analyzer"
+        }
+      }
+    },
+    "popularity": {
+      "type": "double"
+    },
+    "posterPath": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "backdropPath": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "releaseDate": {
+      "type": "date",
+      "format": "yyyy-MM-dd"
+    },
+    "originalLanguage": {
+      "type": "keyword",
+      "normalizer": "lowercase_normalizer"
+    },
+    "voteCount": {
+      "type": "long"
+    },
+    "voteAverage": {
+      "type": "double"
+    },
+    "productionCountry": {
+      "type": "keyword",
+      "normalizer": "lowercase_normalizer"
+    },
+    "runtime": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "keyword",
+      "normalizer": "lowercase_normalizer"
+    },
+    "tagline": {
+      "type": "text",
+      "analyzer": "korean_analyzer",
+      "fields": {
+        "english": {
+          "type": "text",
+          "analyzer": "english_analyzer"
+        }
+      }
+    },
+    "delYn": {
+      "type": "boolean"
+    },
+    "heartCount": {
+      "type": "long"
+    },
+    "movieGenre": {
+      "type": "nested",
+      "properties": {
+        "genreId": {
+          "type": "keyword",
+          "normalizer": "lowercase_normalizer"
+        },
+        "genreName": {
+          "type": "text",
+          "analyzer": "korean_analyzer"
+        }
+      }
+    },
+    "movieTag": {
+      "type": "nested",
+      "properties": {
+        "tagId": {
+          "type": "keyword",
+          "normalizer": "lowercase_normalizer"
+        },
+        "tagName": {
+          "type": "text",
+          "analyzer": "english_analyzer",
+          "fields": {
+            "english": {
+              "type": "text",
+              "analyzer": "korean_analyzer"
+            }
+          }
+        }
+      }
+    }
+  }
+}
