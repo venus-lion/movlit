@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import MemberRegister from './pages/MemberRegister';
 import MemberLogin from './pages/MemberLogin';
 import MovieDetailPage from './components/MovieDetailPage';
+import BookDetailPage from "./components/BookDetailPage";
 
 const router = createBrowserRouter([ // createBrowserRouter 사용
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([ // createBrowserRouter 사용
             {
                 path: 'movie/:movieId',
                 element: <MovieDetailPage/>,
+            },
+            {
+                path: 'book/:bookId',
+                element: <BookDetailPage/>,
             },
         ],
     },
