@@ -86,6 +86,14 @@ html {
 
 body {
     background: #f2f5f3;
+    margin: 0; /* body 마진 제거 */
+    padding-top: 0; /* body 상단 패딩 제거 */
+    -webkit-text-size-adjust: none;
+    line-height: 1; /* body 추가 */
+}
+
+body.homepage {
+    padding-top: 0; /* 홈페이지 상단 패딩 제거 */
 }
 
 body.is-preload *, body.is-preload *:before, body.is-preload *:after {
@@ -2342,9 +2350,6 @@ table.default thead {
 
 /* Nav */
 
-body {
-    padding-top: 3.25em;
-}
 
 #nav {
     position: fixed;
@@ -2354,18 +2359,21 @@ body {
     background-color: rgba(255, 255, 255, 0.95);
     background-image: url("images/overlay.png");
     width: 100%;
-    height: 3.25em;
-    line-height: 3.25em;
+    height: auto;
+    line-height: 2.5em;
     text-align: center;
     font-family: 'Open Sans Condensed', sans-serif;
     font-weight: 700;
     text-transform: uppercase;
     cursor: default;
+    padding: 10px 20px;
 }
 
 #nav ul {
     position: relative;
     z-index: 1001;
+    margin: 0;
+    padding: 0;
 }
 
 #nav li {
@@ -2393,15 +2401,15 @@ body {
     display: block;
     text-decoration: none;
     color: #6b7770;
-    top: -6px;
-    padding: 6px 1.5em 0.25em 1.5em;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    top: 0;
+    padding: 0 1.5em;
+    border-radius: 0; /* Removes the rounded corners */
     outline: 0;
+    height: 2.5em;
 }
 
 #nav li:hover, #nav li.active {
-    top: 3px;
+    top: 0;
 }
 
 #nav li:hover a, #nav li:hover span {

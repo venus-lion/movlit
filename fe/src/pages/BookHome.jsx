@@ -153,22 +153,24 @@ function BookHome() {
                     {newBooks
                         .slice(startIndexNewBooks, startIndexNewBooks + 5)
                         .map((book, index) => (
-                            <div className="book-card" key={book.bookId}>
-                                <div className="book-rank">
-                                    {startIndexNewBooks + index + 1}
+                            <Link className="book-card" to={`/book/${book.bookId}`} key={book.bookId}>
+                                <div key={book.bookId}>
+                                    <div className="book-rank">
+                                        {startIndexNewBooks + index + 1}
+                                    </div>
+                                    <img
+                                        src={book.bookImgUrl}
+                                        alt={book.title}
+                                        className="book-image"
+                                    />
+                                    <div className="book-info">
+                                        <h3 className="book-title">{book.title}</h3>
+                                        <p className="book-writer">
+                                            {book.writers.map((writer) => writer.name).join(', ')}
+                                        </p>
+                                    </div>
                                 </div>
-                                <img
-                                    src={book.bookImgUrl}
-                                    alt={book.title}
-                                    className="book-image"
-                                />
-                                <div className="book-info">
-                                    <h3 className="book-title">{book.title}</h3>
-                                    <p className="book-writer">
-                                        {book.writers.map((writer) => writer.name).join(', ')}
-                                    </p>
-                                </div>
-                            </div>
+                            </Link>
                         ))}
                 </div>
                 {startIndexNewBooks + 5 < newBooks.length && (
@@ -189,22 +191,24 @@ function BookHome() {
                     {popularBooks
                         .slice(startIndexPopularBooks, startIndexPopularBooks + 5)
                         .map((book, index) => (
-                            <div className="book-card" key={book.bookId}>
-                                <div className="book-rank">
-                                    {startIndexPopularBooks + index + 1}
+                            <Link className="book-card" to={`/book/${book.bookId}`} key={book.bookId}>
+                                <div key={book.bookId}>
+                                    <div className="book-rank">
+                                        {startIndexPopularBooks + index + 1}
+                                    </div>
+                                    <img
+                                        src={book.bookImgUrl}
+                                        alt={book.title}
+                                        className="book-image"
+                                    />
+                                    <div className="book-info">
+                                        <h3 className="book-title">{book.title}</h3>
+                                        <p className="book-writer">
+                                            {book.writers.map((writer) => writer.name).join(', ')}
+                                        </p>
+                                    </div>
                                 </div>
-                                <img
-                                    src={book.bookImgUrl}
-                                    alt={book.title}
-                                    className="book-image"
-                                />
-                                <div className="book-info">
-                                    <h3 className="book-title">{book.title}</h3>
-                                    <p className="book-writer">
-                                        {book.writers.map((writer) => writer.name).join(', ')}
-                                    </p>
-                                </div>
-                            </div>
+                            </Link>
                         ))}
                 </div>
                 {startIndexPopularBooks + 5 < popularBooks.length && (
