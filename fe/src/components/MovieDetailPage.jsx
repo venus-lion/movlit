@@ -7,6 +7,8 @@ function MovieDetailPage() {
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
+    const [visibleCrews, setVisibleCrews] = useState([]); // 보여지는 출연/제작진 목록
+    const [showMoreCrews, setShowMoreCrews] = useState(false); // 더보기 버튼 표시 여부
     const [genres, setGenres] = useState([]);
     const [isWish, setIsWish] = useState(false);
     const [showCommentInput, setShowCommentInput] = useState(false);
@@ -44,7 +46,20 @@ function MovieDetailPage() {
 
         axiosInstance
             .get(`/movies/${movieId}/crews`)
-            .then((response) => setCrews(response.data))
+            .then((response) => {
+                // 감독 우선 정렬
+                const sortedCrews = response.data.sort((a, b) => {
+                    if (a.role === 'DIRECTOR' && b.role !== 'DIRECTOR') {
+                        return -1;
+                    } else if (a.role !== 'DIRECTOR' && b.role === 'DIRECTOR') {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
+                setCrews(sortedCrews);
+                setVisibleCrews(sortedCrews.slice(0, 14)); // 최초 14명만 표시
+            })
             .catch((error) => console.error('Error fetching crew data:', error));
 
         axiosInstance
@@ -60,7 +75,8 @@ function MovieDetailPage() {
         fetchComments(0); // 첫 페이지 로드
     }, [movieId]);
 
-    const fetchComments = (currentPage = 0) => { // 기본값 0으로 설정
+    const fetchComments = (currentPage = 0) => {
+        // 기본값 0으로 설정
         axiosInstance
             .get(`/movies/${movieId}/comments?page=${currentPage}`) // size 파라미터 제거
             .then((response) => {
@@ -144,6 +160,11 @@ function MovieDetailPage() {
         fetchComments(page); // 다음 페이지 로드
     };
 
+    const handleShowMoreCrews = () => {
+        setShowMoreCrews(true);
+        setVisibleCrews(crews); // 전체 출연/제작진 목록 표시
+    };
+
     if (!movieData) {
         return <div style={styles.loading}>Loading...</div>;
     }
@@ -188,105 +209,111 @@ function MovieDetailPage() {
                         <div style={styles.myRating}>
                             <span style={styles.ratingLabel}>내 별점</span>
                             <div style={styles.stars}>
-                                {[...Array(5)].map((_, index) => (
+                                {Array(5).fill().map((_, index) => (
                                     <span
-                                        key={index}
-                                        style={
-                                            index < myRating
-                                                ? styles.starFilled
-                                                : styles.starEmpty
-                                        }
-                                        onClick={() => handleRatingChange(index + 1)}
-                                    >
-                    <span style={styles.starIcon}>★</span>
-                  </span>
-                                ))}
-                            </div>
-                        </div>
-                        <div style={styles.buttonGroup}>
-                            <button
-                                style={{
-                                    ...styles.button,
-                                    backgroundColor: isWish ? '#FF3366' : '#4080ff',
-                                }}
-                                onClick={handleWishClick}
+                                    key={index}
+                                 style={
+                                     index < myRating
+                                         ? styles.starFilled
+                                         : styles.starEmpty
+                                 }
+                                 onClick={() => handleRatingChange(index + 1)}
                             >
-                                {isWish ? '찜 완료' : '찜'}
-                            </button>
+                                <span style={styles.starIcon}>★</span>
+                            </span>
+                            ))}
                         </div>
                     </div>
+                    <div style={styles.buttonGroup}>
+                        <button
+                            style={{
+                                ...styles.button,
+                                backgroundColor: isWish ? '#FF3366' : '#4080ff',
+                            }}
+                            onClick={handleWishClick}
+                        >
+                            {isWish ? '찜 완료' : '찜'}
+                        </button>
+                    </div>
+                </div>
 
-                    {showCommentInput && (
-                        <div style={styles.commentSection}>
+                {showCommentInput && (
+                    <div style={styles.commentSection}>
               <textarea
                   style={styles.commentInput}
                   placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
                   value={comment}
                   onChange={handleCommentChange}
               />
-                            <button
-                                style={styles.submitButton}
-                                onClick={handleSubmitComment}
-                            >
-                                코멘트 남기기
-                            </button>
-                        </div>
-                    )}
+                        <button
+                            style={styles.submitButton}
+                            onClick={handleSubmitComment}
+                        >
+                            코멘트 남기기
+                        </button>
+                    </div>
+                )}
 
-                    <div style={styles.details}>
-                        <div style={styles.section}>
-                            <div style={styles.sectionTitle}>줄거리</div>
-                            <div style={styles.sectionContent}>
-                                {movieData.overview}
-                            </div>
-                        </div>
+                <div style={styles.details}>
+                    <div style={styles.section}>
+                        <div style={styles.sectionTitle}>줄거리</div>
+                        <div style={styles.sectionContent}>{movieData.overview}</div>
+                    </div>
 
-                        <div style={styles.section}>
-                            <div style={styles.sectionTitle}>출연/제작</div>
-                            <div style={styles.sectionContent}>
-                                <div style={styles.crewGrid}>
-                                    {crews.map((crew) => (
-                                        <div key={crew.name} style={styles.crewMember}>
-                                            <img
-                                                src={
+                    <div style={styles.section}>
+                        <div style={styles.sectionTitle}>출연/제작</div>
+                        <div style={styles.sectionContent}>
+                            <div style={styles.crewGrid}>
+                                {visibleCrews.map((crew) => (
+                                    <div key={crew.name} style={styles.crewMember}>
+                                        <img
+                                            src={
+                                                crew.profileImgUrl
+                                                    ? 'http://image.tmdb.org/t/p/w200' +
                                                     crew.profileImgUrl
-                                                        ? 'http://image.tmdb.org/t/p/w200' +
-                                                        crew.profileImgUrl
-                                                        : '/default-profile-image.jpg'
-                                                }
-                                                alt={crew.name}
-                                                style={styles.crewImage}
-                                            />
-                                            <div style={styles.crewInfo}>
-                                                <div style={styles.crewName}>{crew.name}</div>
-                                                <div style={styles.crewCharName}>
-                                                    {crew.charName}
-                                                </div>
-                                                <div style={styles.crewRole}>
-                                                    {crew.role === 'CAST'
-                                                        ? '출연'
-                                                        : crew.role === 'DIRECTOR'
-                                                            ? '감독'
-                                                            : crew.role}
-                                                </div>
+                                                    : '/default-profile-image.jpg'
+                                            }
+                                            alt={crew.name}
+                                            style={styles.crewImage}
+                                        />
+                                        <div style={styles.crewInfo}>
+                                            <div style={styles.crewName}>{crew.name}</div>
+                                            <div style={styles.crewCharName}>{crew.charName}</div>
+                                            <div style={styles.crewRole}>
+                                                {crew.role === 'CAST'
+                                                    ? '출연'
+                                                    : crew.role === 'DIRECTOR'
+                                                        ? '감독'
+                                                        : crew.role}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
+                            {!showMoreCrews && crews.length > 14 && (
+                                <div style={styles.moreButtonContainer}>
+                                    <button
+                                        style={styles.moreButton}
+                                        onClick={handleShowMoreCrews}
+                                    >
+                                        더보기
+                                    </button>
+                                </div>
+                            )}
                         </div>
+                    </div>
 
-                        <div style={styles.section}>
-                            <div style={styles.sectionTitle}>
-                                코멘트{' '}
-                                <span style={styles.commentCount}>
+                    <div style={styles.section}>
+                        <div style={styles.sectionTitle}>
+                            코멘트{' '}
+                            <span style={styles.commentCount}>
                   {totalComments.toLocaleString()}
                 </span>
-                            </div>
-                            <div style={styles.sectionContent}>
-                                {comments.map((comment, index) => (
-                                    <div key={comment.movieCommentId} style={styles.commentItem}>
-                                        <div style={styles.commentHeader}>
+                        </div>
+                        <div style={styles.sectionContent}>
+                            {comments.map((comment, index) => (
+                                <div key={comment.movieCommentId} style={styles.commentItem}>
+                                    <div style={styles.commentHeader}>
                       <span style={styles.commentUser}>
                         {comment.nickname}
                           <span
@@ -300,40 +327,37 @@ function MovieDetailPage() {
                         </span>
                           {comment.score}
                       </span>
-                                        </div>
-                                        <div style={styles.commentText}>{comment.comment}</div>
+                                    </div>
+                                    <div style={styles.commentText}>{comment.comment}</div>
+                                </div>
+                            ))}
+                            {hasMore && (
+                                <div style={styles.moreButtonContainer}>
+                                    <button style={styles.moreButton} onClick={handleLoadMore}>
+                                        더보기
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div style={styles.section}>
+                        <div style={styles.sectionTitle}>관련 도서</div>
+                        <div style={styles.sectionContent}>
+                            {movieData.relatedBooks &&
+                                movieData.relatedBooks.map((book) => (
+                                    <div key={book.id} style={styles.book}>
+                                        <img src={book.coverUrl} alt={book.title} />
+                                        <div>{book.title}</div>
                                     </div>
                                 ))}
-                                {hasMore && (
-                                    <div style={styles.moreButtonContainer}>
-                                        <button
-                                            style={styles.moreButton}
-                                            onClick={handleLoadMore}
-                                        >
-                                            더보기
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div style={styles.section}>
-                            <div style={styles.sectionTitle}>관련 도서</div>
-                            <div style={styles.sectionContent}>
-                                {movieData.relatedBooks &&
-                                    movieData.relatedBooks.map((book) => (
-                                        <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title} />
-                                            <div>{book.title}</div>
-                                        </div>
-                                    ))}
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    );
+</div>
+);
 }
 
 const styles = {
