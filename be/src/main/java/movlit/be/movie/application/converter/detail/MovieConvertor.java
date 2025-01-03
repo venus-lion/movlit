@@ -29,7 +29,6 @@ public class MovieConvertor {
                                                           LocalDateTime now) {
         return MovieCommentEntity.builder()
                 .movieCommentId(movieCommentId)
-                .delYn(false)
                 .memberId(data.memberId())
                 .movieId(data.movieId())
                 .score(data.request().getScore())
