@@ -3,6 +3,8 @@ package movlit.be.auth.application.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import lombok.Getter;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +16,19 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public class MyMemberDetails implements UserDetails, OAuth2User {
 
+    // 공통
+    @Getter
+    private MemberId memberId;
+
     // 로컬 로그인
     private Member member;
+
     // 소셜 로그인
     private Map<String, Object> attributes;
 
     public MyMemberDetails(Member member) {
         this.member = member;
+        this.memberId = member.getMemberId();
     }
 
     public MyMemberDetails(Member member, Map<String, Object> attributes) {
@@ -39,7 +47,6 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-//                System.out.println("getAuthority(): " + Member.getRole());
                 return member.getRole();
             }
         });
@@ -82,6 +89,4 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
         return true;
     }
 
-
 }
-

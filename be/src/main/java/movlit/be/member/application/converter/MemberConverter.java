@@ -2,6 +2,7 @@ package movlit.be.member.application.converter;
 
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
+import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 
 public class MemberConverter {
 
@@ -41,6 +42,11 @@ public class MemberConverter {
                 .regDt(memberEntity.getRegDt())
                 .updDt(memberEntity.getUpdDt())
                 .build();
+    }
+
+    // Domain to Dto
+    public static MemberRegisterResponse toRegisterResponse(Member member) {
+        return MemberRegisterResponse.from(member.getMemberId());
     }
 
 }

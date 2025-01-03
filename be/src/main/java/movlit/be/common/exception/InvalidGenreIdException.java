@@ -6,4 +6,6 @@ public class InvalidGenreIdException extends ResourceNotFoundException {
         super(ErrorMessage.INVALID_GENRE_ID);
     }
 
+
 }
+

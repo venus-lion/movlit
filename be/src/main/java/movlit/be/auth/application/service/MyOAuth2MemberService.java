@@ -1,19 +1,14 @@
 package movlit.be.auth.application.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MemberNotFoundException;
-import movlit.be.common.exception.MovieNotFoundException;
-import movlit.be.common.util.IdFactory;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
-import org.springframework.cglib.core.Local;
+import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -50,13 +45,19 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     nickname = oAuth2User.getAttribute("name");
                     nickname = (nickname == null) ? "github_Member" : nickname;
                     profileUrl = oAuth2User.getAttribute("avatar_url");
-                    member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
-                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
+//                    member = Member.builder()
+//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
+//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
+//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
+//                            .build();
+                    // FIXME: OAuth쪽은 register 분리
+                    MemberRegisterRequest request = MemberRegisterRequest.builder()
+                            .nickname(nickname)
+                            .email(email)
+                            .password(hashedPwd)
                             .build();
-                    memberWriteService.registerMember(member);
-                    log.info("깃허브 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
+                    memberWriteService.registerMember(request);
+                    log.info("깃허브 계정을 통해 회원가입이 되었습니다. " + request.getNickname());
                 }
 
                 break;
@@ -71,14 +72,20 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     nickname = oAuth2User.getAttribute("name");
                     profileUrl = oAuth2User.getAttribute("picture");
                     // TODO : 생일 처리
-                    member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
-                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-                            .build();
+//                    member = Member.builder()
+//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
+//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
+//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
+//                            .build();
 
-                    memberWriteService.registerMember(member);
-                    log.info("구글 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
+                    // FIXME: OAuth쪽은 register 분리
+                    MemberRegisterRequest request = MemberRegisterRequest.builder()
+                            .nickname(nickname)
+                            .email(email)
+                            .password(hashedPwd)
+                            .build();
+                    memberWriteService.registerMember(request);
+                    log.info("구글 계정을 통해 회원가입이 되었습니다. " + request.getNickname());
                 }
                 break;
 
@@ -100,13 +107,19 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                         dob = birthyear.get() + "-" + birthday.get();
                     }
 
-                    member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
-                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-                            .build();
+//                    member = Member.builder()
+//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
+//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
+//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
+//                            .build();
 
-                    memberWriteService.registerMember(member);
+                    // FIXME: OAuth쪽은 register 분리
+                    MemberRegisterRequest request = MemberRegisterRequest.builder()
+                            .nickname(nickname)
+                            .email(email)
+                            .password(hashedPwd)
+                            .build();
+                    memberWriteService.registerMember(request);
                 }
                 break;
 
@@ -129,14 +142,21 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
                     profileUrl = Optional.ofNullable((String) account.get("profile_image")).orElse("");
 
-                    member = Member.builder()
-                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
-                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-                            .build();
+//                    member = Member.builder()
+//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
+//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
+//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
+//                            .build();
 
-                    memberWriteService.registerMember(member);
-                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
+                    // FIXME: OAuth쪽은 register 분리
+                    MemberRegisterRequest request = MemberRegisterRequest.builder()
+                            .nickname(nickname)
+                            .email(email)
+                            .password(hashedPwd)
+                            .build();
+                    memberWriteService.registerMember(request);
+
+                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + request.getNickname());
                 }
 
                 break;

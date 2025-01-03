@@ -1,0 +1,40 @@
+{
+  "analysis": {
+    "analyzer": {
+      "english_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "english_stop",
+          "english_snowball"
+        ]
+      },
+      "korean_analyzer": {
+        "type": "custom",
+        "tokenizer": "nori_tokenizer",
+        "filter": [
+          "nori_readingform",
+          "lowercase",
+          "trim"
+        ]
+      }
+    },
+    "filter": {
+      "english_stop": {
+        "type": "stop",
+        "stopwords": "_english_"
+      },
+      "english_snowball": {
+        "type": "snowball",
+        "language": "English"
+      }
+    },
+    "normalizer": {
+      "lowercase_normalizer": {
+        "type": "custom",
+        "filter": ["lowercase"]
+      }
+    }
+  }
+}

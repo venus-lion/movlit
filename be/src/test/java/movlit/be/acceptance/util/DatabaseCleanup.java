@@ -1,11 +1,11 @@
 package movlit.be.acceptance.util;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service

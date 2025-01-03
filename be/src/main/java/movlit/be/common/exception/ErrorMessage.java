@@ -5,7 +5,7 @@ public enum ErrorMessage {
     INVALID_INPUT_VALUE("입력값이 올바르지 않습니다.", "g001"),
     INVALID_ID(" 유효하지 않은 아이디입니다.", "g002"),
     CREATE_TIME_IS_NULL("생성시간이 null이면 안된다", "g003"),
-    REQUEST_HEADER_NOT_FOUND("요청을 처리하기 위해 필요한 헤더가 존재하지 않습니다", "g004"),
+    AUTH_HEADER_NOT_FOUND("요청을 처리하기 위해 필요한 인증 헤더가 존재하지 않습니다", "g004"),
     PERMISSION_DENIED_ACCESS("권한이 없습니다.", "g005"),
 
     COUNT_OUT_OF_BOUNDS("카운트가 더 이상 감소할 수 없습니다", null),
@@ -32,8 +32,9 @@ public enum ErrorMessage {
 
 
     // movie
-    MOVIE_NOT_FOUND("메시지", "m001"),
 
+    MOVIE_NOT_FOUND("메시지", "m001"),
+    MOVIE_CREW_NOT_FOUND("해당 movieId에 해당하는 crew를 찾을 수 없습니다.", "m102"),
 
 
     // Genre
@@ -51,6 +52,7 @@ public enum ErrorMessage {
     BOOK_CREW_NOT_FOUND("해당 도서의 작가 정보가 존재하지 않습니다", "b012"),
     BOOK_COMMENT_NOT_FOUND("해당 도서 리뷰가 존재하지 않습니다.", "b020"),
     BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b021");
+
 
 
 

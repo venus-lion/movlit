@@ -6,9 +6,11 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.domain.repository.MemberRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberReadService {
 
     private final MemberRepository memberRepository;

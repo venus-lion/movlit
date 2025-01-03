@@ -1,12 +1,20 @@
 package movlit.be.acceptance;
 
+import static movlit.be.acceptance.auth.AuthSteps.민지가_로그인한다;
+import static movlit.be.acceptance.auth.AuthSteps.원준이_로그인한다;
+import static movlit.be.acceptance.auth.AuthSteps.윤기가_로그인한다;
+import static movlit.be.acceptance.auth.AuthSteps.지원이_로그인한다;
+import static movlit.be.acceptance.member.MemberSteps.민지_회원가입;
+import static movlit.be.acceptance.member.MemberSteps.원준_회원가입;
+import static movlit.be.acceptance.member.MemberSteps.윤기_회원가입;
+import static movlit.be.acceptance.member.MemberSteps.지원_회원가입;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import java.util.List;
 import jakarta.annotation.PostConstruct;
+import java.util.List;
 import movlit.be.acceptance.util.DatabaseCleanup;
 import movlit.be.acceptance.util.SqlFileExecutor;
 import movlit.be.acceptance.util.TableCleanup;
@@ -35,14 +43,17 @@ public abstract class AcceptanceTest {
 //    public static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withReuse(true);
 
     static {
-        MYSQL.setPortBindings(List.of("3306:3306"));
+        MYSQL.setPortBindings(List.of("3307:3306"));
 //        REDIS.setPortBindings(List.of("6379:6379"));
     }
 
     @LocalServerPort
     public int port;
-    public String 회원아티_액세스토큰;
-    public String 회원푸반_액세스토큰;
+
+    public String 회원_원준_액세스토큰;
+    public String 회원_지원_액세스토큰;
+    public String 회원_민지_액세스토큰;
+    public String 회원_윤기_액세스토큰;
 
     @Autowired
     protected DatabaseCleanup databaseCleanup;
@@ -80,7 +91,7 @@ public abstract class AcceptanceTest {
     @BeforeEach
     void setSpec(RestDocumentationContextProvider provider) {
         데이터베이스를_초기화한다();
-//        initAccessToken();
+        initAccessToken();
         this.spec = new RequestSpecBuilder().addFilter(
                 RestAssuredRestDocumentation.documentationConfiguration(provider)).build();
     }
@@ -90,20 +101,32 @@ public abstract class AcceptanceTest {
         MYSQL.start();
 //        REDIS.start();
     }
-//
-//    private void initAccessToken() {
-//        회원아티_액세스토큰 = 아티_액세스토큰_요청();
-//        회원푸반_액세스토큰 = 푸반_엑세스토큰_요청();
-//    }
-//
-//    private static String 푸반_엑세스토큰_요청() {
-//        푸반_회원가입한다();
-//        return 푸반이_로그인한다(new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
-//    }
-//
-//    private static String 아티_액세스토큰_요청() {
-//        아티_회원가입한다();
-//        return 로그인한다(AuthFixture.아티_로그인_요청(), new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
-//    }
+
+    private void initAccessToken() {
+        회원_원준_액세스토큰 = 원준_액세스토큰_요청();
+        회원_민지_액세스토큰 = 민지_액세스토큰_요청();
+        회원_윤기_액세스토큰 = 윤기_액세스토큰_요청();
+        회원_지원_액세스토큰 = 지원_액세스토큰_요청();
+    }
+
+    private static String 원준_액세스토큰_요청() {
+        원준_회원가입();
+        return 원준이_로그인한다(new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
+    }
+
+    private static String 민지_액세스토큰_요청() {
+        민지_회원가입();
+        return 민지가_로그인한다(new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
+    }
+
+    private static String 윤기_액세스토큰_요청() {
+        윤기_회원가입();
+        return 윤기가_로그인한다(new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
+    }
+
+    private static String 지원_액세스토큰_요청() {
+        지원_회원가입();
+        return 지원이_로그인한다(new RequestSpecBuilder().build()).jsonPath().getString("accessToken");
+    }
 
 }

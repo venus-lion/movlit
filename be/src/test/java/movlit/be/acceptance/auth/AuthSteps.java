@@ -3,7 +3,6 @@ package movlit.be.acceptance.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -45,7 +44,7 @@ public class AuthSteps {
                 .spec(spec)
                 .log().all()
                 .body(loginRequest)
-                .when().post("/member/login")
+                .when().post("/api/members/login")
                 .then().log().all()
                 .extract();
     }
@@ -66,9 +65,9 @@ public class AuthSteps {
 
     public static void 토큰과_상태코드_200을_응답하는지_검증한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(200)
-//                () -> assertThat(response.jsonPath().getString("accessToken")).isNotNull(),
-//                () -> assertThat(response.jsonPath().getString("refreshToken")).isNotNull()
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(response.jsonPath().getString("accessToken")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("refreshToken")).isNotNull()
         );
     }
 
@@ -106,7 +105,7 @@ public class AuthSteps {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .spec(spec)
                 .auth().oauth2(accessToken)
-                .when().get("/member/logout")
+                .when().get("/api/members/logout")
                 .then().log().all()
                 .extract();
     }
