@@ -1,16 +1,27 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import axiosInstance from '../axiosInstance'; // axiosInstance 임포트
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import axiosInstance from '../axiosInstance';
 
 function MovieDetailPage() {
-    const {movieId} = useParams();
+    const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [crews, setCrews] = useState([]);
+    const [visibleCrews, setVisibleCrews] = useState([]);
+    const [showMoreCrews, setShowMoreCrews] = useState(false);
     const [genres, setGenres] = useState([]);
     const [isWish, setIsWish] = useState(false);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
+    const [comments, setComments] = useState([]);
+    const [hasMore, setHasMore] = useState(true); // 코멘트 더보기 상태
+    const [showLessComments, setShowLessComments] = useState(false); // 코멘트 접기 버튼
+    const [totalComments, setTotalComments] = useState(0);
+    const [page, setPage] = useState(0);
+    const [isInitialLoad, setIsInitialLoad] = useState(true); // 최초 로드 상태 (더보기 버튼 활성화 여부)
+    const loader = useRef(null); // 로딩 감지 Element Ref
+
+    const initialVisibleCrews = 14; // 최초로 보여줄 출연/제작진 수
 
     useEffect(() => {
         axiosInstance
@@ -40,20 +51,87 @@ function MovieDetailPage() {
 
         axiosInstance
             .get(`/movies/${movieId}/crews`)
-            .then((response) => setCrews(response.data))
+            .then((response) => {
+                const sortedCrews = response.data.sort((a, b) => {
+                    if (a.role === 'DIRECTOR' && b.role !== 'DIRECTOR') {
+                        return -1;
+                    } else if (a.role !== 'DIRECTOR' && b.role === 'DIRECTOR') {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
+                setCrews(sortedCrews);
+                setVisibleCrews(sortedCrews.slice(0, initialVisibleCrews));
+            })
             .catch((error) => console.error('Error fetching crew data:', error));
 
         axiosInstance
             .get(`/movies/${movieId}/genres`)
             .then((response) => {
-                // response.data를 가공하여 name 속성을 가진 객체들의 배열로 변환
                 const formattedGenres = response.data.map((genre) => ({
                     name: genre.genreName,
                 }));
                 setGenres(formattedGenres);
             })
-            .catch((error) => console.error('Error fetching genre data', error));
+            .catch((error) => console.error('Error fetching genre data:', error));
+
+        fetchComments(0);
     }, [movieId]);
+
+    // Intersection Observer 설정 (코멘트 무한 스크롤)
+    useEffect(() => {
+        if (!isInitialLoad) { // isInitialLoad가 false일 때만 observer 생성
+            var options = {
+                root: null,
+                rootMargin: '20px',
+                threshold: 1.0,
+            };
+
+            const observer = new IntersectionObserver(handleObserver, options);
+            if (loader.current) {
+                observer.observe(loader.current);
+            }
+
+            return () => observer.disconnect(); // 컴포넌트 언마운트 시 옵저버 해제
+        }
+    }, [comments, hasMore, isInitialLoad]);
+
+    // 코멘트 불러오기 함수
+    const fetchComments = (currentPage = 0) => {
+        axiosInstance
+            .get(`/movies/${movieId}/comments?page=${currentPage}`)
+            .then((response) => {
+                // 댓글 수(totalComments)를 API 응답에서 가져와서 설정
+                const fetchedTotalComments = response.data.content && response.data.content.length > 0
+                    ? response.data.content[0].commentCount
+                    : 0;
+                setTotalComments(fetchedTotalComments);
+
+                if (currentPage === 0) {
+                    setComments(response.data.content.slice(0, 4)); // 최초 4개만 로드
+                    // 더보기 버튼 표시 여부 설정
+                    setHasMore(response.data.content.length > 4 || fetchedTotalComments > 4);
+                } else {
+                    setComments((prevComments) => [
+                        ...prevComments,
+                        ...response.data.content,
+                    ]);
+                    setHasMore(!response.data.last);
+                }
+                setPage(currentPage + 1);
+            })
+            .catch((error) => console.error('Error fetching comments:', error));
+    };
+
+    // Intersection Observer 콜백 함수
+    const handleObserver = (entities) => {
+        const target = entities[0];
+        // isInitialLoad가 false일 때만 무한 스크롤 동작
+        if (target.isIntersecting && hasMore && !isInitialLoad) {
+            fetchComments(page);
+        }
+    };
 
     const handleRatingChange = (newRating) => {
         if (myRating === newRating) {
@@ -67,7 +145,7 @@ function MovieDetailPage() {
 
     const handleWishClick = () => {
         setIsWish(!isWish);
-        // 여기에 찜하기/찜해제 로직 추가 (예: API 호출)
+        // TODO: 찜하기/찜해제 API 호출
     };
 
     const handleCommentChange = (event) => {
@@ -103,7 +181,35 @@ function MovieDetailPage() {
                 setComment('');
                 setMyRating(0);
                 setShowCommentInput(false);
+                fetchComments(0);
             });
+    };
+
+    // 출연/제작진 더보기/취소 처리
+    const handleShowMoreCrews = () => {
+        setShowMoreCrews(true);
+        setVisibleCrews(crews);
+    };
+
+    const handleShowLessCrews = () => {
+        setShowMoreCrews(false);
+        setVisibleCrews(crews.slice(0, initialVisibleCrews));
+    };
+
+    // 코멘트 더보기 처리
+    const handleLoadMore = () => {
+        setIsInitialLoad(false); // 더보기 버튼 클릭 시 무한 스크롤 활성화
+        fetchComments(page); // 즉시 다음 페이지 로드
+        setShowLessComments(true); // 코멘트 더보기 취소 버튼 표시
+    };
+
+    // 코멘트 더보기 취소 처리
+    const handleShowLessComments = () => {
+        setComments(comments.slice(0, 4)); // 처음 4개만 표시
+        setShowLessComments(false); // 코멘트 더보기 취소 버튼 숨김
+        setHasMore(true); // 코멘트 더보기 버튼 표시
+        setPage(1); // 페이지 번호를 1로 초기화
+        setIsInitialLoad(true); // 더보기 버튼 다시 활성화
     };
 
     if (!movieData) {
@@ -121,26 +227,28 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
-                <div style={styles.breadcrumbs}>홈 / 영화 / {movieData.title}</div>
+                <div style={styles.breadcrumbs}>
+                    홈 / 영화 / {movieData.title}
+                </div>
                 <div style={styles.title}>{movieData.title}</div>
                 <div style={styles.subtitle}>
-                    {movieData.releaseDate ? movieData.releaseDate.substring(0, 4) : ''}
-                    {' ・ '}
-                    {/* 장르 목록 출력 */}
+                    {movieData.releaseDate
+                        ? movieData.releaseDate.substring(0, 4)
+                        : ''}{' '}
+                    ・{' '}
                     {genres.map((genre, index) => (
-                        <span key={index}>{genre.name}
-                            {/* 마지막 장르 뒤에는 쉼표를 붙이지 않음 */}
+                        <span key={index}>
+              {genre.name}
                             {index < genres.length - 1 ? ', ' : ''}
-                        </span>
-                    ))}
-                    {' ・ '}
-                    {movieData.country}
+            </span>
+                    ))}{' '}
+                    ・ {movieData.country}
                 </div>
             </div>
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title}/>
+                    <img src={movieData.posterUrl} alt={movieData.title} />
                 </div>
 
                 <div style={styles.info}>
@@ -148,15 +256,21 @@ function MovieDetailPage() {
                         <div style={styles.myRating}>
                             <span style={styles.ratingLabel}>내 별점</span>
                             <div style={styles.stars}>
-                                {[...Array(5)].map((_, index) => (
-                                    <span
-                                        key={index}
-                                        style={index < myRating ? styles.starFilled : styles.starEmpty}
-                                        onClick={() => handleRatingChange(index + 1)}
-                                    >
-                    <span style={styles.starIcon}>★</span>
-                  </span>
-                                ))}
+                                {Array(5)
+                                    .fill()
+                                    .map((_, index) => (
+                                        <span
+                                            key={index}
+                                            style={
+                                                index < myRating
+                                                    ? styles.starFilled
+                                                    : styles.starEmpty
+                                            }
+                                            onClick={() => handleRatingChange(index + 1)}
+                                        >
+                      <span style={styles.starIcon}>★</span>
+                    </span>
+                                    ))}
                             </div>
                         </div>
                         <div style={styles.buttonGroup}>
@@ -172,7 +286,6 @@ function MovieDetailPage() {
                         </div>
                     </div>
 
-                    {/* 코멘트 입력란 */}
                     {showCommentInput && (
                         <div style={styles.commentSection}>
               <textarea
@@ -181,7 +294,10 @@ function MovieDetailPage() {
                   value={comment}
                   onChange={handleCommentChange}
               />
-                            <button style={styles.submitButton} onClick={handleSubmitComment}>
+                            <button
+                                style={styles.submitButton}
+                                onClick={handleSubmitComment}
+                            >
                                 코멘트 남기기
                             </button>
                         </div>
@@ -197,7 +313,7 @@ function MovieDetailPage() {
                             <div style={styles.sectionTitle}>출연/제작</div>
                             <div style={styles.sectionContent}>
                                 <div style={styles.crewGrid}>
-                                    {crews.map((crew) => (
+                                    {visibleCrews.map((crew) => (
                                         <div key={crew.name} style={styles.crewMember}>
                                             <img
                                                 src={
@@ -223,16 +339,78 @@ function MovieDetailPage() {
                                         </div>
                                     ))}
                                 </div>
+                                {!showMoreCrews && crews.length > initialVisibleCrews && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button
+                                            style={styles.moreButton}
+                                            onClick={handleShowMoreCrews}
+                                        >
+                                            더보기
+                                        </button>
+                                    </div>
+                                )}
+                                {showMoreCrews && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button
+                                            style={styles.moreButton}
+                                            onClick={handleShowLessCrews}
+                                        >
+                                            더보기 취소
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         <div style={styles.section}>
-                            <div style={styles.sectionTitle}>평점/리뷰</div>
+                            <div style={styles.sectionTitle}>
+                                코멘트{' '}
+                                <span style={styles.commentCount}>
+                  {totalComments.toLocaleString()}
+                </span>
+                            </div>
                             <div style={styles.sectionContent}>
-                                {movieData.reviews &&
-                                    movieData.reviews.map((review) => (
-                                        <div key={review.id}>{review.content}</div>
-                                    ))}
+                                {comments.map((comment) => (
+                                    <div key={comment.movieCommentId} style={styles.commentItem}>
+                                        <div style={styles.commentHeader}>
+                      <span style={styles.commentUser}>
+                        {comment.nickname}
+                          <span
+                              style={
+                                  comment.score >= 1
+                                      ? styles.commentStarFilled
+                                      : styles.commentStarEmpty
+                              }
+                          >
+                          ★
+                        </span>
+                          {comment.score}
+                      </span>
+                                        </div>
+                                        <div style={styles.commentText}>{comment.comment}</div>
+                                    </div>
+                                ))}
+                                {/* 무한 스크롤 로딩 감지 Element */}
+                                <div ref={loader} />
+                                {/* 더보기 버튼 */}
+                                {hasMore && isInitialLoad && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button style={styles.moreButton} onClick={handleLoadMore}>
+                                            더보기
+                                        </button>
+                                    </div>
+                                )}
+                                {/* 더보기 취소 버튼 */}
+                                {showLessComments && (
+                                    <div style={styles.moreButtonContainer}>
+                                        <button
+                                            style={styles.moreButton}
+                                            onClick={handleShowLessComments}
+                                        >
+                                            더보기 취소
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -242,7 +420,7 @@ function MovieDetailPage() {
                                 {movieData.relatedBooks &&
                                     movieData.relatedBooks.map((book) => (
                                         <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title}/>
+                                            <img src={book.coverUrl} alt={book.title} />
                                             <div>{book.title}</div>
                                         </div>
                                     ))}
@@ -414,6 +592,48 @@ const styles = {
         borderRadius: '5px',
         cursor: 'pointer',
         alignSelf: 'flex-end',
+    },
+    commentCount: {
+        fontSize: '16px',
+        color: '#656565',
+    },
+    commentItem: {
+        borderBottom: '1px solid #ccc',
+        padding: '10px 0',
+    },
+    commentHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '5px',
+    },
+    commentUser: {
+        fontWeight: 'bold',
+        marginRight: '5px',
+        color: '#000000',
+    },
+    commentStarFilled: {
+        color: '#f8d90f',
+        marginLeft: '5px',
+    },
+    commentStarEmpty: {
+        color: '#ccc',
+        marginLeft: '5px',
+    },
+    commentText: {
+        color: '#000000',
+    },
+    moreButtonContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '10px',
+    },
+    moreButton: {
+        padding: '5px 10px',
+        backgroundColor: '#4080ff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
     },
 };
 

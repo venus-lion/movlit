@@ -35,11 +35,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/testBook/saveBooks/bestseller").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/crews").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
-                        .requestMatchers("/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
+                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
                                 "/img/**", "/js/**", "/css/**", "/error/**",
                                 "api/books/**")

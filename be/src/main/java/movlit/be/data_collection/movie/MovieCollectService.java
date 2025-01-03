@@ -127,8 +127,16 @@ public class MovieCollectService {
             String originalTitle = (String) result.get("original_title");
             String overview = (String) result.get("overview");
             Double popularity = (Double) result.get("popularity");
-            String posterPath = (String) result.get("poster_path");
-            String backdropPath = (String) result.get("backdrop_path");
+
+            String posterPath = Optional.ofNullable((String) result.get("poster_path")).orElse("");
+            if (!posterPath.isEmpty()) {
+                posterPath = "http://image.tmdb.org/t/p/w200" + posterPath;
+            }
+
+            String backdropPath = Optional.ofNullable((String) result.get("backdrop_path")).orElse("");
+            if (!backdropPath.isEmpty()) {
+                backdropPath = "http://image.tmdb.org/t/p/original" + backdropPath;
+            }
 
             String releaseDateStr = (String) result.get("release_date");
             LocalDate releaseDate = LocalDate.parse(releaseDateStr, DateTimeFormatter.ISO_LOCAL_DATE);

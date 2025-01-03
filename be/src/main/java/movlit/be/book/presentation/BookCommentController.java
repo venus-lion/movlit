@@ -9,7 +9,6 @@ import movlit.be.book.application.converter.service.BookDetailWriteService;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentRequestDto;
-
 import movlit.be.common.exception.BookCommentAccessDenied;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;

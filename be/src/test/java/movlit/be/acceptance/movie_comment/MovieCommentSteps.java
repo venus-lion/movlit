@@ -24,6 +24,74 @@ public class MovieCommentSteps {
         return 영화_코멘트를_작성한다(accessToken, movieId, spec, body);
     }
 
+    public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다_2(String accessToken, String movieId,
+                                                                RequestSpecification spec) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("score", 3);
+        body.put("comment", "이 영화는 정말 재밌어");
+        return 영화_코멘트를_작성한다(accessToken, movieId, spec, body);
+    }
+
+    public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다_3(String accessToken, String movieId,
+                                                                RequestSpecification spec) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("score", 4);
+        body.put("comment", "이건 안 봐도 되는 정도?");
+        return 영화_코멘트를_작성한다(accessToken, movieId, spec, body);
+    }
+
+    public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다_4(String accessToken, String movieId,
+                                                                RequestSpecification spec) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("score", 2);
+        body.put("comment", "그래도 한 번쯤은 봐야 합니다.");
+        return 영화_코멘트를_작성한다(accessToken, movieId, spec, body);
+    }
+
+    public static ExtractableResponse<Response> 영화_코멘트_목록_조회를_요청한다(String movieId,
+                                                             RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .when()
+                .get("/api/movies/{movieId}/comments", movieId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_후_영화_코멘트_목록_조회를_요청한다(String accessToken, String movieId,
+                                                                         RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/movies/{movieId}/comments", movieId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 영화_코멘트를_삭제한다(String accessToken, String movieCommentId,
+                                                             RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/api/movies/comments/{movieCommentId}", movieCommentId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 영화_코멘트를_작성한다(String accessToken, String movieId,
                                                              RequestSpecification spec, Map<String, Object> body) {
         return RestAssured
@@ -41,7 +109,7 @@ public class MovieCommentSteps {
                 .extract();
     }
 
-    public static void 상태코드가_200이고_응답에_movieCommentId가_존재한다(ExtractableResponse<Response> response) {
+    public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK));
     }

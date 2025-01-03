@@ -35,6 +35,8 @@ public enum ErrorMessage {
 
     MOVIE_NOT_FOUND("메시지", "m001"),
     MOVIE_CREW_NOT_FOUND("해당 movieId에 해당하는 crew를 찾을 수 없습니다.", "m102"),
+    MOVIE_COMMENT_AND_MEMBER_NOT_MATCHED("해당 영화 코멘트와 멤버가 매칭되지 않습니다.", "m103"),
+    MOVIE_COMMENT_NOT_FOUND("해당 영화 코멘트를 찾을 수 없습니다.", "m104"),
 
 
     // Genre
