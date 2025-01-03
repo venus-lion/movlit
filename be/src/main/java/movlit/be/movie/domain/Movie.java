@@ -40,6 +40,8 @@ public class Movie {
     private Long heartCount;
 
     private List<MovieRCrew> movieRCrewList = new ArrayList<>();
+    private List<MovieGenre> movieGenreList = new ArrayList<>();
+    private List<MovieTag> movieTagList = new ArrayList<>();
 
     @Builder
     public Movie(Long movieId, String title, String originalTitle, String overview, Double popularity,

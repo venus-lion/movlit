@@ -2,7 +2,7 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'; // 변경
 import App from './App';
-import Home from './pages/Home';
+import Home from './pages/MovieHome';
 import MemberRegister from './pages/MemberRegister';
 import MemberLogin from './pages/MemberLogin';
 import MovieDetailPage from './components/MovieDetailPage';

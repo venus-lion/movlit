@@ -2,6 +2,7 @@ package movlit.be.movie.infra;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
@@ -52,15 +53,14 @@ public class MovieRepositoryImpl implements MovieRepository {
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
-    // TODO : 반환 데이터 타입(RequestDto) 만들어서 {id : '장르id', genreName : '장르이름', data: 'MovieEntity'} 형식으로 반환
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
-        Page<MovieGenreEntity> movieGenreEntityPage = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(
-                genreId, pageable);
-        List<Movie> movieList = movieGenreEntityPage.stream().map(m -> MovieConverter.toDomain(m.getMovieEntity()))
-                .toList();
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(genreId, pageable);
+//        Page<MovieGenreEntity> movieEntityPage2 = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
 
-        return null;
+        return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
+
+
     }
 
 
