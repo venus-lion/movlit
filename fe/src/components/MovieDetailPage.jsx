@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
+import { FaHeart, FaRegHeart, FaUserCircle, FaComment } from 'react-icons/fa';
 
 function MovieDetailPage() {
     const { movieId } = useParams();
@@ -19,8 +20,8 @@ function MovieDetailPage() {
     const [totalComments, setTotalComments] = useState(0);
     const [page, setPage] = useState(0);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    const [userComment, setUserComment] = useState(null); // 사용자 코멘트 정보
-    const [userCommentId, setUserCommentId] = useState(null); // 사용자 코멘트 ID
+    const [userComment, setUserComment] = useState(null);
+    const [userCommentId, setUserCommentId] = useState(null);
     const loader = useRef(null);
 
     const initialVisibleCrews = 14;
@@ -47,7 +48,7 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
-                    isHearted: data.isHearted, // isHearted 추가
+                    isHearted: data.isHearted,
                 });
             })
             .catch((error) => console.error('Error fetching movie data:', error));
@@ -86,7 +87,7 @@ function MovieDetailPage() {
     // Intersection Observer 설정 (코멘트 무한 스크롤)
     useEffect(() => {
         if (!isInitialLoad) {
-            var options = {
+            const options = {
                 root: null,
                 rootMargin: '20px',
                 threshold: 1.0,
@@ -148,15 +149,26 @@ function MovieDetailPage() {
                 setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
-                    setComments(response.data.content.slice(0, 4));
+                    // 각 코멘트 객체에 isLiked와 commentLikeCount, profileImgUrl이 존재하는지 확인하고, 값이 없으면 false, 0, null으로 설정
+                    const updatedComments = response.data.content.map(comment => ({
+                        ...comment,
+                        isLiked: comment.isLiked || false,
+                        commentLikeCount: comment.commentLikeCount || 0,
+                        profileImgUrl: comment.profileImgUrl || null,
+                    }));
+                    setComments(updatedComments);
                     setHasMore(
                         response.data.content.length > 4 || fetchedTotalComments > 4
                     );
                 } else {
-                    setComments((prevComments) => [
-                        ...prevComments,
-                        ...response.data.content,
-                    ]);
+                    // 마찬가지로 isLiked와 commentLikeCount, profileImgUrl 존재 여부 확인 및 기본값 설정
+                    const updatedComments = response.data.content.map(comment => ({
+                        ...comment,
+                        isLiked: comment.isLiked || false,
+                        commentLikeCount: comment.commentLikeCount || 0,
+                        profileImgUrl: comment.profileImgUrl || null,
+                    }));
+                    setComments((prevComments) => [...prevComments, ...updatedComments]);
                     setHasMore(!response.data.last);
                 }
                 setPage(currentPage + 1);
@@ -326,6 +338,25 @@ function MovieDetailPage() {
         setIsInitialLoad(true);
     };
 
+    // 좋아요/좋아요 취소 처리
+    const handleLikeClick = async (commentId, isLiked) => {
+        try {
+            if (isLiked) {
+                // 좋아요 취소 (DELETE 요청)
+                await axiosInstance.delete(`/movies/comments/${commentId}/likes`);
+            } else {
+                // 좋아요 (POST 요청)
+                await axiosInstance.post(`/movies/comments/${commentId}/likes`);
+            }
+
+            // 코멘트 목록 다시 불러오기
+            fetchComments(0);
+        } catch (error) {
+            console.error('Error updating like status:', error);
+            alert('좋아요/좋아요 취소 처리에 실패했습니다.');
+        }
+    };
+
     if (!movieData) {
         return <div style={styles.loading}>Loading...</div>;
     }
@@ -384,32 +415,6 @@ function MovieDetailPage() {
                     </span>
                                     ))}
                             </div>
-                            {/* 사용자 코멘트, 별점, 닉네임, 프로필 이미지 표시 */}
-                            {userComment && userComment.score > 0 && (
-                                <div style={styles.userCommentDisplay}>
-                                    <div style={styles.userInfo}>
-                                        <img
-                                            src={
-                                                userComment.profileImgUrl || '/default-profile-image.jpg'
-                                            }
-                                            alt="프로필 이미지"
-                                            style={styles.profileImage}
-                                        />
-                                        <span style={styles.userNickname}>
-                      {userComment.nickname}
-                    </span>
-                                    </div>
-                                    <p>
-                    <span
-                        style={{ ...styles.commentStarFilled, marginRight: '5px' }}
-                    >
-                      ★
-                    </span>
-                                        {userComment.score}
-                                    </p>
-                                    <p>{userComment.comment}</p>
-                                </div>
-                            )}
                         </div>
                         <div style={styles.buttonGroup}>
                             <button
@@ -430,6 +435,28 @@ function MovieDetailPage() {
                         </div>
                     </div>
 
+                    {/* 사용자 코멘트 표시 */}
+                    {userComment && userComment.score > 0 && (
+                        <div style={styles.userCommentDisplay}>
+                            <div style={styles.userInfo}>
+                                {userComment.profileImgUrl ? (
+                                    <img
+                                        src={userComment.profileImgUrl}
+                                        alt="프로필 이미지"
+                                        style={styles.profileImage}
+                                    />
+                                ) : (
+                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                )}
+                                <span style={styles.userNickname}>{userComment.nickname}</span>
+                            </div>
+                            <div style={styles.userCommentContent}>
+                                <FaComment style={styles.commentIcon} />
+                                <p style={styles.userCommentText}>{userComment.comment}</p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* 코멘트 입력 및 수정/삭제 버튼 */}
                     {showCommentInput && (
                         <div style={styles.commentSection}>
@@ -448,9 +475,6 @@ function MovieDetailPage() {
                     {/* 코멘트 삭제 및 수정 버튼 */}
                     {!showCommentInput && userComment && (
                         <div style={styles.commentActions}>
-                            <button style={styles.deleteButton} onClick={handleDeleteComment}>
-                                삭제하기
-                            </button>
                             <button
                                 style={styles.editButton}
                                 onClick={() => {
@@ -461,8 +485,13 @@ function MovieDetailPage() {
                             >
                                 수정하기
                             </button>
+                            <button style={styles.deleteButton} onClick={handleDeleteComment}>
+                                삭제하기
+                            </button>
                         </div>
                     )}
+
+                    <div style={{marginTop: '20px'}}/>
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -524,30 +553,51 @@ function MovieDetailPage() {
 
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>
-                                코멘트{' '}
-                                <span style={styles.commentCount}>
-                  {totalComments.toLocaleString()}
-                </span>
+                                코멘트 <span style={styles.commentCount}>{totalComments.toLocaleString()}</span>
                             </div>
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                      <span style={styles.commentUser}>
-                        {comment.nickname}
-                          <span
-                              style={
-                                  comment.score >= 1
-                                      ? styles.commentStarFilled
-                                      : styles.commentStarEmpty
-                              }
-                          >
-                          ★
-                        </span>
-                          {comment.score}
-                      </span>
+                                            <div style={styles.commentUserInfo}>
+                                                {/* 프로필 이미지/아이콘 표시 */}
+                                                {comment.profileImgUrl ? (
+                                                    <img
+                                                        src={comment.profileImgUrl}
+                                                        alt="프로필 이미지"
+                                                        style={styles.commentProfileImage}
+                                                    />
+                                                ) : (
+                                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                                )}
+                                                <span style={styles.commentUser}>{comment.nickname}</span>
+                                            </div>
+                                            {/* 별점 및 좋아요 컨테이너 */}
+                                            <div style={styles.commentActions}>
+                                                <div style={styles.commentRating}>
+                          <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
+                            ★
+                          </span>
+                                                    <span style={styles.commentScore}>{comment.score}</span>
+                                                </div>
+                                                {/* 좋아요 버튼 및 카운트 컨테이너 */}
+                                                <div style={styles.likeContainer}>
+                                                    <button
+                                                        style={styles.likeButton}
+                                                        onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
+                                                    >
+                                                        {comment.isLiked ? <FaHeart style={styles.likedIcon} /> : <FaRegHeart style={styles.likeIcon} />}
+                                                    </button>
+                                                    {/* 좋아요 카운트 */}
+                                                    <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div style={styles.commentText}>{comment.comment}</div>
+                                        {/* 코멘트 내용 */}
+                                        <div style={styles.commentContent}>
+                                            <FaComment style={styles.commentIcon} />
+                                            <p style={styles.commentText}>{comment.comment}</p>
+                                        </div>
                                     </div>
                                 ))}
                                 {/* 무한 스크롤 로딩 감지 Element */}
@@ -563,10 +613,7 @@ function MovieDetailPage() {
                                 {/* 더보기 취소 버튼 */}
                                 {showLessComments && (
                                     <div style={styles.moreButtonContainer}>
-                                        <button
-                                            style={styles.moreButton}
-                                            onClick={handleShowLessComments}
-                                        >
+                                        <button style={styles.moreButton} onClick={handleShowLessComments}>
                                             더보기 취소
                                         </button>
                                     </div>
@@ -765,6 +812,7 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         marginBottom: '5px',
+        justifyContent: 'space-between'
     },
     commentUser: {
         fontWeight: 'bold',
@@ -796,15 +844,17 @@ const styles = {
         cursor: 'pointer',
     },
     userCommentDisplay: {
-        marginTop: '10px',
-        padding: '10px',
+        marginTop: '20px',
+        padding: '15px',
         border: '1px solid #ccc',
         borderRadius: '5px',
+        backgroundColor: '#f8f8f8',
     },
     commentActions: {
         marginTop: '10px',
         display: 'flex',
         gap: '10px',
+        justifyContent: 'flex-end',
     },
     deleteButton: {
         padding: '10px 20px',
@@ -825,7 +875,7 @@ const styles = {
     userInfo: {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '5px',
+        marginBottom: '10px',
     },
     profileImage: {
         width: '30px',
@@ -839,13 +889,86 @@ const styles = {
     heartCountContainer: {
         marginLeft: '8px',
         padding: '4px 8px',
-        backgroundColor: '#f2f2f2', // 배경색
-        borderRadius: '10px', // 둥근 모서리
-        border: '1px solid #ccc', // 테두리
+        backgroundColor: '#f2f2f2',
+        borderRadius: '10px',
+        border: '1px solid #ccc',
         fontSize: '14px',
         fontWeight: 'bold',
-        color: '#333', // 텍스트 색상
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // 그림자 효과
+        color: '#333',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    likeButton: {
+        marginLeft: '10px',
+        padding: '0px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        background: 'none',
+    },
+    likeIcon: {
+        color: '#4080ff',
+        fontSize: '1.2em',
+    },
+    likedIcon: {
+        color: '#FF3366',
+        fontSize: '1.2em',
+    },
+    likeContainer: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    likeCountContainer: {
+        marginLeft: '5px',
+        padding: '3px 6px',
+        backgroundColor: '#f2f2f2',
+        borderRadius: '8px',
+        border: '1px solid #ccc',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    defaultProfileIcon: {
+        fontSize: '30px',
+        color: '#999',
+        marginRight: '10px',
+    },
+    userCommentContent: {
+        display: 'flex',
+    },
+    commentIcon: {
+        fontSize: '18px',
+        color: '#666',
+        marginRight: '5px',
+        marginTop: '3px'
+    },
+    userCommentText: {
+        fontSize: '14px',
+        lineHeight: '1.4',
+    },
+    commentUserInfo: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    commentProfileImage: {
+        width: '30px',
+        height: '30px',
+        borderRadius: '50%',
+        marginRight: '5px',
+    },
+    commentRating: {
+        display: 'flex',
+        alignItems: 'center',
+        marginLeft: 'auto',
+    },
+    commentScore: {
+        marginLeft: '5px',
+        color: '#000000',
+    },
+    commentContent: {
+        display: 'flex',
+        alignItems: 'flex-start',
+        marginLeft: '5px',
     },
 };
 

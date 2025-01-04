@@ -9,6 +9,9 @@ import movlit.be.movie.presentation.dto.request.MovieCommentData;
 import movlit.be.movie.presentation.dto.request.MovieCommentDataForDelete;
 import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
+import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
+import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
+import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEntity;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.presentation.dto.response.MovieHeartResponse;
 import movlit.be.movie_heart_count.domain.entity.MovieHeartCountEntity;
@@ -25,7 +28,7 @@ public class MovieConvertor {
     }
 
     public static MovieCommentDataForDelete toMovieDetailCommentDataForDelete(MemberId memberId,
-                                                            MovieCommentId movieCommentId) {
+                                                                              MovieCommentId movieCommentId) {
         return new MovieCommentDataForDelete(memberId, movieCommentId);
     }
 
@@ -54,6 +57,17 @@ public class MovieConvertor {
                 .build();
     }
 
+    public static MovieCommentLikeResponse toMovieCommentLikeResponse(MovieCommentLikeEntity movieCommentLikeEntity,
+                                                                      Long movieCommentLikeCount) {
+        return MovieCommentLikeResponse.builder()
+                .movieCommentLikeId(movieCommentLikeEntity.getMovieCommentLikeId())
+                .movieCommentId(movieCommentLikeEntity.getMovieCommentId())
+                .memberId(movieCommentLikeEntity.getMemberId())
+                .isLiked(movieCommentLikeEntity.isLiked())
+                .movieCommentLikeCount(movieCommentLikeCount)
+                .build();
+    }
+
     public static MovieHeartEntity toMovieHeartEntity(Long movieId, MemberId memberId) {
         return MovieHeartEntity.builder()
                 .movieHeartId(IdFactory.createMovieHeartId())
@@ -63,10 +77,28 @@ public class MovieConvertor {
                 .build();
     }
 
+    public static MovieCommentLikeEntity toMovieCommentLikeEntity(MemberId memberId,
+                                                                  MovieCommentId movieCommentId) {
+        return MovieCommentLikeEntity.builder()
+                .movieCommentLikeId(IdFactory.createMovieCommentLikeId())
+                .movieCommentId(movieCommentId)
+                .memberId(memberId)
+                .isLiked(true)
+                .build();
+    }
+
     public static MovieHeartCountEntity toMovieHeartCountEntity(Long movieId) {
         return MovieHeartCountEntity.builder()
                 .movieHeartCountId(IdFactory.createMovieHeartCountId())
                 .movieId(movieId)
+                .count(0L)
+                .build();
+    }
+
+    public static MovieCommentLikeCountEntity toMovieCommentLikeCountEntity(MovieCommentEntity movieCommentEntity) {
+        return MovieCommentLikeCountEntity.builder()
+                .movieCommentLikeCountId(IdFactory.createMovieCommentLikeCountId())
+                .movieCommentId(movieCommentEntity.getMovieCommentId())
                 .count(0L)
                 .build();
     }

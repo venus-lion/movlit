@@ -15,8 +15,7 @@ import movlit.be.movie.presentation.dto.request.MovieCommentData;
 import movlit.be.movie.presentation.dto.request.MovieCommentDataForDelete;
 import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
-import movlit.be.movie_heart_count.application.service.MovieHeartCountService;
-import movlit.be.movie_heart_count.domain.entity.MovieHeartCountEntity;
+import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +25,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MovieDetailWriteService {
 
     private final MovieCommentRepository movieCommentRepository;
-    private final MovieHeartCountService movieHeartCountService;
+    private final MovieCommentLikeCountService movieCommentLikeCountService;
 
     public MovieCommentResponse createComment(MovieCommentData data) {
         validateMemberExistsInMovieComment(data);
         MovieCommentId movieCommentId = IdFactory.createMovieCommentId();
         LocalDateTime now = LocalDateTime.now();
         MovieCommentEntity movieCommentEntity = MovieConvertor.toMovieCommentEntity(data, movieCommentId, now);
+        movieCommentLikeCountService.save(
+                MovieConvertor.toMovieCommentLikeCountEntity(movieCommentEntity));
         return MovieConvertor.toMovieCommentResponse(movieCommentRepository.createComment(movieCommentEntity));
     }
 
