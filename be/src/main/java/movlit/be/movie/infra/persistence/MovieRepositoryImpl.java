@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-@Slf4j
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
