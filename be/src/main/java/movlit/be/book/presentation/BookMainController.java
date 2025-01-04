@@ -3,6 +3,9 @@ package movlit.be.book.presentation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.service.BookMainReadService;
+import movlit.be.book.application.service.GetBooksByRandomGenreService;
+import movlit.be.book.presentation.dto.BooksGenreResponse;
+import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto;
 import movlit.be.book.presentation.dto.BooksResponse;
 import movlit.be.book.presentation.dto.BooksResponse.BookItemDto;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
 public class BookMainController {
-    public final BookMainReadService bookMainReadService;
+    private final BookMainReadService bookMainReadService;
+    private final GetBooksByRandomGenreService getBooksByRandomGenre;
 
     @GetMapping("/bestseller")
     public ResponseEntity<BooksResponse> getTopBestsellers(@RequestParam(defaultValue = "30") int limit){
@@ -48,6 +52,18 @@ public class BookMainController {
                 .build();
 
         return ResponseEntity.ok(booksResponse);
+    }
+
+    // 랜덤장르 불러오기 -> dto가 달라짐
+    @GetMapping("/genres/random")
+    public ResponseEntity<BooksGenreResponse> getBooksByRandomGenre(@RequestParam(defaultValue = "30") int limit){
+        List<BookItemWithGenreDto> booksByRandomGenresDto = getBooksByRandomGenre.getBooksByRandomGenres(limit);
+
+        BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
+                .bookWithGenres(booksByRandomGenresDto)
+                .build();
+
+        return ResponseEntity.ok(booksGenreResponse);
     }
 
 }
