@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaUserCircle, FaComment } from 'react-icons/fa';
 
 function MovieDetailPage() {
     const { movieId } = useParams();
@@ -413,32 +413,6 @@ function MovieDetailPage() {
                     </span>
                                     ))}
                             </div>
-                            {/* 사용자 코멘트, 별점, 닉네임, 프로필 이미지 표시 */}
-                            {userComment && userComment.score > 0 && (
-                                <div style={styles.userCommentDisplay}>
-                                    <div style={styles.userInfo}>
-                                        <img
-                                            src={
-                                                userComment.profileImgUrl || '/default-profile-image.jpg'
-                                            }
-                                            alt="프로필 이미지"
-                                            style={styles.profileImage}
-                                        />
-                                        <span style={styles.userNickname}>
-                      {userComment.nickname}
-                    </span>
-                                    </div>
-                                    <p>
-                    <span
-                        style={{ ...styles.commentStarFilled, marginRight: '5px' }}
-                    >
-                      ★
-                    </span>
-                                        {userComment.score}
-                                    </p>
-                                    <p>{userComment.comment}</p>
-                                </div>
-                            )}
                         </div>
                         <div style={styles.buttonGroup}>
                             <button
@@ -459,6 +433,28 @@ function MovieDetailPage() {
                         </div>
                     </div>
 
+                    {/* 사용자 코멘트 표시 */}
+                    {userComment && userComment.score > 0 && (
+                        <div style={styles.userCommentDisplay}>
+                            <div style={styles.userInfo}>
+                                {userComment.profileImgUrl ? (
+                                    <img
+                                        src={userComment.profileImgUrl}
+                                        alt="프로필 이미지"
+                                        style={styles.profileImage}
+                                    />
+                                ) : (
+                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                )}
+                                <span style={styles.userNickname}>{userComment.nickname}</span>
+                            </div>
+                            <div style={styles.userCommentContent}>
+                                <FaComment style={styles.commentIcon} />
+                                <p style={styles.userCommentText}>{userComment.comment}</p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* 코멘트 입력 및 수정/삭제 버튼 */}
                     {showCommentInput && (
                         <div style={styles.commentSection}>
@@ -477,9 +473,6 @@ function MovieDetailPage() {
                     {/* 코멘트 삭제 및 수정 버튼 */}
                     {!showCommentInput && userComment && (
                         <div style={styles.commentActions}>
-                            <button style={styles.deleteButton} onClick={handleDeleteComment}>
-                                삭제하기
-                            </button>
                             <button
                                 style={styles.editButton}
                                 onClick={() => {
@@ -490,8 +483,13 @@ function MovieDetailPage() {
                             >
                                 수정하기
                             </button>
+                            <button style={styles.deleteButton} onClick={handleDeleteComment}>
+                                삭제하기
+                            </button>
                         </div>
                     )}
+
+                    <div style={{marginTop: '20px'}}/>
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -824,15 +822,17 @@ const styles = {
         cursor: 'pointer',
     },
     userCommentDisplay: {
-        marginTop: '10px',
-        padding: '10px',
+        marginTop: '20px',
+        padding: '15px',
         border: '1px solid #ccc',
         borderRadius: '5px',
+        backgroundColor: '#f8f8f8',
     },
     commentActions: {
         marginTop: '10px',
         display: 'flex',
         gap: '10px',
+        justifyContent: 'flex-end',
     },
     deleteButton: {
         padding: '10px 20px',
@@ -853,7 +853,7 @@ const styles = {
     userInfo: {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '5px',
+        marginBottom: '10px',
     },
     profileImage: {
         width: '30px',
@@ -905,7 +905,25 @@ const styles = {
         fontSize: '12px',
         fontWeight: 'bold',
         color: '#333',
-    }
+    },
+    defaultProfileIcon: {
+        fontSize: '30px',
+        color: '#999',
+        marginRight: '10px',
+    },
+    userCommentContent: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    commentIcon: {
+        fontSize: '18px',
+        color: '#666',
+        marginRight: '5px',
+    },
+    userCommentText: {
+        fontSize: '14px',
+        lineHeight: '1.4',
+    },
 };
 
 export default MovieDetailPage;
