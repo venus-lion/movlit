@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.service.MovieMainService;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
@@ -80,7 +81,17 @@ public class MovieMainController {
 
     /**
      * TODO : 사용자 로그인 유무에 따른 처리를 Spring에서 할지? 한다면 여기에 구현
-     *
+     * 로그인 유저의 최근 찜 목록 기반으로 유사한 영화 리스트 가져오기
      * */
+    public ResponseEntity<MovieListByGenreResponseDto> getMovieByUserRecentHeart(
+            @AuthenticationPrincipal MyMemberDetails details,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "20") int pageSize
+    ){
+        MemberId currentMemberId = details.getMemberId();
 
+        // Service 구현
+
+        return ResponseEntity.ok(null);
+    }
 }

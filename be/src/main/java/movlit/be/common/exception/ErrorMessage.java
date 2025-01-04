@@ -19,6 +19,7 @@ public enum ErrorMessage {
     NOT_FOLLOWING("해당 회원을 팔로우하고있지 않습니다", "m006"),
     ALREADY_FOLLOWING("해당 회원을 이미 팔로우하고 있습니다", "m007"),
     INVALID_MEMBER_ID("유효하지 않은 회원 id입니다", "m008"),
+    MEMBER_GENRE_NOT_FOUND("멤버의 취향 장르가 존재하지 않습니다.", "m009"),
 
     // auth
     UNAUTHORIZED("권한이 없습니다", "a001"),
@@ -32,13 +33,15 @@ public enum ErrorMessage {
 
 
     // movie
-
     MOVIE_NOT_FOUND("메시지", "m001"),
     MOVIE_CREW_NOT_FOUND("해당 movieId에 해당하는 crew를 찾을 수 없습니다.", "m102"),
     MOVIE_COMMENT_AND_MEMBER_NOT_MATCHED("해당 영화 코멘트와 멤버가 매칭되지 않습니다.", "m103"),
     MOVIE_COMMENT_NOT_FOUND("해당 영화 코멘트를 찾을 수 없습니다.", "m104"),
     MEMBER_EXISTS_IN_MOVIE_COMMENT("해당 영화 코멘트에 현재 멤버가 이미 존재합니다.", "m105"),
-
+    MOVIE_HEART_ALREADY_EXISTS("현재의 아이디가 이미 좋아요 한 영화입니다.", "m106"),
+    MOVIE_HEART_NOT_FOUND("해당 영화의 찜을 찾을 수 없습니다.", "m107"),
+    MOVIE_COMMENT_LIKE_ALREADY_EXISTS("현재의 아이디가 이미 좋아요 한 코멘트입니다.", "m108"),
+    MOVIE_COMMENT_LIKE_NOT_FOUND("해당 코멘트의 좋아요를 찾을 수 없습니다.", "m109"),
 
     // Genre
     INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g001"),

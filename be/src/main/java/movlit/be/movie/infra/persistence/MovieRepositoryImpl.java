@@ -1,18 +1,17 @@
-package movlit.be.movie.infra;
+package movlit.be.movie.infra.persistence;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
-import movlit.be.movie.domain.entity.MovieGenreEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieGenreJpaRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,7 +19,8 @@ import org.springframework.stereotype.Repository;
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
-    private final MovieGenreJpaRepository movieGenreJpaRepository;
+//    private final ElasticsearchOperations elasticsearchOperations;
+
 
     @Override
     public Movie save(Movie movie) {
@@ -47,9 +47,9 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByVoteCountDescPopularityDesc(
                 pageable);
-
+//        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
