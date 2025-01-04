@@ -11,7 +11,6 @@ function MovieDetailPage() {
     const [visibleCrews, setVisibleCrews] = useState([]);
     const [showMoreCrews, setShowMoreCrews] = useState(false);
     const [genres, setGenres] = useState([]);
-    const [isWish, setIsWish] = useState(false);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
@@ -48,8 +47,8 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
+                    isHearted: data.isHearted, // isHearted 추가
                 });
-                setIsWish(data.isHearted); // 찜 상태 업데이트
             })
             .catch((error) => console.error('Error fetching movie data:', error));
 
@@ -82,7 +81,6 @@ function MovieDetailPage() {
 
         fetchUserComment();
         fetchComments(0);
-        // fetchIsWish(); // 찜 상태 확인 - 삭제
     }, [movieId]);
 
     // Intersection Observer 설정 (코멘트 무한 스크롤)
@@ -103,26 +101,26 @@ function MovieDetailPage() {
         }
     }, [comments, hasMore, isInitialLoad]);
 
-    // 사용자 코멘트 가져오기 (수정)
+    // 사용자 코멘트 가져오기
     const fetchUserComment = async () => {
         try {
             const response = await axiosInstance.get(`/movies/${movieId}/myComment`);
             if (response.data) {
-                // API 응답 데이터를 MovieMyCommentReadResponse 형식으로 가정
-                const { movieCommentId, comment, score, nickname, profileImgUrl } = response.data;
+                const { movieCommentId, comment, score, nickname, profileImgUrl } =
+                    response.data;
                 setUserComment({
                     nickname,
                     profileImgUrl,
                     comment,
-                    score
+                    score,
                 });
-                setUserCommentId(movieCommentId); // 코멘트 ID 저장
+                setUserCommentId(movieCommentId);
                 setMyRating(score);
                 setMyComment(comment);
                 if (score > 0) {
-                    setShowCommentInput(false); // 별점이 있으면 코멘트 입력창 숨김
+                    setShowCommentInput(false);
                 } else {
-                    setShowCommentInput(true); // 별점이 0이면 코멘트 입력창 표시
+                    setShowCommentInput(true);
                 }
             } else {
                 setUserComment(null);
@@ -143,14 +141,17 @@ function MovieDetailPage() {
         axiosInstance
             .get(`/movies/${movieId}/comments?page=${currentPage}`)
             .then((response) => {
-                const fetchedTotalComments = response.data.content && response.data.content.length > 0
-                    ? response.data.content[0].commentCount
-                    : 0;
+                const fetchedTotalComments =
+                    response.data.content && response.data.content.length > 0
+                        ? response.data.content[0].commentCount
+                        : 0;
                 setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
                     setComments(response.data.content.slice(0, 4));
-                    setHasMore(response.data.content.length > 4 || fetchedTotalComments > 4);
+                    setHasMore(
+                        response.data.content.length > 4 || fetchedTotalComments > 4
+                    );
                 } else {
                     setComments((prevComments) => [
                         ...prevComments,
@@ -173,14 +174,12 @@ function MovieDetailPage() {
 
     const handleRatingChange = (newRating) => {
         if (userComment) {
-            // 사용자가 별점을 매긴 상태에서 다시 클릭하면, 별점은 유지하고 코멘트 입력창을 표시
             setMyRating(newRating);
             setShowCommentInput(true);
         } else {
-            // 별점이 0점인 상태에서 별점을 클릭한 경우
             if (myRating === newRating) {
-                setMyRating(0); // 별점을 다시 0으로 설정 (별점이 없는 상태로 전환)
-                setShowCommentInput(false); // 코멘트 입력창 숨김
+                setMyRating(0);
+                setShowCommentInput(false);
             } else {
                 setMyRating(newRating);
                 setShowCommentInput(true);
@@ -191,24 +190,40 @@ function MovieDetailPage() {
     // 찜하기/찜해제 처리
     const handleWishClick = async () => {
         try {
-            const response = await axiosInstance.post(`/movies/${movieId}/hearts`);
-            setIsWish(response.data.isHearted);
+            if (movieData.isHearted) {
+                // 찜 해제 (DELETE 요청)
+                await axiosInstance.delete(`/movies/${movieId}/hearts`);
+                setMovieData((prevMovieData) => ({
+                    ...prevMovieData,
+                    heartCount: prevMovieData.heartCount - 1,
+                    isHearted: false,
+                }));
+            } else {
+                // 찜하기 (POST 요청)
+                const response = await axiosInstance.post(`/movies/${movieId}/hearts`);
+                setMovieData((prevMovieData) => ({
+                    ...prevMovieData,
+                    heartCount: response.data.movieHeartCnt,
+                    isHearted: true,
+                }));
+            }
 
             // 찜 상태에 따라 버튼 및 카운트 업데이트
-            setMovieData((prevMovieData) => ({
-                ...prevMovieData,
-                heartCount: response.data.movieHeartCnt,
-            }));
-
             const button = document.getElementById('wishButton');
             const heartCountSpan = document.getElementById('heartCount');
 
             if (button) {
-                button.style.backgroundColor = response.data.isHearted ? '#FF3366' : '#4080ff';
+                button.style.backgroundColor = !movieData.isHearted
+                    ? '#FF3366'
+                    : '#4080ff';
             }
 
             if (heartCountSpan) {
-                heartCountSpan.textContent = `${response.data.movieHeartCnt.toLocaleString()}`;
+                if (!movieData.isHearted) {
+                    heartCountSpan.style.display = 'none';
+                } else {
+                    heartCountSpan.style.display = 'inline-block';
+                }
             }
         } catch (error) {
             console.error('Error updating wish status:', error);
@@ -244,7 +259,10 @@ function MovieDetailPage() {
         try {
             if (userCommentId) {
                 // 코멘트 수정 (PUT 요청)
-                await axiosInstance.put(`/movies/comments/${userCommentId}`, requestBody);
+                await axiosInstance.put(
+                    `/movies/comments/${userCommentId}`,
+                    requestBody
+                );
                 alert('코멘트가 수정되었습니다.');
             } else {
                 // 새 코멘트 저장 (POST 요청)
@@ -328,15 +346,13 @@ function MovieDetailPage() {
                 </div>
                 <div style={styles.title}>{movieData.title}</div>
                 <div style={styles.subtitle}>
-                    {movieData.releaseDate
-                        ? movieData.releaseDate.substring(0, 4)
-                        : ''}{' '}
+                    {movieData.releaseDate ? movieData.releaseDate.substring(0, 4) : ''}{' '}
                     ・{' '}
                     {genres.map((genre, index) => (
                         <span key={index}>
-                            {genre.name}
+              {genre.name}
                             {index < genres.length - 1 ? ', ' : ''}
-                        </span>
+            </span>
                     ))}{' '}
                     ・ {movieData.country}
                 </div>
@@ -364,8 +380,8 @@ function MovieDetailPage() {
                                             }
                                             onClick={() => handleRatingChange(index + 1)}
                                         >
-                                            <span style={styles.starIcon}>★</span>
-                                        </span>
+                      <span style={styles.starIcon}>★</span>
+                    </span>
                                     ))}
                             </div>
                             {/* 사용자 코멘트, 별점, 닉네임, 프로필 이미지 표시 */}
@@ -373,14 +389,22 @@ function MovieDetailPage() {
                                 <div style={styles.userCommentDisplay}>
                                     <div style={styles.userInfo}>
                                         <img
-                                            src={userComment.profileImgUrl || '/default-profile-image.jpg'}
+                                            src={
+                                                userComment.profileImgUrl || '/default-profile-image.jpg'
+                                            }
                                             alt="프로필 이미지"
                                             style={styles.profileImage}
                                         />
-                                        <span style={styles.userNickname}>{userComment.nickname}</span>
+                                        <span style={styles.userNickname}>
+                      {userComment.nickname}
+                    </span>
                                     </div>
                                     <p>
-                                        <span style={{ ...styles.commentStarFilled, marginRight: '5px' }}>★</span>
+                    <span
+                        style={{ ...styles.commentStarFilled, marginRight: '5px' }}
+                    >
+                      ★
+                    </span>
                                         {userComment.score}
                                     </p>
                                     <p>{userComment.comment}</p>
@@ -392,16 +416,18 @@ function MovieDetailPage() {
                                 id="wishButton"
                                 style={{
                                     ...styles.button,
-                                    backgroundColor: isWish ? '#FF3366' : '#4080ff',
+                                    backgroundColor: movieData.isHearted
+                                        ? '#FF3366'
+                                        : '#4080ff',
                                 }}
                                 onClick={handleWishClick}
                             >
-                                {isWish ? '찜 완료' : '찜'}
+                                {movieData.isHearted ? '찜 완료' : '찜'}
                             </button>
-                            {isWish && (
+                            {movieData.isHearted && (
                                 <span id="heartCount" style={styles.heartCountContainer}>
-                                    {movieData.heartCount.toLocaleString()}
-                                </span>
+                  {movieData.heartCount.toLocaleString()}
+                </span>
                             )}
                         </div>
                     </div>
@@ -409,12 +435,12 @@ function MovieDetailPage() {
                     {/* 코멘트 입력 및 수정/삭제 버튼 */}
                     {showCommentInput && (
                         <div style={styles.commentSection}>
-                            <textarea
-                                style={styles.commentInput}
-                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-                                value={userComment ? myComment : comment}
-                                onChange={handleCommentChange}
-                            />
+              <textarea
+                  style={styles.commentInput}
+                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                  value={userComment ? myComment : comment}
+                  onChange={handleCommentChange}
+              />
                             <button style={styles.submitButton} onClick={handleSubmitComment}>
                                 {userComment ? '수정하기' : '코멘트 남기기'}
                             </button>
@@ -455,8 +481,7 @@ function MovieDetailPage() {
                                             <img
                                                 src={
                                                     crew.profileImgUrl
-                                                        ? 'http://image.tmdb.org/t/p/w200' +
-                                                        crew.profileImgUrl
+                                                        ? 'http://image.tmdb.org/t/p/w200' + crew.profileImgUrl
                                                         : '/default-profile-image.jpg'
                                                 }
                                                 alt={crew.name}
@@ -519,8 +544,8 @@ function MovieDetailPage() {
                                       : styles.commentStarEmpty
                               }
                           >
-                            ★
-                          </span>
+                          ★
+                        </span>
                           {comment.score}
                       </span>
                                         </div>
