@@ -7,11 +7,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "member_genre")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class MemberGenreEntity {
 
     @EmbeddedId
