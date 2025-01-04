@@ -190,20 +190,24 @@ function MovieDetailPage() {
     // 찜하기/찜해제 처리
     const handleWishClick = async () => {
         try {
+            let updatedHeartCount;
+
             if (movieData.isHearted) {
                 // 찜 해제 (DELETE 요청)
                 await axiosInstance.delete(`/movies/${movieId}/hearts`);
+                updatedHeartCount = movieData.heartCount - 1;
                 setMovieData((prevMovieData) => ({
                     ...prevMovieData,
-                    heartCount: prevMovieData.heartCount - 1,
+                    heartCount: updatedHeartCount,
                     isHearted: false,
                 }));
             } else {
                 // 찜하기 (POST 요청)
                 const response = await axiosInstance.post(`/movies/${movieId}/hearts`);
+                updatedHeartCount = response.data.movieHeartCnt;
                 setMovieData((prevMovieData) => ({
                     ...prevMovieData,
-                    heartCount: response.data.movieHeartCnt,
+                    heartCount: updatedHeartCount,
                     isHearted: true,
                 }));
             }
@@ -219,11 +223,7 @@ function MovieDetailPage() {
             }
 
             if (heartCountSpan) {
-                if (!movieData.isHearted) {
-                    heartCountSpan.style.display = 'none';
-                } else {
-                    heartCountSpan.style.display = 'inline-block';
-                }
+                heartCountSpan.textContent = updatedHeartCount.toLocaleString();
             }
         } catch (error) {
             console.error('Error updating wish status:', error);
@@ -424,11 +424,9 @@ function MovieDetailPage() {
                             >
                                 {movieData.isHearted ? '찜 완료' : '찜'}
                             </button>
-                            {movieData.isHearted && (
-                                <span id="heartCount" style={styles.heartCountContainer}>
-                  {movieData.heartCount.toLocaleString()}
-                </span>
-                            )}
+                            <span id="heartCount" style={styles.heartCountContainer}>
+                {movieData.heartCount.toLocaleString()}
+              </span>
                         </div>
                     </div>
 
