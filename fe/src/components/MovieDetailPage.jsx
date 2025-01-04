@@ -193,10 +193,22 @@ function MovieDetailPage() {
         try {
             const response = await axiosInstance.post(`/movies/${movieId}/hearts`);
             setIsWish(response.data.isHearted);
-            // 찜 상태에 따라 버튼 색상 업데이트
+
+            // 찜 상태에 따라 버튼 및 카운트 업데이트
+            setMovieData((prevMovieData) => ({
+                ...prevMovieData,
+                heartCount: response.data.movieHeartCnt,
+            }));
+
             const button = document.getElementById('wishButton');
+            const heartCountSpan = document.getElementById('heartCount');
+
             if (button) {
                 button.style.backgroundColor = response.data.isHearted ? '#FF3366' : '#4080ff';
+            }
+
+            if (heartCountSpan) {
+                heartCountSpan.textContent = `${response.data.movieHeartCnt.toLocaleString()}`;
             }
         } catch (error) {
             console.error('Error updating wish status:', error);
@@ -386,6 +398,11 @@ function MovieDetailPage() {
                             >
                                 {isWish ? '찜 완료' : '찜'}
                             </button>
+                            {isWish && (
+                                <span id="heartCount" style={styles.heartCountContainer}>
+                                    {movieData.heartCount.toLocaleString()}
+                                </span>
+                            )}
                         </div>
                     </div>
 
@@ -486,26 +503,26 @@ function MovieDetailPage() {
                             <div style={styles.sectionTitle}>
                                 코멘트{' '}
                                 <span style={styles.commentCount}>
-                                    {totalComments.toLocaleString()}
-                                </span>
+                  {totalComments.toLocaleString()}
+                </span>
                             </div>
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                                            <span style={styles.commentUser}>
-                                                {comment.nickname}
-                                                <span
-                                                    style={
-                                                        comment.score >= 1
-                                                            ? styles.commentStarFilled
-                                                            : styles.commentStarEmpty
-                                                    }
-                                                >
-                                                    ★
-                                                </span>
-                                                {comment.score}
-                                            </span>
+                      <span style={styles.commentUser}>
+                        {comment.nickname}
+                          <span
+                              style={
+                                  comment.score >= 1
+                                      ? styles.commentStarFilled
+                                      : styles.commentStarEmpty
+                              }
+                          >
+                            ★
+                          </span>
+                          {comment.score}
+                      </span>
                                         </div>
                                         <div style={styles.commentText}>{comment.comment}</div>
                                     </div>
@@ -623,8 +640,8 @@ const styles = {
         fontSize: '40px',
     },
     buttonGroup: {
-        //display: 'flex',
-        //marginBottom: '20px',
+        display: 'flex',
+        alignItems: 'center',
     },
     button: {
         //marginRight: '10px',
@@ -795,6 +812,17 @@ const styles = {
     },
     userNickname: {
         fontWeight: 'bold',
+    },
+    heartCountContainer: {
+        marginLeft: '8px',
+        padding: '4px 8px',
+        backgroundColor: '#f2f2f2', // 배경색
+        borderRadius: '10px', // 둥근 모서리
+        border: '1px solid #ccc', // 테두리
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#333', // 텍스트 색상
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // 그림자 효과
     },
 };
 
