@@ -1,5 +1,8 @@
 package movlit.be.movie.presentation.dto.response;
 
-public record MovieMyCommentReadResponse(String nickname, String profileImgUrl, String comment, Integer score) {
+import movlit.be.common.util.ids.MovieCommentId;
+
+public record MovieMyCommentReadResponse(String nickname, String profileImgUrl, MovieCommentId movieCommentId,
+                                         String comment, Integer score) {
 
 }

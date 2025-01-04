@@ -47,7 +47,7 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
     Optional<MovieCommentEntity> findByMemberIdAndMovieId(MemberId memberId, Long movieId);
 
     @Query("SELECT NEW movlit.be.movie.presentation.dto.response.MovieMyCommentReadResponse"
-            + "(mb.nickname, mb.profileImgUrl, mc.comment, mc.score) "
+            + "(mb.nickname, mb.profileImgUrl, mc.movieCommentId, mc.comment, mc.score) "
             + "FROM MovieCommentEntity mc "
             + "LEFT JOIN MemberEntity  mb ON mb.memberId = mc.memberId "
             + "WHERE mc.movieId = :movieId AND mb.memberId = :memberId")
