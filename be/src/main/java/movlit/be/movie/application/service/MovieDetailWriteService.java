@@ -32,10 +32,8 @@ public class MovieDetailWriteService {
         MovieCommentId movieCommentId = IdFactory.createMovieCommentId();
         LocalDateTime now = LocalDateTime.now();
         MovieCommentEntity movieCommentEntity = MovieConvertor.toMovieCommentEntity(data, movieCommentId, now);
-        Long movieCommentLikeCount = movieCommentLikeCountService.fetchMovieCommentLikeCountByMovieIdAndMovieCommentId(
-                movieCommentEntity.getMovieCommentId());
         movieCommentLikeCountService.save(
-                MovieConvertor.toMovieCommentLikeCountEntity(movieCommentEntity, movieCommentLikeCount));
+                MovieConvertor.toMovieCommentLikeCountEntity(movieCommentEntity));
         return MovieConvertor.toMovieCommentResponse(movieCommentRepository.createComment(movieCommentEntity));
     }
 

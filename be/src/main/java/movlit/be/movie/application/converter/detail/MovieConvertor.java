@@ -95,12 +95,11 @@ public class MovieConvertor {
                 .build();
     }
 
-    public static MovieCommentLikeCountEntity toMovieCommentLikeCountEntity(MovieCommentEntity movieCommentEntity,
-                                                                            Long count) {
+    public static MovieCommentLikeCountEntity toMovieCommentLikeCountEntity(MovieCommentEntity movieCommentEntity) {
         return MovieCommentLikeCountEntity.builder()
                 .movieCommentLikeCountId(IdFactory.createMovieCommentLikeCountId())
                 .movieCommentId(movieCommentEntity.getMovieCommentId())
-                .count(count)
+                .count(0L)
                 .build();
     }
 

@@ -23,9 +23,6 @@ public interface MovieCommentLikeCountJpaRepository extends JpaRepository<MovieC
             + "WHERE mclc.movieCommentId = :movieCommentId")
     void decrementMovieHeartCount(MovieCommentId movieCommentId);
 
-    @Query("SELECT mclc "
-            + "FROM MovieCommentLikeCountEntity mclc "
-            + "WHERE mclc.movieCommentId = :movieCommentId")
-    Optional<MovieCommentLikeCountEntity> findByMovieCommentId(@Param("movieCommentId") MovieCommentId movieCommentId);
+    Optional<MovieCommentLikeCountEntity> findByMovieCommentId(MovieCommentId movieCommentId);
 
 }
