@@ -11,7 +11,7 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
     private String username = "elastic";
 
 //    @Value("${spring.elasticsearch.password}")
-    private String password = "123456";
+    private String password = "elastic";
 
 //    @Value("${spring.elasticsearch.uris}")
     private String esHost = "localhost:9200";

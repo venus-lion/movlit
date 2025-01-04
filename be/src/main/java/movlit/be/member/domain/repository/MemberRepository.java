@@ -17,4 +17,6 @@ public interface MemberRepository {
 
     boolean existsByEmail(String email);
 
+    boolean existByMemberId(MemberId memberId);
+
 }

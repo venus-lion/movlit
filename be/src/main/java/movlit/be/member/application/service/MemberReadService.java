@@ -1,6 +1,7 @@
 package movlit.be.member.application.service;
 
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.repository.MemberRepository;
@@ -37,6 +38,12 @@ public class MemberReadService {
 
     public Member findByMemberId(MemberId memberId) {
         return memberRepository.findById(memberId);
+    }
+
+    public void validateMemberIdExists(MemberId memberId) {
+        if (!memberRepository.existByMemberId(memberId)) {
+            throw new MemberNotFoundException();
+        }
     }
 
 }

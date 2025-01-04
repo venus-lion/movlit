@@ -49,6 +49,7 @@ function MovieDetailPage() {
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
                 });
+                setIsWish(data.isHearted); // 찜 상태 업데이트
             })
             .catch((error) => console.error('Error fetching movie data:', error));
 
@@ -81,6 +82,7 @@ function MovieDetailPage() {
 
         fetchUserComment();
         fetchComments(0);
+        // fetchIsWish(); // 찜 상태 확인 - 삭제
     }, [movieId]);
 
     // Intersection Observer 설정 (코멘트 무한 스크롤)
@@ -186,9 +188,20 @@ function MovieDetailPage() {
         }
     };
 
-    const handleWishClick = () => {
-        setIsWish(!isWish);
-        // TODO: 찜하기/찜해제 API 호출
+    // 찜하기/찜해제 처리
+    const handleWishClick = async () => {
+        try {
+            const response = await axiosInstance.post(`/movies/${movieId}/hearts`);
+            setIsWish(response.data.isHearted);
+            // 찜 상태에 따라 버튼 색상 업데이트
+            const button = document.getElementById('wishButton');
+            if (button) {
+                button.style.backgroundColor = response.data.isHearted ? '#FF3366' : '#4080ff';
+            }
+        } catch (error) {
+            console.error('Error updating wish status:', error);
+            alert('찜하기/찜해제 처리에 실패했습니다.');
+        }
     };
 
     const handleCommentChange = (event) => {
@@ -364,6 +377,7 @@ function MovieDetailPage() {
                         </div>
                         <div style={styles.buttonGroup}>
                             <button
+                                id="wishButton"
                                 style={{
                                     ...styles.button,
                                     backgroundColor: isWish ? '#FF3366' : '#4080ff',

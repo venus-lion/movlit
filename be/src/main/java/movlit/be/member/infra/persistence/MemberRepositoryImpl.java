@@ -53,4 +53,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         return memberJpaRepository.existsByEmail(email);
     }
 
+    @Override
+    public boolean existByMemberId(MemberId memberId) {
+        return memberJpaRepository.existsById(memberId);
+    }
+
 }

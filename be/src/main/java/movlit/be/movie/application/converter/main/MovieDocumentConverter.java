@@ -35,7 +35,6 @@ public class MovieDocumentConverter {
                 .status(movieEntity.getStatus())
                 .tagline(movieEntity.getTagline())
                 .delYn(movieEntity.isDelYn())
-                .heartCount(movieEntity.getHeartCount())
                 .movieGenre(
                         movieEntity.getMovieGenreEntityList().stream()
                                 .map(MovieDocumentConverter::entityToForDocument)

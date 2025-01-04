@@ -11,16 +11,19 @@ public interface MovieDetailJpaRepository extends JpaRepository<MovieEntity, Lon
 
     /**
      * Long movieId, String title, String originalTitle, String overview,
-     * Double popularity, Long heartCount, String posterPath, String backdropPath,
-     * LocalDate releaseDate, String productionCountry, String originalLanguage,
-     * Integer runtime, String status, Long voteCount, String tagline
+     * Double popularity, Long heartCount, boolean isHearted, String posterPath,
+     * String backdropPath, LocalDate releaseDate, String productionCountry,
+     * String originalLanguage, Integer runtime, String status, Long voteCount,
+     * String tagline
      */
     @Query("SELECT new movlit.be.movie.presentation.dto.response.MovieDetailResponse "
             + "(m.movieId, m.title, m.originalTitle, m.overview, "
-            + "m.popularity, m.heartCount, m.posterPath, m.backdropPath, "
+            + "m.popularity, mhc.count, COALESCE(mh.isHearted, 0), m.posterPath, m.backdropPath, "
             + "m.releaseDate, m.productionCountry, m.originalLanguage, "
             + "m.runtime, m.status, m.voteCount, m.tagline) "
             + "FROM MovieEntity m "
+            + "LEFT JOIN MovieHeartEntity mh ON mh.movieId = m.movieId "
+            + "LEFT JOIN MovieHeartCountEntity mhc ON mhc.movieId = m.movieId "
             + "WHERE m.movieId = :movieId")
     Optional<MovieDetailResponse> findMovieDetailByMovieId(@Param("movieId") Long movieId);
 

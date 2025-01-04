@@ -33,7 +33,6 @@ public class MovieConverter {
                 .regDt(movie.getRegDt())
                 .updDt(movie.getUpdDt())
                 .delYn(movie.isDelYn())
-                .heartCount(movie.getHeartCount())
                 .build();
     }
 
@@ -62,7 +61,6 @@ public class MovieConverter {
                 .regDt(movieEntity.getRegDt())
                 .updDt(movieEntity.getUpdDt())
                 .delYn(movieEntity.isDelYn())
-                .heartCount(movieEntity.getHeartCount())
                 .build();
     }
 
