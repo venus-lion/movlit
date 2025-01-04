@@ -1,5 +1,6 @@
 package movlit.be.acceptance.movie_comment;
 
+import static movlit.be.acceptance.movie_comment.MovieCommentSteps.로그인_후_내_영화_코멘트_조회를_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.로그인_후_영화_코멘트_목록_조회를_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_200이다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_404이고_오류코드는_m105이다;
@@ -115,7 +116,7 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("로그인하지 않은 상태에서, 영화 코멘트 목록을 조회하는 데 성공하면, 상태코드 200을 반환한다.")
         @Test
-        void when_read_movie_comment_list_then_response_200_and_body() {
+        void when_read_movie_comment_list_then_response_200() {
             // docs
             api_문서_타이틀("fetchMovieCommentList_success", spec);
 
@@ -129,13 +130,27 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("로그인 한 상태에서, 영화 코멘트 목록을 조회하는 데 성공하면, 상태코드 200을 반환한다.")
         @Test
-        void when_read_movie_comment_list_with_session_then_response_200_and_body() {
+        void when_read_movie_comment_list_with_session_then_response_200() {
             // docs
             api_문서_타이틀("fetchMovieCommentList_withSession_success", spec);
 
             // given
             // when
             var response = 로그인_후_영화_코멘트_목록_조회를_요청한다(회원_원준_액세스토큰, movieId, spec);
+
+            // then
+            상태코드가_200이다(response);
+        }
+
+        @DisplayName("로그인 한 상태에서, 내가 작성한 영화 코멘트를 조회하는 데 성공하면, 상태코드 200을 반환한다.")
+        @Test
+        void when_read_my_movie_comment_with_session_then_response_200() {
+            // docs
+            api_문서_타이틀("fetchMyMovieComment_withSession_success", spec);
+
+            // given
+            // when
+            var response = 로그인_후_내_영화_코멘트_조회를_요청한다(회원_원준_액세스토큰, movieId, spec);
 
             // then
             상태코드가_200이다(response);

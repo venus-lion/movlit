@@ -85,6 +85,21 @@ public class MovieCommentSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_후_내_영화_코멘트_조회를_요청한다(String accessToken, String movieId,
+                                                                         RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/movies/{movieId}/myComment", movieId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 영화_코멘트를_삭제한다(String accessToken, String movieCommentId,
                                                              RequestSpecification spec) {
         return RestAssured
