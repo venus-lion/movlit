@@ -1,11 +1,9 @@
 package movlit.be.book.application.converter.service;
 
-import java.sql.SQLOutput;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookDetailResponseDto;
-import movlit.be.book.domain.BookHeart;
+import movlit.be.book.domain.dto.BookDetailResponseDto;
 import movlit.be.book.domain.Bookcrew;
 import movlit.be.book.domain.repository.BookHeartRepository;
 import movlit.be.book.domain.repository.BookRepository;

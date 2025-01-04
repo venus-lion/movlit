@@ -4,6 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookCommentLikeConverter;
 import movlit.be.book.application.converter.BookConverter;
+import movlit.be.book.application.converter.BookDetailConverter;
 import movlit.be.book.application.converter.BookHeartConverter;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookHeart;
@@ -23,7 +24,7 @@ public class BookHeartRepositoryImpl implements BookHeartRepository {
     @Override
     public BookHeart findByBookAndMember(Book book, Member member) {
         BookHeartEntity bookHeartEntity =
-                bookHeartJpaRepository.findByBookEntityAndMemberEntity(BookConverter.toEntity(book), MemberConverter.toEntity(member))
+                bookHeartJpaRepository.findByBookEntityAndMemberEntity(BookDetailConverter.toEntity(book), MemberConverter.toEntity(member))
                 .orElse(null);
 
         return BookHeartConverter.toDomain(bookHeartEntity);

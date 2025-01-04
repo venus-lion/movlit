@@ -2,6 +2,7 @@ package movlit.be.book.infra.persistence;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookConverter;
+import movlit.be.book.application.converter.BookDetailConverter;
 import movlit.be.book.application.converter.BookHeartConverter;
 import movlit.be.book.application.converter.BookHeartCountConverter;
 import movlit.be.book.domain.Book;
@@ -19,7 +20,7 @@ public class BookHeartCountRepositoryImpl implements BookHeartCountRepository {
     @Override
     public BookHeartCount findByBook(Book book) {
         BookHeartCountEntity heartCountEntity =
-                bookHeartCountJpaRepository.findByBookEntity(BookConverter.toEntity(book))
+                bookHeartCountJpaRepository.findByBookEntity(BookDetailConverter.toEntity(book))
                         .orElseThrow();
         return BookHeartCountConverter.toDomain(heartCountEntity);
     }

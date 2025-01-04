@@ -1,4 +1,4 @@
-package movlit.be.book.domain;
+package movlit.be.book.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import movlit.be.book.domain.Bookcrew;
 import movlit.be.common.util.ids.BookId;
 
 @Getter

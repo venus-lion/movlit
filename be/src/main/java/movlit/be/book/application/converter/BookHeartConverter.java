@@ -21,7 +21,7 @@ public class BookHeartConverter {
         else
             return BookHeartEntity.builder()
                 .bookHeartId(bookHeart.getBookHeartId())
-                .bookEntity(BookConverter.toEntity(bookHeart.getBook()))
+                .bookEntity(BookDetailConverter.toEntity(bookHeart.getBook()))
                 .memberEntity(MemberConverter.toEntity(bookHeart.getMember()))
                 .build();
     }
@@ -33,7 +33,7 @@ public class BookHeartConverter {
         else
             return BookHeart.builder()
                 .bookHeartId(bookHeartEntity.getBookHeartId())
-                .book(BookConverter.toDomain(bookHeartEntity.getBookEntity()))
+                .book(BookDetailConverter.toDomain(bookHeartEntity.getBookEntity()))
                 .member(MemberConverter.toDomain(bookHeartEntity.getMemberEntity()))
                 .build();
 

@@ -1,21 +1,15 @@
 package movlit.be.book.application.converter.service;
 
-import java.math.BigDecimal;
-import java.sql.SQLOutput;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.BookCommentRequestDto;
-import movlit.be.book.domain.entity.BookEntity;
+import movlit.be.book.domain.dto.BookCommentRequestDto;
 import movlit.be.book.domain.entity.GenerateUUID;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.domain.repository.BookCommentRepository;
 import movlit.be.common.exception.BookCommentAccessDenied;
-import movlit.be.common.exception.BookCommentNotFoundException;
 import movlit.be.common.util.ids.BookCommentId;
-import movlit.be.common.util.ids.BookCommentLikeId;
 import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +22,29 @@ public class BookCommentWriteService {
     private final BookCommentLikeRepository bookCommentLikeRepository;
 
 
+
+
     // 도서 리뷰 등록
-    public BookComment registerBookComment(Member member, Book book, BookCommentRequestDto commentDto) {
-        BookComment bookComment = BookComment.builder()
-                .bookCommentId(new BookCommentId(GenerateUUID.generateUUID()))
-                .book(book)
-                .member(member)
-                .comment(commentDto.getComment())
-                .score(commentDto.getScore())
-                .build();
-        return bookCommentRepository.save(bookComment);
+    public BookComment registerBookComment(Member member, Book book, BookCommentRequestDto commentDto)
+            throws BookCommentAccessDenied {
+        // 한 사용자는 하나의 도서에 관해 1개의 리뷰만 등록 가능
+        BookComment savedComment = bookCommentRepository.findByMemberAndBook(member, book);
+        // 첫 리뷰라면 -> 리뷰 저장
+        if(savedComment == null){
+            BookComment bookComment = BookComment.builder()
+                    .bookCommentId(new BookCommentId(GenerateUUID.generateUUID()))
+                    .book(book)
+                    .member(member)
+                    .comment(commentDto.getComment())
+                    .score(commentDto.getScore())
+                    .build();
+            return bookCommentRepository.save(bookComment);
+        }else{
+            // 등록된 리뷰가 이미 있다면 -> update
+            return updateBookComment(member, book, savedComment.getBookCommentId(), commentDto);
+        }
+
+
     }
 
     // 도서 리뷰 수정

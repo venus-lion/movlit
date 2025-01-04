@@ -1,4 +1,4 @@
-package movlit.be.book.domain;
+package movlit.be.book.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
