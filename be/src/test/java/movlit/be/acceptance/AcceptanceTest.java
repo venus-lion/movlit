@@ -31,7 +31,7 @@ public abstract class AcceptanceTest {
     public static final DockerImageName MYSQL_IMAGE = DockerImageName.parse("mysql:8.0");
     //    public static final DockerImageName REDIS_IMAGE = DockerImageName.parse("redis:7.2");
     public static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
-            .withDatabaseName("venus").withUsername("root").withPassword("1111").withReuse(true);
+            .withDatabaseName("venus").withUsername("root").withPassword("1234").withReuse(true);
 //    public static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withReuse(true);
 
     static {
