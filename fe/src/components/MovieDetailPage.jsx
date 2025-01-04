@@ -149,22 +149,24 @@ function MovieDetailPage() {
                 setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
-                    // 각 코멘트 객체에 isLiked와 commentLikeCount가 존재하는지 확인하고, 값이 없으면 false와 0으로 설정
+                    // 각 코멘트 객체에 isLiked와 commentLikeCount, profileImgUrl이 존재하는지 확인하고, 값이 없으면 false, 0, null으로 설정
                     const updatedComments = response.data.content.map(comment => ({
                         ...comment,
                         isLiked: comment.isLiked || false,
-                        commentLikeCount: comment.commentLikeCount || 0
+                        commentLikeCount: comment.commentLikeCount || 0,
+                        profileImgUrl: comment.profileImgUrl || null,
                     }));
                     setComments(updatedComments);
                     setHasMore(
                         response.data.content.length > 4 || fetchedTotalComments > 4
                     );
                 } else {
-                    // 마찬가지로 isLiked와 commentLikeCount 존재 여부 확인 및 기본값 설정
+                    // 마찬가지로 isLiked와 commentLikeCount, profileImgUrl 존재 여부 확인 및 기본값 설정
                     const updatedComments = response.data.content.map(comment => ({
                         ...comment,
                         isLiked: comment.isLiked || false,
-                        commentLikeCount: comment.commentLikeCount || 0
+                        commentLikeCount: comment.commentLikeCount || 0,
+                        profileImgUrl: comment.profileImgUrl || null,
                     }));
                     setComments((prevComments) => [...prevComments, ...updatedComments]);
                     setHasMore(!response.data.last);
@@ -557,13 +559,24 @@ function MovieDetailPage() {
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                      <span style={styles.commentUser}>
-                        {comment.nickname}
-                          <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
+                                            <div style={styles.commentUserInfo}>
+                                                {comment.profileImgUrl ? (
+                                                    <img
+                                                        src={comment.profileImgUrl}
+                                                        alt="프로필 이미지"
+                                                        style={styles.commentProfileImage}
+                                                    />
+                                                ) : (
+                                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                                )}
+                                                <span style={styles.commentUser}>{comment.nickname}</span>
+                                            </div>
+                                            <div style={styles.commentRating}>
+                        <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
                           ★
                         </span>
-                          {comment.score}
-                      </span>
+                                                <span style={styles.commentScore}>{comment.score}</span>
+                                            </div>
                                             {/* 좋아요 버튼 및 카운트 컨테이너 */}
                                             <div style={styles.likeContainer}>
                                                 <button
@@ -576,7 +589,10 @@ function MovieDetailPage() {
                                                 <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
                                             </div>
                                         </div>
-                                        <div style={styles.commentText}>{comment.comment}</div>
+                                        <div style={styles.commentContent}>
+                                            <FaComment style={styles.commentIcon} />
+                                            <p style={styles.commentText}>{comment.comment}</p>
+                                        </div>
                                     </div>
                                 ))}
                                 {/* 무한 스크롤 로딩 감지 Element */}
@@ -791,6 +807,7 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         marginBottom: '5px',
+        justifyContent: 'space-between'
     },
     commentUser: {
         fontWeight: 'bold',
@@ -923,6 +940,25 @@ const styles = {
     userCommentText: {
         fontSize: '14px',
         lineHeight: '1.4',
+    },
+    commentUserInfo: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    commentProfileImage: {
+        width: '30px',
+        height: '30px',
+        borderRadius: '50%',
+        marginRight: '5px',
+    },
+    commentRating: {
+        display: 'flex',
+        alignItems: 'center',
+        marginLeft: 'auto',
+    },
+    commentScore: {
+        marginLeft: '5px',
+        color: '#000000',
     },
 };
 
