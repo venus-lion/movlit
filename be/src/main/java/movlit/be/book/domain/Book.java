@@ -33,5 +33,6 @@ public class Book {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
     private List<BookRCrew> bookRCrews;
+    private List<BookGenre> bookGenres; // book이 가진 장르들
 
 }
