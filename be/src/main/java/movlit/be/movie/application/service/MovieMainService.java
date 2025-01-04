@@ -58,7 +58,6 @@ public class MovieMainService {
             );
         }
 
-        BoolQuery
 
         return List.of();
     }
