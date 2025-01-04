@@ -7,7 +7,7 @@ import movlit.be.common.exception.InvalidGenreIdException;
 public enum Genre {
 
     ACTION(1L, "액션"), // + 모험
-    ANIMATION(2l, "애니메이션"),
+    ANIMATION(2L, "애니메이션"),
     COMEDY(3L, "코미디"),
     CRIME(4L, "범죄"),
     DOCUMENTARY(5L, "다큐멘터리"),

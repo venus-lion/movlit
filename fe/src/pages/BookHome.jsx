@@ -104,7 +104,7 @@ function BookHome() {
 
     return (
         <div className="book-home">
-            <h2>신간 베스트셀러 순위</h2>
+            <h2>베스트셀러 순위</h2>
             <div className="book-carousel">
                 {startIndexBestsellers > 0 && (
                     <button className="prev-button" onClick={handlePrevBestsellers}>
@@ -137,44 +137,6 @@ function BookHome() {
                 </div>
                 {startIndexBestsellers + 5 < bestsellers.length && (
                     <button className="next-button" onClick={handleNextBestsellers}>
-                        {'>'}
-                    </button>
-                )}
-            </div>
-
-            <h2>책 신간 순위</h2>
-            <div className="book-carousel">
-                {startIndexNewBooks > 0 && (
-                    <button className="prev-button" onClick={handlePrevNewBooks}>
-                        {'<'}
-                    </button>
-                )}
-                <div className="book-list">
-                    {newBooks
-                        .slice(startIndexNewBooks, startIndexNewBooks + 5)
-                        .map((book, index) => (
-                            <Link className="book-card" to={`/book/${book.bookId}`} key={book.bookId}>
-                                <div key={book.bookId}>
-                                    <div className="book-rank">
-                                        {startIndexNewBooks + index + 1}
-                                    </div>
-                                    <img
-                                        src={book.bookImgUrl}
-                                        alt={book.title}
-                                        className="book-image"
-                                    />
-                                    <div className="book-info">
-                                        <h3 className="book-title">{book.title}</h3>
-                                        <p className="book-writer">
-                                            {book.writers.map((writer) => writer.name).join(', ')}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                </div>
-                {startIndexNewBooks + 5 < newBooks.length && (
-                    <button className="next-button" onClick={handleNextNewBooks}>
                         {'>'}
                     </button>
                 )}
@@ -217,6 +179,45 @@ function BookHome() {
                     </button>
                 )}
             </div>
+
+            <h2>따끈따끈한 신작 도서</h2>
+            <div className="book-carousel">
+                {startIndexNewBooks > 0 && (
+                    <button className="prev-button" onClick={handlePrevNewBooks}>
+                        {'<'}
+                    </button>
+                )}
+                <div className="book-list">
+                    {newBooks
+                        .slice(startIndexNewBooks, startIndexNewBooks + 5)
+                        .map((book, index) => (
+                            <Link className="book-card" to={`/book/${book.bookId}`} key={book.bookId}>
+                                <div key={book.bookId}>
+                                    <div className="book-rank">
+                                        {startIndexNewBooks + index + 1}
+                                    </div>
+                                    <img
+                                        src={book.bookImgUrl}
+                                        alt={book.title}
+                                        className="book-image"
+                                    />
+                                    <div className="book-info">
+                                        <h3 className="book-title">{book.title}</h3>
+                                        <p className="book-writer">
+                                            {book.writers.map((writer) => writer.name).join(', ')}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                </div>
+                {startIndexNewBooks + 5 < newBooks.length && (
+                    <button className="next-button" onClick={handleNextNewBooks}>
+                        {'>'}
+                    </button>
+                )}
+            </div>
+
         </div>
     );
 }

@@ -11,6 +11,7 @@ import movlit.be.book.infra.persistence.jpa.BookJpaRepository;
 import movlit.be.common.exception.BookNotFoundException;
 import movlit.be.common.exception.BooksByGenreNotFoundException;
 import movlit.be.common.util.ids.BookId;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -34,6 +35,19 @@ public class BookRepositoryImpl implements BookRepository {
         }
 
         return booksWithCrewDetails.stream()
+                .map(bookEntity -> BookConverter.toDomain(bookEntity))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Book> findBooksByGenreIds(List<Long> genreIds, Pageable pageable) {
+        List<BookEntity> booksByGenreIds = bookJpaRepository.findBooksByGenreIds(genreIds, pageable);
+
+        if (booksByGenreIds.isEmpty()){
+            throw new BooksByGenreNotFoundException();
+        }
+
+        return booksByGenreIds.stream()
                 .map(bookEntity -> BookConverter.toDomain(bookEntity))
                 .collect(Collectors.toList());
     }

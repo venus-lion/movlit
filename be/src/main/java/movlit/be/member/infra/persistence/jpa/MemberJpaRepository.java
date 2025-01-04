@@ -1,9 +1,13 @@
 package movlit.be.member.infra.persistence.jpa;
 
+import java.util.List;
 import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.member.domain.MemberGenreId;
 import movlit.be.member.domain.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MemberJpaRepository extends JpaRepository<MemberEntity, MemberId> {
 
