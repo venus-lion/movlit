@@ -7,6 +7,7 @@ import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEn
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MovieCommentLikeCountJpaRepository extends JpaRepository<MovieCommentLikeCountEntity, MovieHeartCountId> {
 
@@ -22,6 +23,9 @@ public interface MovieCommentLikeCountJpaRepository extends JpaRepository<MovieC
             + "WHERE mclc.movieCommentId = :movieCommentId")
     void decrementMovieHeartCount(MovieCommentId movieCommentId);
 
-    Optional<MovieCommentLikeCountEntity> findByMovieCommentId(MovieCommentId movieCommentId);
+    @Query("SELECT mclc "
+            + "FROM MovieCommentLikeCountEntity mclc "
+            + "WHERE mclc.movieCommentId = :movieCommentId")
+    Optional<MovieCommentLikeCountEntity> findByMovieCommentId(@Param("movieCommentId") MovieCommentId movieCommentId);
 
 }
