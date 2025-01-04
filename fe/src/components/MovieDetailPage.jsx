@@ -560,6 +560,7 @@ function MovieDetailPage() {
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
                                             <div style={styles.commentUserInfo}>
+                                                {/* 프로필 이미지/아이콘 표시 */}
                                                 {comment.profileImgUrl ? (
                                                     <img
                                                         src={comment.profileImgUrl}
@@ -571,24 +572,28 @@ function MovieDetailPage() {
                                                 )}
                                                 <span style={styles.commentUser}>{comment.nickname}</span>
                                             </div>
-                                            <div style={styles.commentRating}>
-                        <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
-                          ★
-                        </span>
-                                                <span style={styles.commentScore}>{comment.score}</span>
-                                            </div>
-                                            {/* 좋아요 버튼 및 카운트 컨테이너 */}
-                                            <div style={styles.likeContainer}>
-                                                <button
-                                                    style={styles.likeButton}
-                                                    onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
-                                                >
-                                                    {comment.isLiked ? <FaHeart style={styles.likedIcon} /> : <FaRegHeart style={styles.likeIcon} />}
-                                                </button>
-                                                {/* 좋아요 카운트 */}
-                                                <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
+                                            {/* 별점 및 좋아요 컨테이너 */}
+                                            <div style={styles.commentActions}>
+                                                <div style={styles.commentRating}>
+                          <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
+                            ★
+                          </span>
+                                                    <span style={styles.commentScore}>{comment.score}</span>
+                                                </div>
+                                                {/* 좋아요 버튼 및 카운트 컨테이너 */}
+                                                <div style={styles.likeContainer}>
+                                                    <button
+                                                        style={styles.likeButton}
+                                                        onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
+                                                    >
+                                                        {comment.isLiked ? <FaHeart style={styles.likedIcon} /> : <FaRegHeart style={styles.likeIcon} />}
+                                                    </button>
+                                                    {/* 좋아요 카운트 */}
+                                                    <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
+                                                </div>
                                             </div>
                                         </div>
+                                        {/* 코멘트 내용 */}
                                         <div style={styles.commentContent}>
                                             <FaComment style={styles.commentIcon} />
                                             <p style={styles.commentText}>{comment.comment}</p>
@@ -894,7 +899,7 @@ const styles = {
     },
     likeButton: {
         marginLeft: '10px',
-        padding: '5px 10px',
+        padding: '0px',
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
@@ -930,12 +935,12 @@ const styles = {
     },
     userCommentContent: {
         display: 'flex',
-        alignItems: 'center',
     },
     commentIcon: {
         fontSize: '18px',
         color: '#666',
         marginRight: '5px',
+        marginTop: '3px'
     },
     userCommentText: {
         fontSize: '14px',
@@ -959,6 +964,11 @@ const styles = {
     commentScore: {
         marginLeft: '5px',
         color: '#000000',
+    },
+    commentContent: {
+        display: 'flex',
+        alignItems: 'flex-start',
+        marginLeft: '5px',
     },
 };
 
