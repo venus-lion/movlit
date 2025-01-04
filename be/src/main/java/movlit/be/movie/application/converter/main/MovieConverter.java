@@ -2,6 +2,8 @@ package movlit.be.movie.application.converter.main;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import movlit.be.book.domain.Genre;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.entity.MovieEntity;
@@ -61,6 +63,9 @@ public class MovieConverter {
                 .regDt(movieEntity.getRegDt())
                 .updDt(movieEntity.getUpdDt())
                 .delYn(movieEntity.isDelYn())
+                .movieGenreList(movieEntity.getMovieGenreEntityList().stream()
+                        .map(MovieGenreConverter::toDomain).toList()
+                )
                 .build();
     }
 

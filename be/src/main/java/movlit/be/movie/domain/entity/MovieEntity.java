@@ -10,15 +10,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Table(name = "movie")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@ToString
 public class MovieEntity {
 
     // Discover

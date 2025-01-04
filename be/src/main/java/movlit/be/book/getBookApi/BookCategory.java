@@ -237,22 +237,22 @@ public class BookCategory {
                 "1753".equals(bookCode); // 전쟁 완료
     }
 
-    //  UNKNOWN(20, "기타")
+    //  UNKNOWN(20, "기타") -> 장르 위 장르에 전부 속하지 않을 때 ( || 아닌 &&으로 바꿈)
     private boolean isUNKNOWNCategory(String bookCode) {
-        return !isActionCategory(bookCode) ||
-                !isAnimationCategory(bookCode) ||
-                !isComedyCategory(bookCode) ||
-                !isCrimeCategory(bookCode) ||
-                !isDocumentaryCategory(bookCode) ||
-                !isDramaCategory(bookCode) ||
-                !isFantasyCategory(bookCode) ||
-                !isHistoryCategory(bookCode) ||
-                !isMusicCategory(bookCode) ||
-                !isMysteryCategory(bookCode) ||
-                !isRomanceCategory(bookCode) ||
-                !isSFCategory(bookCode) ||
-                !isTV_MOVIECategory(bookCode) ||
-                !isTHRILLERCategory(bookCode) ||
+        return !isActionCategory(bookCode) &&
+                !isAnimationCategory(bookCode) &&
+                !isComedyCategory(bookCode) &&
+                !isCrimeCategory(bookCode) &&
+                !isDocumentaryCategory(bookCode) &&
+                !isDramaCategory(bookCode) &&
+                !isFantasyCategory(bookCode) &&
+                !isHistoryCategory(bookCode) &&
+                !isMusicCategory(bookCode) &&
+                !isMysteryCategory(bookCode) &&
+                !isRomanceCategory(bookCode) &&
+                !isSFCategory(bookCode) &&
+                !isTV_MOVIECategory(bookCode) &&
+                !isTHRILLERCategory(bookCode) &&
                 !isWARCategory(bookCode);
     }
 

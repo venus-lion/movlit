@@ -19,6 +19,7 @@ public enum ErrorMessage {
     NOT_FOLLOWING("해당 회원을 팔로우하고있지 않습니다", "m006"),
     ALREADY_FOLLOWING("해당 회원을 이미 팔로우하고 있습니다", "m007"),
     INVALID_MEMBER_ID("유효하지 않은 회원 id입니다", "m008"),
+    MEMBER_GENRE_NOT_FOUND("멤버의 취향 장르가 존재하지 않습니다.", "m009"),
 
     // auth
     UNAUTHORIZED("권한이 없습니다", "a001"),
@@ -41,7 +42,8 @@ public enum ErrorMessage {
     MOVIE_HEART_NOT_FOUND("해당 영화의 찜을 찾을 수 없습니다.", "m107"),
 
     // Genre
-    INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g101"),
+    INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g001"),
+    BOOKS_BY_GENRE_NOT_FOUND("해당 장르를 가진 bookEntity가 존재하지 않습니다.", "g002"),
 
     // book
     BESTSELLERS_NOT_FOUND("bestseller가 존재하지 않습니다.", "b001"),

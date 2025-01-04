@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/testBook/saveBooks/bestseller").permitAll()
+                        .requestMatchers("/testBook/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()

@@ -81,4 +81,7 @@ public class BookEntity {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookRCrewEntity> bookRCrewEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "bookEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookGenreEntity> bookGenreEntities = new ArrayList<>();
+
 }

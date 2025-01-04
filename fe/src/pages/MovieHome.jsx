@@ -87,10 +87,11 @@ function MovieHome() {
                             <img src={popular.posterPath} alt={popular.title} className="book-image"/>
                             <div className="book-info">
                                 <h3 className="book-title">{popular.title}</h3>
+                                <span>({Math.round(parseFloat(popular.voteAverage) * 10) / 10})</span>
                                 {/* TODO : 태그, 장르 가져오기*/}
-                                {/*<p className="book-writer">*/}
-                                {/*    {movie.tagList.map((tag) => tag.name).join(', ')}*/}
-                                {/*</p>*/}
+                                <p className="book-writer">
+                                    {popular.movieGenreList.map((g) => g.genreName).join(', ')}
+                                </p>
                             </div>
                         </Link>
                     ))}

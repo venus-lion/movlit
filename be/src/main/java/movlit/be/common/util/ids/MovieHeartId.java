@@ -15,4 +15,3 @@ public class MovieHeartId extends BaseId {
     }
 
 }
-

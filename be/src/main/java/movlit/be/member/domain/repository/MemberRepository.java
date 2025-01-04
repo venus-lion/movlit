@@ -1,7 +1,11 @@
 package movlit.be.member.domain.repository;
 
+import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
+import movlit.be.member.domain.MemberGenre;
+
+import java.util.List;
 
 public interface MemberRepository {
 
@@ -19,4 +23,5 @@ public interface MemberRepository {
 
     boolean existByMemberId(MemberId memberId);
 
+    List<Genre> findUserInterestGenreList(MemberId memberId);
 }
