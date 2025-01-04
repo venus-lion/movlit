@@ -9,4 +9,6 @@ public interface MovieHeartRepository {
 
     MovieHeartEntity heart(MovieHeartEntity movieHeartEntity);
 
+    void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
+
 }

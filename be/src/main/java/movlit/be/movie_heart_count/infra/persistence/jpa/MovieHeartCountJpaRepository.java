@@ -15,6 +15,12 @@ public interface MovieHeartCountJpaRepository extends JpaRepository<MovieHeartCo
             + "WHERE mhc.movieId = :movieId")
     void incrementMovieHeartCount(Long movieId);
 
+    @Modifying
+    @Query("UPDATE MovieHeartCountEntity mhc "
+            + "SET mhc.count = mhc.count - 1 "
+            + "WHERE mhc.movieId = :movieId")
+    void decrementMovieHeartCount(Long movieId);
+
     Optional<MovieHeartCountEntity> findByMovieId(Long movieId);
 
 }

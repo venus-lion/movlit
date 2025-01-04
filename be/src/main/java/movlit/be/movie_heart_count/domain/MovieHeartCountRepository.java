@@ -8,6 +8,8 @@ public interface MovieHeartCountRepository {
 
     void incrementMovieHeartCount(Long movieId);
 
+    void decrementMovieHeartCount(Long movieId);
+
     Long fetchMovieHeartCountByMovieId(Long movieId);
 
 }

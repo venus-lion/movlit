@@ -23,6 +23,11 @@ public class MovieHeartCountService {
         movieHeartCountRepository.incrementMovieHeartCount(movieId);
     }
 
+    @Transactional
+    public void decrementMovieHeartCount(Long movieId) {
+        movieHeartCountRepository.decrementMovieHeartCount(movieId);
+    }
+
     public Long fetchMovieHeartCountByMovieId(Long movieId) {
         return movieHeartCountRepository.fetchMovieHeartCountByMovieId(movieId);
     }

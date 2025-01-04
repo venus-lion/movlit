@@ -9,4 +9,6 @@ public interface MovieHeartJpaRepository extends JpaRepository<MovieHeartEntity,
 
     boolean existsByMovieIdAndMemberId(Long movieId, MemberId memberId);
 
+    void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
+
 }

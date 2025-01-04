@@ -19,6 +19,11 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
     }
 
     @Override
+    public void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId) {
+        movieHeartJpaRepository.deleteByMovieIdAndMemberId(movieId, memberId);
+    }
+
+    @Override
     public boolean existsByMovieIdAndMemberId(Long movieId, MemberId memberId) {
         return movieHeartJpaRepository.existsByMovieIdAndMemberId(movieId, memberId);
     }

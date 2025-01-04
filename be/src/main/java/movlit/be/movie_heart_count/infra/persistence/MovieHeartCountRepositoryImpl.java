@@ -25,6 +25,11 @@ public class MovieHeartCountRepositoryImpl implements MovieHeartCountRepository 
     }
 
     @Override
+    public void decrementMovieHeartCount(Long movieId) {
+        movieHeartCountJpaRepository.decrementMovieHeartCount(movieId);
+    }
+
+    @Override
     public Long fetchMovieHeartCountByMovieId(Long movieId) {
         MovieHeartCountEntity movieHeartCountEntity = movieHeartCountJpaRepository.findByMovieId(movieId)
                 .orElseThrow(MovieHeartNotFoundException::new);

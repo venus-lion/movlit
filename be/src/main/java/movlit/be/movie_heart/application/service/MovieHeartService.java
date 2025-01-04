@@ -30,9 +30,24 @@ public class MovieHeartService {
         return MovieConvertor.toMovieHeartResponse(movieHeartEntity, movieHeartCount);
     }
 
+    @Transactional
+    public void unHeart(Long movieId, MemberId memberId) {
+        memberReadService.validateMemberIdExists(memberId);
+        validateHeartNotExist(movieId, memberId);
+        movieHeartRepository.deleteByMovieIdAndMemberId(movieId, memberId);
+        movieHeartCountService.decrementMovieHeartCount(movieId);
+    }
+
     @Transactional(readOnly = true)
     public void validateHeartExists(Long movieId, MemberId memberId) {
         if (movieHeartRepository.existsByMovieIdAndMemberId(movieId, memberId)) {
+            throw new MovieHeartAlreadyExistsException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void validateHeartNotExist(Long movieId, MemberId memberId) {
+        if (!movieHeartRepository.existsByMovieIdAndMemberId(movieId, memberId)) {
             throw new MovieHeartAlreadyExistsException();
         }
     }
