@@ -130,7 +130,7 @@ public class MovieCollectService {
 
             String posterPath = Optional.ofNullable((String) result.get("poster_path")).orElse("");
             if (!posterPath.isEmpty()) {
-                posterPath = "http://image.tmdb.org/t/p/w200" + posterPath;
+                posterPath = "http://image.tmdb.org/t/p/original" + posterPath;
             }
 
             String backdropPath = Optional.ofNullable((String) result.get("backdrop_path")).orElse("");

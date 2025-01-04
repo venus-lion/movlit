@@ -38,7 +38,7 @@ function MovieDetailPage() {
                     overview: data.overview,
                     popularity: data.popularity,
                     heartCount: data.heartCount,
-                    posterUrl: 'http://image.tmdb.org/t/p/w200' + data.posterPath,
+                    posterUrl: data.posterPath.replace('original', 'w200'),
                     backdropUrl: data.backdropPath,
                     releaseDate: data.releaseDate,
                     country: data.productionCountry,
