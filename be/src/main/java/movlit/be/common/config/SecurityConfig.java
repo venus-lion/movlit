@@ -46,7 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
                         .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
                                 "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**")
+                                "/img/**", "/js/**", "/css/**", "/error/**",
+                                "api/books/**")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
