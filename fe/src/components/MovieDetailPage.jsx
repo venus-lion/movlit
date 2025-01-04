@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 function MovieDetailPage() {
     const { movieId } = useParams();
@@ -148,15 +149,24 @@ function MovieDetailPage() {
                 setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
-                    setComments(response.data.content);
+                    // 각 코멘트 객체에 isLiked와 commentLikeCount가 존재하는지 확인하고, 값이 없으면 false와 0으로 설정
+                    const updatedComments = response.data.content.map(comment => ({
+                        ...comment,
+                        isLiked: comment.isLiked || false,
+                        commentLikeCount: comment.commentLikeCount || 0
+                    }));
+                    setComments(updatedComments);
                     setHasMore(
                         response.data.content.length > 4 || fetchedTotalComments > 4
                     );
                 } else {
-                    setComments((prevComments) => [
-                        ...prevComments,
-                        ...response.data.content,
-                    ]);
+                    // 마찬가지로 isLiked와 commentLikeCount 존재 여부 확인 및 기본값 설정
+                    const updatedComments = response.data.content.map(comment => ({
+                        ...comment,
+                        isLiked: comment.isLiked || false,
+                        commentLikeCount: comment.commentLikeCount || 0
+                    }));
+                    setComments((prevComments) => [...prevComments, ...updatedComments]);
                     setHasMore(!response.data.last);
                 }
                 setPage(currentPage + 1);
@@ -338,7 +348,7 @@ function MovieDetailPage() {
             }
 
             // 코멘트 목록 다시 불러오기
-            fetchComments(0); // 코멘트 목록을 다시 불러와 좋아요 상태 및 카운트 업데이트
+            fetchComments(0);
         } catch (error) {
             console.error('Error updating like status:', error);
             alert('좋아요/좋아요 취소 처리에 실패했습니다.');
@@ -556,19 +566,17 @@ function MovieDetailPage() {
                         </span>
                           {comment.score}
                       </span>
-                                            {/* 좋아요 버튼 추가 */}
-                                            <button
-                                                style={{
-                                                    ...styles.likeButton,
-                                                    backgroundColor: comment.isLiked ? '#4080ff' : '#ffffff',
-                                                    color: comment.isLiked ? 'white' : 'black',
-                                                }}
-                                                onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
-                                            >
-                                                {comment.isLiked ? '좋아요 완료' : '좋아요'}
-                                            </button>
-                                            {/* 좋아요 카운트 표시 */}
-                                            <span style={styles.likeCount}>{comment.commentLikeCount}</span>
+                                            {/* 좋아요 버튼 및 카운트 컨테이너 */}
+                                            <div style={styles.likeContainer}>
+                                                <button
+                                                    style={styles.likeButton}
+                                                    onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
+                                                >
+                                                    {comment.isLiked ? <FaHeart style={styles.likedIcon} /> : <FaRegHeart style={styles.likeIcon} />}
+                                                </button>
+                                                {/* 좋아요 카운트 */}
+                                                <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
+                                            </div>
                                         </div>
                                         <div style={styles.commentText}>{comment.comment}</div>
                                     </div>
@@ -870,15 +878,34 @@ const styles = {
     likeButton: {
         marginLeft: '10px',
         padding: '5px 10px',
-        border: '1px solid #4080ff',
+        border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
         fontSize: '14px',
+        background: 'none',
     },
-    likeCount: {
+    likeIcon: {
+        color: '#4080ff',
+        fontSize: '1.2em',
+    },
+    likedIcon: {
+        color: '#FF3366',
+        fontSize: '1.2em',
+    },
+    likeContainer: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    likeCountContainer: {
         marginLeft: '5px',
-        fontSize: '14px',
-    },
+        padding: '3px 6px',
+        backgroundColor: '#f2f2f2',
+        borderRadius: '8px',
+        border: '1px solid #ccc',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#333',
+    }
 };
 
 export default MovieDetailPage;
