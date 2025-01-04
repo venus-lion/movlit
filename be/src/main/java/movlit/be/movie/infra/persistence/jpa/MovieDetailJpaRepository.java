@@ -17,7 +17,7 @@ public interface MovieDetailJpaRepository extends JpaRepository<MovieEntity, Lon
      * String originalLanguage, Integer runtime, String status, Long voteCount,
      * String tagline
      */
-    @Query("SELECT new movlit.be.movie.presentation.dto.response.MovieDetailResponse "
+    @Query(" SELECT new movlit.be.movie.presentation.dto.response.MovieDetailResponse "
             + "(m.movieId, m.title, m.originalTitle, m.overview, "
             + "m.popularity, mhc.count, false, m.posterPath, m.backdropPath, "
             + "m.releaseDate, m.productionCountry, m.originalLanguage, "

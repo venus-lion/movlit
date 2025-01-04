@@ -38,6 +38,8 @@ public class SecurityConfig {
                         .requestMatchers("/testBook/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/hearts").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/movies/comments/*/likes").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/movies/comments/*/likes").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
