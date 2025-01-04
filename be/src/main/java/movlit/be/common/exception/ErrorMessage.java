@@ -41,7 +41,8 @@ public enum ErrorMessage {
 
 
     // Genre
-    INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g101"),
+    INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g001"),
+    BOOKS_BY_GENRE_NOT_FOUND("해당 장르를 가진 bookEntity가 존재하지 않습니다.", "g002"),
 
     // book
     BESTSELLERS_NOT_FOUND("bestseller가 존재하지 않습니다.", "b001"),
