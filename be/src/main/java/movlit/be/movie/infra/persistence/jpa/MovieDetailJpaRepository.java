@@ -40,8 +40,8 @@ public interface MovieDetailJpaRepository extends JpaRepository<MovieEntity, Lon
             + "m.releaseDate, m.productionCountry, m.originalLanguage, "
             + "m.runtime, m.status, m.voteCount, m.tagline) "
             + "FROM MovieEntity m "
-            + "LEFT JOIN MovieHeartEntity mh ON mh.movieId = m.movieId AND mh.memberId = :currentMemberId"
-            + " JOIN MovieHeartCountEntity mhc ON mhc.movieId = m.movieId "
+            + "LEFT JOIN MovieHeartEntity mh ON mh.movieId = m.movieId AND mh.memberId = :currentMemberId "
+            + "LEFT JOIN MovieHeartCountEntity mhc ON mhc.movieId = m.movieId "
             + "WHERE m.movieId = :movieId")
     Optional<MovieDetailResponse> findMovieDetailByMovieIdAndMemberId(Long movieId, MemberId currentMemberId);
 

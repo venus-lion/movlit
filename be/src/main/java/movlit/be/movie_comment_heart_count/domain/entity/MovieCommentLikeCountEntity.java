@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MovieCommentId;
+import movlit.be.common.util.ids.MovieCommentLikeCountId;
 import movlit.be.common.util.ids.MovieHeartCountId;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,7 +19,7 @@ import movlit.be.common.util.ids.MovieHeartCountId;
 public class MovieCommentLikeCountEntity {
 
     @EmbeddedId
-    private MovieHeartCountId movieHeartCountId;
+    private MovieCommentLikeCountId movieCommentLikeCountId;
 
     @AttributeOverride(name = "value", column = @Column(name = "movie_comment_id"))
     private MovieCommentId movieCommentId;
@@ -29,12 +30,10 @@ public class MovieCommentLikeCountEntity {
     private Long version;
 
     @Builder
-    public MovieCommentLikeCountEntity(MovieHeartCountId movieHeartCountId, MovieCommentId movieCommentId, Long count,
-                                       Long version) {
-        this.movieHeartCountId = movieHeartCountId;
+    public MovieCommentLikeCountEntity(MovieCommentLikeCountId movieCommentLikeCountId, MovieCommentId movieCommentId, Long count) {
+        this.movieCommentLikeCountId = movieCommentLikeCountId;
         this.movieCommentId = movieCommentId;
         this.count = count;
-        this.version = version;
     }
 
 }

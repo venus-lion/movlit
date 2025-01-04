@@ -19,8 +19,8 @@ function MovieDetailPage() {
     const [totalComments, setTotalComments] = useState(0);
     const [page, setPage] = useState(0);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    const [userComment, setUserComment] = useState(null); // 사용자 코멘트 정보
-    const [userCommentId, setUserCommentId] = useState(null); // 사용자 코멘트 ID
+    const [userComment, setUserComment] = useState(null);
+    const [userCommentId, setUserCommentId] = useState(null);
     const loader = useRef(null);
 
     const initialVisibleCrews = 14;
@@ -47,7 +47,7 @@ function MovieDetailPage() {
                     voteCount: data.voteCount,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
-                    isHearted: data.isHearted, // isHearted 추가
+                    isHearted: data.isHearted,
                 });
             })
             .catch((error) => console.error('Error fetching movie data:', error));
@@ -86,7 +86,7 @@ function MovieDetailPage() {
     // Intersection Observer 설정 (코멘트 무한 스크롤)
     useEffect(() => {
         if (!isInitialLoad) {
-            var options = {
+            const options = {
                 root: null,
                 rootMargin: '20px',
                 threshold: 1.0,
@@ -148,7 +148,7 @@ function MovieDetailPage() {
                 setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
-                    setComments(response.data.content.slice(0, 4));
+                    setComments(response.data.content);
                     setHasMore(
                         response.data.content.length > 4 || fetchedTotalComments > 4
                     );
@@ -324,6 +324,25 @@ function MovieDetailPage() {
         setHasMore(true);
         setPage(1);
         setIsInitialLoad(true);
+    };
+
+    // 좋아요/좋아요 취소 처리
+    const handleLikeClick = async (commentId, isLiked) => {
+        try {
+            if (isLiked) {
+                // 좋아요 취소 (DELETE 요청)
+                await axiosInstance.delete(`/movies/comments/${commentId}/likes`);
+            } else {
+                // 좋아요 (POST 요청)
+                await axiosInstance.post(`/movies/comments/${commentId}/likes`);
+            }
+
+            // 코멘트 목록 다시 불러오기
+            fetchComments(0); // 코멘트 목록을 다시 불러와 좋아요 상태 및 카운트 업데이트
+        } catch (error) {
+            console.error('Error updating like status:', error);
+            alert('좋아요/좋아요 취소 처리에 실패했습니다.');
+        }
     };
 
     if (!movieData) {
@@ -524,10 +543,7 @@ function MovieDetailPage() {
 
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>
-                                코멘트{' '}
-                                <span style={styles.commentCount}>
-                  {totalComments.toLocaleString()}
-                </span>
+                                코멘트 <span style={styles.commentCount}>{totalComments.toLocaleString()}</span>
                             </div>
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
@@ -535,17 +551,24 @@ function MovieDetailPage() {
                                         <div style={styles.commentHeader}>
                       <span style={styles.commentUser}>
                         {comment.nickname}
-                          <span
-                              style={
-                                  comment.score >= 1
-                                      ? styles.commentStarFilled
-                                      : styles.commentStarEmpty
-                              }
-                          >
+                          <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
                           ★
                         </span>
                           {comment.score}
                       </span>
+                                            {/* 좋아요 버튼 추가 */}
+                                            <button
+                                                style={{
+                                                    ...styles.likeButton,
+                                                    backgroundColor: comment.isLiked ? '#4080ff' : '#ffffff',
+                                                    color: comment.isLiked ? 'white' : 'black',
+                                                }}
+                                                onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
+                                            >
+                                                {comment.isLiked ? '좋아요 완료' : '좋아요'}
+                                            </button>
+                                            {/* 좋아요 카운트 표시 */}
+                                            <span style={styles.likeCount}>{comment.commentLikeCount}</span>
                                         </div>
                                         <div style={styles.commentText}>{comment.comment}</div>
                                     </div>
@@ -563,10 +586,7 @@ function MovieDetailPage() {
                                 {/* 더보기 취소 버튼 */}
                                 {showLessComments && (
                                     <div style={styles.moreButtonContainer}>
-                                        <button
-                                            style={styles.moreButton}
-                                            onClick={handleShowLessComments}
-                                        >
+                                        <button style={styles.moreButton} onClick={handleShowLessComments}>
                                             더보기 취소
                                         </button>
                                     </div>
@@ -839,13 +859,25 @@ const styles = {
     heartCountContainer: {
         marginLeft: '8px',
         padding: '4px 8px',
-        backgroundColor: '#f2f2f2', // 배경색
-        borderRadius: '10px', // 둥근 모서리
-        border: '1px solid #ccc', // 테두리
+        backgroundColor: '#f2f2f2',
+        borderRadius: '10px',
+        border: '1px solid #ccc',
         fontSize: '14px',
         fontWeight: 'bold',
-        color: '#333', // 텍스트 색상
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // 그림자 효과
+        color: '#333',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    likeButton: {
+        marginLeft: '10px',
+        padding: '5px 10px',
+        border: '1px solid #4080ff',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '14px',
+    },
+    likeCount: {
+        marginLeft: '5px',
+        fontSize: '14px',
     },
 };
 
