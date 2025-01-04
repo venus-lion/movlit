@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import axiosInstance from '../axiosInstance';
 import {Link, useNavigate} from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // CSS 임포트
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -24,7 +26,7 @@ const MemberRegister = () => {
                 password,
                 repeatPassword,
                 nickname,
-                dob,
+                dob: dob ? dob.toISOString().slice(0, 10) : null, // dob 변환,
             });
 
             console.log('Registration successful:', response.data);
@@ -121,12 +123,14 @@ const MemberRegister = () => {
                                                 <label className="col-form-label">생년월일</label>
                                             </td>
                                             <td>
-                                                <input
-                                                    type="text"
-                                                    name="dob"
-                                                    className="form-control"
-                                                    value={dob}
-                                                    onChange={(e) => setDob(e.target.value)}
+                                                <DatePicker
+                                                    selected={dob}
+                                                    onChange={(date) => setDob(date)}
+                                                    dateFormat="yyyy-MM-dd" // 원하는 날짜 형식 지정
+                                                    className="form-control" // 부트스트랩 클래스 적용
+                                                    isClearable // 선택 해제 버튼 추가
+                                                    showYearDropdown // 연도 선택 드롭다운 표시
+                                                    scrollableYearDropdown // 연도 스크롤 가능
                                                 />
                                             </td>
                                         </tr>
@@ -155,7 +159,7 @@ const MemberRegister = () => {
 
                                 {/* 소셜 로그인 버튼 */}
                                 <div className="mt-3 mb-3">
-                                    <div className="social-login-header">
+                                <div className="social-login-header">
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">

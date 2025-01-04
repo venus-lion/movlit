@@ -9,6 +9,7 @@ import movlit.be.movie.presentation.dto.response.MovieCommentReadResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailGenreResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailResponse;
+import movlit.be.movie.presentation.dto.response.MovieMyCommentReadResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort.Direction;
@@ -58,6 +59,17 @@ public class MovieDetailReadController {
 
         MemberId currentMemberId = details.getMemberId();
         var response = movieDetailReadService.fetchMovieComments(movieId, currentMemberId, pageable); // TODO: data 사용
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/movies/{movieId}/myComment")
+    public ResponseEntity<MovieMyCommentReadResponse> fetchMyMovieComment(
+            @PathVariable Long movieId,
+            @AuthenticationPrincipal
+            MyMemberDetails details
+    ) {
+        MemberId currentMemberId = details.getMemberId();
+        var response = movieDetailReadService.fetchMyMovieComment(movieId, currentMemberId); // TODO: data 사용
         return ResponseEntity.ok(response);
     }
 

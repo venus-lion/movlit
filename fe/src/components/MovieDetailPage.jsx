@@ -6,6 +6,7 @@ function MovieDetailPage() {
     const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
+    const [myComment, setMyComment] = useState('');
     const [crews, setCrews] = useState([]);
     const [visibleCrews, setVisibleCrews] = useState([]);
     const [showMoreCrews, setShowMoreCrews] = useState(false);
@@ -14,14 +15,16 @@ function MovieDetailPage() {
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
-    const [hasMore, setHasMore] = useState(true); // 코멘트 더보기 상태
-    const [showLessComments, setShowLessComments] = useState(false); // 코멘트 접기 버튼
+    const [hasMore, setHasMore] = useState(true);
+    const [showLessComments, setShowLessComments] = useState(false);
     const [totalComments, setTotalComments] = useState(0);
     const [page, setPage] = useState(0);
-    const [isInitialLoad, setIsInitialLoad] = useState(true); // 최초 로드 상태 (더보기 버튼 활성화 여부)
-    const loader = useRef(null); // 로딩 감지 Element Ref
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [userComment, setUserComment] = useState(null); // 사용자 코멘트 정보
+    const [userCommentId, setUserCommentId] = useState(null); // 사용자 코멘트 ID
+    const loader = useRef(null);
 
-    const initialVisibleCrews = 14; // 최초로 보여줄 출연/제작진 수
+    const initialVisibleCrews = 14;
 
     useEffect(() => {
         axiosInstance
@@ -76,12 +79,13 @@ function MovieDetailPage() {
             })
             .catch((error) => console.error('Error fetching genre data:', error));
 
+        fetchUserComment();
         fetchComments(0);
     }, [movieId]);
 
     // Intersection Observer 설정 (코멘트 무한 스크롤)
     useEffect(() => {
-        if (!isInitialLoad) { // isInitialLoad가 false일 때만 observer 생성
+        if (!isInitialLoad) {
             var options = {
                 root: null,
                 rootMargin: '20px',
@@ -93,24 +97,57 @@ function MovieDetailPage() {
                 observer.observe(loader.current);
             }
 
-            return () => observer.disconnect(); // 컴포넌트 언마운트 시 옵저버 해제
+            return () => observer.disconnect();
         }
     }, [comments, hasMore, isInitialLoad]);
+
+    // 사용자 코멘트 가져오기 (수정)
+    const fetchUserComment = async () => {
+        try {
+            const response = await axiosInstance.get(`/movies/${movieId}/myComment`);
+            if (response.data) {
+                // API 응답 데이터를 MovieMyCommentReadResponse 형식으로 가정
+                const { movieCommentId, comment, score, nickname, profileImgUrl } = response.data;
+                setUserComment({
+                    nickname,
+                    profileImgUrl,
+                    comment,
+                    score
+                });
+                setUserCommentId(movieCommentId); // 코멘트 ID 저장
+                setMyRating(score);
+                setMyComment(comment);
+                if (score > 0) {
+                    setShowCommentInput(false); // 별점이 있으면 코멘트 입력창 숨김
+                } else {
+                    setShowCommentInput(true); // 별점이 0이면 코멘트 입력창 표시
+                }
+            } else {
+                setUserComment(null);
+                setUserCommentId(null);
+                setMyRating(0);
+                setMyComment('');
+                setShowCommentInput(false);
+            }
+        } catch (error) {
+            console.error('Error fetching user comment:', error);
+            setUserComment(null);
+            setUserCommentId(null);
+        }
+    };
 
     // 코멘트 불러오기 함수
     const fetchComments = (currentPage = 0) => {
         axiosInstance
             .get(`/movies/${movieId}/comments?page=${currentPage}`)
             .then((response) => {
-                // 댓글 수(totalComments)를 API 응답에서 가져와서 설정
                 const fetchedTotalComments = response.data.content && response.data.content.length > 0
                     ? response.data.content[0].commentCount
                     : 0;
                 setTotalComments(fetchedTotalComments);
 
                 if (currentPage === 0) {
-                    setComments(response.data.content.slice(0, 4)); // 최초 4개만 로드
-                    // 더보기 버튼 표시 여부 설정
+                    setComments(response.data.content.slice(0, 4));
                     setHasMore(response.data.content.length > 4 || fetchedTotalComments > 4);
                 } else {
                     setComments((prevComments) => [
@@ -127,19 +164,25 @@ function MovieDetailPage() {
     // Intersection Observer 콜백 함수
     const handleObserver = (entities) => {
         const target = entities[0];
-        // isInitialLoad가 false일 때만 무한 스크롤 동작
         if (target.isIntersecting && hasMore && !isInitialLoad) {
             fetchComments(page);
         }
     };
 
     const handleRatingChange = (newRating) => {
-        if (myRating === newRating) {
-            setMyRating(0);
-            setShowCommentInput(false);
-        } else {
+        if (userComment) {
+            // 사용자가 별점을 매긴 상태에서 다시 클릭하면, 별점은 유지하고 코멘트 입력창을 표시
             setMyRating(newRating);
             setShowCommentInput(true);
+        } else {
+            // 별점이 0점인 상태에서 별점을 클릭한 경우
+            if (myRating === newRating) {
+                setMyRating(0); // 별점을 다시 0으로 설정 (별점이 없는 상태로 전환)
+                setShowCommentInput(false); // 코멘트 입력창 숨김
+            } else {
+                setMyRating(newRating);
+                setShowCommentInput(true);
+            }
         }
     };
 
@@ -149,40 +192,68 @@ function MovieDetailPage() {
     };
 
     const handleCommentChange = (event) => {
-        setComment(event.target.value);
+        if (userComment) {
+            setMyComment(event.target.value);
+        } else {
+            setComment(event.target.value);
+        }
     };
 
-    const handleSubmitComment = () => {
+    // 코멘트 제출
+    const handleSubmitComment = async () => {
         if (myRating === 0) {
             alert('별점을 입력해주세요.');
             return;
         }
-        if (comment.trim() === '') {
+        const currentComment = userComment ? myComment : comment;
+        if (currentComment.trim() === '') {
             alert('코멘트를 입력해주세요.');
             return;
         }
 
         const requestBody = {
             score: myRating,
-            comment: comment,
+            comment: currentComment,
         };
 
-        axiosInstance
-            .post(`/movies/${movieId}/comments`, requestBody)
-            .then((response) => {
-                console.log('코멘트 저장 성공:', response.data);
+        try {
+            if (userCommentId) {
+                // 코멘트 수정 (PUT 요청)
+                await axiosInstance.put(`/movies/comments/${userCommentId}`, requestBody);
+                alert('코멘트가 수정되었습니다.');
+            } else {
+                // 새 코멘트 저장 (POST 요청)
+                await axiosInstance.post(`/movies/${movieId}/comments`, requestBody);
                 alert('코멘트가 저장되었습니다.');
-            })
-            .catch((error) => {
-                console.error('코멘트 저장 실패:', error);
-                alert('코멘트 저장에 실패했습니다.');
-            })
-            .finally(() => {
-                setComment('');
-                setMyRating(0);
-                setShowCommentInput(false);
-                fetchComments(0);
-            });
+            }
+
+            // 코멘트 상태 업데이트
+            fetchUserComment();
+            fetchComments(0);
+        } catch (error) {
+            console.error('코멘트 저장/수정 실패:', error);
+            alert('코멘트 저장/수정에 실패했습니다.');
+        } finally {
+            setComment('');
+            setMyRating(0); // 코멘트 제출 후 별점을 다시 0으로 설정
+            setShowCommentInput(false);
+        }
+    };
+
+    // 코멘트 삭제
+    const handleDeleteComment = async () => {
+        if (!userCommentId) return;
+
+        try {
+            // 코멘트 삭제 (DELETE 요청)
+            await axiosInstance.delete(`/movies/comments/${userCommentId}`);
+            alert('코멘트가 삭제되었습니다.');
+            fetchUserComment();
+            fetchComments(0);
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            alert('코멘트 삭제에 실패했습니다.');
+        }
     };
 
     // 출연/제작진 더보기/취소 처리
@@ -198,18 +269,18 @@ function MovieDetailPage() {
 
     // 코멘트 더보기 처리
     const handleLoadMore = () => {
-        setIsInitialLoad(false); // 더보기 버튼 클릭 시 무한 스크롤 활성화
-        fetchComments(page); // 즉시 다음 페이지 로드
-        setShowLessComments(true); // 코멘트 더보기 취소 버튼 표시
+        setIsInitialLoad(false);
+        fetchComments(page);
+        setShowLessComments(true);
     };
 
     // 코멘트 더보기 취소 처리
     const handleShowLessComments = () => {
-        setComments(comments.slice(0, 4)); // 처음 4개만 표시
-        setShowLessComments(false); // 코멘트 더보기 취소 버튼 숨김
-        setHasMore(true); // 코멘트 더보기 버튼 표시
-        setPage(1); // 페이지 번호를 1로 초기화
-        setIsInitialLoad(true); // 더보기 버튼 다시 활성화
+        setComments(comments.slice(0, 4));
+        setShowLessComments(false);
+        setHasMore(true);
+        setPage(1);
+        setIsInitialLoad(true);
     };
 
     if (!movieData) {
@@ -238,9 +309,9 @@ function MovieDetailPage() {
                     ・{' '}
                     {genres.map((genre, index) => (
                         <span key={index}>
-              {genre.name}
+                            {genre.name}
                             {index < genres.length - 1 ? ', ' : ''}
-            </span>
+                        </span>
                     ))}{' '}
                     ・ {movieData.country}
                 </div>
@@ -268,10 +339,28 @@ function MovieDetailPage() {
                                             }
                                             onClick={() => handleRatingChange(index + 1)}
                                         >
-                      <span style={styles.starIcon}>★</span>
-                    </span>
+                                            <span style={styles.starIcon}>★</span>
+                                        </span>
                                     ))}
                             </div>
+                            {/* 사용자 코멘트, 별점, 닉네임, 프로필 이미지 표시 */}
+                            {userComment && userComment.score > 0 && (
+                                <div style={styles.userCommentDisplay}>
+                                    <div style={styles.userInfo}>
+                                        <img
+                                            src={userComment.profileImgUrl || '/default-profile-image.jpg'}
+                                            alt="프로필 이미지"
+                                            style={styles.profileImage}
+                                        />
+                                        <span style={styles.userNickname}>{userComment.nickname}</span>
+                                    </div>
+                                    <p>
+                                        <span style={{ ...styles.commentStarFilled, marginRight: '5px' }}>★</span>
+                                        {userComment.score}
+                                    </p>
+                                    <p>{userComment.comment}</p>
+                                </div>
+                            )}
                         </div>
                         <div style={styles.buttonGroup}>
                             <button
@@ -286,19 +375,36 @@ function MovieDetailPage() {
                         </div>
                     </div>
 
+                    {/* 코멘트 입력 및 수정/삭제 버튼 */}
                     {showCommentInput && (
                         <div style={styles.commentSection}>
-              <textarea
-                  style={styles.commentInput}
-                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-                  value={comment}
-                  onChange={handleCommentChange}
-              />
+                            <textarea
+                                style={styles.commentInput}
+                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                                value={userComment ? myComment : comment}
+                                onChange={handleCommentChange}
+                            />
+                            <button style={styles.submitButton} onClick={handleSubmitComment}>
+                                {userComment ? '수정하기' : '코멘트 남기기'}
+                            </button>
+                        </div>
+                    )}
+
+                    {/* 코멘트 삭제 및 수정 버튼 */}
+                    {!showCommentInput && userComment && (
+                        <div style={styles.commentActions}>
+                            <button style={styles.deleteButton} onClick={handleDeleteComment}>
+                                삭제하기
+                            </button>
                             <button
-                                style={styles.submitButton}
-                                onClick={handleSubmitComment}
+                                style={styles.editButton}
+                                onClick={() => {
+                                    setMyRating(userComment.score);
+                                    setMyComment(userComment.comment);
+                                    setShowCommentInput(true);
+                                }}
                             >
-                                코멘트 남기기
+                                수정하기
                             </button>
                         </div>
                     )}
@@ -366,26 +472,26 @@ function MovieDetailPage() {
                             <div style={styles.sectionTitle}>
                                 코멘트{' '}
                                 <span style={styles.commentCount}>
-                  {totalComments.toLocaleString()}
-                </span>
+                                    {totalComments.toLocaleString()}
+                                </span>
                             </div>
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                      <span style={styles.commentUser}>
-                        {comment.nickname}
-                          <span
-                              style={
-                                  comment.score >= 1
-                                      ? styles.commentStarFilled
-                                      : styles.commentStarEmpty
-                              }
-                          >
-                          ★
-                        </span>
-                          {comment.score}
-                      </span>
+                                            <span style={styles.commentUser}>
+                                                {comment.nickname}
+                                                <span
+                                                    style={
+                                                        comment.score >= 1
+                                                            ? styles.commentStarFilled
+                                                            : styles.commentStarEmpty
+                                                    }
+                                                >
+                                                    ★
+                                                </span>
+                                                {comment.score}
+                                            </span>
                                         </div>
                                         <div style={styles.commentText}>{comment.comment}</div>
                                     </div>
@@ -634,6 +740,47 @@ const styles = {
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
+    },
+    userCommentDisplay: {
+        marginTop: '10px',
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+    },
+    commentActions: {
+        marginTop: '10px',
+        display: 'flex',
+        gap: '10px',
+    },
+    deleteButton: {
+        padding: '10px 20px',
+        backgroundColor: '#dc3545',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    },
+    editButton: {
+        padding: '10px 20px',
+        backgroundColor: '#ffc107',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    },
+    userInfo: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '5px',
+    },
+    profileImage: {
+        width: '30px',
+        height: '30px',
+        borderRadius: '50%',
+        marginRight: '5px',
+    },
+    userNickname: {
+        fontWeight: 'bold',
     },
 };
 
