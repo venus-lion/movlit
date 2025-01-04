@@ -63,7 +63,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public List<Genre> findUserInterestGenreList(MemberId memberId) {
-        List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findAllByMemberId(memberId)
+        List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findByMemberGenreIdEntity_MemberId(memberId)
                 .orElseThrow(MemberGenreNotFoundException::new);
 
         return memberGenreEntityList.stream().map(x -> Genre.of(x.getMemberGenreIdEntity().getGenreId())).toList();

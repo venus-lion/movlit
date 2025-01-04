@@ -3,6 +3,8 @@ package movlit.be.movie.application.converter.main;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import movlit.be.common.util.Genre;
+import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.MovieGenre;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.document.MovieGenreForDocument;
 import movlit.be.movie.domain.document.MovieTagForDocument;
@@ -66,6 +68,32 @@ public class MovieDocumentConverter {
         return MovieTagForDocument.builder()
                 .movieTagId(movieTagId)
                 .tagName(movieTagEntity.getName())
+                .build();
+    }
+
+    // Document -> Domain
+    public static Movie documentToEntity(MovieDocument movieDocument) {
+        return Movie.builder()
+                .movieId(movieDocument.getMovieId())
+                .title(movieDocument.getTitle())
+                .originalTitle(movieDocument.getOriginalTitle())
+                .overview(movieDocument.getOverview())
+                .popularity(movieDocument.getPopularity())
+                .posterPath(movieDocument.getPosterPath())
+                .backdropPath(movieDocument.getBackdropPath())
+                .releaseDate(movieDocument.getReleaseDate())
+                .originalLanguage(movieDocument.getOriginalLanguage())
+                .voteCount(movieDocument.getVoteCount())
+                .voteAverage(movieDocument.getVoteAverage())
+                .productionCountry(movieDocument.getProductionCountry())
+                .runtime(movieDocument.getRuntime())
+                .tagline(movieDocument.getTagline())
+                .delYn(movieDocument.isDelYn())
+                .heartCount(movieDocument.getHeartCount())
+                .movieGenreList(movieDocument.getMovieGenre().stream()
+                        .map(x -> new MovieGenre(x.getGenreId(), x.getGenreName()))
+                        .toList()
+                )
                 .build();
     }
 

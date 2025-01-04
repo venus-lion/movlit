@@ -1,13 +1,12 @@
 package movlit.be.movie.application.service;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.repository.MovieRepository;
+import movlit.be.movie.domain.repository.MovieSearchRepository;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +20,7 @@ public class MovieMainService {
 
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
+    private final MovieSearchRepository movieSearchRepository;
 
     public MovieListResponseDto getMoviePopular(int page, int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
@@ -46,20 +46,12 @@ public class MovieMainService {
         return responseDto;
     }
 
-    public List<Movie> getMovieUserInterestByGenre(MemberId currentMemberId, int page, int pageSize) {
+    public MovieListResponseDto getMovieUserInterestByGenre(MemberId currentMemberId, int page, int pageSize) {
         List<Genre> movieGenreList = memberRepository.findUserInterestGenreList(currentMemberId);
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
-
-        BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder(); // BoolQuery 생성에 사용할 빌더 생성
-
-        for(Genre genre : movieGenreList) {
-            boolQueryBuilder.should(
-                    TermQuery.of(t -> t.field("movieGenre.genreName").value(genre.getName()))._toQuery()
-            );
-        }
-
-
-        return List.of();
+        List<Movie> movieList = movieSearchRepository.searchByUserInterestGenre(movieGenreList, pageable);
+        return new MovieListResponseDto(movieList);
     }
 
 
