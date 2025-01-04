@@ -34,7 +34,7 @@ public class MovieDetailWriteService {
     }
 
     private void validateMemberExistsInMovieComment(MovieCommentData data) {
-        if (movieCommentRepository.fetchByMemberId(data.memberId()).isPresent()) {
+        if (movieCommentRepository.fetchByMemberIdAndMovieId(data.memberId(), data.movieId()).isPresent()) {
             throw new MemberExistsInMovieCommentException();
         }
     }

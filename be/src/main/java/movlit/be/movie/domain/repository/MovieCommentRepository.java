@@ -20,6 +20,6 @@ public interface MovieCommentRepository {
 
     Slice<MovieCommentReadResponse> fetchComments(Long movieId, Pageable pageable);
 
-    Optional<MovieCommentEntity> fetchByMemberId(MemberId memberId);
+    Optional<MovieCommentEntity> fetchByMemberIdAndMovieId(MemberId memberId, Long movieId);
 
 }

@@ -47,8 +47,8 @@ public class MovieCommentRepositoryImpl implements MovieCommentRepository {
     }
 
     @Override
-    public Optional<MovieCommentEntity> fetchByMemberId(MemberId memberId) {
-        return movieCommentJpaRepository.findByMemberId(memberId);
+    public Optional<MovieCommentEntity> fetchByMemberIdAndMovieId(MemberId memberId, Long movieId) {
+        return movieCommentJpaRepository.findByMemberIdAndMovieId(memberId, movieId);
     }
 
 }

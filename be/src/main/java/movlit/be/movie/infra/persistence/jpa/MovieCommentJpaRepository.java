@@ -39,6 +39,9 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
                                                                 @Param("memberId") MemberId memberId,
                                                                 @Param("pageable") Pageable pageable);
 
-    Optional<MovieCommentEntity> findByMemberId(MemberId memberId);
+    @Query("SELECT mc "
+            + "FROM MovieCommentEntity mc "
+            + "WHERE mc.memberId = :memberId AND mc.movieId = :movieId")
+    Optional<MovieCommentEntity> findByMemberIdAndMovieId(MemberId memberId, Long movieId);
 
 }
