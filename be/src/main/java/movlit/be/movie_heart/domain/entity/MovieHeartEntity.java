@@ -1,6 +1,9 @@
 package movlit.be.movie_heart.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +14,6 @@ import movlit.be.common.util.ids.MovieHeartId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name="movie_heart")
 public class MovieHeartEntity {
 
     @EmbeddedId

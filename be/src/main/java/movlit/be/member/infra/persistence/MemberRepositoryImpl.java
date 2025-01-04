@@ -62,6 +62,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
+    public boolean existByMemberId(MemberId memberId) {
+        return memberJpaRepository.existsById(memberId);
+    }
+
+    @Override
     public List<Genre> findUserInterestGenreList(MemberId memberId) {
         List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findAllByMemberId(memberId)
                 .orElseThrow(MemberGenreNotFoundException::new);

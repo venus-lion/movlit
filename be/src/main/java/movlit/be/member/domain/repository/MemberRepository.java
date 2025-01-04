@@ -21,5 +21,7 @@ public interface MemberRepository {
 
     boolean existsByEmail(String email);
 
+    boolean existByMemberId(MemberId memberId);
+
     List<Genre> findUserInterestGenreList(MemberId memberId);
 }

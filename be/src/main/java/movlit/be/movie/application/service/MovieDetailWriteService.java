@@ -15,6 +15,8 @@ import movlit.be.movie.presentation.dto.request.MovieCommentData;
 import movlit.be.movie.presentation.dto.request.MovieCommentDataForDelete;
 import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
+import movlit.be.movie_heart_count.application.service.MovieHeartCountService;
+import movlit.be.movie_heart_count.domain.entity.MovieHeartCountEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MovieDetailWriteService {
 
     private final MovieCommentRepository movieCommentRepository;
+    private final MovieHeartCountService movieHeartCountService;
 
     public MovieCommentResponse createComment(MovieCommentData data) {
         validateMemberExistsInMovieComment(data);
@@ -33,7 +36,8 @@ public class MovieDetailWriteService {
         return MovieConvertor.toMovieCommentResponse(movieCommentRepository.createComment(movieCommentEntity));
     }
 
-    private void validateMemberExistsInMovieComment(MovieCommentData data) {
+    @Transactional(readOnly = true)
+    public void validateMemberExistsInMovieComment(MovieCommentData data) {
         if (movieCommentRepository.fetchByMemberIdAndMovieId(data.memberId(), data.movieId()).isPresent()) {
             throw new MemberExistsInMovieCommentException();
         }
@@ -54,7 +58,8 @@ public class MovieDetailWriteService {
         movieCommentEntity.updateComment(request, LocalDateTime.now());
     }
 
-    private void validateMyComment(MemberId currentMemberId, MovieCommentEntity movieCommentEntity) {
+    @Transactional(readOnly = true)
+    public void validateMyComment(MemberId currentMemberId, MovieCommentEntity movieCommentEntity) {
         if (!Objects.equals(currentMemberId, movieCommentEntity.getMemberId())) {
             throw new MemberNotFoundException();
         }

@@ -2,7 +2,6 @@ package movlit.be.movie.infra.persistence;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-@Slf4j
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
@@ -49,7 +47,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByVoteCountDescPopularityDesc(
                 pageable);
 //        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();

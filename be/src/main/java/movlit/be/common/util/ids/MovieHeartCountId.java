@@ -8,10 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 @EqualsAndHashCode(callSuper = true)
-public class MovieHeartId extends BaseId {
+public class MovieHeartCountId extends BaseId {
 
-    public MovieHeartId(String value) {
+    public MovieHeartCountId(String value) {
         super(value);
     }
 
 }
+
