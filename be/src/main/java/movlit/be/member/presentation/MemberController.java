@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,9 +49,21 @@ public class MemberController {
         return ResponseEntity.ok().body(response);
     }
 
+    /**
+     * 회원 장르 조회 API
+     */
     @GetMapping("/api/members/genreList")
     public ResponseEntity<List<GenreListReadResponse>> fetchGenreList(@AuthenticationPrincipal MyMemberDetails details) {
-        var response = memberReadService.fetchGenreList(details.getMemberId());
+        var response = memberReadService.fetchGenreListById(details.getMemberId());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 장르 조회 API (로그인 정보 X)
+     */
+    @GetMapping("/api/genreList")
+    public ResponseEntity<List<GenreListReadResponse>> fetchGenreList() {
+        var response = memberReadService.fetchGenreList();
         return ResponseEntity.ok(response);
     }
 

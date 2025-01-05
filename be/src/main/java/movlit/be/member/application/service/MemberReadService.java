@@ -50,7 +50,7 @@ public class MemberReadService {
         }
     }
 
-    public List<GenreListReadResponse> fetchGenreList(MemberId memberId) {
+    public List<GenreListReadResponse> fetchGenreListById(MemberId memberId) {
         MemberEntity memberEntity = memberRepository.findEntityById(memberId);
         return memberEntity.getMemberGenreEntityList().stream()
                 .map(genre -> {
@@ -59,6 +59,10 @@ public class MemberReadService {
                     return new GenreListReadResponse(genreId, genreName);
                 })
                 .toList();
+    }
+
+    public List<GenreListReadResponse> fetchGenreList() {
+        return Genre.getGenreList();
     }
 
 }

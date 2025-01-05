@@ -60,6 +60,17 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 회원_장르를_조회한다(RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .when().get("/api/genreList")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원가입한다(Map<String, Object> memberRegisterRequest,
                                                        RequestSpecification spec) {
         return RestAssured

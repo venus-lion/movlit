@@ -98,8 +98,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("회원 조회 인수 테스트")
+    @DisplayName("장르 조회 인수 테스트")
     class MemberRead {
+
+        @DisplayName("장르의 조회가 성공하면, 상태코드 200과 body를 반환한다.")
+        @Test
+        void when_read_genre_success_then_response_200_and_body() {
+            // docs
+            api_문서_타이틀("genreRead_success", spec);
+
+            // when
+            var response = 회원_장르를_조회한다(spec);
+
+            // then
+            상태코드가_200이고_응답에_genreId와_genreName이_존재한다(response);
+        }
 
         @DisplayName("회원 장르의 조회가 성공하면, 상태코드 200과 body를 반환한다.")
         @Test
