@@ -15,6 +15,7 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpHeaders;
@@ -50,10 +51,22 @@ public class MemberController {
     }
 
     /**
+     * 회원 마이 페이지 조회 API
+     * TODO: Book 정보도 Response Dto와 Query에 추가
+     */
+    @GetMapping("/api/members/myPage")
+    public ResponseEntity<MemberReadMyPage> fetchMyPage(
+            @AuthenticationPrincipal MyMemberDetails details) {
+        var response = memberReadService.fetchMyPage(details.getMemberId());
+        return ResponseEntity.ok().body(response);
+    }
+
+    /**
      * 회원 장르 조회 API
      */
     @GetMapping("/api/members/genreList")
-    public ResponseEntity<List<GenreListReadResponse>> fetchGenreList(@AuthenticationPrincipal MyMemberDetails details) {
+    public ResponseEntity<List<GenreListReadResponse>> fetchGenreList(
+            @AuthenticationPrincipal MyMemberDetails details) {
         var response = memberReadService.fetchGenreListById(details.getMemberId());
         return ResponseEntity.ok(response);
     }
@@ -63,7 +76,7 @@ public class MemberController {
      */
     @GetMapping("/api/genreList")
     public ResponseEntity<List<GenreListReadResponse>> fetchGenreList() {
-        var response = memberReadService.fetchGenreList();
+        var response = memberReadService.getGenreList();
         return ResponseEntity.ok(response);
     }
 

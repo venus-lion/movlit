@@ -60,6 +60,18 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 회원_마이페이지를_조회한다(RequestSpecification spec, String accessToken) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .auth().oauth2(accessToken)
+                .log().all()
+                .when().get("/api/members/myPage")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원_장르를_조회한다(RequestSpecification spec) {
         return RestAssured
                 .given()
@@ -147,6 +159,12 @@ public class MemberSteps {
                 () -> 상태코드를_검증한다(response, HttpStatus.OK),
                 () -> assertThat(response.jsonPath().getList("").get(0)).isNotNull(),
                 () -> assertThat(response.jsonPath().getList("").get(1)).isNotNull()
+        );
+    }
+
+    public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.OK)
         );
     }
 
