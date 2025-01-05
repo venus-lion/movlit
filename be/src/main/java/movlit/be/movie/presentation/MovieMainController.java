@@ -86,12 +86,14 @@ public class MovieMainController {
     /**
      * 로그인 유저의 최근 찜 목록 기반으로 유사한 영화 리스트 가져오기
      * */
+    @GetMapping("/lastHeart")
     public ResponseEntity<MovieListResponseDto> getMovieByUserRecentHeart(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
         MemberId currentMemberId = details.getMemberId();
+//        MemberId currentMemberId = new MemberId("305d8d19132b772dcc30080b");
 
         return ResponseEntity.ok(null);
     }

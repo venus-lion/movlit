@@ -1,4 +1,4 @@
-package movlit.be.movie_heart.domain.entity;
+package movlit.be.movie.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieHeartId;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -23,6 +25,8 @@ public class MovieHeartEntity {
     private MemberId memberId;
 
     private boolean isHearted;
+
+    private LocalDateTime regDt;
 
     @Builder
     public MovieHeartEntity(MovieHeartId movieHeartId, Long movieId, MemberId memberId, boolean isHearted) {

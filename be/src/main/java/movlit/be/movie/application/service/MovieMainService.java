@@ -1,10 +1,13 @@
 package movlit.be.movie.application.service;
 
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.NotExistMovieHeartByMember;
 import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.MovieHeart;
+import movlit.be.movie.domain.repository.MovieHeartRepository;
 import movlit.be.movie.domain.repository.MovieRepository;
 import movlit.be.movie.domain.repository.MovieSearchRepository;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
@@ -21,6 +24,7 @@ public class MovieMainService {
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
     private final MovieSearchRepository movieSearchRepository;
+    private final MovieHeartRepository movieHeartRepository;
 
     public MovieListResponseDto getMoviePopular(int page, int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
@@ -56,6 +60,32 @@ public class MovieMainService {
 
 
     public MovieListResponseDto getMovieByUserRecentHeart(MemberId currentMemberId) {
+        // 로그인 유저의 가장 최근 찜한 영화 가져오기
+
+        List<Movie> movieList;
+
+        try{
+            MovieHeart lastMovieHeart = movieHeartRepository.findMostRecentMovieHeart(currentMemberId);
+            Long movieId = lastMovieHeart.getMovieId();
+
+            // 1. crew 가져와서 elasticsearch에 movieCrew로 검색
+
+
+            // 2.
+
+
+            // 3. keyword 가져와서 elasticsearch에 overview로 검색 (morelikethis쿼리)
+
+
+            // 4. tagline 가져와서 elasticsearch에 overview로 검색 (morelikethis쿼리)
+
+        } catch (NotExistMovieHeartByMember e){
+            // 찜한 영화가 아직 없을 때
+        }
+
+
+
+
         return null;
     }
 }

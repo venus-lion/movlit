@@ -39,6 +39,7 @@ public enum ErrorMessage {
     MOVIE_COMMENT_AND_MEMBER_NOT_MATCHED("해당 영화 코멘트와 멤버가 매칭되지 않습니다.", "m103"),
     MOVIE_COMMENT_NOT_FOUND("해당 영화 코멘트를 찾을 수 없습니다.", "m104"),
     MEMBER_EXISTS_IN_MOVIE_COMMENT("해당 영화 코멘트에 현재 멤버가 이미 존재합니다.", "m105"),
+    NOT_FOUND_MOVIE_HEART_BY_MEMBER("해당 유저가 찜한 영화가 존재하지 않습니다.", "m106"),
 
 
     // Genre
