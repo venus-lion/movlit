@@ -2,6 +2,7 @@ package movlit.be.acceptance.member;
 
 import static movlit.be.acceptance.util.MemberFixture.비회원;
 import static movlit.be.acceptance.util.MemberFixture.회원_원준;
+import static movlit.be.acceptance.util.MemberFixture.회원_지원;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -93,6 +94,34 @@ public class MemberSteps {
                 .body(memberRegisterRequest)
                 .when()
                 .post("/api/members/register")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 원준_회원을_수정을_요청한다(String accessToken, RequestSpecification spec) {
+        Map<String, Object> memberUpdateRequest = Map.of(
+                "nickname", 회원_지원.getNickname(),
+                "email", 회원_지원.getEmail(),
+                "password", 회원_지원.getPassword(),
+                "repeatPassword", 회원_지원.getPassword(),
+                "dob", 회원_지원.getDob(),
+                "genreIds", 회원_지원.getGenreIds()
+        );
+        return 회원을_수정한다(accessToken, memberUpdateRequest, spec);
+    }
+
+    public static ExtractableResponse<Response> 회원을_수정한다(String accessToken, Map<String, Object> memberUpdateRequest,
+                                                         RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .auth().oauth2(accessToken)
+                .log().all()
+                .body(memberUpdateRequest)
+                .when()
+                .put("/api/members/update")
                 .then()
                 .log().all()
                 .extract();
