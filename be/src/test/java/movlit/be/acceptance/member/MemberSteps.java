@@ -48,6 +48,18 @@ public class MemberSteps {
         return 회원가입한다(memberRegisterRequest, spec);
     }
 
+    public static ExtractableResponse<Response> 회원_장르를_조회한다(RequestSpecification spec, String accessToken) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .auth().oauth2(accessToken)
+                .log().all()
+                .when().get("/api/members/genreList")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원가입한다(Map<String, Object> memberRegisterRequest,
                                                        RequestSpecification spec) {
         return RestAssured
@@ -116,6 +128,14 @@ public class MemberSteps {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.CREATED),
                 () -> assertThat(response.jsonPath().getObject("memberId", String.class)).isNotNull()
+        );
+    }
+
+    public static void 상태코드가_200이고_응답에_genreId와_genreName이_존재한다(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.OK),
+                () -> assertThat(response.jsonPath().getList("").get(0)).isNotNull(),
+                () -> assertThat(response.jsonPath().getList("").get(1)).isNotNull()
         );
     }
 
