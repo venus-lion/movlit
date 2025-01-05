@@ -7,7 +7,6 @@ import movlit.be.book.application.converter.BookConverter;
 import movlit.be.book.application.converter.BookDetailConverter;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.dto.BookCommentsResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.repository.BookCommentRepository;
@@ -57,7 +56,9 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
         return BookCommentConverter.toDomain(bookCommentEntity);
     }
 
-
-
+    @Override
+    public void deleteById(BookCommentId bookCommentId) {
+        bookCommentJpaRepository.deleteById(bookCommentId);
+    }
 
 }

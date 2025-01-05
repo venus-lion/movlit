@@ -2,6 +2,7 @@ package movlit.be.book.domain.dto;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import movlit.be.common.util.ids.BookCommentId;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookCommentsResponseDto {
+public class BookCommentResponseDto {
     private BookCommentId bookCommentId;
     private BigDecimal score;
     private String comment;
@@ -22,6 +23,8 @@ public class BookCommentsResponseDto {
     private String profileImgUrl;
     private Long likeCount; // 서브 쿼리 결과
     private boolean isLiked; // 기본값 false
+    private LocalDateTime regDt;
+    private LocalDateTime updDt;
 
 
 }

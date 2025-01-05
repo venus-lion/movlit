@@ -75,23 +75,25 @@ public class BookCommentWriteService {
         return bookCommentRepository.save(bookComment);
     }
 
-    public BookComment deleteBookComment(Member member, Book book, BookCommentId bookCommentId,
-                                         BookCommentRequestDto commentDto)
+    public void deleteBookComment(Member member, Book book, BookCommentId bookCommentId)
             throws BookCommentAccessDenied {
         BookComment bookComment = bookCommentReadService.findByBookCommentId(bookCommentId);
 
         if (bookComment != null) {
             if (bookComment.getMember().getMemberId() == member.getMemberId()
                     && bookComment.getBook().getBookId() == book.getBookId()) {
+                try{
+                    // 하드 삭제
+                    System.out.println("^^삭제할 코멘트id " + bookCommentId);
+                    bookCommentRepository.deleteById(bookCommentId);
 
-                // 소프트 삭제 -> del_yn 컬럼 '1' 로 set
-                bookComment.setDelYn(true);
-
+                }catch (Exception e){
+                    e.getMessage();
+                }
             }
         } else {
             throw new BookCommentAccessDenied();
         }
-        return bookCommentRepository.save(bookComment);
 
     }
 

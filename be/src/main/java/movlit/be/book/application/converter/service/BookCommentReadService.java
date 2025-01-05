@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.dto.BookCommentsResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.domain.repository.BookCommentRepository;

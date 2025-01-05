@@ -3,7 +3,6 @@ package movlit.be.book.domain.repository;
 import java.util.List;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.dto.BookCommentsResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
@@ -19,6 +18,8 @@ public interface BookCommentRepository {
     BookComment findByMemberAndBook(Member member, Book book);
 
     BookComment save(BookComment bookComment);
+
+    void deleteById(BookCommentId bookCommentId);
 
 
 //    Slice<BookCommentsResponseDto> findByBookId(BookId bookId, Pageable pageable);

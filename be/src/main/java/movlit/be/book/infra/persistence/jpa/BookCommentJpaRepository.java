@@ -3,7 +3,6 @@ package movlit.be.book.infra.persistence.jpa;
 import java.util.Optional;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.dto.BookCommentsResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.common.util.ids.BookCommentId;
@@ -42,6 +41,11 @@ public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntit
 
 
     Optional<BookCommentEntity> findByMemberEntityAndBookEntity(MemberEntity memberEntity, BookEntity bookEntity);
+
+    void deleteById(BookCommentId bookCommentId);
+
+
+
 
 
 
