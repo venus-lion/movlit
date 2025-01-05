@@ -58,4 +58,8 @@ public class MemberEntity {
         this.memberGenreEntityList = memberGenreEntityList;
     }
 
+    public void updateGenreList(List<MemberGenreEntity> memberGenreEntityList) {
+        this.memberGenreEntityList = memberGenreEntityList;
+    }
+
 }

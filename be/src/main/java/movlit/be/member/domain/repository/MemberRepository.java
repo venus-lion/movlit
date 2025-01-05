@@ -6,8 +6,12 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.domain.MemberGenre;
 
 import java.util.List;
+import movlit.be.member.domain.entity.MemberEntity;
+import movlit.be.member.presentation.dto.response.GenreListReadResponse;
 
 public interface MemberRepository {
+
+    MemberEntity saveEntity(MemberEntity memberEntity);
 
     Member save(Member member);
 
@@ -17,11 +21,12 @@ public interface MemberRepository {
 
     Member findById(MemberId memberId);
 
+    MemberEntity findEntityById(MemberId memberId);
+
     boolean existsByNickname(String nickname);
 
     boolean existsByEmail(String email);
 
     boolean existByMemberId(MemberId memberId);
 
-    List<Genre> findUserInterestGenreList(MemberId memberId);
 }

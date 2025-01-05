@@ -23,4 +23,8 @@ public class MemberGenreEntity {
 //    @JoinColumn(name = "id", updatable = false, insertable = false)
 //    private MemberEntity memberEntity;
 
+    public MemberGenreEntity(MemberGenreIdEntity memberGenreIdEntity) {
+        this.memberGenreIdEntity = memberGenreIdEntity;
+    }
+
 }

@@ -5,11 +5,13 @@ import static movlit.be.acceptance.member.MemberSteps.비회원이_일치하지_
 import static movlit.be.acceptance.member.MemberSteps.비회원이_회원_원준의_닉네임으로_회원가입한다;
 import static movlit.be.acceptance.member.MemberSteps.비회원이_회원_원준의_이메일로_회원가입한다;
 import static movlit.be.acceptance.member.MemberSteps.비회원이_회원가입한다;
+import static movlit.be.acceptance.member.MemberSteps.상태코드가_200이고_응답에_genreId와_genreName이_존재한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_201이고_응답에_memberId가_존재한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_400이고_오류코드가_g001이고_errors에_email이_존재하는지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_400이고_오류코드가_g001인지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이고_오류코드가_m002인지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이고_오류코드가_m003인지_검증한다;
+import static movlit.be.acceptance.member.MemberSteps.회원_장르를_조회한다;
 
 import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.JwtTokenUtil;
@@ -91,6 +93,41 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
             // then
             상태코드가_400이고_오류코드가_g001인지_검증한다(response);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("장르 조회 인수 테스트")
+    class MemberRead {
+
+        @DisplayName("장르의 조회가 성공하면, 상태코드 200과 body를 반환한다.")
+        @Test
+        void when_read_genre_success_then_response_200_and_body() {
+            // docs
+            api_문서_타이틀("genreRead_success", spec);
+
+            // when
+            var response = 회원_장르를_조회한다(spec);
+
+            // then
+            상태코드가_200이고_응답에_genreId와_genreName이_존재한다(response);
+        }
+
+        @DisplayName("회원 장르의 조회가 성공하면, 상태코드 200과 body를 반환한다.")
+        @Test
+        void when_read_member_genre_success_then_response_200_and_body() {
+            // docs
+            api_문서_타이틀("memberGenreRead_success", spec);
+
+            // given
+            String accessToken = 회원_원준_액세스토큰;
+
+            // when
+            var response = 회원_장르를_조회한다(spec, accessToken);
+
+            // then
+            상태코드가_200이고_응답에_genreId와_genreName이_존재한다(response);
         }
 
     }
