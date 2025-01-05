@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
 import movlit.be.book.domain.BookCommentLike;
+import movlit.be.book.domain.dto.BookCommentResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.domain.repository.BookCommentRepository;
@@ -28,9 +29,9 @@ public class BookCommentReadService {
     private final BookCommentRepository bookCommentRepository;
     private final BookCommentLikeRepository bookCommentLikeRepository;
 
-
-//    public Slice<BookCommentsResponseDto> getPagedBookComments(BookId bookId, Pageable pageable) {
-//        Slice<BookCommentsResponseDto> bookCommentPage = bookCommentRepository.findByBookId(bookId, pageable);
+    // 리뷰 리스트
+//    public Slice<BookCommentResponseDto> getPagedBookComments(BookId bookId, Pageable pageable) {
+//        Slice<BookCommentResponseDto> bookCommentPage = bookCommentRepository.findByBookId(bookId, pageable);
 //
 //        return bookCommentPage;
 //    }

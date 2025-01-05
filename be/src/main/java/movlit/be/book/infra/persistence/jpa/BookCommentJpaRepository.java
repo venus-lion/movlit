@@ -1,8 +1,11 @@
 package movlit.be.book.infra.persistence.jpa;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
+import movlit.be.book.domain.dto.BookCommentResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.common.util.ids.BookCommentId;
@@ -21,23 +24,24 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntity, BookCommentId> {
 
-//    @Query("SELECT NEW movlit.be.book.domain.dto.BookCommentsResponseDto("
+
+//    @Query("SELECT NEW movlit.be.book.domain.dto.BookCommentResponseDto("
 //            + "    bc.bookCommentId,"
 //            + "    bc.score,"
 //            + "    bc.comment,"
 //            + "    mb.nickname,"
 //            + "    mb.profileImgUrl,"
-//            + "    (SELECT COUNT(bcc) FROM BookCommentEntity bcc WHERE bcc.bookEntity.bookId = :bookId),"
 //            + "    false,"
-//            + "    lc.count"
+//            + "    lc.count,"
+//            + "    (SELECT COUNT(bcc) FROM BookCommentEntity bcc WHERE bcc.bookEntity.bookId = :bookId)"
 //            + ")"
 //            + "FROM BookCommentEntity bc"
 //            + "LEFT JOIN BookCommentLikeCountEntity lc ON lc.bookCommentEntity.bookCommentId = bc.bookCommentId"
 //            + "LEFT JOIN MemberEntity mb ON mb.memberId = bc.memberEntity.memberId"
 //            + "WHERE bc.bookEntity = :bookId"
 //            + "ORDER BY bc.regDt DESC  ")
-//    Slice<BookCommentsResponseDto> findByBookEntity(@Param("bookId") BookId bookId,
-//                                                    @Param("pageable") Pageable pageable);
+//    Slice<BookCommentResponseDto> findByBookEntity(@Param("bookId") BookId bookId,
+//                                                   @Param("pageable") Pageable pageable);
 
 
     Optional<BookCommentEntity> findByMemberEntityAndBookEntity(MemberEntity memberEntity, BookEntity bookEntity);

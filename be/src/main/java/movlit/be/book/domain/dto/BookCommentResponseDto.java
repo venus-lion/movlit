@@ -21,10 +21,11 @@ public class BookCommentResponseDto {
     private String comment;
     private String nickname;
     private String profileImgUrl;
-    private Long likeCount; // 서브 쿼리 결과
     private boolean isLiked; // 기본값 false
+    private Long likeCount; // 해당 리뷰 카운트
     private LocalDateTime regDt;
     private LocalDateTime updDt;
+    private Long allCommentsCount;
 
 
 }

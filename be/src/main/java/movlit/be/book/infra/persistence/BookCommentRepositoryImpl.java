@@ -7,6 +7,7 @@ import movlit.be.book.application.converter.BookConverter;
 import movlit.be.book.application.converter.BookDetailConverter;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
+import movlit.be.book.domain.dto.BookCommentResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.repository.BookCommentRepository;
@@ -43,12 +44,13 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
         return BookCommentConverter.toDomain(bookCommentEntity);
     }
 
+
 //    @Override
-////    public Slice<BookCommentsResponseDto> findByBookId(BookId bookId, Pageable pageable) {
-////        Slice<BookCommentsResponseDto> bookCommentEntity = bookCommentJpaRepository.findByBookEntity(bookId, pageable);
-////
-////        return bookCommentEntity;
-////    }
+//    public Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable) {
+//        Slice<BookCommentResponseDto> bookCommentEntity = bookCommentJpaRepository.findByBookEntity(bookId, pageable);
+//
+//        return bookCommentEntity;
+//    }
 
     @Override
     public BookComment save(BookComment bookComment) {
@@ -60,5 +62,7 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
     public void deleteById(BookCommentId bookCommentId) {
         bookCommentJpaRepository.deleteById(bookCommentId);
     }
+
+
 
 }

@@ -48,12 +48,12 @@ public class BookCommentController {
 
     // 리뷰 리스트
 //    @GetMapping("{bookId}/comments")
-//    public ResponseEntity<Slice<BookCommentsResponseDto>>  bookCommentReadService(@PathVariable BookId bookId,
+//    public ResponseEntity<Slice<BookCommentResponseDto>>  bookCommentReadService(@PathVariable BookId bookId,
 //                                                                                   @AuthenticationPrincipal MyMemberDetails details,
 //                                                                                   @PageableDefault(size = 4, sort = "regDt", direction = Direction.DESC)
 //                                                     Pageable pageable){
 //        //Book book = bookDetailReadService.findByBookId(bookId);
-//        Slice<BookCommentsResponseDto> pagedResult = bookCommentReadService.getPagedBookComments(bookId, pageable);
+//        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.getPagedBookComments(bookId, pageable);
 //
 //
 //       return ResponseEntity.ok(pagedResult);

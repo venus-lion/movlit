@@ -17,7 +17,10 @@ public class BookCommentConverter {
 
     // Domain -> Entity
     public static BookCommentEntity toEntity(BookComment bookComment) {
-        return BookCommentEntity.builder()
+        if(bookComment == null){
+            return null;
+        }else
+            return BookCommentEntity.builder()
                 .bookCommentId(bookComment.getBookCommentId())
                 .bookEntity(BookDetailConverter.toEntity(bookComment.getBook()))
                 .memberEntity(MemberConverter.toEntity(bookComment.getMember()))
@@ -31,7 +34,10 @@ public class BookCommentConverter {
 
     // Entity -> Domain
     public static BookComment toDomain(BookCommentEntity bookCommentEntity) {
-        return BookComment.builder()
+        if(bookCommentEntity == null){
+            return null;
+        }else
+            return BookComment.builder()
                 .bookCommentId(bookCommentEntity.getBookCommentId())
                 .book(BookDetailConverter.toDomain(bookCommentEntity.getBookEntity()))
                 .member(MemberConverter.toDomain(bookCommentEntity.getMemberEntity()))
