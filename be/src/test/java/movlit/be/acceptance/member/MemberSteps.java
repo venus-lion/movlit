@@ -9,6 +9,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import java.util.List;
 import java.util.Map;
 import movlit.be.acceptance.util.MemberFixture;
 import org.assertj.core.api.AbstractIntegerAssert;
@@ -41,7 +42,8 @@ public class MemberSteps {
                 "email", "wj@naver.com",
                 "password", "qQQwe123!!",
                 "repeatPassword", "qQQwe123!!",
-                "dob", "1980-10-01");
+                "dob", "1980-10-01",
+                "genreIds", List.of(1L, 3L, 5L));
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -68,7 +70,8 @@ public class MemberSteps {
                 "email", "mismatch",
                 "password", "qQQwe123!!",
                 "repeatPassword", "qQQwe123!!",
-                "dob", "1980-10-01");
+                "dob", "1980-10-01",
+                "genreIds", List.of(1L, 3L, 5L));
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -79,7 +82,8 @@ public class MemberSteps {
                 "email", 회원_원준.getEmail(),
                 "password", 비회원.getPassword(),
                 "repeatPassword", 비회원.getPassword(),
-                "dob", 비회원.getDob());
+                "dob", 비회원.getDob(),
+                "genreIds", List.of(1L, 3L, 5L));
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -90,7 +94,8 @@ public class MemberSteps {
                 "email", 비회원.getEmail(),
                 "password", 비회원.getPassword(),
                 "repeatPassword", 비회원.getPassword(),
-                "dob", 비회원.getDob());
+                "dob", 비회원.getDob(),
+                "genreIds", List.of(1L, 3L, 5L));
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -101,7 +106,8 @@ public class MemberSteps {
                 "email", 비회원.getEmail(),
                 "password", 비회원.getPassword(),
                 "repeatPassword", "QQqwe1234!",
-                "dob", 비회원.getDob());
+                "dob", 비회원.getDob(),
+                "genreIds", List.of(1L, 3L, 5L));
 
         return 회원가입한다(memberRegisterRequest, spec);
     }

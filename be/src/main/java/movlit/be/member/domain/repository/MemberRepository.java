@@ -6,8 +6,11 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.domain.MemberGenre;
 
 import java.util.List;
+import movlit.be.member.domain.entity.MemberEntity;
 
 public interface MemberRepository {
+
+    MemberEntity saveEntity(MemberEntity memberEntity);
 
     Member save(Member member);
 
