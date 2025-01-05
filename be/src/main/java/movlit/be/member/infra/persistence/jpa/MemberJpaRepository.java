@@ -22,10 +22,8 @@ public interface MemberJpaRepository extends JpaRepository<MemberEntity, MemberI
     // TODO: Book 정보 추가
     @Query("SELECT NEW movlit.be.member.presentation.dto.response.MemberReadMyPage(mb.profileImgUrl, mb.nickname, mb.email, "
             + "(SELECT COUNT(mh) FROM MovieHeartEntity mh WHERE mh.memberId = mb.memberId), "
-            + "(SELECT COUNT(mh) FROM MovieCommentEntity mc WHERE mc.memberId = mb.memberId)) "
+            + "(SELECT COUNT(mc) FROM MovieCommentEntity mc WHERE mc.memberId = mb.memberId)) "
             + "FROM MemberEntity mb "
-            + "LEFT JOIN MovieHeartEntity mh ON mh.memberId = mb.memberId "
-            + "LEFT JOIN MovieCommentEntity mc ON mc.memberId = mb.memberId "
             + "WHERE mb.memberId = :memberId")
     MemberReadMyPage findMyPageByMemberId(MemberId memberId);
 
