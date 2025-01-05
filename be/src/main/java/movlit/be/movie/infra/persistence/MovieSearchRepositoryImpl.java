@@ -1,8 +1,7 @@
 package movlit.be.movie.infra.persistence;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.NestedQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
+import co.elastic.clients.json.JsonData;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.Genre;
 import movlit.be.movie.application.converter.main.MovieDocumentConverter;
@@ -35,20 +34,47 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
         for(Genre genre : genreList) {
             boolQueryBuilder.should(
-                    TermQuery.of(t -> t.field("movieGenre.genreName").value(genre.getName()))._toQuery()
+                    TermQuery.of(t -> t
+                            .field("movieGenre.genreId")
+                            .value(genre.getId())
+                    )._toQuery()
             );
         }
-
         BoolQuery boolQuery = boolQueryBuilder.build(); // BoolQuery 빌더를 사용하여 BoolQuery 생성
-        NestedQuery nestedQuery = NestedQuery.of(n -> n
-                .path("movieGenre")
-                .query(boolQuery._toQuery())
+
+        Query nestedQuery = Query.of(q -> q
+                .nested(n -> n
+                        .path("movieGenre")
+                        .query(q1 -> q1.bool(boolQuery)))
         );
 
+        // FunctionScoreQuery: 각 장르에 대해 가중치 설정
+        List<FunctionScore> functions = new ArrayList<>();
+        genreList.forEach(genre ->
+                functions.add(FunctionScore.of(f -> f
+                        .filter(Query.of(q -> q.term(t -> t
+                                .field("movieGenre.genreId")
+                                .value(genre.getId()) // genreId 값
+                        )))
+                        .weight(1.5) // 각 장르에 대해 가중치 1.5
+                ))
+        );
+
+        Query functionScoreQuery = Query.of(q -> q.functionScore(fs -> fs
+                .query(nestedQuery) // NestedQuery 기반
+                .functions(functions) // 가중치 추가
+                .scoreMode(FunctionScoreMode.Sum) // 점수 합산
+                .boostMode(FunctionBoostMode.Sum) // 부스트 합산
+        ));
+
+
         NativeQuery nativeQuery = new NativeQueryBuilder()
-                .withQuery(nestedQuery._toQuery())
+                .withQuery(functionScoreQuery)
                 .withPageable(pageable)
-                .withSort(Sort.by(Sort.Order.desc("_score")))
+                .withSort(Sort.by(
+                        Sort.Order.desc("_score"),
+                        Sort.Order.desc("voteAverage")      // score순, 평점 순
+                ))
                 .build();
 
         SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
