@@ -58,7 +58,7 @@ public class MemberConverter {
         return MemberRegisterResponse.from(member.getMemberId());
     }
 
-    public static MemberGenreEntity toMemberGenreEntityList(Long genreId, MemberId memberId) {
+    public static MemberGenreEntity toMemberGenreEntity(Long genreId, MemberId memberId) {
         return new MemberGenreEntity(new MemberGenreIdEntity(genreId, memberId));
     }
 

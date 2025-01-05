@@ -47,12 +47,12 @@ public class MemberWriteService {
     public void updateMember(MemberId memberId, MemberUpdateRequest request) {
         MemberEntity memberEntity = memberRepository.findEntityById(memberId);
         Member member = MemberConverter.toMemberForUpdate(request);
-        memberEntity.updateMember(member, makeMemberGenreEntities(memberId, request.getGenreIds()));
+        memberEntity.updateMember(member, makeMemberGenreEntities(memberEntity.getMemberId(), request.getGenreIds()));
     }
 
     private List<MemberGenreEntity> makeMemberGenreEntities(MemberId memberId, List<Long> genreIds) {
         return genreIds.stream()
-                .map(genreId -> MemberConverter.toMemberGenreEntityList(genreId, memberId))
+                .map(genreId -> MemberConverter.toMemberGenreEntity(genreId, memberId))
                 .toList();
     }
 
@@ -66,10 +66,6 @@ public class MemberWriteService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
-    }
-
-    public void deleteMember(MemberId memberId) {
-        memberRepository.deleteById(memberId);
     }
 
     public AuthTokenIssueResponse login(MemberLoginRequest request) {
