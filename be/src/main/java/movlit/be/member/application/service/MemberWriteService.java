@@ -1,5 +1,6 @@
 package movlit.be.member.application.service;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.AuthTokenService;
@@ -8,6 +9,7 @@ import movlit.be.common.exception.DuplicateEmailException;
 import movlit.be.common.exception.DuplicateNicknameException;
 import movlit.be.common.exception.MemberPasswordMismatchException;
 import movlit.be.common.util.IdFactory;
+import movlit.be.common.util.UniqueNicknameGenerator;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
@@ -15,8 +17,10 @@ import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.entity.MemberGenreEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
+import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
+import movlit.be.member.presentation.dto.response.MemberRegisterOAuth2Response;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -42,6 +46,12 @@ public class MemberWriteService {
 
         MemberEntity savedMemberEntity = memberRepository.saveEntity(memberEntity);
         return MemberConverter.toMemberRegisterResponse(savedMemberEntity.getMemberId());
+    }
+
+    public MemberRegisterOAuth2Response registerOAuth2Member(MemberRegisterOAuth2Request request) {
+        Member member = MemberConverter.oAuth2RequestToMemberEntity(request, UniqueNicknameGenerator.generate());
+        Member savedMember = memberRepository.save(member);
+        return MemberConverter.toMemberRegisterOAuth2Response(savedMember.getMemberId());
     }
 
     public void updateMember(MemberId memberId, MemberUpdateRequest request) {

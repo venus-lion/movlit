@@ -13,10 +13,12 @@ import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
+import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
 import movlit.be.member.presentation.dto.response.MemberReadMyPage;
+import movlit.be.member.presentation.dto.response.MemberRegisterOAuth2Response;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import movlit.be.member.presentation.dto.response.MemberUpdateResponse;
 import org.mindrot.jbcrypt.BCrypt;
@@ -46,6 +48,12 @@ public class MemberController {
         var response = memberWriteService.registerMember(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+//
+//    @PostMapping("/api/members/register/oauth2")
+//    public ResponseEntity<MemberRegisterOAuth2Response> registerForOAuth2(@RequestBody @Valid MemberRegisterOAuth2Request request) {
+//        var response = memberWriteService.registerOAuth2Member(request);
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
 
     @PutMapping("/api/members/update")
     public ResponseEntity<Void> update(@AuthenticationPrincipal MyMemberDetails details,
