@@ -14,6 +14,7 @@ import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.infra.persistence.jpa.MemberGenreJpaRepository;
 import movlit.be.member.infra.persistence.jpa.MemberJpaRepository;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -75,6 +76,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public boolean existByMemberId(MemberId memberId) {
         return memberJpaRepository.existsById(memberId);
+    }
+
+    @Override
+    public MemberReadMyPage fetchMyPageByMemberId(MemberId memberId) {
+        return memberJpaRepository.findMyPageByMemberId(memberId);
     }
 
 }

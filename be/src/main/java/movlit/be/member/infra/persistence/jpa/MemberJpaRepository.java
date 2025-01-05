@@ -5,6 +5,7 @@ import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.MemberGenreId;
 import movlit.be.member.domain.entity.MemberEntity;
+import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,5 +18,13 @@ public interface MemberJpaRepository extends JpaRepository<MemberEntity, MemberI
     boolean existsByNickname(String nickname);
 
     boolean existsByEmail(String email);
+
+    // TODO: Book 정보 추가
+    @Query("SELECT NEW movlit.be.member.presentation.dto.response.MemberReadMyPage(mb.profileImgUrl, mb.nickname, mb.email, "
+            + "(SELECT COUNT(mh) FROM MovieHeartEntity mh WHERE mh.memberId = mb.memberId), "
+            + "(SELECT COUNT(mc) FROM MovieCommentEntity mc WHERE mc.memberId = mb.memberId)) "
+            + "FROM MemberEntity mb "
+            + "WHERE mb.memberId = :memberId")
+    MemberReadMyPage findMyPageByMemberId(MemberId memberId);
 
 }

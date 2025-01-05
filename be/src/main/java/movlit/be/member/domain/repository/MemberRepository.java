@@ -8,6 +8,7 @@ import movlit.be.member.domain.MemberGenre;
 import java.util.List;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 
 public interface MemberRepository {
 
@@ -28,5 +29,7 @@ public interface MemberRepository {
     boolean existsByEmail(String email);
 
     boolean existByMemberId(MemberId memberId);
+
+    MemberReadMyPage fetchMyPageByMemberId(MemberId memberId);
 
 }

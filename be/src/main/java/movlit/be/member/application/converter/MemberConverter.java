@@ -8,6 +8,7 @@ import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.entity.MemberGenreEntity;
 import movlit.be.member.domain.entity.MemberGenreIdEntity;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
+import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -57,11 +58,12 @@ public class MemberConverter {
         return MemberRegisterResponse.from(member.getMemberId());
     }
 
-    public static MemberGenreEntity toMemberGenreEntityList(Long genreId, MemberId memberId) {
+    public static MemberGenreEntity toMemberGenreEntity(Long genreId, MemberId memberId) {
         return new MemberGenreEntity(new MemberGenreIdEntity(genreId, memberId));
     }
 
-    public static MemberEntity toMemberEntity(MemberRegisterRequest request, List<MemberGenreEntity> memberGenreEntityList,
+    public static MemberEntity toMemberEntity(MemberRegisterRequest request,
+                                              List<MemberGenreEntity> memberGenreEntityList,
                                               MemberId memberId) {
         return MemberEntity.builder()
                 .memberId(memberId)
@@ -78,6 +80,18 @@ public class MemberConverter {
 
     public static MemberRegisterResponse toMemberRegisterResponse(MemberId memberId) {
         return MemberRegisterResponse.from(memberId);
+    }
+
+    public static Member toMemberForUpdate(MemberUpdateRequest request) {
+        return Member.builder()
+                .email(request.getEmail())
+                .nickname(request.getNickname())
+                .password(request.getPassword())
+                .dob(request.getDob())
+//                .profileImgId() TODO
+//                .profileImgUrl()
+                .updDt(LocalDateTime.now())
+                .build();
     }
 
 }
