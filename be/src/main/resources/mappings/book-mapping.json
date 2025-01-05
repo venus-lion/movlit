@@ -1,0 +1,81 @@
+{
+  "properties": {
+    "bookId": {
+      "type": "keyword"
+    },
+    "isbn": {
+      "type": "keyword"
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer",
+      "fields": {
+        "ngram": {
+          "type": "text",
+          "analyzer": "my_ngram_analyzer",
+          "search_analyzer": "my_ngram_analyzer"
+        },
+        "standard": {
+          "type": "text",
+          "analyzer": "standard",
+          "search_analyzer": "standard"
+        }
+      }
+    },
+    "crew": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer",
+      "fields": {
+        "ngram": {
+          "type": "text",
+          "analyzer": "my_ngram_analyzer",
+          "search_analyzer": "my_ngram_analyzer"
+        }
+      }
+    },
+    "publisher": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    },
+    "pubDate": {
+      "type": "date",
+      "format": "yyyy-MM-dd"
+    },
+    "description": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer",
+      "fields": {
+        "ngram": {
+          "type": "text",
+          "analyzer": "my_ngram_analyzer",
+          "search_analyzer": "my_ngram_analyzer"
+        }
+      }
+    },
+    "categoryName": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    },
+    "bookImgUrl": {
+      "type": "keyword"
+    },
+    "regDt": {
+      "type": "date",
+      "format": "yyyy-MM-dd"
+    },
+    "updDt": {
+      "type": "date",
+      "format": "yyyy-MM-dd"
+    }
+  }
+}
