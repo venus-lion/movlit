@@ -1,5 +1,6 @@
 package movlit.be.member.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -35,7 +36,7 @@ public class MemberEntity {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
 
-    @OneToMany(mappedBy = "memberEntity")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGenreEntity> memberGenreEntityList = new ArrayList<>();
 
     @Builder
