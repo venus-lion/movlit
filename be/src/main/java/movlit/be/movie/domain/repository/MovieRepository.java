@@ -17,4 +17,5 @@ public interface MovieRepository {
     List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable);    // 인기순
 
     List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable);
+
 }

@@ -7,11 +7,9 @@ import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
-import movlit.be.movie.infra.persistence.jpa.MovieGenreJpaRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,7 +18,6 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
 //    private final ElasticsearchOperations elasticsearchOperations;
-
 
     @Override
     public Movie save(Movie movie) {
@@ -55,14 +52,11 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(genreId, pageable);
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(
+                genreId, pageable);
 //        Page<MovieGenreEntity> movieEntityPage2 = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
 
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
-
-
     }
-
-
 
 }

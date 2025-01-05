@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/members/myPage").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/genreList").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/genreList").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
@@ -50,10 +51,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/crews").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
-                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
-                                "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**",
-                                "api/books/**")
+                        .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
+                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
+                                "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
+                                "/error/**", "api/books/**")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()

@@ -16,6 +16,7 @@ import movlit.be.member.domain.entity.MemberGenreEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
+import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,8 @@ public class MemberWriteService {
 
     public MemberRegisterResponse registerMember(MemberRegisterRequest request) {
         MemberId memberId = IdFactory.createMemberId();
-        List<MemberGenreEntity> memberGenreEntityList = request.getGenreIds().stream()
-                .map(genreId -> MemberConverter.toMemberGenreEntityList(genreId, memberId))
-                .toList();
+        List<MemberGenreEntity> memberGenreEntityList = makeMemberGenreEntities(
+                memberId, request.getGenreIds());
         MemberEntity memberEntity = MemberConverter.toMemberEntity(request, memberGenreEntityList, memberId);
 
         validateNicknameDuplication(memberEntity.getNickname());
@@ -42,6 +42,18 @@ public class MemberWriteService {
 
         MemberEntity savedMemberEntity = memberRepository.saveEntity(memberEntity);
         return MemberConverter.toMemberRegisterResponse(savedMemberEntity.getMemberId());
+    }
+
+    public void updateMember(MemberId memberId, MemberUpdateRequest request) {
+        MemberEntity memberEntity = memberRepository.findEntityById(memberId);
+        Member member = MemberConverter.toMemberForUpdate(request);
+        memberEntity.updateMember(member, makeMemberGenreEntities(memberEntity.getMemberId(), request.getGenreIds()));
+    }
+
+    private List<MemberGenreEntity> makeMemberGenreEntities(MemberId memberId, List<Long> genreIds) {
+        return genreIds.stream()
+                .map(genreId -> MemberConverter.toMemberGenreEntity(genreId, memberId))
+                .toList();
     }
 
     private void validateNicknameDuplication(String nickname) {
@@ -54,14 +66,6 @@ public class MemberWriteService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
-    }
-
-    public Member updateMember(Member member) {
-        return memberRepository.save(member);
-    }
-
-    public void deleteMember(MemberId memberId) {
-        memberRepository.deleteById(memberId);
     }
 
     public AuthTokenIssueResponse login(MemberLoginRequest request) {

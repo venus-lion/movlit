@@ -9,6 +9,7 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,8 +62,12 @@ public class MemberReadService {
                 .toList();
     }
 
-    public List<GenreListReadResponse> fetchGenreList() {
+    public List<GenreListReadResponse> getGenreList() {
         return Genre.getGenreList();
+    }
+
+    public MemberReadMyPage fetchMyPage(MemberId memberId) {
+        return memberRepository.fetchMyPageByMemberId(memberId);
     }
 
 }

@@ -1,7 +1,8 @@
-import React, {useCallback, useState} from 'react';
-import {NavLink, Outlet, useNavigate} from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
-import "./App.css"; // App.css 추가
+import './App.css';
+import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 아이콘 추가
 
 function App() {
     const navigate = useNavigate();
@@ -25,54 +26,6 @@ function App() {
             console.error('Logout error:', error);
         }
     };
-
-//     return (
-//         <>
-//             <nav id="nav">
-//                 <ul>
-//                     <li>
-//                         <NavLink
-//                             to="/"
-//                             className={({isActive}) => (isActive ? 'current' : '')}
-//                         >
-//                             Home
-//                         </NavLink>
-//                     </li>
-//                     {!isLoggedIn && (
-//                         <>
-//                             <li>
-//                                 <NavLink
-//                                     to="/member/register"
-//                                     className={({isActive}) => (isActive ? 'current' : '')}
-//                                 >
-//                                     Register
-//                                 </NavLink>
-//                             </li>
-//                             <li>
-//                                 <NavLink
-//                                     to="/member/login"
-//                                     className={({isActive}) => (isActive ? 'current' : '')}
-//                                 >
-//                                     Login
-//                                 </NavLink>
-//                             </li>
-//                         </>
-//                     )}
-//                     {isLoggedIn && (
-//                         <li>
-//                             <button onClick={handleLogout} className="logout-button">
-//                                 Logout
-//                             </button>
-//                         </li>
-//                     )}
-//                 </ul>
-//             </nav>
-//
-//             {/* Outlet에 context prop으로 updateLoginStatus 전달 */}
-//             <Outlet context={{updateLoginStatus}}/>
-//         </>
-//     );
-// }
 
     return (
         <>
@@ -110,9 +63,17 @@ function App() {
                         </>
                     )}
                     {isLoggedIn && (
-                        <button onClick={handleLogout} className="logout-button">
-                            로그아웃
-                        </button>
+                        <div className="nav-right-logged-in">
+                            <NavLink
+                                to="/mypage"
+                                className={({ isActive }) => (isActive ? 'active nav-mypage' : 'nav-mypage')}
+                            >
+                                <FaUserCircle className="nav-mypage-icon" />
+                            </NavLink>
+                            <button onClick={handleLogout} className="logout-button">
+                                로그아웃
+                            </button>
+                        </div>
                     )}
                 </div>
             </nav>
@@ -121,4 +82,5 @@ function App() {
         </>
     );
 }
+
 export default App;
