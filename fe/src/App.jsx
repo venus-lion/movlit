@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import MyPage from './components/MyPage'; // MyPage import
+import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 아이콘 추가
 
 function App() {
     const navigate = useNavigate();
@@ -63,17 +63,17 @@ function App() {
                         </>
                     )}
                     {isLoggedIn && (
-                        <>
+                        <div className="nav-right-logged-in">
                             <NavLink
-                                to="/mypage" // 마이페이지 링크 추가
-                                className={({ isActive }) => (isActive ? 'active' : '')}
+                                to="/mypage"
+                                className={({ isActive }) => (isActive ? 'active nav-mypage' : 'nav-mypage')}
                             >
-                                마이페이지
+                                <FaUserCircle className="nav-mypage-icon" />
                             </NavLink>
                             <button onClick={handleLogout} className="logout-button">
                                 로그아웃
                             </button>
-                        </>
+                        </div>
                     )}
                 </div>
             </nav>

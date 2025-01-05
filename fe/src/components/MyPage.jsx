@@ -47,15 +47,11 @@ function MyPage() {
             <div className="mypage-stats">
                 <div className="stat-item">
                     <span>{userData.movieHeartCount}</span>
-                    <span>평가</span>
+                    <span>영화 찜</span>
                 </div>
                 <div className="stat-item">
                     <span>{userData.movieCommentCount}</span>
-                    <span>코멘트</span>
-                </div>
-                <div className="stat-item">
-                    <span>0</span>
-                    <span>컬렉션</span>
+                    <span>영화 코멘트</span>
                 </div>
             </div>
         </div>
