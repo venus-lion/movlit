@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axiosInstance from '../axiosInstance';
 import './MyPage.css';
 import { FaUserCircle } from 'react-icons/fa';
@@ -6,6 +6,7 @@ import { IoSettingsOutline } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { AppContext } from '../App';
 
 function MyPage() {
     const [userData, setUserData] = useState({
@@ -18,6 +19,7 @@ function MyPage() {
     const [genreList, setGenreList] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
+    const { updateLoginStatus } = useContext(AppContext);
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -35,6 +37,7 @@ function MyPage() {
                             await axiosInstance.delete('/members/delete');
                             alert('회원 탈퇴가 완료되었습니다.');
                             sessionStorage.removeItem('accessToken');
+                            updateLoginStatus(false);
                             navigate('/');
                         } catch (error) {
                             console.error('Error during member deletion:', error);
@@ -95,7 +98,6 @@ function MyPage() {
                             <Link to="/member/update" className="dropdown-item">
                                 회원 수정
                             </Link>
-                            {/* 회원 탈퇴 버튼에 delete-button 클래스 추가 */}
                             <button onClick={handleDelete} className="dropdown-item delete-button">
                                 회원 탈퇴
                             </button>
