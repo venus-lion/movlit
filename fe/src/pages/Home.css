@@ -1,0 +1,99 @@
+.book-home, .movie-home{
+    padding: 20px;
+}
+
+.book-carousel-section, .movie-carousel-section{
+    margin: 20px 0;
+}
+
+.book-carousel, .movie-carousel{
+    display: flex;
+    align-items: center;
+    position: relative;
+    /*margin-bottom: 20px;*/
+}
+
+.book-list, .movie-list{
+    display: flex;
+    /*width: 100%;*/
+    overflow: hidden;
+    width: 80%;
+    justify-content: space-between;
+}
+
+.book-card, .movie-card{
+    /*width: 20%;*/
+    /*margin-right: 20px;*/
+    position: relative; /* 순위 표시를 위해 relative 설정 */
+    flex: 0 0 18%;
+    margin: 0 1%;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.book-rank, .movie-rank{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.book-image, .movie-image{
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.book-info, .movie-info{
+    margin-top: 10px;
+    text-align: center;
+}
+
+.book-title, .movie-title{
+    font-size: 16px;
+    /*margin-bottom: 5px;*/
+    margin: 5px 0;
+}
+
+.book-writer, .movie-writer{
+    font-size: 14px;
+    color: #666;
+}
+
+.book-genres, .movie-genres{
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.prev-button,
+.next-button {
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+.prev-button:disabled,
+.next-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .movie-card, .book-card {
+        flex: 0 0 30%;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-card, .book-card{
+        flex: 0 0 45%;
+    }
+}

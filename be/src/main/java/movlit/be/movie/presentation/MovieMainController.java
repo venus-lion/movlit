@@ -84,7 +84,7 @@ public class MovieMainController {
     }
 
     /**
-     * 로그인 유저의 최근 찜 목록 기반으로 유사한 영화 리스트 가져오기
+     * 로그인 유저의 최근 찜 영화 기반으로 유사한 영화 리스트 가져오기
      * */
     @GetMapping("/lastHeart")
     public ResponseEntity<MovieListResponseDto> getMovieByUserRecentHeart(
@@ -98,4 +98,8 @@ public class MovieMainController {
 
         return ResponseEntity.ok(null);
     }
+
+    /**
+     * 로그인 유저의 최근 평가 영화 기반으로 유사한 영화 리스트 가져오기
+     * */
 }
