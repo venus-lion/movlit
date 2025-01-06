@@ -16,10 +16,6 @@ public class MemberUpdateRequest {
     @NotBlank(message = "닉네임은 공백일 수 없습니다")
     private String nickname;
 
-    @Email(message = "올바른 형식의 이메일을 입력해주세요")
-    @NotBlank(message = "이메일은 공백일 수 없습니다")
-    private String email;
-
     @PasswordPattern
     private String password;
     private String repeatPassword;
@@ -31,10 +27,9 @@ public class MemberUpdateRequest {
     private List<Long> genreIds;
 
     @Builder
-    public MemberUpdateRequest(String nickname, String email, String password, String repeatPassword, String dob,
+    public MemberUpdateRequest(String nickname, String password, String repeatPassword, String dob,
                                  List<Long> genreIds) {
         this.nickname = nickname;
-        this.email = email;
         this.password = password;
         this.repeatPassword = repeatPassword;
         this.dob = dob;

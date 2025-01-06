@@ -76,13 +76,12 @@ public class MemberEntity {
     }
 
     public void updateMember(Member member, List<MemberGenreEntity> memberGenreEntityList) {
-        this.email = member.getEmail();
         this.nickname = member.getNickname();
         this.password = member.getPassword();
         // TODO: profileImgId(), profileImgUrl()
         this.dob = member.getDob();
         this.updDt = member.getUpdDt();
-        this.memberGenres.replaceWith(memberGenreEntityList);
+//        this.memberGenres.replaceWith(memberGenreEntityList);
     }
 
     public List<MemberGenreEntity> getMemberGenreEntityList() {
