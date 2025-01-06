@@ -29,7 +29,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest memberRequest) throws OAuth2AuthenticationException {
-        String email, nickname, profileUrl;
+        String email, profileUrl;
         String hashedPwd = bCryptPasswordEncoder.encode("Social Login");
         Member member = null;
 
@@ -38,23 +38,22 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
         String provider = memberRequest.getClientRegistration().getRegistrationId();
         switch (provider) {
-//            case "google":
-//                email = oAuth2User.getAttribute("email");    // Google Email
-//                try {
-//                    member = memberReadService.findByMemberEmail(email);
-//
-//                    log.info("=== findByMemberEmail : {}", member);
-//                } catch (MemberNotFoundException e) {
-//                    profileUrl = oAuth2User.getAttribute("picture");
-//                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
-//                            .email(email)
-//                            .password(hashedPwd)
-//                            .profileImgUrl(profileUrl)
-//                            .build();
-//                    memberWriteService.registerOAuth2Member(request);
-//                    log.info("구글 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
-//                }
-//                break;
+            case "google":
+                email = oAuth2User.getAttribute("email");    // Google Email
+                try {
+                    member = memberReadService.findByMemberEmail(email);
+                    log.info("=== findByMemberEmail : {}", member);
+                } catch (MemberNotFoundException e) {
+                    profileUrl = oAuth2User.getAttribute("picture");
+                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
+                            .email(email)
+                            .password(hashedPwd)
+                            .profileImgUrl(profileUrl)
+                            .build();
+                    memberWriteService.registerOAuth2Member(request);
+                    log.info("구글 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
+                }
+                break;
 
             case "naver":
                 Map<String, Object> response = (Map) oAuth2User.getAttribute("response");
@@ -62,6 +61,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
                 try {
                     member = memberReadService.findByMemberEmail(email);
+                    log.info("로그인이 되었습니다. email={}", member.getEmail());
                 } catch (MemberNotFoundException e) {
                     profileUrl = Optional.ofNullable((String) response.get("profile_image")).orElse("");
 
@@ -83,34 +83,34 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 }
                 break;
 
-//            case "kakao":
-//                Map<String, String> properties = (Map) oAuth2User.getAttribute("properties");
-//                Map<String, Object> account = (Map) oAuth2User.getAttribute("kakao_account");
-//                email = (String) account.get("email");
-//                try {
-//                    member = memberReadService.findByMemberEmail(email);
-//                } catch (MemberNotFoundException e) {
-//                    Optional<String> birthday = Optional.ofNullable((String) account.get("birthday"));
-//                    Optional<String> birthyear = Optional.ofNullable((String) account.get("birthyear"));
-//                    String dob = "";
-//                    if (birthday.isPresent() && birthyear.isPresent()) {
-//                        dob = birthyear + "-"
-//                                + birthday.get().substring(0, 2) + "-" + birthday.get().substring(3);
-//                    }
-//
-//                    profileUrl = Optional.ofNullable((String) account.get("profile_image")).orElse("");
-//                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
-//                            .email(email)
-//                            .password(hashedPwd)
-//                            .profileImgUrl(profileUrl)
-//                            .dob(dob)
-//                            .build();
-//                    memberWriteService.registerOAuth2Member(request);
-//
-//                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
-//                }
-//
-//                break;
+            case "kakao":
+                Map<String, String> properties = (Map) oAuth2User.getAttribute("properties");
+                Map<String, Object> account = (Map) oAuth2User.getAttribute("kakao_account");
+                email = (String) account.get("email");
+                try {
+                    member = memberReadService.findByMemberEmail(email);
+                } catch (MemberNotFoundException e) {
+                    Optional<String> birthday = Optional.ofNullable((String) account.get("birthday"));
+                    Optional<String> birthyear = Optional.ofNullable((String) account.get("birthyear"));
+                    String dob = "";
+                    if (birthday.isPresent() && birthyear.isPresent()) {
+                        dob = birthyear + "-"
+                                + birthday.get().substring(0, 2) + "-" + birthday.get().substring(3);
+                    }
+
+                    profileUrl = Optional.ofNullable((String) account.get("profile_image")).orElse("");
+                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
+                            .email(email)
+                            .password(hashedPwd)
+                            .profileImgUrl(profileUrl)
+                            .dob(dob)
+                            .build();
+                    memberWriteService.registerOAuth2Member(request);
+
+                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
+                }
+
+                break;
         }
 
         return new MyMemberDetails(member, oAuth2User.getAttributes());
