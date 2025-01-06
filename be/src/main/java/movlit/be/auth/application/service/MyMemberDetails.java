@@ -21,6 +21,7 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
     private MemberId memberId;
 
     // 로컬 로그인
+    @Getter
     private Member member;
 
     // 소셜 로그인
@@ -44,12 +45,7 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return member.getRole();
-            }
-        });
+        collection.add((GrantedAuthority) () -> member.getRole());
         return collection;
     }
 

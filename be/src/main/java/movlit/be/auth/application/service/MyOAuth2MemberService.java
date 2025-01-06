@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MemberNotFoundException;
+import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
@@ -28,7 +29,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest memberRequest) throws OAuth2AuthenticationException {
-        String email, nickname, profileUrl;
+        String email, profileUrl;
         String hashedPwd = bCryptPasswordEncoder.encode("Social Login");
         Member member = null;
 
@@ -41,7 +42,6 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 email = oAuth2User.getAttribute("email");    // Google Email
                 try {
                     member = memberReadService.findByMemberEmail(email);
-
                     log.info("=== findByMemberEmail : {}", member);
                 } catch (MemberNotFoundException e) {
                     profileUrl = oAuth2User.getAttribute("picture");
@@ -61,6 +61,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
                 try {
                     member = memberReadService.findByMemberEmail(email);
+                    log.info("로그인이 되었습니다. email={}", member.getEmail());
                 } catch (MemberNotFoundException e) {
                     profileUrl = Optional.ofNullable((String) response.get("profile_image")).orElse("");
 
@@ -77,7 +78,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                             .profileImgUrl(profileUrl)
                             .dob(dob)
                             .build();
-                    memberWriteService.registerOAuth2Member(request);
+                    member = memberWriteService.registerOAuth2Member(request);
                     log.info("네이버 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
                 }
                 break;

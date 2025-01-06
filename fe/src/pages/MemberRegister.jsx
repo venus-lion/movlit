@@ -221,16 +221,16 @@ const MemberRegister = () => {
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">
-                                        <a
-                                            href="/oauth2/authorization/google"
-                                            className="social-login-button"
-                                        >
-                                            <img
-                                                src="/images/google-logo.png"
-                                                alt="Google"
-                                                className="social-login-icon"
-                                            />
-                                        </a>
+                                        {/*<a*/}
+                                        {/*    href="/oauth2/authorization/google"*/}
+                                        {/*    className="social-login-button"*/}
+                                        {/*>*/}
+                                        {/*    <img*/}
+                                        {/*        src="/images/google-logo.png"*/}
+                                        {/*        alt="Google"*/}
+                                        {/*        className="social-login-icon"*/}
+                                        {/*    />*/}
+                                        {/*</a>*/}
                                         <a
                                             href="/oauth2/authorization/naver"
                                             className="social-login-button"
@@ -241,16 +241,16 @@ const MemberRegister = () => {
                                                 className="social-login-icon"
                                             />
                                         </a>
-                                        <a
-                                            href="/oauth2/authorization/kakao"
-                                            className="social-login-button"
-                                        >
-                                            <img
-                                                src="/images/kakao-logo.png"
-                                                alt="Kakao"
-                                                className="social-login-icon"
-                                            />
-                                        </a>
+                                        {/*<a*/}
+                                        {/*    href="/oauth2/authorization/kakao"*/}
+                                        {/*    className="social-login-button"*/}
+                                        {/*>*/}
+                                        {/*    <img*/}
+                                        {/*        src="/images/kakao-logo.png"*/}
+                                        {/*        alt="Kakao"*/}
+                                        {/*        className="social-login-icon"*/}
+                                        {/*    />*/}
+                                        {/*</a>*/}
                                     </div>
                                 </div>
                             </div>

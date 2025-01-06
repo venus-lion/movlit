@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyOAuth2MemberService;
+import movlit.be.auth.application.service.OAuth2AuthenticationSuccessHandler;
 import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final AuthenticationFailureHandler failureHandler;
     private final MyOAuth2MemberService myOAuth2MemberService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -68,33 +70,23 @@ public class SecurityConfig {
                                 HttpServletResponse.SC_NO_CONTENT)))
                         .deleteCookies("refreshToken")
                 )
-//                .logout(auth -> auth
-//                        .logoutUrl("/member/logout")
-//                        .invalidateHttpSession(true)        // 로그아웃시 세션 삭제
-//                        .deleteCookies("JSESSIONID")
-//                        .logoutSuccessUrl("/member/login")
-//                )
                 .oauth2Login(auth -> auth
                         .loginPage("/member/login")
                         // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
                         // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
                         // 5. 프로바이더가 제공하는 정보
                         .userInfoEndpoint(
-                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
-                        .defaultSuccessUrl("/member/loginSuccess", true)
+                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+//                       .defaultSuccessUrl("http://localhost:5173", true)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         ;
 
         return http.build();
     }
 
-    // JWT Filter Bean 등록
-//    @Bean
-//    public JwtRequestFilter jwtRequestFilter() {
-//        return new JwtRequestFilter();
-//    }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

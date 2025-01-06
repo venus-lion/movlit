@@ -47,11 +47,13 @@ public class MemberWriteService {
         return MemberConverter.toMemberRegisterResponse(savedMemberEntity.getMemberId());
     }
 
-    public MemberRegisterOAuth2Response registerOAuth2Member(MemberRegisterOAuth2Request request) {
-//        Member member = MemberConverter.oAuth2RequestToMemberEntity(request, UniqueNicknameGenerator.generate());
-//        Member savedMember = memberRepository.save(member);
-//        return MemberConverter.toMemberRegisterOAuth2Response(savedMember.getMemberId());
-        return MemberRegisterOAuth2Response.from(IdFactory.createMemberId());
+    public Member registerOAuth2Member(MemberRegisterOAuth2Request request) {
+        MemberId memberId = IdFactory.createMemberId();
+        String nickname = UniqueNicknameGenerator.generate();
+        List<MemberGenreEntity> memberGenreEntities = makeMemberGenreEntities(memberId, List.of(1L, 2L, 3L));
+        Member member = MemberConverter.oAuth2RequestToMemberEntity(request, nickname,
+                memberGenreEntities, memberId);
+        return memberRepository.save(member);
     }
 
     public void updateMember(MemberId memberId, MemberUpdateRequest request) {
