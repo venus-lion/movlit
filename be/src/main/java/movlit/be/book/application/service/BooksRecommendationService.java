@@ -31,5 +31,7 @@ public class BooksRecommendationService {
 //    @Getter
 //    private class GetBookIdDescriptionAndCategory {
 //        private String bookId;
+//        private String description;
+//        private String categoryName;
 //    }
 }
