@@ -97,3 +97,9 @@
         flex: 0 0 45%;
     }
 }
+
+.star-icon {
+    color: gold;  /* 별 색상 */
+    font-size: 16px;  /* 별 크기 */
+    margin-right: 2px;  /* 별 간 간격 */
+}
