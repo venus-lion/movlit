@@ -44,7 +44,7 @@
     },
     "originalLanguage": {
       "type": "keyword",
-      "normalizer": "lowercase_normalizer"
+      "normalizer": "lowercase"
     },
     "voteCount": {
       "type": "long"
@@ -54,14 +54,14 @@
     },
     "productionCountry": {
       "type": "keyword",
-      "normalizer": "lowercase_normalizer"
+      "normalizer": "lowercase"
     },
     "runtime": {
       "type": "integer"
     },
     "status": {
       "type": "keyword",
-      "normalizer": "lowercase_normalizer"
+      "normalizer": "lowercase"
     },
     "tagline": {
       "type": "text",
@@ -84,7 +84,7 @@
       "properties": {
         "genreId": {
           "type": "keyword",
-          "normalizer": "lowercase_normalizer"
+          "normalizer": "lowercase"
         },
         "genreName": {
           "type": "text",
@@ -97,7 +97,7 @@
       "properties": {
         "tagId": {
           "type": "keyword",
-          "normalizer": "lowercase_normalizer"
+          "normalizer": "lowercase"
         },
         "tagName": {
           "type": "text",

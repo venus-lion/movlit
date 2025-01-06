@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import movlit.be.movie.domain.entity.MovieRCrewEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -92,9 +93,9 @@ public class MovieDocument {
     @Field(type = FieldType.Nested)
     private List<MovieGenreForDocument> movieGenre = new ArrayList<>();
 
-    //    @Field(type = FieldType.Nested)
+//    @Field(type = FieldType.Nested)
 //    private List<MovieRCrewEntity> movieRCrewEntityList = new ArrayList<>();
-//
+
     @Field(type = FieldType.Nested)
     private List<MovieTagForDocument> movieTag = new ArrayList<>();
 

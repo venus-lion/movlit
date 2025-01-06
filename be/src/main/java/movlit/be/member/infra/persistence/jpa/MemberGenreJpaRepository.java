@@ -18,6 +18,6 @@ public interface MemberGenreJpaRepository extends JpaRepository<MemberGenreEntit
     @Query("SELECT mg "
             + "FROM MemberGenreEntity mg "
             + "WHERE mg.memberGenreIdEntity.memberId = :memberId")
-    Optional<List<MemberGenreEntity>> findAllByMemberId(MemberId memberId);
+    List<MemberGenreEntity> findAllByMemberId(MemberId memberId);
 
 }
