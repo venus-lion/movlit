@@ -82,7 +82,7 @@ public class MemberEntity {
         // TODO: profileImgId(), profileImgUrl()
         this.dob = member.getDob();
         this.updDt = member.getUpdDt();
-//        this.memberGenres.replaceWith(memberGenreEntityList);
+        this.memberGenres.replaceWith(memberGenreEntityList);
     }
 
     public List<MemberGenreEntity> getMemberGenreEntityList() {
