@@ -1,11 +1,13 @@
 package movlit.be.book.application.service;
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery.Builder;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
+import co.elastic.clients.json.JsonData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,9 @@ import movlit.be.book.domain.Book;
 import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.infra.persistence.recommend_jpa.BookHeartRecommendRepository;
 import movlit.be.bookES.BookES;
+import movlit.be.bookES.BookESConvertor;
+import movlit.be.bookES.BookESDomain;
+import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,49 +40,83 @@ public class BooksRecommendationService {
     private final BookRepository bookRepository;
 
     // dto 수정 필요
-    public List<BookES> getRecommendedBook(MemberId memberId){
+    public List<BookESDomain> getRecommendedBook(MemberId memberId){
         Pageable pageable = PageRequest.of(0, 10);
 
         // 1. 사용자가 최근에 찜한 도서id 5개 가져오기
         List<String> bookIds = bookHeartRecommendRepository.findRecentLikedBookIdsByMemberId(
                 memberId, 5);
 
-        for (String bookId : bookIds){
-            System.out.println("bookID :::: " +bookId);
-        }
+        List<BookId> bookIdList = bookIds.stream()
+                .map(bookId -> new BookId(bookId))
+                .collect(Collectors.toList());
 
-        // 2. Elasticsearch에서 찜한 도서 정보 가져오기
-        List<Book> bookList = new ArrayList<>();
+        // 2. JPA를 사용해, 도서 정보 조회
+        List<Book> booksWithCrewDetails = bookRepository.findBooksWithCrewDetails(bookIdList);
+
+        // 2-1. 도서의 description과 categoryName 추출
+        List<String> descriptionList = booksWithCrewDetails.stream()
+                .map(book -> book.getDescription())
+                .collect(Collectors.toList());
+
+        List<String> categoryList = booksWithCrewDetails.stream()
+                .map(book -> book.getCategoryName())
+                .collect(Collectors.toList());
+
+        // 2-2. categoryName 필터링 -- 국내도서>소설/시/희곡>판타지/환상문학>한국판타지/환상소설 -> 가장 마지막 ">" 이후 부분을 추출하고 + '>'가 2개 이상 포함된 경우에만 필터링하기
+//        List<String> testCategory = new ArrayList<>();
+//        testCategory.add("국내도서>소설/시/희곡>판타지/환상문학>한국판타지/환상소설");
+//        testCategory.add("국내도서>만화>본격장르만화>판타지>드라마틱 판타지");
+//        testCategory.add("국내도서>소설/시/희곡>로맨스소설>한국 로맨스소설");
+//        testCategory.add("국내도서>소설/시/희곡>로맨스소설"); // 일부로 한 depths 뺀 예시 -- 최소한 depths가 '>'로 2개는 있고, 그때의 가장 마지막 '>' 다음  categoryName을 필터링할 것
+//        testCategory.add("국내도서>소설/시/희곡"); // 이때의 categoryName은 depth가 2라서 제외하고 싶음
+
+        List<String> filteredCatgoryList = categoryList.stream()
+                .filter(categoryName -> categoryName.split(">").length > 2) // ">"가 2개 이상인 경우만 필터링
+                .map(categoryName -> {
+                    String[] split = categoryName.split(">");
+                    return split[split.length - 1].trim(); // 마지막 부분 추출 및 공백 제거
+                })
+                .collect(Collectors.toList());
+
+        String joinDiscription = String.join(" ", descriptionList);
+        System.out.println("joinDiscription ::: " + joinDiscription);
+        String joinCategory = String.join(" ", filteredCatgoryList);
+        System.out.println("JoinCategory :: " + joinCategory);
+
+        // 3. (임시쿼리) elasticsearch 쿼리
         BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
-
-        List<String> book = new ArrayList<>();
 
         // 첫 번째 MatchQuery: description에 대한 쿼리와 boost 1.5 설정
         Query descriptionMatchQuery = MatchQuery.of(t -> t
                 .field("description")
-                .query("군주들의 일격에 목숨을 잃는 성진우. 그러나 검은 심장의 힘으로 다시 눈을 뜨고, 죽음의 끝에서 그림자 군주 '아스본'을 만나게 된다. 평온한 세계에서의 안식과 군주들과의 잔혹한 전쟁, 선택의 갈림길에 선 성진우의 선택은…?!")
+                //.query("군주들의 일격에 목숨을 잃는 성진우. 그러나 검은 심장의 힘으로 다시 눈을 뜨고, 죽음의 끝에서 그림자 군주 '아스본'을 만나게 된다. 평온한 세계에서의 안식과 군주들과의 잔혹한 전쟁, 선택의 갈림길에 선 성진우의 선택은…?!")
+                .query(joinDiscription)
                 .boost(1.5f) // boost 값 추가
         )._toQuery();
 
         // 두 번째 MatchQuery: categoryName에 대한 쿼리와 boost 2.0 설정
         Query categoryNameMatchQuery = MatchQuery.of(t -> t
                 .field("categoryName")
-                .query("드라마틱 판타지")
+                .query(joinDiscription)
                 .boost(3.0f) // boost 값 추가
         )._toQuery();
 
         // 제외할 조건 (must_not 절): 이미 찜한 도서는 제외
         // TermQuery: 해당 book은 제거
-        Query excludeMovieIdQuery = TermQuery.of(t -> t
-                .field("bookId")
-                .value("9791193821398") // 해당 movie는 제거 --> 일단 bookId
-        )._toQuery();
+        Query excludeBookIdsQuery = Query.of(q -> q
+                .terms(t -> t
+                        .field("bookId") // 필드 이름
+                        .terms(v -> v.value(bookIds.stream().map(id -> FieldValue.of(id)).collect(Collectors.toList()))
+                        )
+                )
+        );
 
         // BoolQuery에 MatchQuery 추가
         boolQueryBuilder
                 .should(descriptionMatchQuery)
                 .should(categoryNameMatchQuery)
-                .mustNot(excludeMovieIdQuery)
+                .mustNot(excludeBookIdsQuery)
                 .minimumShouldMatch("1");
 
         // BoolQuery 빌드
@@ -107,11 +146,12 @@ public class BooksRecommendationService {
                 .collect(Collectors.toList());
 
         System.out.println("bookESList ::: " + bookESList);
-//        bookList = searchHits.stream()
-//                .map(hit -> MovieDocumentConverter.documentToEntity(hit.getContent()))
-//                .collect(Collectors.toList());
 
-        return bookESList;
+        List<BookESDomain> bookESDomainList = bookESList.stream()
+                .map(bookES -> BookESConvertor.documentToDomain(bookES))
+                .collect(Collectors.toList());
+
+        return bookESDomainList;
 
 
 
