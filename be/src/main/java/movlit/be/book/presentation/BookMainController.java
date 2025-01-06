@@ -10,6 +10,8 @@ import movlit.be.book.presentation.dto.BooksGenreResponse;
 import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto;
 import movlit.be.book.presentation.dto.BooksResponse;
 import movlit.be.book.presentation.dto.BooksResponse.BookItemDto;
+import movlit.be.bookES.BookES;
+import movlit.be.bookES.BookESDomain;
 import movlit.be.common.util.ids.MemberId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -93,13 +95,13 @@ public class BookMainController {
     }
 
 
-    // elastic을 이용한 사용자 맞춤형 추천
+    // 로그인 유저가 최근에 찜한 도서 기반으로, elastic을 이용한 사용자 맞춤형 도서 추천
     // dto 추가해야 함
     @GetMapping("/recommendations")
-    public ResponseEntity getRecommendations(@AuthenticationPrincipal MyMemberDetails details){
+    public ResponseEntity<List<BookESDomain>> getRecommendations(@AuthenticationPrincipal MyMemberDetails details){
         System.out.println("/recommendationis, details ::: " + details);
-        booksRecommendationService.getRecommendedBook(details.getMemberId());
-        return null;
+        List<BookESDomain> recommendedBook = booksRecommendationService.getRecommendedBook(details.getMemberId());
+        return ResponseEntity.ok(recommendedBook);
     }
 
 }
