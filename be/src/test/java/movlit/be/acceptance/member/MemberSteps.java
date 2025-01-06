@@ -101,12 +101,12 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 원준_회원을_수정을_요청한다(String accessToken, RequestSpecification spec) {
         Map<String, Object> memberUpdateRequest = Map.of(
-                "nickname", 회원_지원.getNickname(),
-                "email", 회원_지원.getEmail(),
-                "password", 회원_지원.getPassword(),
-                "repeatPassword", 회원_지원.getPassword(),
-                "dob", 회원_지원.getDob(),
-                "genreIds", 회원_지원.getGenreIds()
+                "nickname", 비회원.getNickname(),
+                "email", 비회원.getEmail(),
+                "password", 비회원.getPassword(),
+                "repeatPassword", 비회원.getPassword(),
+                "dob", 비회원.getDob(),
+                "genreIds", 비회원.getGenreIds()
         );
         return 회원을_수정한다(accessToken, memberUpdateRequest, spec);
     }
