@@ -1,6 +1,5 @@
 package movlit.be.member.application.service;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.AuthTokenService;
@@ -49,9 +48,10 @@ public class MemberWriteService {
     }
 
     public MemberRegisterOAuth2Response registerOAuth2Member(MemberRegisterOAuth2Request request) {
-        Member member = MemberConverter.oAuth2RequestToMemberEntity(request, UniqueNicknameGenerator.generate());
-        Member savedMember = memberRepository.save(member);
-        return MemberConverter.toMemberRegisterOAuth2Response(savedMember.getMemberId());
+//        Member member = MemberConverter.oAuth2RequestToMemberEntity(request, UniqueNicknameGenerator.generate());
+//        Member savedMember = memberRepository.save(member);
+//        return MemberConverter.toMemberRegisterOAuth2Response(savedMember.getMemberId());
+        return MemberRegisterOAuth2Response.from(IdFactory.createMemberId());
     }
 
     public void updateMember(MemberId memberId, MemberUpdateRequest request) {

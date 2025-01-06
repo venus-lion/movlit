@@ -72,15 +72,15 @@ public class MovieMainController {
      * TODO : 키워드, 배우 별도 고려
      * */
     @GetMapping("/interestGenre")
-    public ResponseEntity<MovieListResponseDto> getMovieUserInterestByGenre(
+    public ResponseEntity<Void> getMovieUserInterestByGenre(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
 //        MemberId currentMemberId = details.getMemberId();
         MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
-        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
-        return ResponseEntity.ok().body(response);
+//        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
+        return ResponseEntity.ok().build();
     }
 
     /**

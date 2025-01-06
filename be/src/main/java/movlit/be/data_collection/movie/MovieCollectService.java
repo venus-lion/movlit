@@ -189,7 +189,6 @@ public class MovieCollectService {
                     .runtime(runtime)
                     .status(status)
                     .tagline(tagline)
-                    .heartCount(0L)
                     .regDt(LocalDateTime.now())
                     .updDt(LocalDateTime.now())
                     .delYn(false)

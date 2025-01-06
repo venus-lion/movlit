@@ -1,16 +1,17 @@
-package movlit.be.movie.infra.persistence.jpa;
-
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.common.util.ids.MovieHeartId;
-import movlit.be.movie.domain.entity.MovieHeartEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+package movlit.be.movie_heart.infra.persistence;
 
 import java.util.Optional;
+import movlit.be.common.util.ids.MemberId;
+import movlit.be.common.util.ids.MovieHeartId;
+import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieHeartJpaRepository extends JpaRepository<MovieHeartEntity, MovieHeartId> {
 
-    // 유저의 가장 최근의 찜을 한 영화
-//    @Query("SELECT m FROM MovieHeartEntity m where m.memberId = :memberId ORDER BY m.regDt DESC")
+    boolean existsByMovieIdAndMemberId(Long movieId, MemberId memberId);
+
+    void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
+
     Optional<MovieHeartEntity> findTopByMemberIdOrderByRegDtDesc(MemberId memberId);
+
 }

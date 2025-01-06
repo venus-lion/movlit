@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.converter.main.MovieConverter;
-import movlit.be.movie.application.converter.main.MovieHeartConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
@@ -51,13 +50,14 @@ public class MovieRepositoryImpl implements MovieRepository {
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
-    @Override
-    public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(
-                pageable);
-//        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
-        return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
-    }
+    // FIXME: MovieHeart는 Movie에서 가지고 있지 않으니 고쳐주셔야 될 거 같아요
+//    @Override
+//    public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
+//        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(
+//                pageable);
+////        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
+//        return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
+//    }
 
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {

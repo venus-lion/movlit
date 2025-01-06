@@ -32,6 +32,4 @@ public interface MemberRepository {
 
     MemberReadMyPage fetchMyPageByMemberId(MemberId memberId);
 
-    List<Genre> findUserInterestGenreList(MemberId memberId);
-
 }

@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../axiosInstance';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // CSS 임포트
+import 'react-datepicker/dist/react-datepicker.css';
+import Select from 'react-select'; // react-select 추가
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -10,7 +11,31 @@ const MemberRegister = () => {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [nickname, setNickname] = useState('');
     const [dob, setDob] = useState('');
+    const [genres, setGenres] = useState([]);
+    const [selectedGenres, setSelectedGenres] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchGenres = async () => {
+            try {
+                const response = await axiosInstance.get('/genreList');
+                // react-select에서 사용할 수 있는 형태로 변환
+                const genreOptions = response.data.map((genre) => ({
+                    value: genre.genreId,
+                    label: genre.genreName,
+                }));
+                setGenres(genreOptions);
+            } catch (error) {
+                console.error('Error fetching genres:', error);
+            }
+        };
+
+        fetchGenres();
+    }, []);
+
+    const handleGenreChange = (selectedOptions) => {
+        setSelectedGenres(selectedOptions);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,13 +45,21 @@ const MemberRegister = () => {
             return;
         }
 
+        // 최소 3개의 장르를 선택하도록 강제
+        if (selectedGenres.length < 3) {
+            alert('최소 3개의 장르를 선택해야 합니다.');
+            return;
+        }
+
         try {
             const response = await axiosInstance.post('/members/register', {
                 email,
                 password,
                 repeatPassword,
                 nickname,
-                dob: dob ? dob.toISOString().slice(0, 10) : null, // dob 변환,
+                dob: dob ? dob.toISOString().slice(0, 10) : null,
+                // 선택된 장르 ID 목록 전송
+                genreIds: selectedGenres.map((genre) => genre.value),
             });
 
             console.log('Registration successful:', response.data);
@@ -45,7 +78,7 @@ const MemberRegister = () => {
 
     return (
         <div className="bg-light">
-            <div className="container" style={{marginTop: '30px'}}>
+            <div className="container" style={{ marginTop: '30px' }}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">
@@ -56,15 +89,15 @@ const MemberRegister = () => {
                                         <strong>회원 가입</strong>
                                     </h3>
                                 </div>
-                                <hr/>
+                                <hr />
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{width: '45%'}}>
+                                            <td style={{ width: '45%' }}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{width: '55%'}}>
+                                            <td style={{ width: '55%' }}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -126,11 +159,36 @@ const MemberRegister = () => {
                                                 <DatePicker
                                                     selected={dob}
                                                     onChange={(date) => setDob(date)}
-                                                    dateFormat="yyyy-MM-dd" // 원하는 날짜 형식 지정
-                                                    className="form-control" // 부트스트랩 클래스 적용
-                                                    isClearable // 선택 해제 버튼 추가
-                                                    showYearDropdown // 연도 선택 드롭다운 표시
-                                                    scrollableYearDropdown // 연도 스크롤 가능
+                                                    dateFormat="yyyy-MM-dd"
+                                                    className="form-control"
+                                                    isClearable
+                                                    showYearDropdown
+                                                    scrollableYearDropdown
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label className="col-form-label">장르</label>
+                                            </td>
+                                            <td>
+                                                <Select
+                                                    isMulti // 다중 선택 가능
+                                                    options={genres} // 장르 목록
+                                                    value={selectedGenres} // 선택된 장르
+                                                    onChange={handleGenreChange} // 선택 변경 이벤트 핸들러
+                                                    placeholder="장르 선택 (최소 3개)" // 플레이스홀더
+                                                    styles={{
+                                                        // 스타일 사용자 정의 (선택 사항)
+                                                        control: (provided) => ({
+                                                            ...provided,
+                                                            marginBottom: '15px',
+                                                        }),
+                                                        menu: (provided) => ({
+                                                            ...provided,
+                                                            zIndex: 9999, // 다른 요소 위에 표시
+                                                        }),
+                                                    }}
                                                 />
                                             </td>
                                         </tr>
@@ -139,7 +197,7 @@ const MemberRegister = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     type="submit"
-                                                    style={{marginRight: '5px'}}
+                                                    style={{ marginRight: '5px' }}
                                                 >
                                                     확인
                                                 </button>
@@ -159,7 +217,7 @@ const MemberRegister = () => {
 
                                 {/* 소셜 로그인 버튼 */}
                                 <div className="mt-3 mb-3">
-                                <div className="social-login-header">
+                                    <div className="social-login-header">
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">

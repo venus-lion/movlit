@@ -1,6 +1,7 @@
 package movlit.be.movie.presentation;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
@@ -27,8 +28,14 @@ public class MovieDetailReadController {
     private final MovieDetailReadService movieDetailReadService;
 
     @GetMapping("/api/movies/{movieId}/detail")
-    public ResponseEntity<MovieDetailResponse> fetchMovieDetail(@PathVariable Long movieId) {
-        var response = movieDetailReadService.fetchMovieDetail(movieId);
+    public ResponseEntity<MovieDetailResponse> fetchMovieDetail(@PathVariable Long movieId,
+                                                                @AuthenticationPrincipal MyMemberDetails details) {
+        if (Objects.isNull(details)) {
+            var response = movieDetailReadService.fetchMovieDetail(movieId);
+            return ResponseEntity.ok(response);
+        }
+
+        var response = movieDetailReadService.fetchMovieDetailWithMember(movieId, details.getMemberId());
         return ResponseEntity.ok(response);
     }
 

@@ -19,8 +19,8 @@ public class MemberGenreEntity {
     @EmbeddedId
     private MemberGenreIdEntity memberGenreIdEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", updatable = false, insertable = false)
-    private MemberEntity memberEntity;
+    public MemberGenreEntity(MemberGenreIdEntity memberGenreIdEntity) {
+        this.memberGenreIdEntity = memberGenreIdEntity;
+    }
 
 }
