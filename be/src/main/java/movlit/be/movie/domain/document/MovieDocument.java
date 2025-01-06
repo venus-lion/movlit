@@ -89,9 +89,6 @@ public class MovieDocument {
     @Field(type = FieldType.Boolean)
     private boolean delYn;
 
-    @Field(type = FieldType.Long)
-    private Long heartCount;
-
     @Field(type = FieldType.Nested)
     private List<MovieGenreForDocument> movieGenre = new ArrayList<>();
 

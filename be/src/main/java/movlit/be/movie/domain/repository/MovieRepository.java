@@ -1,7 +1,6 @@
 package movlit.be.movie.domain.repository;
 
 import java.util.List;
-
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.domain.Movie;
 import org.springframework.data.domain.Pageable;

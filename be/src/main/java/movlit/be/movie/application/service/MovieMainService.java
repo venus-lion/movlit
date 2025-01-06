@@ -1,11 +1,14 @@
 package movlit.be.movie.application.service;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MemberGenreNotFoundException;
 import movlit.be.common.exception.NotExistMovieHeartByMember;
 import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.member.domain.repository.MemberGenreRepository;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.MovieHeart;
@@ -27,10 +30,10 @@ public class MovieMainService {
 
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
+    private final MemberGenreRepository memberGenreRepository;
     private final MovieSearchRepository movieSearchRepository;
     private final MovieHeartRepository movieHeartRepository;
 
-    @Transactional(readOnly = true)
     public MovieListResponseDto getMoviePopular(int page, int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
         List<Movie> movieList = movieRepository.findAllOrderByHeartCountDescVoteCountDescPopularityDesc(pageable);
@@ -38,14 +41,12 @@ public class MovieMainService {
         return new MovieListResponseDto(movieList);
     }
 
-    @Transactional(readOnly = true)
     public MovieListResponseDto getMovieLatest(int page, int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
         return new MovieListResponseDto(movieRepository.findAllOrderByReleaseDateDesc(pageable));
     }
 
-    @Transactional(readOnly = true)
     public MovieListByGenreResponseDto getMovieGroupbyGenre(Long genreId, int page, int pageSize) {
         // genreId -> Genre Enum객체
         Genre genre = Genre.of(genreId);
