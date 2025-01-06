@@ -1,9 +1,12 @@
 package movlit.be.book.infra.persistence.recommend_jpa;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,4 +23,5 @@ public class BookHeartRecommendRepository {
                 "LIMIT ?";
         return jdbcTemplate.queryForList(sql, String.class, memberId.getValue(), count);
     }
+
 }

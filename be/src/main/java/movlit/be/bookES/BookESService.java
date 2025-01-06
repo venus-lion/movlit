@@ -65,12 +65,12 @@ public class BookESService {
                 .title(bookEntity.getTitle())
                 .crew(crewList)
                 .publisher(bookEntity.getPublisher())
-                .pubDate(bookEntity.getPubDate())
+                .pubDate(bookEntity.getPubDate().toLocalDate())
                 .description(bookEntity.getDescription())
                 .categoryName(bookEntity.getCategoryName())
                 .bookImgUrl(bookEntity.getBookImgUrl())
-                .regDt(bookEntity.getRegDt())
-                .updDt(bookEntity.getUpdDt())
+                .regDt(bookEntity.getRegDt().toLocalDate())
+                .updDt(bookEntity.getUpdDt().toLocalDate())
                 .build();
     }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class BookES {
 
     @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd")
     @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime pubDate;
+    private LocalDate pubDate;
 
     @Field(type = FieldType.Text)  // 긴 설명을 텍스트로 처리
     private String description;
@@ -64,13 +65,13 @@ public class BookES {
     private String bookImgUrl;
 
     @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
     // @Field(type = FieldType.Date)  // 생성일자
-    private LocalDateTime regDt;
+    private LocalDate regDt;
 
     @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
     // @Field(type = FieldType.Date)  // 수정일자
-    private LocalDateTime updDt;
+    private LocalDate updDt;
 
 }
