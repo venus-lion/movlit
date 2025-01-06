@@ -11,6 +11,7 @@ import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
 import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
 import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
+import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEntity;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.presentation.dto.response.MovieHeartResponse;
 import movlit.be.movie_heart_count.domain.entity.MovieHeartCountEntity;
@@ -94,4 +95,11 @@ public class MovieConvertor {
                 .build();
     }
 
+    public static MovieCommentLikeCountEntity toMovieCommentLikeCountEntity(MovieCommentEntity movieCommentEntity) {
+        return MovieCommentLikeCountEntity.builder()
+                .movieCommentLikeCountId(IdFactory.createMovieCommentLikeCountId())
+                .movieCommentId(movieCommentEntity.getMovieCommentId())
+                .count(0L)
+                .build();
+    }
 }
