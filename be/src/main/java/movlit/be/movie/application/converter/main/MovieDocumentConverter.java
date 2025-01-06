@@ -88,7 +88,6 @@ public class MovieDocumentConverter {
                 .runtime(movieDocument.getRuntime())
                 .tagline(movieDocument.getTagline())
                 .delYn(movieDocument.isDelYn())
-                .heartCount(movieDocument.getHeartCount())
                 .movieGenreList(movieDocument.getMovieGenre().stream()
                         .map(x -> new MovieGenre(x.getGenreId(), x.getGenreName()))
                         .toList()

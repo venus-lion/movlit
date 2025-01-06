@@ -30,7 +30,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-        log.info("authorizationHeader = {}", authorizationHeader);
 
         String email = null;
         String jwt = null;

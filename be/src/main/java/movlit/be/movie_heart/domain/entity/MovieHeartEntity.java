@@ -1,6 +1,11 @@
-package movlit.be.movie.domain.entity;
+package movlit.be.movie_heart.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,12 +13,10 @@ import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieHeartId;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name="movie_heart")
+@Table(name = "movie_heart")
 public class MovieHeartEntity {
 
     @EmbeddedId
@@ -29,11 +32,13 @@ public class MovieHeartEntity {
     private LocalDateTime regDt;
 
     @Builder
-    public MovieHeartEntity(MovieHeartId movieHeartId, Long movieId, MemberId memberId, boolean isHearted) {
+    public MovieHeartEntity(MovieHeartId movieHeartId, Long movieId, MemberId memberId, boolean isHearted,
+                            LocalDateTime regDt) {
         this.movieHeartId = movieHeartId;
         this.movieId = movieId;
         this.memberId = memberId;
         this.isHearted = isHearted;
+        this.regDt = regDt;
     }
 
 }
