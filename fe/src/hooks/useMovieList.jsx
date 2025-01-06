@@ -1,11 +1,11 @@
-// src/hooks/useMovieList.js
-import { useEffect, useState, useMemo } from 'react';
+// src/hooks/useMovieList.jsx
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 const useMovieList = ({ endpoint, params = {}, initialPage = 1, pageSize = 20 }) => {
     const [movies, setMovies] = useState([]);
     const [currentPage, setCurrentPage] = useState(initialPage);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [hasMore, setHasMore] = useState(true);
 
