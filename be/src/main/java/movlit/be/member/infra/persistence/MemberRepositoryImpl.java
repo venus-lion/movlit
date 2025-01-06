@@ -39,14 +39,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Member findById(MemberId memberId) {
-        MemberEntity memberEntity = memberJpaRepository.findById(memberId)
+        MemberEntity memberEntity = memberJpaRepository.findByMemberId(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         return MemberConverter.toDomain(memberEntity);
     }
 
     @Override
     public MemberEntity findEntityById(MemberId memberId) {
-        return memberJpaRepository.findById(memberId)
+        return memberJpaRepository.findByMemberId(memberId)
                 .orElseThrow(MemberNotFoundException::new);
     }
 
@@ -81,6 +81,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public MemberReadMyPage fetchMyPageByMemberId(MemberId memberId) {
         return memberJpaRepository.findMyPageByMemberId(memberId);
+    }
+
+    @Override
+    public void softDeleteByMemberId(MemberId memberId) {
+        memberJpaRepository.softDeleteByMemberId(memberId);
     }
 
 }
