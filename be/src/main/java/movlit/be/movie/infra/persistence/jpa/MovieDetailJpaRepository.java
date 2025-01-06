@@ -19,7 +19,7 @@ public interface MovieDetailJpaRepository extends JpaRepository<MovieEntity, Lon
      */
     @Query(" SELECT new movlit.be.movie.presentation.dto.response.MovieDetailResponse "
             + "(m.movieId, m.title, m.originalTitle, m.overview, "
-            + "m.popularity, mhc.count, false, m.posterPath, m.backdropPath, "
+            + "m.popularity, COALESCE(mhc.count, 0), false, m.posterPath, m.backdropPath, "
             + "m.releaseDate, m.productionCountry, m.originalLanguage, "
             + "m.runtime, m.status, m.voteCount, m.tagline) "
             + "FROM MovieEntity m "
@@ -36,7 +36,7 @@ public interface MovieDetailJpaRepository extends JpaRepository<MovieEntity, Lon
      */
     @Query("SELECT new movlit.be.movie.presentation.dto.response.MovieDetailResponse "
             + "(m.movieId, m.title, m.originalTitle, m.overview, "
-            + "m.popularity, mhc.count, COALESCE(mh.isHearted, false), m.posterPath, m.backdropPath, "
+            + "m.popularity, COALESCE(mhc.count, 0), COALESCE(mh.isHearted, false), m.posterPath, m.backdropPath, "
             + "m.releaseDate, m.productionCountry, m.originalLanguage, "
             + "m.runtime, m.status, m.voteCount, m.tagline) "
             + "FROM MovieEntity m "

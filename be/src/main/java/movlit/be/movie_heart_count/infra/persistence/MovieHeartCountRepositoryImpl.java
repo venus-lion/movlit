@@ -2,7 +2,6 @@ package movlit.be.movie_heart_count.infra.persistence;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieHeartNotFoundException;
-import movlit.be.common.exception.MovieNotFoundException;
 import movlit.be.movie_heart_count.domain.MovieHeartCountRepository;
 import movlit.be.movie_heart_count.domain.entity.MovieHeartCountEntity;
 import movlit.be.movie_heart_count.infra.persistence.jpa.MovieHeartCountJpaRepository;
@@ -31,9 +30,8 @@ public class MovieHeartCountRepositoryImpl implements MovieHeartCountRepository 
 
     @Override
     public Long fetchMovieHeartCountByMovieId(Long movieId) {
-        MovieHeartCountEntity movieHeartCountEntity = movieHeartCountJpaRepository.findByMovieId(movieId)
+        return movieHeartCountJpaRepository.findMovieHeartCountByMovieId(movieId)
                 .orElseThrow(MovieHeartNotFoundException::new);
-        return movieHeartCountEntity.getCount();
     }
 
 }

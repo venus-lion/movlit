@@ -18,6 +18,7 @@ import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.data_collection.MovieGenreCollectRepository;
 import movlit.be.data_collection.movie.jpa.MovieCollectRepository;
 import movlit.be.data_collection.movie.jpa.MovieTagRepository;
+import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie.domain.MovieRole;
 import movlit.be.movie.domain.entity.MovieCrewEntity;
 import movlit.be.movie.domain.entity.MovieEntity;
@@ -29,6 +30,7 @@ import movlit.be.movie.domain.entity.MovieTagEntity;
 import movlit.be.movie.domain.entity.MovieTagIdForEntity;
 import movlit.be.movie.infra.persistence.jpa.MovieCrewJpaRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieRCrewJpaRepository;
+import movlit.be.movie_heart_count.application.service.MovieHeartCountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -65,6 +67,9 @@ public class MovieCollectService {
 
     @Autowired
     private MovieRCrewJpaRepository movieRCrewJpaRepository;
+
+    @Autowired
+    private MovieHeartCountService movieHeartCountService;
 
     public MovieCollectService(RestTemplateBuilder builder) {
         HttpHeaders headers = new HttpHeaders();
@@ -194,6 +199,8 @@ public class MovieCollectService {
                     .delYn(false)
                     .build();
 
+            // heartCount 처리
+            movieHeartCountService.save(MovieConvertor.toMovieHeartCountEntity(movie.getMovieId()));
             movieList.add(movie);
 
             log.info("page={}", page);

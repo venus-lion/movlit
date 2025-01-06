@@ -13,6 +13,7 @@ import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
 import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.presentation.dto.response.MovieHeartResponse;
+import movlit.be.movie_heart_count.domain.entity.MovieHeartCountEntity;
 
 public class MovieConvertor {
 
@@ -82,6 +83,14 @@ public class MovieConvertor {
                 .movieCommentId(movieCommentId)
                 .memberId(memberId)
                 .isLiked(true)
+                .build();
+    }
+
+    public static MovieHeartCountEntity toMovieHeartCountEntity(Long movieId) {
+        return MovieHeartCountEntity.builder()
+                .movieHeartCountId(IdFactory.createMovieHeartCountId())
+                .movieId(movieId)
+                .count(0L)
                 .build();
     }
 
