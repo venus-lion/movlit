@@ -1,39 +1,51 @@
 {
-  "analysis": {
-    "analyzer": {
-      "english_analyzer": {
-        "type": "custom",
-        "tokenizer": "standard",
-        "filter": [
-          "lowercase",
-          "english_stop",
-          "english_snowball"
-        ]
+  "index": {
+    "analysis": {
+      "tokenizer": {
+        "korean_analyzer": {
+          "type": "nori_tokenizer",
+          "decompound_mode": "mixed",
+          "discard_punctuation": "false"
+        },
+        "my_ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 3
+        }
       },
-      "korean_analyzer": {
-        "type": "custom",
-        "tokenizer": "nori_tokenizer",
-        "filter": [
-          "nori_readingform",
-          "lowercase",
-          "trim"
-        ]
-      }
-    },
-    "filter": {
-      "english_stop": {
-        "type": "stop",
-        "stopwords": "_english_"
+      "filter": {
+        "korean_stop": {
+          "type": "stop",
+          "stopwords": [" "]
+        },
+        "english_stop": {
+          "type": "stop",
+          "stopwords": "_english_"
+        },
+        "english_snowball": {
+          "type": "snowball",
+          "language": "English"
+        }
       },
-      "english_snowball": {
-        "type": "snowball",
-        "language": "English"
-      }
-    },
-    "normalizer": {
-      "lowercase_normalizer": {
-        "type": "custom",
-        "filter": ["lowercase"]
+      "analyzer": {
+        "english_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "english_stop", "english_snowball"],
+          "char_filter": ["html_strip"]
+        },
+        "korean_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": ["lowercase", "stop", "korean_stop", "nori_part_of_speech"],
+          "char_filter": ["html_strip"]
+        },
+        "my_ngram_analyzer": {
+          "type": "custom",
+          "tokenizer": "my_ngram_tokenizer",
+          "filter": ["lowercase", "stop", "korean_stop", "nori_part_of_speech"],
+          "char_filter": ["html_strip"]
+        }
       }
     }
   }

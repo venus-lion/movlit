@@ -2,11 +2,6 @@ package movlit.be.member.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import java.io.Serializable;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.*;
 import movlit.be.common.util.ids.MemberId;
 
@@ -15,7 +10,7 @@ import movlit.be.common.util.ids.MemberId;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter
-public class MemberGenreIdEntity implements Serializable {
+public class MemberGenreIdEntity {
 
     @Column(name = "genre_id")
     private Long genreId;

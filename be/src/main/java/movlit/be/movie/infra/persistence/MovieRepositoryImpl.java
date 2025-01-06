@@ -1,23 +1,32 @@
 package movlit.be.movie.infra.persistence;
 
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.converter.main.MovieConverter;
+import movlit.be.movie.application.converter.main.MovieHeartConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
+import movlit.be.movie.infra.persistence.jpa.MovieGenreJpaRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
 //    private final ElasticsearchOperations elasticsearchOperations;
+
 
     @Override
     public Movie save(Movie movie) {
@@ -44,7 +53,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByVoteCountDescPopularityDesc(
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(
                 pageable);
 //        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
@@ -52,11 +61,15 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(
-                genreId, pageable);
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(genreId, pageable);
 //        Page<MovieGenreEntity> movieEntityPage2 = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
 
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
+    @Override
+    public Movie findMostRecentMovieHeart(MemberId memberId) {
+            return null;
+
+    }
 }

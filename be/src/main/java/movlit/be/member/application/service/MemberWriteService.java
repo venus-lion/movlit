@@ -1,6 +1,6 @@
 package movlit.be.member.application.service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.AuthTokenService;
 import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
@@ -9,14 +9,10 @@ import movlit.be.common.exception.DuplicateNicknameException;
 import movlit.be.common.exception.MemberPasswordMismatchException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
-import movlit.be.member.domain.entity.MemberEntity;
-import movlit.be.member.domain.entity.MemberGenreEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
-import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -32,28 +28,28 @@ public class MemberWriteService {
     private final AuthTokenService authTokenService;
 
     public MemberRegisterResponse registerMember(MemberRegisterRequest request) {
-        MemberId memberId = IdFactory.createMemberId();
-        List<MemberGenreEntity> memberGenreEntityList = makeMemberGenreEntities(
-                memberId, request.getGenreIds());
-        MemberEntity memberEntity = MemberConverter.toMemberEntity(request, memberGenreEntityList, memberId);
+        String dob = request.getDob();
+        String email = request.getEmail();
+        String nickname = request.getNickname();
+        String password = request.getPassword();
 
-        validateNicknameDuplication(memberEntity.getNickname());
-        validateEmailDuplication(memberEntity.getEmail());
+        String hashedPwd = BCrypt.hashpw(password, BCrypt.gensalt());
+        Member member = Member.builder()
+                .memberId(IdFactory.createMemberId())
+                .password(hashedPwd)
+                .nickname(nickname)
+                .email(email)
+                .dob(dob)
+                .regDt(LocalDateTime.now())
+                .role("ROLE_Member")
+                .provider("local")
+                .build();
 
-        MemberEntity savedMemberEntity = memberRepository.saveEntity(memberEntity);
-        return MemberConverter.toMemberRegisterResponse(savedMemberEntity.getMemberId());
-    }
+        validateNicknameDuplication(member.getNickname());
+        validateEmailDuplication(member.getEmail());
 
-    public void updateMember(MemberId memberId, MemberUpdateRequest request) {
-        MemberEntity memberEntity = memberRepository.findEntityById(memberId);
-        Member member = MemberConverter.toMemberForUpdate(request);
-        memberEntity.updateMember(member, makeMemberGenreEntities(memberEntity.getMemberId(), request.getGenreIds()));
-    }
-
-    private List<MemberGenreEntity> makeMemberGenreEntities(MemberId memberId, List<Long> genreIds) {
-        return genreIds.stream()
-                .map(genreId -> MemberConverter.toMemberGenreEntity(genreId, memberId))
-                .toList();
+        Member savedMember = memberRepository.save(member);
+        return MemberRegisterResponse.from(savedMember.getMemberId());
     }
 
     private void validateNicknameDuplication(String nickname) {
@@ -66,6 +62,14 @@ public class MemberWriteService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
+    }
+
+    public Member updateMember(Member member) {
+        return memberRepository.save(member);
+    }
+
+    public void deleteMember(MemberId memberId) {
+        memberRepository.deleteById(memberId);
     }
 
     public AuthTokenIssueResponse login(MemberLoginRequest request) {

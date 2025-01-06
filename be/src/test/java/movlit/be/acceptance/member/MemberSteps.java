@@ -2,7 +2,6 @@ package movlit.be.acceptance.member;
 
 import static movlit.be.acceptance.util.MemberFixture.비회원;
 import static movlit.be.acceptance.util.MemberFixture.회원_원준;
-import static movlit.be.acceptance.util.MemberFixture.회원_지원;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -10,7 +9,6 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import java.util.List;
 import java.util.Map;
 import movlit.be.acceptance.util.MemberFixture;
 import org.assertj.core.api.AbstractIntegerAssert;
@@ -43,45 +41,9 @@ public class MemberSteps {
                 "email", "wj@naver.com",
                 "password", "qQQwe123!!",
                 "repeatPassword", "qQQwe123!!",
-                "dob", "1980-10-01",
-                "genreIds", List.of(1L, 3L, 5L));
+                "dob", "1980-10-01");
 
         return 회원가입한다(memberRegisterRequest, spec);
-    }
-
-    public static ExtractableResponse<Response> 회원_장르를_조회한다(RequestSpecification spec, String accessToken) {
-        return RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .spec(spec)
-                .auth().oauth2(accessToken)
-                .log().all()
-                .when().get("/api/members/genreList")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 회원_마이페이지를_조회한다(RequestSpecification spec, String accessToken) {
-        return RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .spec(spec)
-                .auth().oauth2(accessToken)
-                .log().all()
-                .when().get("/api/members/myPage")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 회원_장르를_조회한다(RequestSpecification spec) {
-        return RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .spec(spec)
-                .log().all()
-                .when().get("/api/genreList")
-                .then().log().all()
-                .extract();
     }
 
     public static ExtractableResponse<Response> 회원가입한다(Map<String, Object> memberRegisterRequest,
@@ -99,34 +61,6 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 원준_회원을_수정을_요청한다(String accessToken, RequestSpecification spec) {
-        Map<String, Object> memberUpdateRequest = Map.of(
-                "nickname", 회원_지원.getNickname(),
-                "email", 회원_지원.getEmail(),
-                "password", 회원_지원.getPassword(),
-                "repeatPassword", 회원_지원.getPassword(),
-                "dob", 회원_지원.getDob(),
-                "genreIds", 회원_지원.getGenreIds()
-        );
-        return 회원을_수정한다(accessToken, memberUpdateRequest, spec);
-    }
-
-    public static ExtractableResponse<Response> 회원을_수정한다(String accessToken, Map<String, Object> memberUpdateRequest,
-                                                         RequestSpecification spec) {
-        return RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .spec(spec)
-                .auth().oauth2(accessToken)
-                .log().all()
-                .body(memberUpdateRequest)
-                .when()
-                .put("/api/members/update")
-                .then()
-                .log().all()
-                .extract();
-    }
-
     public static ExtractableResponse<Response> 비회원이_유효하지_않은_이메일을_입력하고_회원가입한다(
             RequestSpecification spec) {
         Map<String, Object> memberRegisterRequest = Map.of(
@@ -134,8 +68,7 @@ public class MemberSteps {
                 "email", "mismatch",
                 "password", "qQQwe123!!",
                 "repeatPassword", "qQQwe123!!",
-                "dob", "1980-10-01",
-                "genreIds", List.of(1L, 3L, 5L));
+                "dob", "1980-10-01");
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -146,8 +79,7 @@ public class MemberSteps {
                 "email", 회원_원준.getEmail(),
                 "password", 비회원.getPassword(),
                 "repeatPassword", 비회원.getPassword(),
-                "dob", 비회원.getDob(),
-                "genreIds", List.of(1L, 3L, 5L));
+                "dob", 비회원.getDob());
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -158,8 +90,7 @@ public class MemberSteps {
                 "email", 비회원.getEmail(),
                 "password", 비회원.getPassword(),
                 "repeatPassword", 비회원.getPassword(),
-                "dob", 비회원.getDob(),
-                "genreIds", List.of(1L, 3L, 5L));
+                "dob", 비회원.getDob());
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -170,8 +101,7 @@ public class MemberSteps {
                 "email", 비회원.getEmail(),
                 "password", 비회원.getPassword(),
                 "repeatPassword", "QQqwe1234!",
-                "dob", 비회원.getDob(),
-                "genreIds", List.of(1L, 3L, 5L));
+                "dob", 비회원.getDob());
 
         return 회원가입한다(memberRegisterRequest, spec);
     }
@@ -180,20 +110,6 @@ public class MemberSteps {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.CREATED),
                 () -> assertThat(response.jsonPath().getObject("memberId", String.class)).isNotNull()
-        );
-    }
-
-    public static void 상태코드가_200이고_응답에_genreId와_genreName이_존재한다(ExtractableResponse<Response> response) {
-        Assertions.assertAll(
-                () -> 상태코드를_검증한다(response, HttpStatus.OK),
-                () -> assertThat(response.jsonPath().getList("").get(0)).isNotNull(),
-                () -> assertThat(response.jsonPath().getList("").get(1)).isNotNull()
-        );
-    }
-
-    public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
-        Assertions.assertAll(
-                () -> 상태코드를_검증한다(response, HttpStatus.OK)
         );
     }
 

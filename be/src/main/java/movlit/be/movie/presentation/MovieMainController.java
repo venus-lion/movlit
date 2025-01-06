@@ -71,26 +71,30 @@ public class MovieMainController {
      * 사용자 별 취향 (장르) 가져오기
      * TODO : 키워드, 배우 별도 고려
      * */
-    public ResponseEntity<List<Movie>> getMovieUserInterestByGenre(
+    @GetMapping("/interestGenre")
+    public ResponseEntity<MovieListResponseDto> getMovieUserInterestByGenre(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
-        movieMainService.getMovieUserInterestByGenre(details.getMemberId(), page, pageSize);
-        return ResponseEntity.ok().body(null);
+
+//        MemberId currentMemberId = details.getMemberId();
+        MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
+        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
+        return ResponseEntity.ok().body(response);
     }
 
     /**
-     * TODO : 사용자 로그인 유무에 따른 처리를 Spring에서 할지? 한다면 여기에 구현
      * 로그인 유저의 최근 찜 목록 기반으로 유사한 영화 리스트 가져오기
      * */
-    public ResponseEntity<MovieListByGenreResponseDto> getMovieByUserRecentHeart(
+    @GetMapping("/lastHeart")
+    public ResponseEntity<MovieListResponseDto> getMovieByUserRecentHeart(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
-        MemberId currentMemberId = details.getMemberId();
-
-        // Service 구현
+//        MemberId currentMemberId = details.getMemberId();
+        MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
+        MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId);
 
         return ResponseEntity.ok(null);
     }

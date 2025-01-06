@@ -1,7 +1,7 @@
-INSERT INTO venus.movie (id, backdrop_path, del_yn, original_language, original_title, overview,
+INSERT INTO venus.movie (id, backdrop_path, del_yn, heart_count, original_language, original_title, overview,
                          popularity, poster_path, production_country, reg_dt, release_date, runtime, status, tagline,
                          title, upd_dt, vote_average, vote_count)
-VALUES (767, '/ze6Mx4QE5mQVXRYmG2flncqqle4.jpg', false, 'en', 'Harry Potter and the Half-Blood Prince',
+VALUES (767, '/ze6Mx4QE5mQVXRYmG2flncqqle4.jpg', false, 0, 'en', 'Harry Potter and the Half-Blood Prince',
         '어둠의 세력이 더욱 강력해져 머글 세계와 호그와트까지 위협해온다. 위험한 기운을 감지한 덤블도어 교수는 다가올 전투에 대비하기 위해 해리 포터와 함께 대장정의 길을 나선다. 볼드모트를 물리칠 수 있는 유일한 단서이자 그의 영혼을 나누어 놓은 7개의 호크룩스를 파괴하는 미션을 수행해야만 하는 것! 또한 덤블도어 교수는 호크룩스를 찾는 기억여행에 결정적 도움을 줄 슬러그혼 교수를 호그와트로 초청한다. 한편 학교에서는 계속된 수업과 함께 로맨스의 기운도 무르익는다. 해리는 자신도 모르게 지니에게 점점 끌리게 되고, 새로운 여자 친구가 생긴 론에게 헤르미온느는 묘한 질투심을 느끼는데...',
         165.384, '/yrGlb3HLtjGp39mv4MJ5UuIHcj4.jpg', 'GB', '2024-12-30 14:15:35.289146', '2009-07-15', 153, 'Released',
         '마지막 전투를 준비하라', '해리 포터와 혼혈왕자', '2024-12-30 14:15:35.289158', 7.688, 19493);

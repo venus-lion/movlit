@@ -18,10 +18,8 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
     @Query(
             "SELECT NEW movlit.be.movie.presentation.dto.response.MovieCommentReadResponse"
                     + "(mc.movieCommentId, mc.score, mc.comment, mb.nickname, mb.profileImgUrl, "
-                    + "(SELECT COUNT(mcc) FROM MovieCommentEntity mcc WHERE mcc.movieId = :movieId), "
-                    + "false, mclc.count) "
+                    + "(SELECT COUNT(mcc) FROM MovieCommentEntity mcc WHERE mcc.movieId = :movieId)) "
                     + "FROM MovieCommentEntity mc "
-                    + "LEFT JOIN MovieCommentLikeCountEntity mclc ON mclc.movieCommentId = mc.movieCommentId "
                     + "LEFT JOIN MemberEntity mb ON mb.memberId = mc.memberId "
                     + "WHERE mc.movieId = :movieId "
                     + "ORDER BY mc.regDt DESC"
@@ -29,14 +27,12 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
     Slice<MovieCommentReadResponse> findAllComment(@Param("movieId") Long movieId,
                                                    @Param("pageable") Pageable pageable);
 
+    // TODO: 좋아요 추가 후, 현재 로그인한 멤버 id가 좋아요 했는지 안 했는지 비교하여 boolean 값 주기 + 서브 쿼리 분리
     @Query(
             "SELECT NEW movlit.be.movie.presentation.dto.response.MovieCommentReadResponse"
                     + "(mc.movieCommentId, mc.score, mc.comment, mb.nickname, mb.profileImgUrl, "
-                    + "(SELECT COUNT(mcc) FROM MovieCommentEntity mcc WHERE mcc.movieId = :movieId), "
-                    + "COALESCE(mcl.isLiked, false), mclc.count) "
+                    + "(SELECT COUNT(mcc) FROM MovieCommentEntity mcc WHERE mcc.movieId = :movieId)) "
                     + "FROM MovieCommentEntity mc "
-                    + "LEFT JOIN MovieCommentLikeEntity mcl ON mcl.movieCommentId = mc.movieCommentId AND mcl.memberId = :memberId "
-                    + "LEFT JOIN MovieCommentLikeCountEntity mclc ON mclc.movieCommentId = mc.movieCommentId "
                     + "LEFT JOIN MemberEntity mb ON mb.memberId = mc.memberId "
                     + "WHERE mc.movieId = :movieId "
                     + "ORDER BY mc.regDt DESC"

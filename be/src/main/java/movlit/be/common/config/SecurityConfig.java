@@ -36,26 +36,18 @@ public class SecurityConfig {
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/testBook/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/movies/*/hearts").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/movies/comments/*/likes").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/movies/comments/*/likes").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/members/myPage").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/members/genreList").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/genreList").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/{movieId}/myComment").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/crews").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
-                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
-                                "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
-                                "/error/**", "api/books/**")
+                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
+                                "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
+                                "/img/**", "/js/**", "/css/**", "/error/**",
+                                "api/books/**")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()

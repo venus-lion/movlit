@@ -13,7 +13,7 @@ public class AuthTokenService {
     private final JwtTokenUtil jwtTokenUtil;
     private final RefreshTokenStorage refreshTokenStorage;
 
-    public AuthTokenIssueResponse  issue(String email) {
+    public AuthTokenIssueResponse issue(String email) {
         String accessToken = jwtTokenUtil.generateAccessToken(email);
         String refreshToken = jwtTokenUtil.generateRefreshToken(email);
         refreshTokenStorage.saveRefreshToken(email, refreshToken);

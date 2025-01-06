@@ -2,16 +2,13 @@ package movlit.be.book.presentation;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.book.application.service.BookMainReadService;
 import movlit.be.book.application.service.GetBooksByRandomGenreService;
 import movlit.be.book.presentation.dto.BooksGenreResponse;
 import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto;
 import movlit.be.book.presentation.dto.BooksResponse;
 import movlit.be.book.presentation.dto.BooksResponse.BookItemDto;
-import movlit.be.common.util.ids.MemberId;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookMainController {
     private final BookMainReadService bookMainReadService;
-    private final GetBooksByRandomGenreService getBooksByRandomGenreService;
+    private final GetBooksByRandomGenreService getBooksByRandomGenre;
 
     @GetMapping("/bestseller")
     public ResponseEntity<BooksResponse> getTopBestsellers(@RequestParam(defaultValue = "30") int limit){
@@ -57,33 +54,13 @@ public class BookMainController {
         return ResponseEntity.ok(booksResponse);
     }
 
-    // 로그인 안했을 때, 랜덤장르 3개 BooksGenreResponse 불러오기
+    // 랜덤장르 불러오기 -> dto가 달라짐
     @GetMapping("/genres/random")
     public ResponseEntity<BooksGenreResponse> getBooksByRandomGenre(@RequestParam(defaultValue = "30") int limit){
-        List<BookItemWithGenreDto> booksByRandomGenresDto = getBooksByRandomGenreService.getBooksByRandomGenres(limit);
+        List<BookItemWithGenreDto> booksByRandomGenresDto = getBooksByRandomGenre.getBooksByRandomGenres(limit);
 
         BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
                 .bookWithGenres(booksByRandomGenresDto)
-                .build();
-
-        return ResponseEntity.ok(booksGenreResponse);
-    }
-
-    // 로그인 했을 때, 멤버의 MemberGenre 3개 중 랜덤 2개 선택 + 나머지 랜덤장르 1개, 총 3개의 BooksGenreResponse 불러오기
-    @GetMapping("/genres/personalized")
-    public ResponseEntity<BooksGenreResponse> getBooksByPersonalizedRandomGenre(
-            @AuthenticationPrincipal MyMemberDetails details,
-            @RequestParam(defaultValue = "30") int limit
-            ){
-
-        System.out.println("details :: memberId >> " + details.getMemberId().getValue());
-        System.out.println("details로부터 가져온 Member id :: " + details.getMemberId());
-
-        MemberId memberId = details.getMemberId();
-        List<BookItemWithGenreDto> booksByPersonalizedRandomGenre = getBooksByRandomGenreService.getBooksByPersonalizedRandomGenre(
-                limit, memberId);
-        BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
-                .bookWithGenres(booksByPersonalizedRandomGenre)
                 .build();
 
         return ResponseEntity.ok(booksGenreResponse);

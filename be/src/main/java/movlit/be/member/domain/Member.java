@@ -1,14 +1,12 @@
 package movlit.be.member.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.entity.MemberGenreEntity;
 
 @NoArgsConstructor
 @Getter
@@ -29,12 +27,11 @@ public class Member {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
 
-    private List<MemberGenreEntity> memberGenreEntityList;
+//    private List<MemberGenreEntity> memberRGenres;
 
     @Builder
     public Member(MemberId memberId, String email, String nickname, String password, String dob, String profileImgId,
-                  String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt,
-                  List<MemberGenreEntity> memberGenreEntityList) {
+                  String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
@@ -46,7 +43,6 @@ public class Member {
         this.provider = provider;
         this.regDt = regDt;
         this.updDt = updDt;
-        this.memberGenreEntityList = memberGenreEntityList;
     }
 
 }

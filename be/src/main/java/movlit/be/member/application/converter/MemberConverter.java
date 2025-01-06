@@ -1,16 +1,8 @@
 package movlit.be.member.application.converter;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
-import movlit.be.member.domain.entity.MemberGenreEntity;
-import movlit.be.member.domain.entity.MemberGenreIdEntity;
-import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
-import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class MemberConverter {
 
@@ -22,7 +14,6 @@ public class MemberConverter {
     public static MemberEntity toEntity(Member member) {
         return MemberEntity.builder()
                 .memberId(member.getMemberId())
-                .memberGenreEntityList(member.getMemberGenreEntityList())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .password(member.getPassword())
@@ -56,42 +47,6 @@ public class MemberConverter {
     // Domain to Dto
     public static MemberRegisterResponse toRegisterResponse(Member member) {
         return MemberRegisterResponse.from(member.getMemberId());
-    }
-
-    public static MemberGenreEntity toMemberGenreEntity(Long genreId, MemberId memberId) {
-        return new MemberGenreEntity(new MemberGenreIdEntity(genreId, memberId));
-    }
-
-    public static MemberEntity toMemberEntity(MemberRegisterRequest request,
-                                              List<MemberGenreEntity> memberGenreEntityList,
-                                              MemberId memberId) {
-        return MemberEntity.builder()
-                .memberId(memberId)
-                .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()))
-                .memberGenreEntityList(memberGenreEntityList)
-                .nickname(request.getNickname())
-                .email(request.getEmail())
-                .dob(request.getDob())
-                .regDt(LocalDateTime.now())
-                .role("ROLE_Member")
-                .provider("local")
-                .build();
-    }
-
-    public static MemberRegisterResponse toMemberRegisterResponse(MemberId memberId) {
-        return MemberRegisterResponse.from(memberId);
-    }
-
-    public static Member toMemberForUpdate(MemberUpdateRequest request) {
-        return Member.builder()
-                .email(request.getEmail())
-                .nickname(request.getNickname())
-                .password(request.getPassword())
-                .dob(request.getDob())
-//                .profileImgId() TODO
-//                .profileImgUrl()
-                .updDt(LocalDateTime.now())
-                .build();
     }
 
 }

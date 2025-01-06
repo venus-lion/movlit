@@ -31,10 +31,6 @@ public class MovieDetailReadService {
         return movieDetailRepository.fetchMovieDetailByMovieId(movieId);
     }
 
-    public MovieDetailResponse fetchMovieDetailWithMember(Long movieId, MemberId memberId) {
-        return movieDetailRepository.fetchMovieDetailByMovieIdAndMemberId(movieId, memberId);
-    }
-
     public List<MovieDetailCrewResponse> fetchMovieDetailCrews(Long movieId) {
         return movieCrewRepository.fetchMovieDetailCrewsByMovieId(movieId);
     }
