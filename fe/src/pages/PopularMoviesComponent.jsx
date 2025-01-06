@@ -1,22 +1,20 @@
-// src/components/PopularMovies.jsx
-import React, {useState} from 'react';
-import useMovieList from '../hooks/useMovieList.jsx';
-import MovieCarousel from './MovieCarousel.jsx';
+import React, { useState } from 'react';
+import useMovieList from '../hooks/useMovieList';
+import MovieCarousel from './MovieCarousel';
 
-function PopularMovies() {
-    const { movies, loadMore, loading, error, hasMore } = useMovieList({
+function PopularMoviesComponent() {
+    const { movies, loading, error } = useMovieList({
         endpoint: '/api/movies/main/popular',
         params: { pageSize: 20 },
     });
 
-    const [startIndex, setStartIndex] = useState(0);
+    const [startIndex, setStartIndex] = useState(0);  // 화면에 보이는 영화 시작 인덱스
 
     const handleNext = () => {
         const newIndex = startIndex + 5;
-        if (newIndex + 5 > movies.length && hasMore && !loading) {
-            loadMore();
+        if (newIndex < movies.length) {
+            setStartIndex(newIndex);
         }
-        setStartIndex(newIndex);
     };
 
     const handlePrev = () => {
@@ -26,11 +24,10 @@ function PopularMovies() {
         }
     };
 
-    if (loading && movies.length === 0) return <p>Loading popular movies...</p>;
+    if (loading) return <p>Loading popular movies...</p>;
     if (error) return (
         <div>
             <p>Error loading popular movies.</p>
-            <button onClick={loadMore}>Retry</button>
         </div>
     );
 
@@ -41,10 +38,8 @@ function PopularMovies() {
             startIndex={startIndex}
             handleNext={handleNext}
             handlePrev={handlePrev}
-            hasMore={hasMore}
-            loading={loading}
         />
     );
 }
 
-export default PopularMovies;
+export default PopularMoviesComponent;

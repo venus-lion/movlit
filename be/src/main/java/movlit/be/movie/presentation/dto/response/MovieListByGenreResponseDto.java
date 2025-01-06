@@ -6,7 +6,7 @@ import movlit.be.movie.domain.Movie;
 public record MovieListByGenreResponseDto(
         Long genreId,
         String genreName,
-        List<Movie> data
+        List<Movie> movieList
 ) {
 
 }

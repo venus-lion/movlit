@@ -2,152 +2,57 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Home.css';
 import {Link} from "react-router-dom";
-import PopularMovies from "./PopularMovies.jsx";
-import LatestMovies from "./LatestMovies.jsx";
-
-// function MovieHome() {
-//     const [populars, setPopulars] = useState([]);
-//     const [startPopularIndex, setStartPopularIndex] = useState(0);
-//     const [latests, setLatests] = useState([]);
-//     const [startLatestIndex, setStartLatestIndex] = useState(0);
-//
-//     // 인기 많은 영화
-//     useEffect(() => {
-//         const fetchMovieListPopular = async () => {
-//             try {
-//                 const response = await axios.get('/api/movies/main/popular', {
-//                     params: {
-//                         page: 1,
-//                         pageSize: 20
-//                     }, // 30개 데이터 한번에 가져오기
-//                 });
-//                 setPopulars(response.data.movieList);
-//             } catch (error) {
-//                 console.error('Error fetch movieListPopular:', error);
-//             }
-//         };
-//
-//         fetchMovieListPopular();
-//     }, []);
-//
-//     const handleNext = () => {
-//         if (startPopularIndex + 5 < populars.length) {
-//             setStartPopularIndex(startPopularIndex + 5);
-//         }
-//     };
-//
-//     const handlePrev = () => {
-//         if (startPopularIndex > 0) {
-//             setStartPopularIndex(startPopularIndex - 5);
-//         }
-//     };
-//
-//     // 최신 인기 영화
-//     useEffect(() => {
-//         const fetchMovieListLatest = async () => {
-//             try {
-//                 const response = await axios.get('/api/movies/main/latest', {
-//                     params: {
-//                         page: 1,
-//                         pageSize: 20
-//                     }, // 30개 데이터 한번에 가져오기
-//                 });
-//                 setLatests(response.data.movieList);
-//             } catch (error) {
-//                 console.error('Error fetch movieListLatest:', error);
-//             }
-//         };
-//
-//         fetchMovieListLatest();
-//     }, []);
-//
-//     const latestHandleNext = () => {
-//         if (startLatestIndex + 5 < latests.length) {
-//             setStartLatestIndex(startLatestIndex + 5);
-//         }
-//     };
-//
-//     const latestHandlePrev = () => {
-//         if (startLatestIndex > 0) {
-//             setStartLatestIndex(startLatestIndex - 5);
-//         }
-//     };
-//
-//     return (
-//         <div className="book-home">
-//             <h2>인기 많은 영화</h2>
-//             <div className="book-carousel">
-//                 {startPopularIndex > 0 && (
-//                     <button className="prev-button" onClick={handlePrev}>
-//                         {'<'}
-//                     </button>
-//                 )}
-//                 <div className="book-list">
-//                     {populars.slice(startPopularIndex, startPopularIndex + 5).map((popular, index) => (
-//                         <Link className="book-card" key={popular.movieId} to={`/movie/${popular.movieId}`}>
-//                             <div className="book-rank">{startPopularIndex + index + 1}</div>
-//                             <img src={popular.posterPath} alt={popular.title} className="book-image"/>
-//                             <div className="book-info">
-//                                 <h3 className="book-title">{popular.title}</h3>
-//                                 <span>({Math.round(parseFloat(popular.voteAverage) * 10) / 10})</span>
-//                                 {/* TODO : 태그, 장르 가져오기*/}
-//                                 <p className="book-writer">
-//                                     {popular.movieGenreList.map((g) => g.genreName).join(', ')}
-//                                 </p>
-//                             </div>
-//                         </Link>
-//                     ))}
-//                 </div>
-//                 {startPopularIndex + 5 < populars.length && (
-//                     <button className="next-button" onClick={handleNext}>
-//                         {'>'}
-//                     </button>
-//                 )}
-//             </div>
-//
-//             <h2>최신 인기 영화</h2>
-//             <div className="book-carousel">
-//                 {startLatestIndex > 0 && (
-//                     <button className="prev-button" onClick={latestHandlePrev}>
-//                         {'<'}
-//                     </button>
-//                 )}
-//                 <div className="book-list">
-//                     {latests.slice(startLatestIndex, startLatestIndex + 5).map((latest, index) => (
-//                         <Link className="book-card" key={latest.movieId} to={`/movie/${latest.movieId}`}>
-//                             <div className="book-rank">{startLatestIndex + index + 1}</div>
-//                             <img src={latest.posterPath} alt={latest.title} className="book-image"/>
-//                             <div className="book-info">
-//                                 <h3 className="book-title">{latest.title}</h3>
-//                                 {/* TODO : 태그, 장르 가져오기*/}
-//                                 {/*<p className="book-writer">*/}
-//                                 {/*    {movie.tagList.map((tag) => tag.name).join(', ')}*/}
-//                                 {/*</p>*/}
-//                             </div>
-//                         </Link>
-//                     ))}
-//                 </div>
-//                 {startLatestIndex + 5 < latests.length && (
-//                     <button className="next-button" onClick={latestHandleNext}>
-//                         {'>'}
-//                     </button>
-//                 )}
-//             </div>
-//         </div>
-//
-//
-//     );
-//
-//
-// }
-//
-// export default MovieHome;
+import PopularMoviesComponent from "./PopularMoviesComponent.jsx";
+import LatestMoviesComponent from "./LatestMoviesComponent.jsx";
+import GenreMoviesComponent from "./GenreMoviesComponent.jsx";
 
 function MovieHome() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [randomGenreIds, setRandomGenreIds] = useState([]);
+
+    useEffect(() => {
+        // 쿠키에서 refreshToken 값을 가져와서 로그인 상태 확인
+        const checkLoginStatus = () => {
+            const cookies = document.cookie.split(';');
+            let refreshToken = null;
+
+            cookies.forEach(cookie => {
+                if (cookie.trim().startsWith('refreshToken=')) {
+                    refreshToken = cookie.trim().split('=')[1];
+                }
+            });
+
+            // refreshToken이 존재하면 로그인 상태로 설정
+            if (refreshToken) {
+                setIsLoggedIn(true);
+            }
+        };
+
+        checkLoginStatus();
+
+        // 1부터 16까지 숫자 중 랜덤하게 4개의 숫자 뽑기
+        const getRandomGenreIds = () => {
+            const genreIds = [];
+            while (genreIds.length < 4) {
+                const randomId = Math.floor(Math.random() * 16) + 1; // 1 ~ 16 사이의 랜덤 값
+                if (!genreIds.includes(randomId)) {
+                    genreIds.push(randomId);
+                }
+            }
+            return genreIds;
+        };
+
+
+        setRandomGenreIds(getRandomGenreIds());
+    }, []);
+
     return (
         <div className="movie-home">
-            <PopularMovies />
-            <LatestMovies />
+            <PopularMoviesComponent />
+            <LatestMoviesComponent />
+            {!isLoggedIn && randomGenreIds.map(genreId => (
+                <GenreMoviesComponent key={genreId} genreId={genreId} />
+            ))}
         </div>
     );
 }
