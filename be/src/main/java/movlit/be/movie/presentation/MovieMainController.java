@@ -78,7 +78,7 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
 //        MemberId currentMemberId = details.getMemberId();
-        MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
+        MemberId currentMemberId = new MemberId("test");
         MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
         return ResponseEntity.ok(response);
     }
@@ -93,7 +93,7 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
 //        MemberId currentMemberId = details.getMemberId();
-        MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
+        MemberId currentMemberId = new MemberId("3c674f030000002cf9970db2");
         MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId, page, pageSize);
 
         return ResponseEntity.ok(response);
