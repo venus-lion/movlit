@@ -24,8 +24,6 @@ import org.springframework.stereotype.Repository;
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
-//    private final ElasticsearchOperations elasticsearchOperations;
-
 
     @Override
     public Movie save(Movie movie) {
@@ -50,14 +48,12 @@ public class MovieRepositoryImpl implements MovieRepository {
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
-    // FIXME: MovieHeart는 Movie에서 가지고 있지 않으니 고쳐주셔야 될 거 같아요
-//    @Override
-//    public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
-//        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByHeartCountDescVoteCountDescPopularityDesc(
-//                pageable);
-////        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
-//        return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
-//    }
+    @Override
+    public List<Movie> findByVoteCountGreaterThan500OrderByPopularityDesc(Long minVoteCount, Pageable pageable) {
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByVoteCountGreaterThanEqualOrderByPopularityDesc(minVoteCount, pageable);
+//        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
+        return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
+    }
 
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {

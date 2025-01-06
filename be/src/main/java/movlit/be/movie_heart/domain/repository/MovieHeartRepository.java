@@ -1,6 +1,7 @@
 package movlit.be.movie_heart.domain.repository;
 
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.movie_heart.domain.MovieHeart;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 
 public interface MovieHeartRepository {
@@ -11,6 +12,6 @@ public interface MovieHeartRepository {
 
     void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
 
-    MovieHeartEntity findMostRecentMovieHeart(MemberId memberId);
+    MovieHeart findMostRecentMovieHeart(MemberId memberId);
 
 }

@@ -72,30 +72,34 @@ public class MovieMainController {
      * TODO : 키워드, 배우 별도 고려
      * */
     @GetMapping("/interestGenre")
-    public ResponseEntity<Void> getMovieUserInterestByGenre(
-            @AuthenticationPrincipal MyMemberDetails details,
+    public ResponseEntity<MovieListResponseDto> getMovieUserInterestByGenre(
+//            @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
 //        MemberId currentMemberId = details.getMemberId();
         MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
-//        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
-        return ResponseEntity.ok().build();
+        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
+        return ResponseEntity.ok(response);
     }
 
     /**
-     * 로그인 유저의 최근 찜 목록 기반으로 유사한 영화 리스트 가져오기
+     * 로그인 유저의 최근 찜 영화 기반으로 유사한 영화 리스트 가져오기
      * */
     @GetMapping("/lastHeart")
     public ResponseEntity<MovieListResponseDto> getMovieByUserRecentHeart(
-            @AuthenticationPrincipal MyMemberDetails details,
+//            @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
 //        MemberId currentMemberId = details.getMemberId();
         MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
-        MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId);
+        MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId, page, pageSize);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(response);
     }
+
+    /**
+     * 로그인 유저의 최근 평가 영화 기반으로 유사한 영화 리스트 가져오기
+     * */
 }
