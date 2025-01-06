@@ -1,5 +1,6 @@
 package movlit.be.acceptance.member;
 
+import static movlit.be.acceptance.auth.AuthSteps.원준이_로그인한다;
 import static movlit.be.acceptance.member.MemberSteps.비회원이_유효하지_않은_이메일을_입력하고_회원가입한다;
 import static movlit.be.acceptance.member.MemberSteps.비회원이_일치하지_않는_재입력_패스워드로_회원가입한다;
 import static movlit.be.acceptance.member.MemberSteps.비회원이_회원_원준의_닉네임으로_회원가입한다;
@@ -8,13 +9,16 @@ import static movlit.be.acceptance.member.MemberSteps.비회원이_회원가입�
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_200이고_응답에_genreId와_genreName이_존재한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_200이다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_201이고_응답에_memberId가_존재한다;
+import static movlit.be.acceptance.member.MemberSteps.상태코드가_204이다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_400이고_오류코드가_g001이고_errors에_email이_존재하는지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_400이고_오류코드가_g001인지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이고_오류코드가_m002인지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이고_오류코드가_m003인지_검증한다;
+import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이다;
 import static movlit.be.acceptance.member.MemberSteps.원준_회원을_수정을_요청한다;
 import static movlit.be.acceptance.member.MemberSteps.회원_마이페이지를_조회한다;
 import static movlit.be.acceptance.member.MemberSteps.회원_장르를_조회한다;
+import static movlit.be.acceptance.member.MemberSteps.회원탈퇴한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다;
 
 import movlit.be.acceptance.AcceptanceTest;
@@ -93,6 +97,30 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
             // then
             상태코드가_400이고_오류코드가_g001인지_검증한다(response);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("회원 탈퇴 인수테스트")
+    class DeleteMember {
+
+        @DisplayName("회원 탈퇴 시 성공하면, 상태코드 404를 반환한다.")
+        @Test
+        void when_signupMember_then_response200AndId_and_canFetchMemberProfile() {
+            // docs
+            api_문서_타이틀("deleteMember_success", spec);
+
+            // given
+            String accessToken = 회원_원준_액세스토큰;
+
+            // when
+            var response = 회원탈퇴한다(accessToken, spec);
+            var 탈퇴한_원준_응답 = 원준이_로그인한다(spec);
+
+            // then
+            상태코드가_204이다(response);
+            상태코드가_404이다(탈퇴한_원준_응답);
         }
 
     }

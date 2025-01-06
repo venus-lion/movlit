@@ -32,4 +32,6 @@ public interface MemberRepository {
 
     MemberReadMyPage fetchMyPageByMemberId(MemberId memberId);
 
+    void softDeleteByMemberId(MemberId memberId);
+
 }

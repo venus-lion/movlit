@@ -56,11 +56,14 @@ public class MemberEntity {
     @Embedded
     private MemberGenres memberGenres; // 일급 컬렉션
 
+    @Getter
+    private boolean delYn;
+
     @Builder
     public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,
                         String profileImgId,
                         String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt,
-                        List<MemberGenreEntity> memberGenreEntityList) {
+                        List<MemberGenreEntity> memberGenreEntityList, boolean delYn) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
@@ -73,6 +76,7 @@ public class MemberEntity {
         this.regDt = regDt;
         this.updDt = updDt;
         this.memberGenres = new MemberGenres(memberGenreEntityList);
+        this.delYn = delYn;
     }
 
     public void updateMember(Member member, List<MemberGenreEntity> memberGenreEntityList) {

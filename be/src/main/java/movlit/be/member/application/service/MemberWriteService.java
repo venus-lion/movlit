@@ -62,6 +62,12 @@ public class MemberWriteService {
         memberEntity.updateMember(member, makeMemberGenreEntities(memberEntity.getMemberId(), request.getGenreIds()));
     }
 
+    public void deleteMember(MemberId memberId, String accessToken) {
+        logout(accessToken);
+        Member member = memberRepository.findById(memberId);
+        memberRepository.softDeleteByMemberId(member.getMemberId());
+    }
+
     private List<MemberGenreEntity> makeMemberGenreEntities(MemberId memberId, List<Long> genreIds) {
         return genreIds.stream()
                 .map(genreId -> MemberConverter.toMemberGenreEntity(genreId, memberId))

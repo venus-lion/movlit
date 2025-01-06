@@ -99,6 +99,21 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 회원탈퇴한다(String accessToken,
+                                                       RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .auth().oauth2(accessToken)
+                .log().all()
+                .when()
+                .delete("/api/members/delete")
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 원준_회원을_수정을_요청한다(String accessToken, RequestSpecification spec) {
         Map<String, Object> memberUpdateRequest = Map.of(
                 "nickname", 비회원.getNickname(),
@@ -227,6 +242,20 @@ public class MemberSteps {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.BAD_REQUEST),
                 () -> 오류코드를_검증한다(response, "g001")
+        );
+    }
+
+    public static void 상태코드가_204이다(
+            ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.NO_CONTENT)
+        );
+    }
+
+    public static void 상태코드가_404이다(
+            ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.NOT_FOUND)
         );
     }
 
