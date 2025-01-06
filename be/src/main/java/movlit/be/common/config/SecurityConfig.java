@@ -68,12 +68,6 @@ public class SecurityConfig {
                                 HttpServletResponse.SC_NO_CONTENT)))
                         .deleteCookies("refreshToken")
                 )
-//                .logout(auth -> auth
-//                        .logoutUrl("/member/logout")
-//                        .invalidateHttpSession(true)        // 로그아웃시 세션 삭제
-//                        .deleteCookies("JSESSIONID")
-//                        .logoutSuccessUrl("/member/login")
-//                )
                 .oauth2Login(auth -> auth
                         .loginPage("/member/login")
                         // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
@@ -81,20 +75,14 @@ public class SecurityConfig {
                         // 5. 프로바이더가 제공하는 정보
                         .userInfoEndpoint(
                                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
-                        .defaultSuccessUrl("/member/loginSuccess", true)
+                        .defaultSuccessUrl("http://localhost:5173", true)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         ;
 
         return http.build();
     }
 
-    // JWT Filter Bean 등록
-//    @Bean
-//    public JwtRequestFilter jwtRequestFilter() {
-//        return new JwtRequestFilter();
-//    }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

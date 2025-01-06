@@ -190,4 +190,20 @@ public class MemberConverter {
                 .build();
     }
 
+    public static Member oAuth2RequestToMemberEntity(MemberRegisterOAuth2Request request, String nickname, List<MemberGenreEntity> memberGenreEntityList,
+                                                     MemberId memberId) {
+        return Member.builder()
+                .memberId(memberId)
+                .nickname(nickname)
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .dob(request.getDob())
+                .memberGenreEntityList(memberGenreEntityList)
+                // TODO: profileImgId
+                .profileImgUrl(request.getProfileImgUrl())
+                .provider("oauth2")
+                .regDt(LocalDateTime.now())
+                .build();
+    }
+
 }
