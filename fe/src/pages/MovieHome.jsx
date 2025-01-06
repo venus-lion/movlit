@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './MovieHome.css';
+import './Home.css';
 import {Link} from "react-router-dom";
+import PopularMovies from "./PopularMovies.jsx";
+import LatestMovies from "./LatestMovies.jsx";
 
 // function MovieHome() {
 //     const [populars, setPopulars] = useState([]);

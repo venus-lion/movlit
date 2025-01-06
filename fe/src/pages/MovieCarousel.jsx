@@ -1,7 +1,7 @@
-// src/components/MovieCarousel.js
+// src/components/MovieCarousel.jsx
 import React from 'react';
 import { Link } from "react-router-dom";
-import './MovieHome.css';
+import './Home.css';
 
 function MovieCarousel({ title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 5 }) {
     return (

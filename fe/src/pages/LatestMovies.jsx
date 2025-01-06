@@ -1,7 +1,7 @@
-// src/components/LatestMovies.js
-import React from 'react';
-import useMovieList from '../hooks/useMovieList.js';
-import MovieCarousel from './MovieCarousel';
+// src/components/LatestMovies.jsx
+import React, {useState} from 'react';
+import useMovieList from '../hooks/useMovieList.jsx';
+import MovieCarousel from './MovieCarousel.jsx';
 
 function LatestMovies() {
     const { movies, loadMore, loading, error, hasMore } = useMovieList({
@@ -25,10 +25,6 @@ function LatestMovies() {
             setStartIndex(newIndex);
         }
     };
-
-    useEffect(() => {
-        // 필요한 경우 startIndex 초기화
-    }, [movies]);
 
     if (loading && movies.length === 0) return <p>Loading latest popular movies...</p>;
     if (error) return (

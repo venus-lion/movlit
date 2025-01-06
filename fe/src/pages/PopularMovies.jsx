@@ -1,7 +1,7 @@
-// src/components/PopularMovies.js
-import React from 'react';
-import useMovieList from '../hooks/useMovieList.js';
-import MovieCarousel from './MovieCarousel';
+// src/components/PopularMovies.jsx
+import React, {useState} from 'react';
+import useMovieList from '../hooks/useMovieList.jsx';
+import MovieCarousel from './MovieCarousel.jsx';
 
 function PopularMovies() {
     const { movies, loadMore, loading, error, hasMore } = useMovieList({
@@ -25,11 +25,6 @@ function PopularMovies() {
             setStartIndex(newIndex);
         }
     };
-
-    // 필요한 경우 startIndex 초기화
-    useEffect(() => {
-        // 예를 들어, 새로운 데이터를 불러올 때 startIndex를 유지하거나 초기화할 수 있음
-    }, [movies]);
 
     if (loading && movies.length === 0) return <p>Loading popular movies...</p>;
     if (error) return (
