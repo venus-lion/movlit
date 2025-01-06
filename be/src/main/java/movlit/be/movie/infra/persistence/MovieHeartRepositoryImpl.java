@@ -20,7 +20,7 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
 
     @Override
     public MovieHeart findMostRecentMovieHeart(MemberId memberId) {
-        return movieHeartJpaRepository.findMostRecentMovieHeart(memberId)
+        return movieHeartJpaRepository.findTopByMemberIdOrderByRegDtDesc(memberId)
                 .map(MovieHeartConverter::toDomain)
                 .orElseThrow(NotExistMovieHeartByMember::new);
     }

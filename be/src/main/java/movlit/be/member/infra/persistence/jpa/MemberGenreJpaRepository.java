@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface MemberGenreJpaRepository extends JpaRepository<MemberGenreEntity, MemberGenreIdEntity> {
 
-    Optional<List<MemberGenreEntity>> findByMemberGenreIdEntity_MemberId(MemberId memberId);
+    List<MemberGenreEntity> findByMemberGenreIdEntity_MemberId(MemberId memberId);
 }

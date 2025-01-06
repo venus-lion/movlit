@@ -33,6 +33,7 @@ public class MovieDocument {
     @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
             otherFields = {
                     @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer")
             })
     private String title;
 
@@ -41,7 +42,8 @@ public class MovieDocument {
 
     @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer")
+                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer")
             })
     private String overview;
 
@@ -79,7 +81,8 @@ public class MovieDocument {
 
     @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer")
+                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer")
             })
     private String tagline;
 

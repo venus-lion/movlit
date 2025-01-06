@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface MovieHeartJpaRepository extends JpaRepository<MovieHeartEntity, MovieHeartId> {
 
     // 유저의 가장 최근의 찜을 한 영화
-    @Query("SELECT m FROM MovieHeartEntity m where m.memberId = :memberId ORDER BY m.regDt DESC")
-    Optional<MovieHeartEntity> findMostRecentMovieHeart(MemberId memberId);
+//    @Query("SELECT m FROM MovieHeartEntity m where m.memberId = :memberId ORDER BY m.regDt DESC")
+    Optional<MovieHeartEntity> findTopByMemberIdOrderByRegDtDesc(MemberId memberId);
 }

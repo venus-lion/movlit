@@ -73,12 +73,12 @@ public class MovieMainController {
      * */
     @GetMapping("/interestGenre")
     public ResponseEntity<MovieListResponseDto> getMovieUserInterestByGenre(
-//            @AuthenticationPrincipal MyMemberDetails details,
+            @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
 //        MemberId currentMemberId = details.getMemberId();
-        MemberId currentMemberId = new MemberId("305d8d19132b772dcc30080b");
+        MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
         MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
         return ResponseEntity.ok().body(response);
     }
@@ -92,8 +92,9 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
-        MemberId currentMemberId = details.getMemberId();
-//        MemberId currentMemberId = new MemberId("305d8d19132b772dcc30080b");
+//        MemberId currentMemberId = details.getMemberId();
+        MemberId currentMemberId = new MemberId("2a8276a9000000e20097ec8e");
+        MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId);
 
         return ResponseEntity.ok(null);
     }
