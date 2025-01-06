@@ -141,12 +141,17 @@
     background-color: #f5f5f5;
 }
 
-/* 회원 탈퇴 비활성화 스타일 */
-.dropdown-item.disabled {
-    color: #999;
-    cursor: default;
+/* 회원 탈퇴 버튼 스타일 */
+.dropdown-item.delete-button {
+    padding: 10px 15px; /* padding 추가 */
+    border: none; /* 기본 border 제거 */
+    background-color: transparent; /* 기본 배경색 제거 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    font-size: inherit; /* 폰트 크기 상속 */
+    cursor: pointer; /* 마우스 커서 포인터로 변경 */
+    width: 100%; /* 버튼 너비를 드롭다운 메뉴 너비와 동일하게 설정 */
 }
 
-.dropdown-item.disabled:hover {
-    background-color: white; /* 마우스 오버 시 배경색 변경 방지 */
+.dropdown-item.delete-button:hover {
+    background-color: #fdd;
 }

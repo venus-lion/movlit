@@ -3,7 +3,9 @@ import axiosInstance from '../axiosInstance';
 import './MyPage.css';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 function MyPage() {
     const [userData, setUserData] = useState({
@@ -15,9 +17,37 @@ function MyPage() {
     });
     const [genreList, setGenreList] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const handleDelete = () => {
+        confirmAlert({
+            title: '회원 탈퇴 확인',
+            message: '정말로 탈퇴하시겠습니까?',
+            buttons: [
+                {
+                    label: '예',
+                    onClick: async () => {
+                        try {
+                            await axiosInstance.delete('/members/delete');
+                            alert('회원 탈퇴가 완료되었습니다.');
+                            sessionStorage.removeItem('accessToken');
+                            navigate('/');
+                        } catch (error) {
+                            console.error('Error during member deletion:', error);
+                            alert('회원 탈퇴 중 오류가 발생했습니다.');
+                        }
+                    },
+                },
+                {
+                    label: '아니오',
+                    onClick: () => {},
+                },
+            ],
+        });
     };
 
     useEffect(() => {
@@ -65,8 +95,10 @@ function MyPage() {
                             <Link to="/member/update" className="dropdown-item">
                                 회원 수정
                             </Link>
-                            {/* 회원 탈퇴는 링크 대신 보여주기만 합니다. */}
-                            <span className="dropdown-item disabled">회원 탈퇴</span>
+                            {/* 회원 탈퇴 버튼에 delete-button 클래스 추가 */}
+                            <button onClick={handleDelete} className="dropdown-item delete-button">
+                                회원 탈퇴
+                            </button>
                         </div>
                     )}
                 </div>
