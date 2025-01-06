@@ -71,7 +71,7 @@ public class MovieDocumentConverter {
     }
 
     // Document -> Domain
-    public static Movie documentToEntity(MovieDocument movieDocument) {
+    public static Movie documentToDomain(MovieDocument movieDocument) {
         return Movie.builder()
                 .movieId(movieDocument.getMovieId())
                 .title(movieDocument.getTitle())

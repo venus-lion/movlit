@@ -3,6 +3,8 @@ package movlit.be.movie_heart.infra;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.NotExistMovieHeartByMember;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.movie_heart.application.converter.MovieHeartConverter;
+import movlit.be.movie_heart.domain.MovieHeart;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.domain.repository.MovieHeartRepository;
 import movlit.be.movie_heart.infra.persistence.MovieHeartJpaRepository;
@@ -30,8 +32,9 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
     }
 
     @Override
-    public MovieHeartEntity findMostRecentMovieHeart(MemberId memberId) {
+    public MovieHeart findMostRecentMovieHeart(MemberId memberId) {
         return movieHeartJpaRepository.findTopByMemberIdOrderByRegDtDesc(memberId)
+                .map(MovieHeartConverter::toDomain)
                 .orElseThrow(NotExistMovieHeartByMember::new);
     }
 

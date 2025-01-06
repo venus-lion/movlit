@@ -20,4 +20,7 @@ public interface MovieRepository {
     List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable);
 
     Movie findMostRecentMovieHeart(MemberId memberId);      // 유저의 가장 최근 찜한 영화
+
+    List<Movie> findByVoteCountGreaterThan500OrderByPopularityDesc(Long minVoteCount, Pageable pageable);
+
 }
