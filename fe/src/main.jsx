@@ -9,7 +9,8 @@ import MemberRegister from './pages/MemberRegister';
 import MemberLogin from './pages/MemberLogin';
 import MovieDetailPage from './components/MovieDetailPage';
 import BookDetailPage from './components/BookDetailPage';
-import MyPage from './components/MyPage'; // MyPage import
+import MyPage from './components/MyPage';
+import MemberUpdate from './pages/MemberUpdate'; // MemberUpdate import
 
 const router = createBrowserRouter([
     {
@@ -41,8 +42,12 @@ const router = createBrowserRouter([
                 element: <BookDetailPage />,
             },
             {
-                path: 'mypage', // MyPage 라우트 추가
+                path: 'mypage',
                 element: <MyPage />,
+            },
+            {
+                path: 'member/update', // 회원 수정 라우트 추가
+                element: <MemberUpdate />,
             },
         ],
     },

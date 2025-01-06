@@ -41,6 +41,12 @@ operation::signupMember_failedByDuplicateNickname[snippets='http-response']
 
 operation::signupMember_failedByReconfirmPasswordUnmatch[snippets='http-response']
 
+=== 회원 수정
+
+=== 성공
+
+operation::updateMember_success['http-request,http-response']
+
 [[movie]]
 === 상세 페이지
 

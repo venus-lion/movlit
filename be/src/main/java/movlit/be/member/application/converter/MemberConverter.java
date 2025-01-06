@@ -98,9 +98,8 @@ public class MemberConverter {
 
     public static Member toMemberForUpdate(MemberUpdateRequest request) {
         return Member.builder()
-                .email(request.getEmail())
                 .nickname(request.getNickname())
-                .password(request.getPassword())
+                .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()))
                 .dob(request.getDob())
 //                .profileImgId() TODO
 //                .profileImgUrl()
@@ -196,7 +195,7 @@ public class MemberConverter {
                 .memberId(memberId)
                 .nickname(nickname)
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()))
                 .dob(request.getDob())
                 .memberGenreEntityList(memberGenreEntityList)
                 // TODO: profileImgId

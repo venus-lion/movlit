@@ -76,7 +76,6 @@ public class MemberEntity {
     }
 
     public void updateMember(Member member, List<MemberGenreEntity> memberGenreEntityList) {
-        this.email = member.getEmail();
         this.nickname = member.getNickname();
         this.password = member.getPassword();
         // TODO: profileImgId(), profileImgUrl()
