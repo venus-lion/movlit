@@ -5,6 +5,7 @@ import PopularMoviesComponent from "./PopularMoviesComponent.jsx";
 import LatestMoviesComponent from "./LatestMoviesComponent.jsx";
 import GenreMoviesComponent from "./GenreMoviesComponent.jsx";
 import InterestGenreMoviesComponent from "./InterestGenreMoviesComponent.jsx";
+import RecentHeartSimilarCrewMoviesComponent from "./RecentHeartSimilarCrewMoviesComponent.jsx";
 
 function MovieHome() {
     const [randomGenreIds, setRandomGenreIds] = useState([]);
@@ -30,10 +31,11 @@ function MovieHome() {
         <div className="movie-home">
             <PopularMoviesComponent />
             <LatestMoviesComponent />
-            {!isLoggedIn && randomGenreIds.map(genreId => (
+            {isLoggedIn && <RecentHeartSimilarCrewMoviesComponent />}
+            {isLoggedIn && <InterestGenreMoviesComponent />}
+            {randomGenreIds.map(genreId => (
                 <GenreMoviesComponent key={genreId} genreId={genreId} />
             ))}
-            {isLoggedIn && <InterestGenreMoviesComponent />}
         </div>
     );
 }

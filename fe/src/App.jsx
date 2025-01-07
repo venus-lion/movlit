@@ -6,8 +6,6 @@ import { FaUserCircle } from 'react-icons/fa';
 
 export const AppContext = createContext();
 
-export const AppContext = createContext();
-
 function App() {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(
