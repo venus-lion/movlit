@@ -100,7 +100,7 @@ function BookHome() {
             <PopularBooksComponent />
             <NewBooksComponent />
 
-            {isLoggedIn && (
+            {isLoggedIn && recommendedBooks.length > 0 && (
                 <BookCarouselRecommend
                     title="회원님이 찜한 책과 닮은 도서들"
                     books={recommendedBooks}
