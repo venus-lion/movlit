@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import axiosInstance from '../axiosInstance';
 import './MyPage.css';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaCamera } from 'react-icons/fa';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
@@ -21,6 +21,7 @@ function MyPage() {
     const navigate = useNavigate();
     const { updateLoginStatus } = useContext(AppContext);
     const fileInputRef = useRef(null);
+    const [isHovering, setIsHovering] = useState(false);
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -111,6 +112,14 @@ function MyPage() {
         }
     };
 
+    const handleMouseEnter = () => {
+        setIsHovering(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovering(false);
+    };
+
     return (
         <div className="mypage-container">
             <input
@@ -120,14 +129,25 @@ function MyPage() {
                 onChange={handleFileChange}
                 accept="image/*"
             />
+            <div
+                className="profile-image"
+                onClick={handleProfileImageClick}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={{ cursor: 'pointer' }}
+            >
+                {userData.profileImgUrl ? (
+                    <img src={userData.profileImgUrl} alt="Profile" className="profile-img" />
+                ) : (
+                    <FaUserCircle className="default-profile-icon" />
+                )}
+                {isHovering && (
+                    <div className="overlay">
+                        <FaCamera className="camera-icon" />
+                    </div>
+                )}
+            </div>
             <div className="mypage-header">
-                <div className="profile-image" onClick={handleProfileImageClick} style={{ cursor: 'pointer' }}>
-                    {userData.profileImgUrl ? (
-                        <img src={userData.profileImgUrl} alt="Profile" />
-                    ) : (
-                        <FaUserCircle className="default-profile-icon" />
-                    )}
-                </div>
                 <div className="user-info">
                     <h2>{userData.nickname}</h2>
                     <p>{userData.email}</p>
