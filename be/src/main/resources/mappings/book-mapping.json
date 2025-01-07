@@ -22,6 +22,10 @@
         }
       }
     },
+    "titleKeyword": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer"
+    },
     "crew": {
       "type": "text",
       "analyzer": "my_nori_analyzer",
