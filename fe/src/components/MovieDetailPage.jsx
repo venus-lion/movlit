@@ -45,7 +45,7 @@ function MovieDetailPage() {
                     language: data.originalLanguage,
                     runtime: data.runtime,
                     status: data.status,
-                    voteCount: data.voteCount,
+                    voteAverage: Math.round(data.voteAverage) / 2,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
                     isHearted: data.isHearted,
@@ -413,6 +413,25 @@ function MovieDetailPage() {
                                         >
                       <span style={styles.starIcon}>★</span>
                     </span>
+                                    ))}
+                            </div>
+                        </div>
+                        <div style={styles.averageRating}>
+                            <span style={styles.ratingLabel}>평균 별점</span>
+                            <div style={styles.stars}>
+                                {Array(5)
+                                    .fill()
+                                    .map((_, index) => (
+                                        <span
+                                            key={index}
+                                            style={
+                                                index < movieData.voteAverage
+                                                    ? styles.starFilled
+                                                    : styles.starEmpty
+                                            }
+                                        >
+                                            <span style={styles.starIcon}>★</span>
+                                        </span>
                                     ))}
                             </div>
                         </div>
@@ -969,6 +988,9 @@ const styles = {
         display: 'flex',
         alignItems: 'flex-start',
         marginLeft: '5px',
+    },
+    averageRating: {
+        marginLeft: '20px',
     },
 };
 
