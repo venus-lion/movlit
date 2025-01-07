@@ -34,6 +34,9 @@
           "type": "text",
           "analyzer": "my_ngram_analyzer",
           "search_analyzer": "my_ngram_analyzer"
+        },
+        "keyword": {
+          "type": "keyword"
         }
       }
     },

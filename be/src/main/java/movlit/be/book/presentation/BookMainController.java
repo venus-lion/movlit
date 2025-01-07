@@ -61,7 +61,8 @@ public class BookMainController {
         return ResponseEntity.ok(booksResponse);
     }
 
-    // 랜덤장르 불러오기 -> dto가 달라짐
+    // 랜덤장르 불러오기
+    // 얘는 '마니아를 위해' : [장르명], [장르명], [장르명]
     @GetMapping("/genres/random")
     public ResponseEntity<BooksGenreResponse> getBooksByRandomGenre(@RequestParam(defaultValue = "30") int limit){
         List<BookItemWithGenreDto> booksByRandomGenresDto = getBooksByRandomGenreService.getBooksByRandomGenres(limit);
@@ -95,8 +96,11 @@ public class BookMainController {
     }
 
 
-    // 로그인 유저가 최근에 찜한 도서 기반으로, elastic을 이용한 사용자 맞춤형 도서 추천
-    // dto 추가해야 함
+
+    /**
+     * 로그인 유저의 최근 찜 도서 기반으로 유사한 도서 리스트 가져오기 -- elasticsearch 기반
+     * */
+
     @GetMapping("/recommendations")
     public ResponseEntity<List<BookESDomain>> getRecommendations(@AuthenticationPrincipal MyMemberDetails details){
         System.out.println("/recommendationis, details ::: " + details);
@@ -104,4 +108,17 @@ public class BookMainController {
         return ResponseEntity.ok(recommendedBook);
     }
 
+    /**
+     * 로그인한 유저의 취향 장르 가져오기 -- elasticsearch 기반
+     * */
+    @GetMapping("/interestGenre")
+    public ResponseEntity<List<BookESDomain>> getBookUserInterestByGenre(@AuthenticationPrincipal
+                                                                         MyMemberDetails details){
+
+        System.out.println("/interestGenre, details ::: " + details);
+        MemberId memberId = details.getMemberId();
+        List<BookESDomain> userInterestByGenre = booksRecommendationService.getBookUserInterestByGenre(memberId);
+
+        return ResponseEntity.ok(userInterestByGenre);
+    }
 }

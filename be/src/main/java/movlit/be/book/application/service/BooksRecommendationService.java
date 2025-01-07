@@ -24,8 +24,11 @@ import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESConvertor;
 import movlit.be.bookES.BookESDomain;
 import movlit.be.bookES.BookESRepository;
+import movlit.be.common.exception.MemberGenreNotFoundException;
+import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.member.domain.repository.MemberGenreRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -39,16 +42,15 @@ import org.springframework.stereotype.Service;
 public class BooksRecommendationService {
     private final ElasticsearchOperations elasticsearchOperations;
     private final BookHeartRecommendRepository bookHeartRecommendRepository;
-    private final BookRepository bookRepository;
     private final BookESRepository bookESRepository;
+    private final MemberGenreRepository memberGenreRepository;
 
-    // dto 수정 필요
     public List<BookESDomain> getRecommendedBook(MemberId memberId){
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 30);
 
-        // 1. 사용자가 최근에 찜한 도서id 5개 가져오기
+        // 1. 사용자가 최근에 찜한 도서id 4개 가져오기
         List<String> bookIds = bookHeartRecommendRepository.findRecentLikedBookIdsByMemberId(
-                memberId, 5);
+                memberId, 4);
 
         // 2. JPA를 사용해, 도서 정보 조회 -> BookES Repository 사용
         Iterable<BookES> bookESIterable = bookESRepository.findAllById(bookIds);
@@ -56,10 +58,23 @@ public class BooksRecommendationService {
                 .collect(Collectors.toList());
 
 
-        // 2-1. 도서의 description과 categoryName 추출
-        List<String> descriptionList = bookESList.stream()
-                .map(book -> book.getDescription())
+        /*
+            TODO :: 개선
+                -> 사용자가 찜한 도서 '4'개 가져오기
+                -> description -> titleKeyword의 유사도(fuzziness)
+                -> category 필터링 -> categoryName, boost : 1.5
+                -> crew.keyword -> 정확한 매칭
+                -> 시리즈 제거
+         */
+
+        List<String> crewList = bookESList.stream()
+                .map(BookES::getCrew)
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
+
+        for (String crew : crewList){
+            System.out.println("crew :: " + crew);
+        }
 
         List<String> categoryList = bookESList.stream()
                 .map(book -> book.getCategoryName())
@@ -85,30 +100,38 @@ public class BooksRecommendationService {
                 })
                 .collect(Collectors.toList());
 
-        String joinDiscription = String.join(" ", descriptionList);
-        System.out.println("joinDiscription ::: " + joinDiscription);
         String joinCategory = String.join(" ", filteredCatgoryList);
         System.out.println("JoinCategory :: " + joinCategory);
         String joinTitleKeyword = String.join(" ", titleKeywordList);
         System.out.println("JoinTitleKeyword :: " + joinTitleKeyword);
 
-        // 3. (임시쿼리) elasticsearch 쿼리
+        // 3. elasticsearch 쿼리
         BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
 
-        // 첫 번째 MatchQuery: description에 대한 쿼리와 boost 1.5 설정
-        Query descriptionMatchQuery = MatchQuery.of(t -> t
-                .field("description")
-                //.query("군주들의 일격에 목숨을 잃는 성진우. 그러나 검은 심장의 힘으로 다시 눈을 뜨고, 죽음의 끝에서 그림자 군주 '아스본'을 만나게 된다. 평온한 세계에서의 안식과 군주들과의 잔혹한 전쟁, 선택의 갈림길에 선 성진우의 선택은…?!")
-                .query(joinDiscription)
-                .boost(3.0f) // boost 값 추가
+        // 첫 번째 MatchQuery: description에 대한 쿼리와 boost 3.0 설정
+        Query titleKeywordMatchQueryForShould = MatchQuery.of(t -> t
+                .field("titleKeyword")
+                .query(joinTitleKeyword)
+               //  .boost(2.0f) // boost 값 추가
+                .fuzziness("AUTO")
         )._toQuery();
 
-        // 두 번째 MatchQuery: categoryName에 대한 쿼리와 boost 2.0 설정
+        // 두 번째 MatchQuery: categoryName에 대한 쿼리와 boost 1.5 설정
         Query categoryNameMatchQuery = MatchQuery.of(t -> t
                 .field("categoryName")
-                .query(joinDiscription)
+                .query(joinCategory)
                 .boost(1.5f) // boost 값 추가
         )._toQuery();
+
+        // 세 번째 termQuery : crew.keyword 매치
+        Query crewKeywordTermQuery = Query.of(q -> q
+                .terms(t -> t
+                        .field("crew.keyword")
+                        .terms(v -> v.value(
+                                crewList.stream().map(crew -> FieldValue.of(crew)).collect(Collectors.toList()))
+                        )
+                )
+        );
 
         // 제외할 조건 (must_not 절): 이미 찜한 도서는 제외
         // TermQuery: 해당 book은 제거
@@ -128,8 +151,9 @@ public class BooksRecommendationService {
 
         // BoolQuery에 MatchQuery 추가
         boolQueryBuilder
-                .should(descriptionMatchQuery)
+                .should(titleKeywordMatchQueryForShould)
                 .should(categoryNameMatchQuery)
+                .should(crewKeywordTermQuery)
                 .mustNot(excludeBookIdsQuery)
                 .mustNot(titleKeywordMatchQuery)
                 .minimumShouldMatch("1");
@@ -161,10 +185,6 @@ public class BooksRecommendationService {
                 .collect(Collectors.toList());
 
         System.out.println("bookESListForReturn ::: " + bookESListForReturn);
-//
-//        List<BookESDomain> bookESDomainList = bookESList.stream()
-//                .map(bookES -> BookESConvertor.documentToDomain(bookES))
-//                .collect(Collectors.toList());
 
         List<BookESDomain> bookESDomainList = bookESListForReturn.stream()
                 .map(bookES -> BookESConvertor.documentToDomain(bookES))
@@ -176,11 +196,15 @@ public class BooksRecommendationService {
 
     }
 
-//    @Getter
-//    @ToString
-//    public class GetBookIdDescriptionAndCategory {
-//        private String bookId;
-//        private String description;
-//        private String categoryName;
-//    }
+    public List<BookESDomain> getBookUserInterestByGenre(MemberId memberId){
+        List<Genre> bookGenreList = memberGenreRepository.findUserInterestGenreList(memberId);
+
+        if (bookGenreList.isEmpty()){
+            throw new MemberGenreNotFoundException();
+        }
+        System.out.println(" === BookGenreList :: " + bookGenreList);
+
+        // elasticsearch 쿼리
+        return null;
+    }
 }
