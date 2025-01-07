@@ -35,7 +35,7 @@ public class BookMainReadService {
     }
 
     public List<BookItemDto> getRecentBookNew(int limit){
-        Pageable pageable = PageRequest.of(0, limit); // 0페이지 ~ limit 개수만큼 가져옴
+        Pageable pageable = PageRequest.of(5, limit); // 0페이지 ~ limit 개수만큼 가져옴
         List<BookNew> bookNews = bookNewRepository.findAllBookNew(pageable);
 
         return bookNews.stream()

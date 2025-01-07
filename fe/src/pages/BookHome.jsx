@@ -102,7 +102,7 @@ function BookHome() {
 
             {isLoggedIn && (
                 <BookCarouselRecommend
-                    title="회원님이 최근에 찜한 추천 도서"
+                    title="회원님이 찜한 책과 닮은 도서들"
                     books={recommendedBooks}
                     startIndex={startIndexRecommended}
                     handlePrev={handlePrevRecommended}
