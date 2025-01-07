@@ -1,10 +1,9 @@
-// BookCarousel.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function BookCarousel({ title, books, startIndex, handlePrev, handleNext }) {
+function BookCarouselRecommend({ title, books, startIndex, handlePrev, handleNext }) {
     return (
-        <div className="book-content">
+        <div>
             <h2>{title}</h2>
             <div className="book-carousel">
                 {startIndex > 0 && (
@@ -16,14 +15,21 @@ function BookCarousel({ title, books, startIndex, handlePrev, handleNext }) {
                     {books.slice(startIndex, startIndex + 5).map((book, index) => (
                         <Link className="book-card" to={`/book/${book.bookId}`} key={book.bookId}>
                             <div>
-                                <div className="book-rank">
-                                    {startIndex + index + 1}
-                                </div>
+                                {title !== "추천 도서" && (
+                                    <div className="book-rank">
+                                        {startIndex + index + 1}
+                                    </div>
+                                )}
                                 <img src={book.bookImgUrl} alt={book.title} className="book-image" />
                                 <div className="book-info">
                                     <h3 className="book-title">{book.title}</h3>
                                     <p className="book-writer">
-                                        {book.writers.map((writer) => writer.name).join(', ')}
+                                        {/* 작가 정보가 존재하는 경우에만 렌더링 */}
+                                        {book.crew && book.crew.length > 0 && (
+                                          <span>
+                                              {book.crew.join(', ')}
+                                          </span>
+                                        )}
                                     </p>
                                 </div>
                             </div>
@@ -40,4 +46,4 @@ function BookCarousel({ title, books, startIndex, handlePrev, handleNext }) {
     );
 }
 
-export default BookCarousel;
+export default BookCarouselRecommend;

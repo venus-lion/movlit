@@ -45,6 +45,10 @@ public class BookES {
     @Field(type = FieldType.Text)  // 텍스트로 처리, 전체 텍스트 검색 가능
     private String title;
 
+    // 시리즈 제거용 필드 추가
+    @Field(type = FieldType.Text)
+    private String titleKeyword;
+
     @Field(type = FieldType.Text)  // 텍스트로 처리, 전체 텍스트 검색 가능
     private List<String> crew; // 작가, 편집자, 기타..
 

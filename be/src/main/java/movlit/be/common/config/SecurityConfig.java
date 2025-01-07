@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/myPage").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/genreList").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/genreList").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/{movieId}/myComment").authenticated()

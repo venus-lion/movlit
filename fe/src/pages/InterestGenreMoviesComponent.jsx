@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import MovieCarousel from './MovieCarousel';
-import useGenreMovieList from "../hooks/useGenreMovieList.jsx";
+import useAuthMovieList from "../hooks/useAuthMovieList.jsx";
 
-function GenreMoviesComponent({ genreId }) {
-    const { movies, loading, error, genreName } = useGenreMovieList({
-        endpoint: '/api/movies/main/genre',
-        params: { genreId: genreId, pageSize: 50 },
+function InterestGenreMoviesComponent() {
+    const { movies, loading, error } = useAuthMovieList({
+        endpoint: 'movies/search/interestGenre',
+        params: { pageSize: 30 },
     });
 
     const [startIndex, setStartIndex] = useState(0);  // 화면에 보이는 영화 시작 인덱스
@@ -24,16 +24,16 @@ function GenreMoviesComponent({ genreId }) {
         }
     };
 
-    if (loading) return <p>Loading movies...</p>;
+    if (loading) return <p>Loading latest movies...</p>;
     if (error) return (
         <div>
-            <p>Error loading movies.</p>
+            <p>Error loading latest movies.</p>
         </div>
     );
 
     return (
         <MovieCarousel
-            title={`${genreName} 리스트`}  // genreId에 따라 제목 변경 가능
+            title="회원님의 관심 장르와 비슷한 영화"
             movies={movies}
             startIndex={startIndex}
             handleNext={handleNext}
@@ -42,4 +42,4 @@ function GenreMoviesComponent({ genreId }) {
     );
 }
 
-export default GenreMoviesComponent;
+export default InterestGenreMoviesComponent;

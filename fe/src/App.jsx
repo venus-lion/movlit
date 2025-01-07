@@ -49,7 +49,7 @@ function App() {
     }, [isLoggedIn]);
 
     return (
-        <AppContext.Provider value={{ updateLoginStatus }}>
+        <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
             <nav className="navbar">
                 <div className="nav-left">
                     <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
@@ -102,9 +102,11 @@ function App() {
                     )}
                 </div>
             </nav>
-            <Outlet context={{ updateLoginStatus }} />
+            <Outlet context={{ updateLoginStatus, isLoggedIn }} />
         </AppContext.Provider>
     );
 }
 
 export default App;
+
+
