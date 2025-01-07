@@ -38,7 +38,7 @@ function MovieCarousel({ title, movies, startIndex, handleNext, handlePrev, hasM
                             <div className="movie-rank">{startIndex + index + 1}</div>
                             <img
                                 src={movie.posterPath || '/default-poster.jpg'}
-                                alt={movie.title || 'No Title'}
+                                alt={movie.title || '이미지를 준비중입니다.'}
                                 className="movie-image"
                             />
                             <div className="movie-info">

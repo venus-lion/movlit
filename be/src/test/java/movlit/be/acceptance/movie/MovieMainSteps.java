@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import movlit.be.common.util.Genre;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Assertions;
@@ -95,12 +96,12 @@ public class MovieMainSteps {
         );
     }
 
-    public static void 상태코드가_200이고_genreId에_맞는_응답_데이터가_존재한다(ExtractableResponse<Response> response) {
+    public static void 상태코드가_200이고_genreId에_맞는_응답_데이터가_존재한다(ExtractableResponse<Response> response, Long genreId) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK),
-                () -> assertThat(response.jsonPath().getString("genreId")).isEqualTo("10"),
-                () -> assertThat(response.jsonPath().getString("genreName")).isEqualTo("미스터리"),
-                () -> assertThat(response.jsonPath().getList("data")).isNotEmpty()
+                () -> assertThat(response.jsonPath().getString("genreId")).isEqualTo(String.valueOf(genreId)),
+                () -> assertThat(response.jsonPath().getString("genreName")).isEqualTo(Genre.of(genreId).getName()),
+                () -> assertThat(response.jsonPath().getList("movieList")).isNotEmpty()
         );
     }
 

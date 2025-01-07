@@ -55,14 +55,14 @@ class MovieMainAcceptanceTest extends AcceptanceTest {
         api_문서_타이틀("fetchMovieListByGenre_success", spec);
 
         // given
-        Long genreId = Genre.MYSTERY.getId();
+        Long genreId = Genre.ACTION.getId();
         int page = 1, pageSize = 10;
 
         // when
         var response = 장르별_영화_리스트를_조회한다(genreId, page, pageSize, spec);
 
         // then
-        상태코드가_200이고_genreId에_맞는_응답_데이터가_존재한다(response);
+        상태코드가_200이고_genreId에_맞는_응답_데이터가_존재한다(response, genreId);
     }
 
     @Nested
