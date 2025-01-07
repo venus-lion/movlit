@@ -2,7 +2,9 @@ import React, { useCallback, useState, createContext } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 아이콘 추가
+import { FaUserCircle } from 'react-icons/fa';
+
+export const AppContext = createContext();
 
 export const AppContext = createContext();
 
@@ -22,7 +24,7 @@ function App() {
             sessionStorage.removeItem('accessToken');
             document.cookie =
                 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            setIsLoggedIn(false);
+            updateLoginStatus(false);
             navigate('/member/login');
         } catch (error) {
             console.error('Logout error:', error);
@@ -31,6 +33,7 @@ function App() {
 
     return (
         <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
+
             <nav className="navbar">
                 <div className="nav-left">
                     <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
@@ -79,7 +82,6 @@ function App() {
                     )}
                 </div>
             </nav>
-
             <Outlet context={{ updateLoginStatus, isLoggedIn }} />
         </AppContext.Provider>
     );

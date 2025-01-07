@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/members/delete").authenticated()
                         .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**")
