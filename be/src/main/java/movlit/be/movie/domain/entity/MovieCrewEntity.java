@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.movie.domain.MovieRole;
 
 @Table(name = "movie_crew")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class MovieCrewEntity {
 

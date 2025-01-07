@@ -2,10 +2,12 @@ package movlit.be.movie.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import movlit.be.common.util.ids.MovieCrewId;
 
 @Getter
+@Builder
 public class MovieCrew {
 
     /**
@@ -18,6 +20,5 @@ public class MovieCrew {
     private String charName;
     private String profileImgUrl;
     private int orderNo; // 감독: -1, 배우: 0부터 정렬
-    private List<MovieRCrew> movieRCrewList = new ArrayList<>();
 
 }

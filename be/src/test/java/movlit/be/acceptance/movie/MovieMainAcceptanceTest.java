@@ -64,22 +64,4 @@ class MovieMainAcceptanceTest extends AcceptanceTest {
         // then
         상태코드가_200이고_genreId에_맞는_응답_데이터가_존재한다(response, genreId);
     }
-
-    @Nested
-    @DisplayName("로그인 유저 추천 영화 리스트 search 테스트")
-    class LoginUserInterestGenreMovieList{
-        String accessToken;
-
-        @BeforeEach
-        public void before(){
-            accessToken = 회원_윤기_액세스토큰;
-        }
-
-        @DisplayName("로그인 상태가 맞고 선호 장르가 존재하면, 상태코드 200과 body를 반환한다.")
-        @Test
-        void when_user_login_has_Interest_Genre_then_response_200_and_body() {
-            // docs
-
-        }
-    }
 }

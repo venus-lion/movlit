@@ -97,6 +97,26 @@
         }
       }
     },
+    "movieCrew": {
+      "type": "nested",
+      "properties": {
+        "movieCrewId": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "role": {
+          "type": "keyword"
+        },
+        "charName": {
+          "type": "keyword"
+        },
+        "orderNo": {
+          "type": "integer"
+        }
+      }
+    },
     "movieTag": {
       "type": "nested",
       "properties": {
