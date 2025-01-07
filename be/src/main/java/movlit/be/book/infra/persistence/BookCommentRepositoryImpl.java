@@ -45,12 +45,12 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
     }
 
 
-//    @Override
-//    public Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable) {
-//        Slice<BookCommentResponseDto> bookCommentEntity = bookCommentJpaRepository.findByBookEntity(bookId, pageable);
-//
-//        return bookCommentEntity;
-//    }
+    @Override
+    public Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable) {
+        Slice<BookCommentResponseDto> bookCommentEntity = bookCommentJpaRepository.findByBookEntity(bookId, pageable);
+
+        return bookCommentEntity;
+    }
 
     @Override
     public BookComment save(BookComment bookComment) {

@@ -25,23 +25,20 @@ import org.springframework.stereotype.Repository;
 public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntity, BookCommentId> {
 
 
-//    @Query("SELECT NEW movlit.be.book.domain.dto.BookCommentResponseDto("
-//            + "    bc.bookCommentId,"
-//            + "    bc.score,"
-//            + "    bc.comment,"
-//            + "    mb.nickname,"
-//            + "    mb.profileImgUrl,"
-//            + "    false,"
-//            + "    lc.count,"
-//            + "    (SELECT COUNT(bcc) FROM BookCommentEntity bcc WHERE bcc.bookEntity.bookId = :bookId)"
-//            + ")"
-//            + "FROM BookCommentEntity bc"
-//            + "LEFT JOIN BookCommentLikeCountEntity lc ON lc.bookCommentEntity.bookCommentId = bc.bookCommentId"
-//            + "LEFT JOIN MemberEntity mb ON mb.memberId = bc.memberEntity.memberId"
-//            + "WHERE bc.bookEntity = :bookId"
-//            + "ORDER BY bc.regDt DESC  ")
-//    Slice<BookCommentResponseDto> findByBookEntity(@Param("bookId") BookId bookId,
-//                                                   @Param("pageable") Pageable pageable);
+@Query("SELECT NEW movlit.be.book.domain.dto.BookCommentResponseDto( "
+        + "bc.bookCommentId, bc.score, bc.comment, "
+        + "m.nickname, m.profileImgUrl , false, "
+        + "IFNULL(bclc.count, 0) AS likeCount , bc.regDt, bc.updDt, "
+        + "(SELECT COUNT(bcc) FROM BookCommentEntity bcc WHERE bcc.bookEntity.bookId = :bookId ) AS allCommentsCount"
+        + ") "
+        + "FROM BookCommentEntity bc "
+        + "LEFT JOIN BookCommentLikeCountEntity bclc ON bclc.bookCommentEntity.bookCommentId = bc.bookCommentId "
+        + "LEFT JOIN MemberEntity m ON m.memberId = bc.memberEntity.memberId "
+        + "WHERE bc.bookEntity.bookId = :bookId "
+        + "order by bc.regDt DESC "
+        )
+    Slice<BookCommentResponseDto> findByBookEntity(@Param("bookId") BookId bookId,
+                                                   @Param("pageable") Pageable pageable);
 
 
     Optional<BookCommentEntity> findByMemberEntityAndBookEntity(MemberEntity memberEntity, BookEntity bookEntity);

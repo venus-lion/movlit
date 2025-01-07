@@ -23,5 +23,5 @@ public interface BookCommentRepository {
     void deleteById(BookCommentId bookCommentId);
 
 
-//    Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable);
+    Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable);
 }

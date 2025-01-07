@@ -34,9 +34,12 @@ public class BookDetailController {
     @GetMapping("{bookId}/detail")
     public BookDetailResponseDto getBookDetail(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
         BookDetailResponseDto bookDetailResponse = bookDetailReadService.getBookDetail(bookId);
-        System.out.println("&&detail 있니? : " + details);
-        System.out.println("&&detail의 mem정보" + details.getMemberId());
-        System.out.println("&&detail의 mem이름" + details.getUsername());
+        if(details != null){
+            System.out.println("&&detail 있니? : " + details);
+            System.out.println("&&detail의 mem정보" + details.getMemberId());
+            System.out.println("&&detail의 mem이름" + details.getUsername());
+        }
+
 
         return bookDetailResponse;
     }

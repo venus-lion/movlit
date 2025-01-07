@@ -47,17 +47,16 @@ public class BookCommentController {
     private final MemberReadService memberReadService;
 
     // 리뷰 리스트
-//    @GetMapping("{bookId}/comments")
-//    public ResponseEntity<Slice<BookCommentResponseDto>>  bookCommentReadService(@PathVariable BookId bookId,
-//                                                                                   @AuthenticationPrincipal MyMemberDetails details,
-//                                                                                   @PageableDefault(size = 4, sort = "regDt", direction = Direction.DESC)
-//                                                     Pageable pageable){
-//        //Book book = bookDetailReadService.findByBookId(bookId);
-//        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.getPagedBookComments(bookId, pageable);
-//
-//
-//       return ResponseEntity.ok(pagedResult);
-//    }
+    @GetMapping("{bookId}/comments")
+    public ResponseEntity<Slice<BookCommentResponseDto>>  bookCommentReadService(@PathVariable BookId bookId,
+                                                                                   @PageableDefault(size = 4, sort = "regDt", direction = Direction.DESC)
+                                                     Pageable pageable){
+
+        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.getPagedBookComments(bookId, pageable);
+
+
+       return ResponseEntity.ok(pagedResult);
+    }
 
     @GetMapping("{bookId}/myComment")
     public ResponseEntity myComment(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {

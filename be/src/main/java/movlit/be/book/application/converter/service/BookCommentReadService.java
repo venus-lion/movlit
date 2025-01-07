@@ -30,11 +30,11 @@ public class BookCommentReadService {
     private final BookCommentLikeRepository bookCommentLikeRepository;
 
     // 리뷰 리스트
-//    public Slice<BookCommentResponseDto> getPagedBookComments(BookId bookId, Pageable pageable) {
-//        Slice<BookCommentResponseDto> bookCommentPage = bookCommentRepository.findByBookId(bookId, pageable);
-//
-//        return bookCommentPage;
-//    }
+    public Slice<BookCommentResponseDto> getPagedBookComments(BookId bookId, Pageable pageable) {
+        Slice<BookCommentResponseDto> bookCommentPage = bookCommentRepository.findByBookId(bookId, pageable);
+
+        return bookCommentPage;
+    }
 
     // 내가 작성한 도서 리뷰 찾기
     public BookComment findByMemberAndBook(Member member, Book book) {
