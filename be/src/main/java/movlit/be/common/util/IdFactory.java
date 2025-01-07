@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import movlit.be.common.util.ids.BaseId;
 import movlit.be.common.util.ids.BookId;
+import movlit.be.common.util.ids.ImageId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.common.util.ids.MovieCommentLikeCountId;
@@ -80,6 +81,14 @@ public class IdFactory {
 
     public static MovieCommentLikeCountId createMovieCommentLikeCountId() {
         return createId(MovieCommentLikeCountId.class);
+    }
+
+    public static ImageId createImageId(String id) {
+        return createId(ImageId.class, id);
+    }
+
+    public static ImageId createImageId() {
+        return createId(ImageId.class);
     }
 
     private static <T extends BaseId> T createId(Class<T> idClass, String id) {
