@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/testBook/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/comments/*/likes").authenticated()

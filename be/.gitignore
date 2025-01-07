@@ -44,3 +44,5 @@ src/main/resources/application-oauth2.yml
 src/main/resources/application-api-key.yml
 src/main/resources/application-es-local.yml
 src/main/resources/application-db-local.yml
+src/main/resources/application-aws.yml
+src/main/resources/application-servlet.yml
