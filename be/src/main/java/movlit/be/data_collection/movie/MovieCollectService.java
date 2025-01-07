@@ -20,6 +20,7 @@ import movlit.be.data_collection.movie.jpa.MovieCollectRepository;
 import movlit.be.data_collection.movie.jpa.MovieTagRepository;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie.domain.MovieRole;
+import movlit.be.movie.domain.ProductionCountry;
 import movlit.be.movie.domain.entity.MovieCrewEntity;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
@@ -164,7 +165,8 @@ public class MovieCollectService {
                 productionCountry = "NONE";
             } else {
                 List<Object> productionCountries = (List<Object>) detailResult.get("production_countries");
-                productionCountry = (String) ((Map<String, Object>) productionCountries.get(0)).get("iso_3166_1");
+                productionCountry = ProductionCountry.getNameFromCode(
+                        (String) ((Map<String, Object>) productionCountries.get(0)).get("iso_3166_1"));
             }
             Integer runtime = (Integer) detailResult.get("runtime");
             String status = (String) detailResult.get("status");
