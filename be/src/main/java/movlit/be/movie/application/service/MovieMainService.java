@@ -80,22 +80,11 @@ public class MovieMainService {
         try {
             MovieHeart lastMovieHeart = movieHeartRepository.findMostRecentMovieHeart(currentMemberId);
             Long movieId = lastMovieHeart.getMovieId();
-            Movie movie = movieRepository.findById(movieId);
+            Movie movie = movieRepository.findByIdWithCrew(movieId);
 
             Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
             movieList = movieSearchRepository.searchByUserHeartMovie(movie, pageable);
-
-            // 1. 장르, crew(배우) 가져와서 elasticsearch에 movieCrew로 검색
-
-            // 2. 장르, 국가
-
-            // 2-2. 제목, 태그라인 가져와서 overview match
-
-
-            // 3. keyword 가져와서 elasticsearch에 overview로 검색 (morelikethis쿼리)
-
-            // 4. tagline 가져와서 elasticsearch에 overview로 검색 (morelikethis쿼리)
 
         } catch (NotExistMovieHeartByMember e) {
             // 찜한 영화가 아직 없을 때

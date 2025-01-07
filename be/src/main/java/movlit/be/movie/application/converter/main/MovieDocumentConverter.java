@@ -1,15 +1,21 @@
 package movlit.be.movie.application.converter.main;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import movlit.be.common.util.Genre;
 import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.MovieCrew;
 import movlit.be.movie.domain.MovieGenre;
+import movlit.be.movie.domain.document.MovieCrewForDocument;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.document.MovieGenreForDocument;
 import movlit.be.movie.domain.document.MovieTagForDocument;
+import movlit.be.movie.domain.entity.MovieCrewEntity;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
+import movlit.be.movie.domain.entity.MovieRCrewEntity;
 import movlit.be.movie.domain.entity.MovieTagEntity;
 
 public class MovieDocumentConverter {
@@ -47,6 +53,9 @@ public class MovieDocumentConverter {
                                 .map(MovieDocumentConverter::entityToForDocument)
                                 .collect(Collectors.toList())
                 )
+                .movieCrew(
+                        MovieDocumentConverter.entityToForDocument(movieEntity.getMovieRCrewEntityList())
+                )
                 .build();
     }
 
@@ -68,6 +77,26 @@ public class MovieDocumentConverter {
                 .movieTagId(movieTagId)
                 .tagName(movieTagEntity.getName())
                 .build();
+    }
+
+    // MovieRCrewEntity -> MovieCrewEntity -> MovieCrewForDocument
+    public static List<MovieCrewForDocument> entityToForDocument(List<MovieRCrewEntity> movieRCrewEntityList) {
+        List<MovieCrew> movieCrewList = new ArrayList<>();
+
+        movieRCrewEntityList.forEach(e -> {
+            MovieCrewEntity movieCrewEntity = e.getMovieCrewEntity();
+            movieCrewList.add(MovieCrewConverter.toCrewDomain(movieCrewEntity));
+        });
+
+        return movieCrewList.stream()
+                .map(m -> MovieCrewForDocument.builder()
+                        .movieCrewId(m.getMovieCrewId().getValue())
+                        .name(m.getName())
+                        .role(m.getRole().getValue())
+                        .charName(m.getCharName())
+                        .orderNo(m.getOrderNo())
+                        .build())
+                .toList();
     }
 
     // Document -> Domain

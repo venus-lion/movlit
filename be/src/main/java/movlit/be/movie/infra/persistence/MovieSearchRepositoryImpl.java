@@ -86,6 +86,14 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
     }
 
     @Override
+    public List<Movie> searchByUserHeartMovieAndCrew(Movie movie, Pageable pageable) {
+        // TODO : 위와 같이 비슷한 로직(대표 crew 1명 뽑기)
+
+
+        return List.of();
+    }
+
+    @Override
     public List<Movie> searchByUserHeartMovie(Movie movie, Pageable pageable) {
         // TODO : 위와 같이 비슷한 로직(가중치 + 1) + [title이 서로 유사 (가중치 +2), 찜한 title과 overview가 유사(가중치 +1.5)]
         // 최근 찜한 영화 최대 3개 가져와서 장르 HashSet()

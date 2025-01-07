@@ -56,6 +56,14 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
+    public Movie findByIdWithCrew(Long movieId) {
+        MovieEntity movieEntity = Optional.ofNullable(movieJpaRepository.findByIdWithCrew(movieId))
+                .orElseThrow(MovieNotFoundException::new).get();
+
+        return MovieConverter.toDomain(movieEntity);
+    }
+
+    @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
         Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(genreId, pageable);
 //        Page<MovieGenreEntity> movieEntityPage2 = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
