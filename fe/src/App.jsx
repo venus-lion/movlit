@@ -1,8 +1,7 @@
-import React, { useCallback, useState, createContext } from 'react';
+import React, { useCallback, useState, createContext, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import { FaUserCircle } from 'react-icons/fa';
 
 export const AppContext = createContext();
 
@@ -11,6 +10,8 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(
         !!sessionStorage.getItem('accessToken')
     );
+    const [profileImage, setProfileImage] = useState(null); // 프로필 이미지 URL 상태
+    console.log('profileImage = {}', profileImage);
 
     const updateLoginStatus = useCallback((status) => {
         setIsLoggedIn(status);
@@ -23,11 +24,29 @@ function App() {
             document.cookie =
                 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             updateLoginStatus(false);
+            setProfileImage(null); // 로그아웃 시 프로필 이미지 상태 초기화
             navigate('/member/login');
         } catch (error) {
             console.error('Logout error:', error);
         }
     };
+
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const response = await axiosInstance.get('/images/profile');
+                setProfileImage(response.data); // 응답으로 받은 이미지 URL을 상태에 저장
+            } catch (error) {
+                console.error('Error fetching profile image:', error);
+                // 에러 처리 (예: 기본 이미지 설정)
+                setProfileImage(null);
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchProfileImage();
+        }
+    }, [isLoggedIn]);
 
     return (
         <AppContext.Provider value={{ updateLoginStatus }}>
@@ -70,7 +89,11 @@ function App() {
                                 to="/mypage"
                                 className={({ isActive }) => (isActive ? 'active nav-mypage' : 'nav-mypage')}
                             >
-                                <FaUserCircle className="nav-mypage-icon" />
+                                {profileImage ? (
+                                    <img src={profileImage.url} alt="프로필" className="nav-mypage-img" />
+                                ) : (
+                                    <div className="nav-mypage-img placeholder"></div>
+                                )}
                             </NavLink>
                             <button onClick={handleLogout} className="logout-button">
                                 로그아웃
