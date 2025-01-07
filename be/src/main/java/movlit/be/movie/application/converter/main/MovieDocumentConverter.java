@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import movlit.be.common.util.Genre;
+import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.MovieCrew;
 import movlit.be.movie.domain.MovieGenre;
+import movlit.be.movie.domain.MovieRCrew;
+import movlit.be.movie.domain.MovieRCrewId;
+import movlit.be.movie.domain.MovieRole;
 import movlit.be.movie.domain.document.MovieCrewForDocument;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.document.MovieGenreForDocument;
@@ -120,8 +124,20 @@ public class MovieDocumentConverter {
                 .movieGenreList(movieDocument.getMovieGenre().stream()
                         .map(x -> new MovieGenre(x.getGenreId(), x.getGenreName()))
                         .toList()
-                )
-                .build();
-    }
+                ).movieRCrewList(movieDocument.getMovieCrew().stream()
+                        .map(m -> MovieRCrew.builder()
+                                .movieRCrewId(new MovieRCrewId(
+                                        movieDocument.getMovieId(), new MovieCrewId(m.getMovieCrewId())
+                                ))
+                                .movieCrew(MovieCrew.builder()
+                                        .movieCrewId(new MovieCrewId(m.getMovieCrewId()))
+                                        .name(m.getName())
+                                        .role(MovieRole.CAST)
+                                        .charName(m.getCharName())
+                                        .orderNo(m.getOrderNo())
+                                        .build())
 
+                                .build()).toList()
+                ).build();
+    }
 }

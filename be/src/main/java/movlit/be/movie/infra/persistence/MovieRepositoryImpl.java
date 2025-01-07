@@ -56,11 +56,11 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public Movie findByIdWithCrew(Long movieId) {
-        MovieEntity movieEntity = Optional.ofNullable(movieJpaRepository.findByIdWithCrew(movieId))
-                .orElseThrow(MovieNotFoundException::new).get();
+    public List<Movie> findByIdWithCrewIn(List<Long> movieIds) {
+        List<MovieEntity> movieEntity = movieJpaRepository.findByIdWithCrewIn(movieIds);
+        if(movieEntity.isEmpty()) throw new MovieNotFoundException();
 
-        return MovieConverter.toDomain(movieEntity);
+        return movieEntity.stream().map(MovieConverter::toDomain).toList();
     }
 
     @Override

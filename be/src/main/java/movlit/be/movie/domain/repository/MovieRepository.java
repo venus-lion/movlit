@@ -23,6 +23,6 @@ public interface MovieRepository {
 
     List<Movie> findByVoteCountGreaterThan500OrderByPopularityDesc(Long minVoteCount, Pageable pageable);
 
-    Movie findByIdWithCrew(Long movieId);
+    List<Movie> findByIdWithCrewIn(List<Long> movieId);
 
 }
