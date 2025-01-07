@@ -66,8 +66,4 @@ public class MovieMainController {
         MovieListByGenreResponseDto reponseDto = movieMainService.getMovieGroupbyGenre(genreId, page, pageSize);
         return ResponseEntity.ok().body(reponseDto);
     }
-
-    /**
-     * 로그인 유저의 최근 평가 영화 기반으로 유사한 영화 리스트 가져오기
-     * */
 }

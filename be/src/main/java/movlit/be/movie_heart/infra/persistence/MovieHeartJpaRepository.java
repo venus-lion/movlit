@@ -1,5 +1,6 @@
 package movlit.be.movie_heart.infra.persistence;
 
+import java.util.List;
 import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieHeartId;
@@ -12,6 +13,9 @@ public interface MovieHeartJpaRepository extends JpaRepository<MovieHeartEntity,
 
     void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
 
-    Optional<MovieHeartEntity> findTopByMemberIdOrderByRegDtDesc(MemberId memberId);
+    @Override
+    List<MovieHeartEntity> findAll();
+
+    List<MovieHeartEntity> findTop3ByMemberIdOrderByRegDtDesc(MemberId memberId);
 
 }

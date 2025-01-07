@@ -1,8 +1,9 @@
 package movlit.be.acceptance.movie;
 
-import static movlit.be.acceptance.movie.MovieSearchSteps.상태코드가_200이고_응답_데이터가_존재한다;
 import static movlit.be.acceptance.movie.MovieSearchSteps.로그인유저_관심장르_영화_리스트를_조회한다;
+import static movlit.be.acceptance.movie.MovieSearchSteps.상태코드가_200이고_응답_데이터가_존재한다;
 import static movlit.be.acceptance.movie.MovieSearchSteps.선호장르_하나이상_맞는_응답_데이터가_존재한다;
+import static movlit.be.acceptance.movie.MovieSearchSteps.찜한_영화_크루_유사한_영화_리스트를_조회한다;
 
 import java.util.List;
 import movlit.be.acceptance.AcceptanceTest;
@@ -40,6 +41,21 @@ class MovieSearchAcceptanceTest extends AcceptanceTest {
             // then
             상태코드가_200이고_응답_데이터가_존재한다(response);
             선호장르_하나이상_맞는_응답_데이터가_존재한다(response, genreList);
+        }
+
+        @DisplayName("사용자가 찜한 영화와 배우 정보가 유사한 영화를 가져오는데 성공하면, 상태코드 200과 body를 반환한다.")
+        @Test
+        void when_recent_heart_similar_crew_movie_then_response_200_and_body() {
+            // docs
+            api_문서_타이틀("recentHeartSimilarCrewMovie_success", spec);
+
+            // given
+
+            // when
+            var response = 찜한_영화_크루_유사한_영화_리스트를_조회한다(accessToken, spec);
+
+            // then
+            상태코드가_200이고_응답_데이터가_존재한다(response);
         }
     }
 }

@@ -39,6 +39,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/testBook/**").permitAll()
                         .requestMatchers("/testBook//saveBooks/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/images/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/comments/*/likes").authenticated()

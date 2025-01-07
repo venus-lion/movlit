@@ -1,5 +1,6 @@
 package movlit.be.movie.infra.persistence.jpa;
 
+import java.util.List;
 import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.domain.entity.MovieEntity;
@@ -24,4 +25,10 @@ public interface MovieJpaRepository extends JpaRepository<MovieEntity, Long> {
     @Query("SELECT m FROM MovieEntity m LEFT JOIN FETCH m.movieGenreEntityList "
             + "WHERE m.movieId = :movieId")
     Optional<MovieEntity> findByMovieIdWithGenre(Long movieId);
+
+    @Query("SELECT m FROM MovieEntity m "
+            + "LEFT JOIN FETCH m.movieRCrewEntityList mrc "
+            + "LEFT JOIN FETCH mrc.movieCrewEntity mc "
+            + "WHERE m.movieId IN :movieIds ")
+    List<MovieEntity> findByIdWithCrewIn(List<Long> movieIds);
 }

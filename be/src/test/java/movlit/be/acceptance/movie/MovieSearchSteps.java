@@ -38,6 +38,22 @@ public class MovieSearchSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 찜한_영화_크루_유사한_영화_리스트를_조회한다(String accessToken, RequestSpecification spec){
+        return RestAssured
+                .given()
+                .param("page", 1)
+                .param("pageSize", 10)
+                .spec(spec)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/movies/search/lastHeart")
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static void 상태코드가_200이고_응답_데이터가_존재한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK),

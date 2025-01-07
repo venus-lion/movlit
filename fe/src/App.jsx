@@ -1,8 +1,9 @@
-import React, { useCallback, useState, createContext } from 'react';
+import React, { useCallback, useState, createContext, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import { FaUserCircle } from 'react-icons/fa';
+import { ToastContainer } from 'react-toastify';
+import { FaUserCircle } from 'react-icons/fa'; // React Icons에서 FaUserCircle 아이콘 import
 
 export const AppContext = createContext();
 
@@ -11,6 +12,8 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(
         !!sessionStorage.getItem('accessToken')
     );
+    const [profileImage, setProfileImage] = useState(null);
+    console.log('profileImage = {}', profileImage);
 
     const updateLoginStatus = useCallback((status) => {
         setIsLoggedIn(status);
@@ -23,20 +26,43 @@ function App() {
             document.cookie =
                 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             updateLoginStatus(false);
+            setProfileImage(null);
             navigate('/member/login');
         } catch (error) {
             console.error('Logout error:', error);
         }
     };
 
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const response = await axiosInstance.get('/images/profile');
+                setProfileImage(response.data);
+            } catch (error) {
+                console.error('Error fetching profile image:', error);
+                setProfileImage(null);
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchProfileImage();
+        }
+    }, [isLoggedIn]);
+
     return (
         <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
             <nav className="navbar">
                 <div className="nav-left">
-                    <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) => (isActive ? 'active' : '')}
+                    >
                         WATCHA PEDIA
                     </NavLink>
-                    <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) => (isActive ? 'active' : '')}
+                    >
                         영화
                     </NavLink>
                     <NavLink
@@ -47,7 +73,11 @@ function App() {
                     </NavLink>
                 </div>
                 <div className="nav-right">
-                    <input type="text" placeholder="검색어를 입력하세요" className="search-box" />
+                    <input
+                        type="text"
+                        placeholder="검색어를 입력하세요"
+                        className="search-box"
+                    />
                     {!isLoggedIn && (
                         <>
                             <NavLink
@@ -68,9 +98,19 @@ function App() {
                         <div className="nav-right-logged-in">
                             <NavLink
                                 to="/mypage"
-                                className={({ isActive }) => (isActive ? 'active nav-mypage' : 'nav-mypage')}
+                                className={({ isActive }) =>
+                                    isActive ? 'active nav-mypage' : 'nav-mypage'
+                                }
                             >
-                                <FaUserCircle className="nav-mypage-icon" />
+                                {profileImage ? (
+                                    <img
+                                        src={profileImage.url}
+                                        alt="프로필"
+                                        className="nav-mypage-img"
+                                    />
+                                ) : (
+                                    <FaUserCircle className="nav-mypage-icon" />
+                                )}
                             </NavLink>
                             <button onClick={handleLogout} className="logout-button">
                                 로그아웃
@@ -80,10 +120,9 @@ function App() {
                 </div>
             </nav>
             <Outlet context={{ updateLoginStatus, isLoggedIn }} />
+            <ToastContainer />
         </AppContext.Provider>
     );
 }
 
 export default App;
-
-

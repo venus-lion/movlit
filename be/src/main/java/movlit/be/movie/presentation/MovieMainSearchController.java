@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.movie.application.service.MovieMainSearchService;
 import movlit.be.movie.application.service.MovieMainService;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MovieMainSearchController {
 
     private final MovieMainService movieMainService;
+    private final MovieMainSearchService movieMainSearchService;
 
     /**
      * 사용자 별 취향 (장르) 가져오기
@@ -33,7 +35,7 @@ public class MovieMainSearchController {
 
         MemberId currentMemberId = details.getMemberId();
 //        MemberId currentMemberId = new MemberId("3e5bd1120000003fa8ece4dd");
-        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
+        MovieListResponseDto response = movieMainSearchService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
         return ResponseEntity.ok(response);
     }
 
@@ -42,13 +44,13 @@ public class MovieMainSearchController {
      * */
     @GetMapping("/lastHeart")
     public ResponseEntity<MovieListResponseDto> getMovieByUserRecentHeart(
-//            @AuthenticationPrincipal MyMemberDetails details,
+            @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
-//        MemberId currentMemberId = details.getMemberId();
-        MemberId currentMemberId = new MemberId("3c674f030000002cf9970db2");
-        MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId, page, pageSize);
+        MemberId currentMemberId = details.getMemberId();
+//        MemberId currentMemberId = new MemberId("3e5bd1120000003fa8ece4dd");
+        MovieListResponseDto response = movieMainSearchService.getMovieByUserRecentHeart(currentMemberId, page, pageSize);
 
         return ResponseEntity.ok(response);
     }
