@@ -5,6 +5,8 @@ import './App.css';
 import { ToastContainer } from 'react-toastify';
 import { FaUserCircle } from 'react-icons/fa'; // React Icons에서 FaUserCircle 아이콘 import
 
+export const AppContext = createContext();
+
 function App() {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(
