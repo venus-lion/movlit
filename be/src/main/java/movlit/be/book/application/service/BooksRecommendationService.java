@@ -3,6 +3,10 @@ package movlit.be.book.application.service;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery.Builder;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionBoostMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScore;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScoreMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScoreQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
@@ -202,9 +206,73 @@ public class BooksRecommendationService {
         if (bookGenreList.isEmpty()){
             throw new MemberGenreNotFoundException();
         }
-        System.out.println(" === BookGenreList :: " + bookGenreList);
 
-        // elasticsearch 쿼리
-        return null;
+        // 사용자가 선택한 장르 이름을 추출해, 쿼리 생성에 사용
+        List<String> genreNameList = bookGenreList.stream()
+                .map(genre -> genre.getName())
+                .collect(Collectors.toList());
+
+        for (String genreName : genreNameList){
+            System.out.println("genreName ::: " + genreName);
+        }
+
+        // elasticsearch 쿼리 - 사용자 취향 장르와 일치하는 장르가 있다면, 가중치를 부여해서 높은 점수 순으로 가져오기
+
+        // FunctionScoreQuery - 각 장르에 대한 가중치 설정
+        List<FunctionScore> functions = new ArrayList<>();
+
+        for (String genreName : genreNameList){
+            functions.add(FunctionScore.of(f -> f
+                    .filter(Query.of(q -> q
+                            .match(m -> m.field("categoryName").query(genreName))))
+                    .weight(2.0)) // 가중치 설정
+            );
+        }
+
+        // bool 쿼리 생성
+        Query shouldMatchCategoryNameQuery = Query.of(q -> q
+                .bool(b -> b
+                        .should(
+                                MatchQuery.of(mq -> mq
+                                        .field("categoryName")
+                                        .query(String.join(" ", genreNameList))
+                                        .boost(1.0f)
+                                )._toQuery()
+                        )
+                        .minimumShouldMatch("1")
+                )
+        );
+
+        Query functionScoreQuery = FunctionScoreQuery.of(f -> f
+                .query(shouldMatchCategoryNameQuery)
+                .functions(functions)  // 가중치 설정 함수
+                .scoreMode(FunctionScoreMode.Sum) // 점수 합산
+                .boostMode(FunctionBoostMode.Multiply) // 부스트 곱셈
+        )._toQuery();
+
+        // NativeQuery 빌드 -- 최종 쿼리
+        NativeQuery nativeQuery = new NativeQueryBuilder()
+                .withQuery(functionScoreQuery)
+                .withPageable(PageRequest.of(0, 30))
+                .build();
+
+        // 검색 실행
+        SearchHits<BookES> searchHits = elasticsearchOperations.search(nativeQuery, BookES.class);
+
+        // 값이 없다면..
+        if (!searchHits.hasSearchHits()){
+            System.out.println("사용자 취향에 맞는 도서가 없습니다.");
+            return null;
+        }
+
+        List<BookES> bookESList = searchHits.getSearchHits().stream()
+                .map(hit -> hit.getContent())
+                .collect(Collectors.toList());
+
+        List<BookESDomain> bookESDomainList = bookESList.stream()
+                .map(bookES -> BookESConvertor.documentToDomain(bookES))
+                .collect(Collectors.toList());
+
+        return bookESDomainList;
     }
 }
