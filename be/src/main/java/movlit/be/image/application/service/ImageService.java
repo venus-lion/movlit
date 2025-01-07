@@ -3,10 +3,10 @@ package movlit.be.image.application.service;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import movlit.be.common.exception.ImageAlreadyExistsInMemberException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.ImageId;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.image.application.convertor.ImageConvertor;
 import movlit.be.image.domain.entity.ImageEntity;
 import movlit.be.image.domain.repository.ImageRepository;
 import movlit.be.image.presentation.dto.response.ImageResponse;
@@ -23,48 +23,23 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @Transactional
 public class ImageService {
 
-    private final S3Client s3Client;
     private final ImageRepository imageRepository;
+    private final S3Service s3Service;
 
-    @Value("${aws.s3.bucket.name}")
-    private String bucketName;
     @Value("${aws.s3.bucket.folderName}")
     private String folderName;
 
     public ImageResponse uploadProfileImage(MemberId memberId, MultipartFile file) {
-        ImageId imageId = IdFactory.createImageId();
-        String url = uploadImage(file, folderName);
-        ImageEntity imageEntity = new ImageEntity(imageId, url, memberId);
-        validateMemberExistsInImage(memberId, imageEntity.getImageId());
+        ImageEntity imageEntity = ImageConvertor.toImageEntity(s3Service.uploadImage(file, folderName), memberId);
+        validateMemberExistsInImage(memberId);
         ImageEntity savedImageEntity = imageRepository.upload(imageEntity);
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
     }
 
-    private void validateMemberExistsInImage(MemberId memberId, ImageId imageId) {
-        if (imageRepository.existsByMemberIdInImage(memberId, imageId)) {
-            throw new ImageAlreadyExistsInMemberException();
+    private void validateMemberExistsInImage(MemberId memberId) {
+        if (imageRepository.existsByMemberId(memberId)) {
+            imageRepository.deleteByMemberId(memberId);
         }
-    }
-
-    private String uploadImage(MultipartFile file, String folderName) {
-        String fileName = generateFileName(file.getOriginalFilename(), folderName);
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .contentType(file.getContentType())
-                .build();
-
-        try {
-            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(fileName)).toExternalForm();
-    }
-
-    private String generateFileName(String originalFilename, String folderName) {
-        return folderName + "/" + UUID.randomUUID() + "-" + originalFilename;
     }
 
     public ImageResponse fetchProfileImage(MemberId memberId) {

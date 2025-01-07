@@ -10,15 +10,13 @@ import org.springframework.data.repository.query.Param;
 
 public interface ImageJpaRepository extends JpaRepository<ImageEntity, ImageId> {
 
-    @Query("SELECT "
-            + "CASE WHEN COUNT(i) > 0 THEN true ELSE false END "
-            + "FROM ImageEntity i "
-            + "WHERE i.memberId = :memberId AND i.imageId = :imageId")
-    boolean existsByMemberIdInImage(@Param("memberId") MemberId memberId, @Param("imageId") ImageId imageId);
+    boolean existsByMemberId(MemberId memberId);
 
     @Query("SELECT NEW movlit.be.image.presentation.dto.response.ImageResponse(i.imageId, i.url) "
             + "FROM ImageEntity i "
             + "WHERE i.memberId = :memberId")
     ImageResponse findProfileImageByMemberId(@Param("memberId") MemberId memberId);
+
+    void deleteByMemberId(MemberId memberId);
 
 }

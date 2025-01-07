@@ -29,13 +29,13 @@ public class MovieCommentEntity {
     private Long movieId; // Movie 하나에 Comment 하나
 
     private String comment;
-    private Integer score;
+    private Double score;
     private LocalDateTime regDt;
     private LocalDateTime updDt;
 
     @Builder
     public MovieCommentEntity(MovieCommentId movieCommentId, MemberId memberId, Long movieId, String comment,
-                              Integer score,
+                              Double score,
                               LocalDateTime regDt, LocalDateTime updDt) {
         this.movieCommentId = movieCommentId;
         this.memberId = memberId;

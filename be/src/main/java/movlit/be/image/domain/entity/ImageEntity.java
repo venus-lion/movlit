@@ -28,8 +28,6 @@ public class ImageEntity {
 
     private LocalDateTime regDt;
 
-    private boolean delYn;
-
     public ImageEntity(ImageId imageId, String url, MemberId memberId) {
         this.imageId = imageId;
         this.url = url;
