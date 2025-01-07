@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import axiosInstance from '../axiosInstance';
 import './MyPage.css';
 import { FaUserCircle } from 'react-icons/fa';
@@ -20,6 +20,7 @@ function MyPage() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const { updateLoginStatus } = useContext(AppContext);
+    const fileInputRef = useRef(null);
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -77,10 +78,50 @@ function MyPage() {
         fetchGenreList();
     }, []);
 
+    const handleProfileImageClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            alert("파일을 선택해주세요.");
+            return;
+        }
+
+        if (file.size === 0) {
+            alert("빈 파일은 업로드할 수 없습니다.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axiosInstance.post('/images/profile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            setUserData({ ...userData, profileImgUrl: response.data.imageUrl });
+            alert('프로필 사진이 성공적으로 변경되었습니다.');
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('이미지 업로드 중 오류가 발생했습니다.');
+        }
+    };
+
     return (
         <div className="mypage-container">
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+                accept="image/*"
+            />
             <div className="mypage-header">
-                <div className="profile-image">
+                <div className="profile-image" onClick={handleProfileImageClick} style={{ cursor: 'pointer' }}>
                     {userData.profileImgUrl ? (
                         <img src={userData.profileImgUrl} alt="Profile" />
                     ) : (
