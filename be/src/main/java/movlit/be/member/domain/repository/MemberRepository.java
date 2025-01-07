@@ -1,13 +1,8 @@
 package movlit.be.member.domain.repository;
 
-import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
-import movlit.be.member.domain.MemberGenre;
-
-import java.util.List;
 import movlit.be.member.domain.entity.MemberEntity;
-import movlit.be.member.presentation.dto.response.GenreListReadResponse;
 import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 
 public interface MemberRepository {

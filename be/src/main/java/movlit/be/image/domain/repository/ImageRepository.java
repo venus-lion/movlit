@@ -9,8 +9,10 @@ public interface ImageRepository {
 
     ImageEntity upload(ImageEntity imageEntity);
 
-    boolean existsByMemberIdInImage(MemberId memberId, ImageId imageId);
+    boolean existsByMemberId(MemberId memberId);
 
     ImageResponse fetchProfileImageByMemberId(MemberId memberId);
+
+    void deleteByMemberId(MemberId memberId);
 
 }

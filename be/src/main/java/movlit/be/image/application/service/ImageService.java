@@ -3,7 +3,6 @@ package movlit.be.image.application.service;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import movlit.be.common.exception.ImageAlreadyExistsInMemberException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.ImageId;
 import movlit.be.common.util.ids.MemberId;
@@ -28,6 +27,7 @@ public class ImageService {
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
+
     @Value("${aws.s3.bucket.folderName}")
     private String folderName;
 
@@ -35,14 +35,14 @@ public class ImageService {
         ImageId imageId = IdFactory.createImageId();
         String url = uploadImage(file, folderName);
         ImageEntity imageEntity = new ImageEntity(imageId, url, memberId);
-        validateMemberExistsInImage(memberId, imageEntity.getImageId());
+        validateMemberExistsInImage(memberId);
         ImageEntity savedImageEntity = imageRepository.upload(imageEntity);
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
     }
 
-    private void validateMemberExistsInImage(MemberId memberId, ImageId imageId) {
-        if (imageRepository.existsByMemberIdInImage(memberId, imageId)) {
-            throw new ImageAlreadyExistsInMemberException();
+    private void validateMemberExistsInImage(MemberId memberId) {
+        if (imageRepository.existsByMemberId(memberId)) {
+            imageRepository.deleteByMemberId(memberId);
         }
     }
 

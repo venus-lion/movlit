@@ -139,7 +139,7 @@ function MyPage() {
                 },
             });
             setUserData({ ...userData, profileImgUrl: response.data.imageUrl });
-            toast.success('프로필 사진이 성공적으로 변경되었습니다.', {
+            toast.success('프로필 사진이 성공적으로 변경되었습니다.\n새로고침을 해주세요.', {
                 position: 'top-right',
                 autoClose: 5000,
                 hideProgressBar: false,
