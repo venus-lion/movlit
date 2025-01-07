@@ -6,6 +6,8 @@ import { FaUserCircle } from 'react-icons/fa';
 
 export const AppContext = createContext();
 
+export const AppContext = createContext();
+
 function App() {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(
@@ -30,7 +32,8 @@ function App() {
     };
 
     return (
-        <AppContext.Provider value={{ updateLoginStatus }}>
+        <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
+
             <nav className="navbar">
                 <div className="nav-left">
                     <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
@@ -79,7 +82,7 @@ function App() {
                     )}
                 </div>
             </nav>
-            <Outlet context={{ updateLoginStatus }} />
+            <Outlet context={{ updateLoginStatus, isLoggedIn }} />
         </AppContext.Provider>
     );
 }
