@@ -67,4 +67,8 @@ public class ImageService {
         return folderName + "/" + UUID.randomUUID() + "-" + originalFilename;
     }
 
+    public ImageResponse fetchProfileImage(MemberId memberId) {
+        return imageRepository.fetchProfileImageByMemberId(memberId);
+    }
+
 }
