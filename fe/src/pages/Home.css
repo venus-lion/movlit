@@ -4,6 +4,7 @@
 
 .book-carousel-section, .movie-carousel-section{
     margin: 20px 0;
+
 }
 
 .book-carousel, .movie-carousel{
@@ -18,7 +19,10 @@
     /*width: 100%;*/
     overflow: hidden;
     width: 80%;
-    justify-content: space-between;
+    justify-content: flex-start;
+
+    align-items: flex-start;     /* 카드들이 위아래로도 상단 정렬되도록(선택 사항) */
+    /*margin: 0 auto;        !* 필요한 경우 수평 중앙에 배치 *!*/
 }
 
 .book-card, .movie-card{

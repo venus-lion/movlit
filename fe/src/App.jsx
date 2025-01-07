@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, createContext } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
 import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 아이콘 추가
+
+export const AppContext = createContext();
 
 function App() {
     const navigate = useNavigate();
@@ -28,7 +30,7 @@ function App() {
     };
 
     return (
-        <>
+        <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
             <nav className="navbar">
                 <div className="nav-left">
                     <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
@@ -78,8 +80,8 @@ function App() {
                 </div>
             </nav>
 
-            <Outlet context={{ updateLoginStatus }} />
-        </>
+            <Outlet context={{ updateLoginStatus, isLoggedIn }} />
+        </AppContext.Provider>
     );
 }
 
