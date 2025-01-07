@@ -14,7 +14,10 @@ public class BookDetailConverter {
 
     // Domain -> Entity
     public static BookEntity toEntity(Book book) {
-        return BookEntity.builder()
+        if(book == null)
+            return null;
+        else
+            return BookEntity.builder()
                 .bookId(book.getBookId())
                 .isbn(book.getIsbn())
                 .title(book.getTitle())
@@ -33,7 +36,10 @@ public class BookDetailConverter {
 
     // Entity -> Domain
     public static Book toDomain(BookEntity bookEntity) {
-        return Book.builder()
+        if(bookEntity == null)
+            return null;
+        else
+            return Book.builder()
                 .bookId(bookEntity.getBookId())
                 .isbn(bookEntity.getIsbn())
                 .title(bookEntity.getTitle())

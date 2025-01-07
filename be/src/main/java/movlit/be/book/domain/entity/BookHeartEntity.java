@@ -38,5 +38,8 @@ public class BookHeartEntity {
     @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
     private MemberEntity memberEntity;
 
+    @Column(name = "is_hearted")
+    Boolean isHearted;
+
 
 }

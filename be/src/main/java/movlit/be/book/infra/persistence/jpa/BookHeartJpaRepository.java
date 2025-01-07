@@ -17,10 +17,6 @@ import org.springframework.stereotype.Repository;
 public interface BookHeartJpaRepository extends JpaRepository<BookHeartEntity, Long> {
 
 
-    @Query("SELECT COUNT(h) FROM BookHeartEntity h WHERE h.bookEntity.bookId = :bookId")
-    Optional<Long> countHeartsByBookId(@Param("bookId") BookId bookId);
-
-
 
 
 

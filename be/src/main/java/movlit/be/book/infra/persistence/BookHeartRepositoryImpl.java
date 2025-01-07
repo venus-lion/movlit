@@ -30,11 +30,7 @@ public class BookHeartRepositoryImpl implements BookHeartRepository {
         return BookHeartConverter.toDomain(bookHeartEntity);
     }
 
-    @Override
-    public Long countHeartsByBookId(BookId bookId) {
-        Long heartCount = bookHeartJpaRepository.countHeartsByBookId(bookId).orElse(0L);
-        return heartCount;
-    }
+
 
     @Override
     public BookHeart save(BookHeart bookHeart) {

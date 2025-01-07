@@ -90,11 +90,9 @@ public class BookCommentController {
         if(details != null){
             MemberId memberId = details.getMemberId();
             Member member = memberReadService.findByMemberId(memberId);
-            System.out.println("$$$$$$$$$$$$ member " + member);
 
 
             Book book = bookDetailReadService.findByBookId(bookId);
-            //Member member = memberReadService.findByMemberId(memberId);
             System.out.println("### 리뷰등록controller member " + member +  " book " + book);
             System.out.println("### 리뷰등록controller dto " + commentDto );
 

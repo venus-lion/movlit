@@ -5,10 +5,13 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.dto.BookDetailResponseDto;
 import movlit.be.book.domain.Bookcrew;
+import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.domain.repository.BookHeartRepository;
 import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.domain.repository.BookcrewRepository;
 import movlit.be.common.util.ids.BookId;
+import movlit.be.common.util.ids.MemberId;
+import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,10 +21,15 @@ public class BookDetailReadService {
     private final BookRepository bookRepository;
     private final BookcrewRepository bookcrewRepository;
     private final BookHeartRepository bookHeartRepository;
+    private final BookHeartCountRepository bookHeartCountRepository;
 
-    public BookDetailResponseDto getBookDetail(BookId bookId) {
+    // 도서 상세 정보
+    public BookDetailResponseDto getBookDetail(BookId bookId, Member member) {
         Book book = findByBookId(bookId);
-        long heartCount = countHeartsByBookId(bookId);
+        int heartCount = countHeartsByBookId(bookId);
+        boolean isHearted = false;
+        if(member != null)
+            isHearted = isHeartedByBook(book, member);
         List<Bookcrew> bookcrewList = findBookcrewByBook(book);
         BookDetailResponseDto bookDetailResponse = BookDetailResponseDto.builder()
                 .bookId(book.getBookId())
@@ -35,6 +43,7 @@ public class BookDetailReadService {
                 .stockStatus(book.getStockStatus())
                 .mallUrl(book.getMallUrl())
                 .heartCount(heartCount)
+                .isHearted(isHearted)
                 .bookcrewList(bookcrewList)
                 .build();
 
@@ -49,8 +58,17 @@ public class BookDetailReadService {
         return bookcrewRepository.findByBook(book);
     }
 
-    public long countHeartsByBookId(BookId bookId) {
-        return bookHeartRepository.countHeartsByBookId(bookId);
+    // 찜 갯수
+    public int countHeartsByBookId(BookId bookId) {
+        return bookHeartCountRepository.countHeartByBookId(bookId);
+    }
+
+    // 해당 책 나의 찜 여부
+    public boolean isHeartedByBook(Book book, Member member){
+         if(bookHeartRepository.findByBookAndMember(book, member) != null)
+             return true;
+         else
+             return false;
     }
 
 

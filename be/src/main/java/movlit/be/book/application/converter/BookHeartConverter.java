@@ -16,26 +16,30 @@ public class BookHeartConverter {
 
     // Domain -> Entity
     public static BookHeartEntity toEntity(BookHeart bookHeart) {
-        if(bookHeart == null)
+        if (bookHeart == null) {
             return null;
-        else
+        } else {
             return BookHeartEntity.builder()
-                .bookHeartId(bookHeart.getBookHeartId())
-                .bookEntity(BookDetailConverter.toEntity(bookHeart.getBook()))
-                .memberEntity(MemberConverter.toEntity(bookHeart.getMember()))
-                .build();
+                    .bookHeartId(bookHeart.getBookHeartId())
+                    .bookEntity(BookDetailConverter.toEntity(bookHeart.getBook()))
+                    .memberEntity(MemberConverter.toEntity(bookHeart.getMember()))
+                    .isHearted(bookHeart.getIsHearted())
+                    .build();
+        }
     }
 
     // Entity -> Domain
     public static BookHeart toDomain(BookHeartEntity bookHeartEntity) {
-        if(bookHeartEntity == null)
+        if (bookHeartEntity == null) {
             return null;
-        else
+        } else {
             return BookHeart.builder()
-                .bookHeartId(bookHeartEntity.getBookHeartId())
-                .book(BookDetailConverter.toDomain(bookHeartEntity.getBookEntity()))
-                .member(MemberConverter.toDomain(bookHeartEntity.getMemberEntity()))
-                .build();
+                    .bookHeartId(bookHeartEntity.getBookHeartId())
+                    .book(BookDetailConverter.toDomain(bookHeartEntity.getBookEntity()))
+                    .member(MemberConverter.toDomain(bookHeartEntity.getMemberEntity()))
+                    .isHearted(bookHeartEntity.getIsHearted())
+                    .build();
+        }
 
     }
 

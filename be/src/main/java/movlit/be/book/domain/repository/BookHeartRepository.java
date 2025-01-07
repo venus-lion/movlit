@@ -13,7 +13,6 @@ public interface BookHeartRepository {
     // 도서 찜
     BookHeart findByBookAndMember(Book book, Member member);
 
-    Long countHeartsByBookId(BookId bookId);
 
     BookHeart save(BookHeart bookHeart);
 

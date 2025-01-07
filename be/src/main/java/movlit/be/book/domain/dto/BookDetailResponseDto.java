@@ -36,7 +36,9 @@ public class BookDetailResponseDto {
     @JsonProperty("mall_url")
     private String mallUrl;
     @JsonProperty("heart_count")
-    private Long heartCount;
+    private int heartCount;
+    @JsonProperty("is_hearted")
+    private boolean isHearted;
     @JsonProperty("book_crew")
     private List<Bookcrew> bookcrewList;
 

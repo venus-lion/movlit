@@ -75,6 +75,7 @@ public class BookCommentWriteService {
         return bookCommentRepository.save(bookComment);
     }
 
+    // 도서 리뷰 삭제
     public void deleteBookComment(Member member, Book book, BookCommentId bookCommentId)
             throws BookCommentAccessDenied {
         BookComment bookComment = bookCommentReadService.findByBookCommentId(bookCommentId);
