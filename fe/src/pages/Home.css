@@ -1,9 +1,20 @@
 .book-home, .movie-home{
     padding: 20px;
+
 }
+
+/*.book-content {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center; !* 세로 가운데 정렬 *!*/
+/*    justify-content: center; !* 가로 가운데 정렬 *!*/
+/*    width: 100%; !* 부모 컨테이너에서 정렬을 위한 전체 폭 설정 *!*/
+/*    margin: 0 auto; !* 여백 자동 설정 *!*/
+/*}*/
 
 .book-carousel-section, .movie-carousel-section{
     margin: 20px 0;
+
 }
 
 .book-carousel, .movie-carousel{
