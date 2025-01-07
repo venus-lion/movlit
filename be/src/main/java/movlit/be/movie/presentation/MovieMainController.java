@@ -68,38 +68,6 @@ public class MovieMainController {
     }
 
     /**
-     * 사용자 별 취향 (장르) 가져오기
-     * TODO : 키워드, 배우 별도 고려
-     * */
-    @GetMapping("/interestGenre")
-    public ResponseEntity<MovieListResponseDto> getMovieUserInterestByGenre(
-//            @AuthenticationPrincipal MyMemberDetails details,
-            @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "10") int pageSize) {
-
-//        MemberId currentMemberId = details.getMemberId();
-        MemberId currentMemberId = new MemberId("test");
-        MovieListResponseDto response = movieMainService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * 로그인 유저의 최근 찜 영화 기반으로 유사한 영화 리스트 가져오기
-     * */
-    @GetMapping("/lastHeart")
-    public ResponseEntity<MovieListResponseDto> getMovieByUserRecentHeart(
-//            @AuthenticationPrincipal MyMemberDetails details,
-            @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "20") int pageSize
-    ){
-//        MemberId currentMemberId = details.getMemberId();
-        MemberId currentMemberId = new MemberId("3c674f030000002cf9970db2");
-        MovieListResponseDto response = movieMainService.getMovieByUserRecentHeart(currentMemberId, page, pageSize);
-
-        return ResponseEntity.ok(response);
-    }
-
-    /**
      * 로그인 유저의 최근 평가 영화 기반으로 유사한 영화 리스트 가져오기
      * */
 }
