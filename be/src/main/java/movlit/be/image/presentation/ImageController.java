@@ -19,7 +19,7 @@ public class ImageController {
 
     @PostMapping("/api/images/profile")
     public ResponseEntity<ImageResponse> uploadProfileImage(@AuthenticationPrincipal MyMemberDetails details,
-                                                            @RequestPart MultipartFile file) {
+                                                            @RequestPart(value = "file", required = false) MultipartFile file) {
         var response = imageService.uploadProfileImage(details.getMemberId(), file);
         return ResponseEntity.ok(response);
     }
