@@ -87,8 +87,13 @@
           "normalizer": "lowercase"
         },
         "genreName": {
-          "type": "text",
-          "analyzer": "korean_analyzer"
+          "type": "keyword",
+          "fields": {
+            "english": {
+              "type": "text",
+              "analyzer": "korean_analyzer"
+            }
+          }
         }
       }
     },

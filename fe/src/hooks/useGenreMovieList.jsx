@@ -9,6 +9,7 @@ const useGenreMovieList = ({ endpoint, params = {}, pageSize = 20 }) => {
     const [error, setError] = useState(null);  // 오류 상태
 
     useEffect(() => {
+        console.log(endpoint + " init");
         const fetchMovies = async () => {
             try {
                 const response = await axios.get(endpoint, {
