@@ -3,7 +3,9 @@ import axiosInstance from '../axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Select from 'react-select'; // react-select 추가
+import Select from 'react-select';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -19,7 +21,6 @@ const MemberRegister = () => {
         const fetchGenres = async () => {
             try {
                 const response = await axiosInstance.get('/genreList');
-                // react-select에서 사용할 수 있는 형태로 변환
                 const genreOptions = response.data.map((genre) => ({
                     value: genre.genreId,
                     label: genre.genreName,
@@ -41,13 +42,28 @@ const MemberRegister = () => {
         event.preventDefault();
 
         if (password !== repeatPassword) {
-            alert('패스워드가 일치하지 않습니다.');
+            toast.error('패스워드가 일치하지 않습니다.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
-        // 최소 3개의 장르를 선택하도록 강제
         if (selectedGenres.length < 3) {
-            alert('최소 3개의 장르를 선택해야 합니다.');
+            toast.error('최소 3개의 장르를 선택해야 합니다.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -58,20 +74,43 @@ const MemberRegister = () => {
                 repeatPassword,
                 nickname,
                 dob: dob ? dob.toISOString().slice(0, 10) : null,
-                // 선택된 장르 ID 목록 전송
                 genreIds: selectedGenres.map((genre) => genre.value),
             });
 
             console.log('Registration successful:', response.data);
-            alert('회원 가입이 완료되었습니다.');
+            toast.success('회원 가입이 완료되었습니다.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
 
             navigate('/member/login');
         } catch (error) {
             console.error('Registration error:', error);
             if (error.response) {
-                alert(error.response.data.message);
+                toast.error(error.response.data.message, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             } else {
-                alert('요청 중 오류가 발생했습니다.');
+                toast.error('요청 중 오류가 발생했습니다.', {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
         }
     };
@@ -173,20 +212,19 @@ const MemberRegister = () => {
                                             </td>
                                             <td>
                                                 <Select
-                                                    isMulti // 다중 선택 가능
-                                                    options={genres} // 장르 목록
-                                                    value={selectedGenres} // 선택된 장르
-                                                    onChange={handleGenreChange} // 선택 변경 이벤트 핸들러
-                                                    placeholder="장르 선택 (최소 3개)" // 플레이스홀더
+                                                    isMulti
+                                                    options={genres}
+                                                    value={selectedGenres}
+                                                    onChange={handleGenreChange}
+                                                    placeholder="장르 선택 (최소 3개)"
                                                     styles={{
-                                                        // 스타일 사용자 정의 (선택 사항)
                                                         control: (provided) => ({
                                                             ...provided,
                                                             marginBottom: '15px',
                                                         }),
                                                         menu: (provided) => ({
                                                             ...provided,
-                                                            zIndex: 9999, // 다른 요소 위에 표시
+                                                            zIndex: 9999,
                                                         }),
                                                     }}
                                                 />
@@ -215,22 +253,11 @@ const MemberRegister = () => {
                                     <Link to="/member/login">로그인</Link>
                                 </p>
 
-                                {/* 소셜 로그인 버튼 */}
                                 <div className="mt-3 mb-3">
                                     <div className="social-login-header">
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">
-                                        {/*<a*/}
-                                        {/*    href="/oauth2/authorization/google"*/}
-                                        {/*    className="social-login-button"*/}
-                                        {/*>*/}
-                                        {/*    <img*/}
-                                        {/*        src="/images/google-logo.png"*/}
-                                        {/*        alt="Google"*/}
-                                        {/*        className="social-login-icon"*/}
-                                        {/*    />*/}
-                                        {/*</a>*/}
                                         <a
                                             href="/oauth2/authorization/naver"
                                             className="social-login-button"
@@ -241,16 +268,6 @@ const MemberRegister = () => {
                                                 className="social-login-icon"
                                             />
                                         </a>
-                                        {/*<a*/}
-                                        {/*    href="/oauth2/authorization/kakao"*/}
-                                        {/*    className="social-login-button"*/}
-                                        {/*>*/}
-                                        {/*    <img*/}
-                                        {/*        src="/images/kakao-logo.png"*/}
-                                        {/*        alt="Kakao"*/}
-                                        {/*        className="social-login-icon"*/}
-                                        {/*    />*/}
-                                        {/*</a>*/}
                                     </div>
                                 </div>
                             </div>
@@ -259,6 +276,7 @@ const MemberRegister = () => {
                     <div className="col-3"></div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

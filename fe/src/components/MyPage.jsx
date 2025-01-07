@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { AppContext } from '../App';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function MyPage() {
     const [userData, setUserData] = useState({
@@ -37,13 +39,29 @@ function MyPage() {
                     onClick: async () => {
                         try {
                             await axiosInstance.delete('/members/delete');
-                            alert('회원 탈퇴가 완료되었습니다.');
+                            toast.success('회원 탈퇴가 완료되었습니다.', {
+                                position: 'top-right',
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
                             sessionStorage.removeItem('accessToken');
                             updateLoginStatus(false);
                             navigate('/');
                         } catch (error) {
                             console.error('Error during member deletion:', error);
-                            alert('회원 탈퇴 중 오류가 발생했습니다.');
+                            toast.error('회원 탈퇴 중 오류가 발생했습니다.', {
+                                position: 'top-right',
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
                         }
                     },
                 },
@@ -86,12 +104,28 @@ function MyPage() {
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
         if (!file) {
-            alert("파일을 선택해주세요.");
+            toast.warn('파일을 선택해주세요.', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (file.size === 0) {
-            alert("빈 파일은 업로드할 수 없습니다.");
+            toast.error('빈 파일은 업로드할 수 없습니다.', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -105,10 +139,26 @@ function MyPage() {
                 },
             });
             setUserData({ ...userData, profileImgUrl: response.data.imageUrl });
-            alert('프로필 사진이 성공적으로 변경되었습니다.');
+            toast.success('프로필 사진이 성공적으로 변경되었습니다.', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         } catch (error) {
             console.error('Error uploading image:', error);
-            alert('이미지 업로드 중 오류가 발생했습니다.');
+            toast.error('이미지 업로드 중 오류가 발생했습니다.', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     };
 
@@ -122,6 +172,7 @@ function MyPage() {
 
     return (
         <div className="mypage-container">
+            <ToastContainer />
             <input
                 type="file"
                 ref={fileInputRef}
