@@ -30,20 +30,22 @@ public class MovieDocument {
     @Id
     private Long movieId;
 
-    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
+    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "korean_analyzer", searchAnalyzer = "korean_analyzer"),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
-                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer")
+                    @InnerField(suffix = "en", type = FieldType.Text, analyzer = "english_analyzer", searchAnalyzer = "english_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer", searchAnalyzer = "my_ngram_analyzer"),
+                    @InnerField(suffix = "standard", type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
             })
     private String title;
 
     @Field(type = FieldType.Text)
     private String originalTitle;
 
-    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
+    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "korean_analyzer", searchAnalyzer = "korean_analyzer"),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
-                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer")
+                    @InnerField(suffix = "en", type = FieldType.Text, analyzer = "english_analyzer", searchAnalyzer = "english_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer", searchAnalyzer = "my_ngram_analyzer"),
+                    @InnerField(suffix = "standard", type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
             })
     private String overview;
 
@@ -79,10 +81,11 @@ public class MovieDocument {
     @Field(type = FieldType.Keyword)
     private String status;
 
-    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "english_analyzer"),
+    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "korean_analyzer", searchAnalyzer = "korean_analyzer"),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
-                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer")
+                    @InnerField(suffix = "en", type = FieldType.Text, analyzer = "english_analyzer", searchAnalyzer = "english_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer", searchAnalyzer = "my_ngram_analyzer"),
+                    @InnerField(suffix = "standard", type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
             })
     private String tagline;
 

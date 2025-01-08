@@ -6,6 +6,7 @@ import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.service.MovieMainSearchService;
 import movlit.be.movie.application.service.MovieMainService;
+import movlit.be.movie.presentation.dto.response.MovieDocumentResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +57,15 @@ public class MovieMainSearchController {
     }
 
     /**
-     * 로그인 유저의 최근 평가 영화 기반으로 유사한 영화 리스트 가져오기
+     * MOVIE 검색 결과
      * */
+    @GetMapping("/searchMovie")
+    public ResponseEntity<MovieDocumentResponseDto> getSearchMovie(
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "20") int pageSize,
+            @RequestParam String inputStr){
+        MovieDocumentResponseDto response = movieMainSearchService.getSearchMovie(inputStr, page, pageSize);
+
+        return ResponseEntity.ok(response);
+    }
 }

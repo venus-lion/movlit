@@ -20,7 +20,9 @@ public class MovieGenreForDocument {
 
     @MultiField(mainField = @Field(type = FieldType.Keyword),
             otherFields = {
-                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
+                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer", searchAnalyzer = "korean_analyzer"),
+                    @InnerField(suffix = "ngram", type = FieldType.Text, analyzer = "my_ngram_analyzer", searchAnalyzer = "my_ngram_analyzer"),
+                    @InnerField(suffix = "standard", type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
             })
     private String genreName; // 장르 이름
 

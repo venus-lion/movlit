@@ -1,5 +1,6 @@
 package movlit.be.acceptance.movie;
 
+import static movlit.be.acceptance.movie.MovieSearchSteps.검색어를_입력하여_영화_리스트를_조회한다;
 import static movlit.be.acceptance.movie.MovieSearchSteps.로그인유저_관심장르_영화_리스트를_조회한다;
 import static movlit.be.acceptance.movie.MovieSearchSteps.상태코드가_200이고_응답_데이터가_존재한다;
 import static movlit.be.acceptance.movie.MovieSearchSteps.선호장르_하나이상_맞는_응답_데이터가_존재한다;
@@ -57,5 +58,21 @@ class MovieSearchAcceptanceTest extends AcceptanceTest {
             // then
             상태코드가_200이고_응답_데이터가_존재한다(response);
         }
+    }
+
+    @DisplayName("텍스트를 입력받아 검색하여 영화를 가져오는데 성공하면, 상태코드 200과 body를 반환한다.")
+    @Test
+    void given_input_str_when_search_movie_then_response_200_and_body() {
+        // docs
+        api_문서_타이틀("searchMovie_success", spec);
+
+        // given
+        String inputStr = "톰";
+
+        // when
+        var response = 검색어를_입력하여_영화_리스트를_조회한다(inputStr, spec);
+
+        // then
+        상태코드가_200이고_응답_데이터가_존재한다(response);
     }
 }

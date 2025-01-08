@@ -11,8 +11,10 @@ import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.repository.MemberGenreRepository;
 import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.repository.MovieRepository;
 import movlit.be.movie.domain.repository.MovieSearchRepository;
+import movlit.be.movie.presentation.dto.response.MovieDocumentResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import movlit.be.movie_heart.domain.MovieHeart;
 import movlit.be.movie_heart.domain.repository.MovieHeartRepository;
@@ -67,5 +69,12 @@ public class MovieMainSearchService {
             // 일단은 빈 리스트 처리
             return new MovieListResponseDto(Collections.emptyList());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public MovieDocumentResponseDto getSearchMovie(String inputStr, int page, int pageSize) {
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
+
+        return new MovieDocumentResponseDto(movieSearchRepository.searchMovieList(inputStr, pageable));
     }
 }

@@ -50,7 +50,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/myPage").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/genreList").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/movies/search/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/interestGenre").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/lastHeart").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/genreList").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/{movieId}/myComment").authenticated()
@@ -60,7 +61,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/members/delete").authenticated()
-                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
+                        .requestMatchers("/api/movies/search/searchMovie", "/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**")
                         .permitAll()
