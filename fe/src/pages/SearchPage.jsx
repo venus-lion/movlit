@@ -53,11 +53,19 @@ function SearchPage() {
                 setMovies(movieData || []);
 
                 // 도서 데이터 가져오기
-                const bookResponse = await fetch(`/api/books/bestseller`);
-                const bookData = await bookResponse.json();
-                console.log('bookData :: ' + bookData);
-                console.log('도서 데이터:', bookData);
-                setBooks(bookData.books || []);
+                const bookResponse = await axios.get(`/api/books/search/searchBook`, {
+                    params: {
+                        page: 1,
+                        pageSize : 20,
+                        inputStr: inputStr
+                    }
+                })
+
+                const bookData = await bookResponse.data.bookESDomainList;
+                setBooks(bookData || []);
+
+                console.log('도서 데이터 :: ' + bookData);
+                setBooks(bookData || []);
 
             } catch (error) {
                 console.error('데이터 가져오기 실패:', error);
