@@ -23,6 +23,8 @@ function MovieDetailPage() {
     const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0); // 0~10 사이의 값 (0.5 단위)
+    const [hoverRating, setHoverRating] = useState(0); // 마우스 호버 시 별점 상태
+    const [dbRating, setDbRating] = useState(0); // 최신 별점 저장
     const [myComment, setMyComment] = useState('');
     const [crews, setCrews] = useState([]);
     const [visibleCrews, setVisibleCrews] = useState([]);
@@ -183,18 +185,20 @@ function MovieDetailPage() {
                 });
                 setUserCommentId(movieCommentId);
                 setMyRating(score);
+                setDbRating(score); // dbRating 업데이트
                 setMyComment(comment);
                 if (score > 0) {
                     setShowCommentInput(false);
                 } else {
-                    setShowCommentInput(true);
+                    setShowCommentInput(false); // 사용자가 코멘트를 남긴 적이 없으면 입력란을 숨김
                 }
             } else {
                 setUserComment(null);
                 setUserCommentId(null);
                 setMyRating(0);
+                setDbRating(0); // dbRating 업데이트
                 setMyComment('');
-                setShowCommentInput(false);
+                setShowCommentInput(false); // 사용자가 코멘트를 남긴 적이 없으면 입력란을 숨김
             }
         } catch (error) {
             console.error('Error fetching user comment:', error);
@@ -250,13 +254,20 @@ function MovieDetailPage() {
         }
     };
 
-    // 코멘트 별점 변경 핸들러 수정
-    const handleRatingChange = (newRating) => {
-        // 사용자가 별 반 개를 클릭한 경우에도 적절히 처리
-        setMyRating(newRating);
-        if(newRating > 0){
-            setShowCommentInput(true);
+    // 코멘트 별점 클릭 핸들러
+    const handleRatingClick = (newRating, e) => {
+        // 클릭 위치에 따라 반 별 또는 온전한 별로 설정
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const halfWidth = rect.width / 2;
+        const starIndex = newRating / 2;
+
+        if (x <= halfWidth) {
+            setMyRating(starIndex * 2 - 1);
+        } else {
+            setMyRating(starIndex * 2);
         }
+        setShowCommentInput(true); // 별점 클릭 시 코멘트 입력란을 보이도록 설정
     };
 
     // 찜하기/찜해제 처리
@@ -498,33 +509,33 @@ function MovieDetailPage() {
                             <div style={styles.stars}>
                                 {/* 별 5개로 10점 만점 표현 */}
                                 {[...Array(5)].map((_, index) => {
-                                    const starIndex = (index + 1); // 별 1개당 2점씩 계산 (1, 2, 3, 4, 5)
+                                    const starIndex = (index + 1);
+                                    const rating = myRating === 0 ? hoverRating : myRating;
                                     return (
                                         <span
                                             key={index}
-                                            onClick={() => handleRatingChange(starIndex * 2)} // 클릭 시 handleRatingChange에 starIndex * 2를 전달 (2, 4, 6, 8, 10)
+                                            onClick={(e) => handleRatingClick(starIndex * 2, e)}
                                             style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
                                             onMouseMove={(e) => {
-                                                // 별 아이콘의 왼쪽 절반 클릭 시 반 별만 칠해지도록
                                                 const rect = e.currentTarget.getBoundingClientRect();
                                                 const x = e.clientX - rect.left;
                                                 const halfWidth = rect.width / 2;
 
+                                                // 클릭된 별점이 있든 없든 마우스 호버 이벤트는 항상 감지
                                                 if (x <= halfWidth) {
-                                                    setMyRating(starIndex * 2 - 1);
+                                                    setHoverRating(starIndex * 2 - 1);
                                                 } else {
-                                                    setMyRating(starIndex * 2);
+                                                    setHoverRating(starIndex * 2);
                                                 }
                                             }}
                                             onMouseLeave={() => {
-                                                // onMouseLeave 시 myRating을 최신 DB값으로
-                                                fetchUserComment();
+                                                setHoverRating(0);
                                             }}
                                         >
-                                            {/* 별 1개당 2점씩 계산하여 꽉 찬 별, 반 별, 빈 별 표시 */}
-                                            {starIndex * 2 <= myRating ? (
+                                            {/* 클릭된 별점이 없으면 마우스 호버 상태에 따라 별을 표시하고, 클릭된 별점이 있으면 클릭된 별점을 기준으로 별을 표시 */}
+                                            {starIndex * 2 <= rating ? (
                                                 <FaStar style={styles.starFilled} />
-                                            ) : starIndex * 2 === myRating + 1 ? (
+                                            ) : starIndex * 2 === rating + 1 ? (
                                                 <FaStarHalfAlt style={styles.starFilled} />
                                             ) : (
                                                 <FaRegStar style={styles.starEmpty} />
@@ -830,6 +841,7 @@ function MovieDetailPage() {
         </div>
     );
 }
+
 
 const styles = {
     container: {
