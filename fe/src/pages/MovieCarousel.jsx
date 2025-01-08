@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa'; // 별 아이콘 임포트
+import {Link} from "react-router-dom";
+import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa'; // 별 아이콘 임포트
 import './Home.css';
 
-function MovieCarousel({ title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 5 }) {
+function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 8}) {
     // 별을 표시하는 함수
     const renderStars = (rating) => {
         // rating 값을 0 ~ 10으로 받을 경우
@@ -16,9 +16,9 @@ function MovieCarousel({ title, movies, startIndex, handleNext, handlePrev, hasM
 
         return (
             <>
-                {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon" />)}
-                {halfStar === 1 && <FaStarHalfAlt className="star-icon" />}
-                {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon" />)}
+                {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon"/>)}
+                {halfStar === 1 && <FaStarHalfAlt className="star-icon"/>}
+                {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon"/>)}
             </>
         );
     };
@@ -36,11 +36,13 @@ function MovieCarousel({ title, movies, startIndex, handleNext, handlePrev, hasM
                     {movies.slice(startIndex, startIndex + slideSize).map((movie, index) => (
                         <Link className="movie-card" key={movie.movieId} to={`/movie/${movie.movieId}`}>
                             <div className="movie-rank">{startIndex + index + 1}</div>
-                            <img
-                                src={movie.posterPath || '/default-poster.jpg'}
-                                alt={movie.title || '이미지를 준비중입니다.'}
-                                className="movie-image"
-                            />
+                            <div className="movie-image">
+                                <img
+                                    src={movie.posterPath || '/default-poster.jpg'}
+                                    alt={movie.title || '이미지를 준비중입니다.'}
+                                    className="movie-image"
+                                />
+                            </div>
                             <div className="movie-info">
                                 <h3 className="movie-title">{movie.title}</h3>
                                 {renderStars(parseFloat(movie.voteAverage))}

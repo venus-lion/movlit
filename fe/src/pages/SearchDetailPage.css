@@ -19,7 +19,7 @@
 }
 
 .search-results-detail.movies {
-    grid-template-columns: repeat(3, minmax(80px, 1fr)); /* 3열로 수정 */
+    grid-template-columns: repeat(8, minmax(80px, 1fr)); /* 3열로 수정 */
 }
 
 .search-item-detail {
