@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/books")
+@RequestMapping("/api/books/search")
 public class BookSearchController {
     private final BookSearchService bookSearchService;
     /*
