@@ -12,7 +12,7 @@ import BookDetailPage from './components/BookDetailPage';
 import MyPage from './components/MyPage';
 import MemberUpdate from './pages/MemberUpdate'; // MemberUpdate import
 import SearchPage from "./pages/SearchPage.jsx";
-// import BookSearchDetailPage from "./pages/BookSearchDetailPage.jsx";
+import BookSearchDetailPage from "./pages/BookSearchDetailPage.jsx";
 //
 import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
 
@@ -61,10 +61,10 @@ const router = createBrowserRouter([
                 path: 'movies/search/:inputStr',
                 element: <MovieSearchDetailPage />
             },
-            // {
-            //     path: '/books/search', // 도서 더 보기 라우트 추가
-            //     element: <BookSearchDetailPage />,
-            // },
+            {
+                path: 'books/search/:inputStr', // 도서 더 보기 라우트 추가
+                element: <BookSearchDetailPage />,
+            },
         ],
     },
 ]);
