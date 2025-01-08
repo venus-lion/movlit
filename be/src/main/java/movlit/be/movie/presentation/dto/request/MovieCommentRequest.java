@@ -17,7 +17,7 @@ public class MovieCommentRequest {
 
     @NotNull
     @DecimalMin(value = "0.5", message = "별점은 0.5 이상이어야 합니다.")
-    @DecimalMin(value = "5.0", message = "별점은 5.0 이하여야 합니다.")
+    @DecimalMin(value = "10.0", message = "별점은 10.0 이하여야 합니다.")
     @Digits(integer = 1, fraction = 1, message = "별점은 소숫점 첫째 자리까지만 가능합니다.")
     private Double score;
 

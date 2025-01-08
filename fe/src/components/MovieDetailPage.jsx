@@ -22,7 +22,7 @@ import 'react-circular-progressbar/dist/styles.css';
 function MovieDetailPage() {
     const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
-    const [myRating, setMyRating] = useState(0);
+    const [myRating, setMyRating] = useState(0); // 0~10 사이의 값 (0.5 단위)
     const [myComment, setMyComment] = useState('');
     const [crews, setCrews] = useState([]);
     const [visibleCrews, setVisibleCrews] = useState([]);
@@ -250,18 +250,12 @@ function MovieDetailPage() {
         }
     };
 
+    // 코멘트 별점 변경 핸들러 수정
     const handleRatingChange = (newRating) => {
-        if (userComment) {
-            setMyRating(newRating);
+        // 사용자가 별 반 개를 클릭한 경우에도 적절히 처리
+        setMyRating(newRating);
+        if(newRating > 0){
             setShowCommentInput(true);
-        } else {
-            if (myRating === newRating) {
-                setMyRating(0);
-                setShowCommentInput(false);
-            } else {
-                setMyRating(newRating);
-                setShowCommentInput(true);
-            }
         }
     };
 
@@ -427,19 +421,18 @@ function MovieDetailPage() {
         }
     };
 
-    // 별을 표시하는 함수 (MovieCarousel에서 가져옴)
+    // 별을 표시하는 함수 수정 (반 별: 1점, 온전한 별: 2점으로 계산)
     const renderStars = (rating) => {
-        const validRating = Math.max(0, Math.min(10, rating || 0));
-        const fullStars = Math.floor(validRating / 2);
-        const halfStar = validRating % 2 >= 1 ? 1 : 0;
-        const emptyStars = 5 - fullStars - halfStar;
+        const fullStars = Math.floor(rating / 2); // 온전한 별의 개수 (2점당 1개)
+        const halfStar = rating % 2 === 1; // 반 별의 여부 (나머지가 1이면 반 별)
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // 빈 별의 개수
 
         return (
             <>
                 {[...Array(fullStars)].map((_, index) => (
                     <FaStar key={`full-${index}`} style={styles.starFilled} />
                 ))}
-                {halfStar === 1 && <FaStarHalfAlt style={styles.starFilled} />}
+                {halfStar && <FaStarHalfAlt style={styles.starFilled} />}
                 {[...Array(emptyStars)].map((_, index) => (
                     <FaRegStar key={`empty-${index}`} style={styles.starEmpty} />
                 ))}
@@ -503,29 +496,52 @@ function MovieDetailPage() {
                         <div style={styles.myRating}>
                             <span style={styles.ratingLabel}>내 별점</span>
                             <div style={styles.stars}>
-                                {Array(5)
-                                    .fill()
-                                    .map((_, index) => (
+                                {/* 별 5개로 10점 만점 표현 */}
+                                {[...Array(5)].map((_, index) => {
+                                    const starIndex = (index + 1); // 별 1개당 2점씩 계산 (1, 2, 3, 4, 5)
+                                    return (
                                         <span
                                             key={index}
-                                            style={
-                                                index < myRating
-                                                    ? styles.starFilled
-                                                    : styles.starEmpty
-                                            }
-                                            onClick={() => handleRatingChange(index + 1)}
+                                            onClick={() => handleRatingChange(starIndex * 2)} // 클릭 시 handleRatingChange에 starIndex * 2를 전달 (2, 4, 6, 8, 10)
+                                            style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
+                                            onMouseMove={(e) => {
+                                                // 별 아이콘의 왼쪽 절반 클릭 시 반 별만 칠해지도록
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const halfWidth = rect.width / 2;
+
+                                                if (x <= halfWidth) {
+                                                    setMyRating(starIndex * 2 - 1);
+                                                } else {
+                                                    setMyRating(starIndex * 2);
+                                                }
+                                            }}
+                                            onMouseLeave={() => {
+                                                // myRating이 0일 때만 fetchUserComment 호출
+                                                if (myRating === 0) {
+                                                    fetchUserComment();
+                                                }
+                                            }}
                                         >
-                      <span style={styles.starIcon}>★</span>
-                    </span>
-                                    ))}
+                                            {/* 별 1개당 2점씩 계산하여 꽉 찬 별, 반 별, 빈 별 표시 */}
+                                            {starIndex * 2 <= myRating ? (
+                                                <FaStar style={styles.starFilled} />
+                                            ) : starIndex * 2 === myRating + 1 ? (
+                                                <FaStarHalfAlt style={styles.starFilled} />
+                                            ) : (
+                                                <FaRegStar style={styles.starEmpty} />
+                                            )}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </div>
                         <div style={styles.averageRating}>
                             <span style={styles.ratingLabel}>평균 별점</span>
                             <div style={styles.starsAndProgress}>
-                                {/*<div style={styles.stars}>*/}
-                                {/*    {renderStars(movieData.voteAverage)}*/}
-                                {/*</div>*/}
+                                <div style={styles.stars}>
+                                    {renderStars(movieData.voteAverage)}
+                                </div>
                                 {/* Circular Progress Bar 추가 */}
                                 <div style={styles.progressBarContainer}>
                                     <CircularProgressbar
@@ -584,14 +600,14 @@ function MovieDetailPage() {
                     )}
 
                     {/* 코멘트 입력 및 수정/삭제 버튼 */}
-                    {showCommentInput && (
+                    {myRating > 0 && showCommentInput && (
                         <div style={styles.commentSection}>
-              <textarea
-                  style={styles.commentInput}
-                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-                  value={userComment ? myComment : comment}
-                  onChange={handleCommentChange}
-              />
+                            <textarea
+                                style={styles.commentInput}
+                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                                value={userComment ? myComment : comment}
+                                onChange={handleCommentChange}
+                            />
                             <button style={styles.submitButton} onClick={handleSubmitComment}>
                                 {userComment ? '수정하기' : '코멘트 남기기'}
                             </button>
@@ -682,7 +698,10 @@ function MovieDetailPage() {
 
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>
-                                코멘트 <span style={styles.commentCount}>{totalComments.toLocaleString()}</span>
+                                코멘트{' '}
+                                <span style={styles.commentCount}>
+                  {totalComments.toLocaleString()}
+                </span>
                             </div>
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
@@ -713,7 +732,9 @@ function MovieDetailPage() {
                           >
                             ★
                           </span>
-                                                    <span style={styles.commentScore}>{comment.score}</span>
+                                                    <span style={styles.commentScore}>
+                            {comment.score}
+                          </span>
                                                 </div>
                                                 {/* 좋아요 버튼 및 카운트 컨테이너 */}
                                                 <div style={styles.likeContainer}>
@@ -814,8 +835,6 @@ function MovieDetailPage() {
         </div>
     );
 }
-
-
 
 const styles = {
     container: {
