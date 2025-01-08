@@ -57,4 +57,7 @@ public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntit
     Optional<BookCommentEntity> findByMemberEntityAndBookEntity(MemberEntity memberEntity, BookEntity bookEntity);
 
     void deleteById(BookCommentId bookCommentId);
+
+    @Query("SELECT AVG(bc.score) FROM BookCommentEntity bc where bc.bookEntity.bookId= :bookId")
+    Optional<Double> getAverageScoreByBookId(@Param("bookId") BookId bookId);
 }

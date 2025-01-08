@@ -17,7 +17,9 @@ public class MemberGenres {
     private List<MemberGenreEntity> memberGenreEntityList = new ArrayList<>();
 
     public MemberGenres(List<MemberGenreEntity> newMemberGenreEntityList) {
-        this.memberGenreEntityList.addAll(newMemberGenreEntityList);
+        if(newMemberGenreEntityList != null)
+            this.memberGenreEntityList.addAll(newMemberGenreEntityList);
+
     }
 
     public void replaceWith(List<MemberGenreEntity> newMemberGenreEntityList) {

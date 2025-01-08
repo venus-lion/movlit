@@ -62,6 +62,7 @@ public class MemberWriteService {
         memberEntity.updateMember(member, makeMemberGenreEntities(memberEntity.getMemberId(), request.getGenreIds()));
     }
 
+
     public void deleteMember(MemberId memberId, String accessToken) {
         logout(accessToken);
         Member member = memberRepository.findById(memberId);

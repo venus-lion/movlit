@@ -11,6 +11,7 @@ import movlit.be.book.domain.entity.BookCommentLikeEntity;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.infra.persistence.jpa.BookCommentLikeJpaRepository;
 import movlit.be.common.exception.BookCommentNotFoundException;
+import movlit.be.common.util.ids.BookId;
 import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Repository;
@@ -39,5 +40,7 @@ public class BookCommentLikeRepositoryImpl implements BookCommentLikeRepository 
     public void delete(BookCommentLike bookCommentLike) {
        bookCommentLikeJpaRepository.delete(BookCommentLikeConverter.toEntity(bookCommentLike));
     }
+
+
 
 }

@@ -17,6 +17,8 @@ function MyPage() {
         email: '',
         movieHeartCount: 0,
         movieCommentCount: 1,
+        bookHeartCount: 0,
+        bookCommentCount: 0
     });
     const [genreList, setGenreList] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -251,6 +253,14 @@ function MyPage() {
                 <div className="stat-item">
                     <span>{userData.movieCommentCount}</span>
                     <span>영화 코멘트</span>
+                </div>
+                <div className="stat-item">
+                    <span>{userData.bookHeartCount}</span>
+                    <span>도서 찜</span>
+                </div>
+                <div className="stat-item">
+                    <span>{userData.bookCommentCount}</span>
+                    <span>도서 코멘트</span>
                 </div>
             </div>
             <div className="mypage-genre-list">
