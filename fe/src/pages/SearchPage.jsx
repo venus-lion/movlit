@@ -124,7 +124,7 @@ function SearchPage() {
                 <h2>책</h2>
                 <div className="more-link-container">
                     {books.length > 9 && (
-                        <Link className="more-link" key={inputStr} to={`/books/search${inputStr}`}>더 보기</Link>
+                        <Link className="more-link" key={inputStr} to={`/books/search/${inputStr}`}>더 보기</Link>
                     )}
                 </div>
             </div>
