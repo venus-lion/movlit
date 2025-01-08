@@ -4,6 +4,10 @@ import axiosInstance from '../axiosInstance';
 import {FaComment, FaHeart, FaRegHeart, FaUserCircle} from 'react-icons/fa';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MovieCarousel from '../pages/MovieCarousel';
+import useAuthMovieList from "../hooks/useAuthMovieList";
+import useBookList from "../hooks/useBookList";
+import BookGenreCarousel from "../pages/BookGenreCarousel";
 
 function MovieDetailPage() {
     const {movieId} = useParams();
@@ -27,6 +31,56 @@ function MovieDetailPage() {
     const loader = useRef(null);
 
     const initialVisibleCrews = 14;
+
+    // 관련 영화 데이터 가져오기
+    const {
+        movies: relatedMovies,
+        loading: relatedMoviesLoading,
+        error: relatedMoviesError
+    } = useAuthMovieList({
+        endpoint: `movies/${movieId}/detail/related`,
+        params: {pageSize: 30},
+    });
+    const [relatedMoviesStartIndex, setRelatedMoviesStartIndex] = useState(0);
+
+    const handleRelatedMoviesNext = () => {
+        const newIndex = relatedMoviesStartIndex + 5;
+        if (newIndex < relatedMovies.length) {
+            setRelatedMoviesStartIndex(newIndex);
+        }
+    };
+
+    const handleRelatedMoviesPrev = () => {
+        const newIndex = relatedMoviesStartIndex - 5;
+        if (newIndex >= 0) {
+            setRelatedMoviesStartIndex(newIndex);
+        }
+    };
+
+    // 관련 장르 도서 데이터 가져오기
+    const {
+        books: relatedBooks,
+        loading: relatedBooksLoading,
+        error: relatedBooksError
+    } = useBookList({
+        endpoint: `/api/books/genres/movies/${movieId}/detail`,
+        params: {limit: 30},
+    });
+    const [relatedBooksStartIndex, setRelatedBooksStartIndex] = useState(0);
+
+    const handleRelatedBooksNext = () => {
+        const newIndex = relatedBooksStartIndex + 5;
+        if (newIndex < relatedBooks.length) {
+            setRelatedBooksStartIndex(newIndex);
+        }
+    };
+
+    const handleRelatedBooksPrev = () => {
+        const newIndex = relatedBooksStartIndex - 5;
+        if (newIndex >= 0) {
+            setRelatedBooksStartIndex(newIndex);
+        }
+    };
 
     useEffect(() => {
         axiosInstance
@@ -367,6 +421,17 @@ function MovieDetailPage() {
         return <div style={styles.loading}>Loading...</div>;
     }
 
+    // 유니크한 장르 세트 생성
+    const uniqueGenres = new Set();
+    if (relatedBooks) {
+        relatedBooks.forEach(book => {
+            if (book.genres && Array.isArray(book.genres)) {
+                book.genres.forEach(genre => uniqueGenres.add(genre.genreName));
+            }
+        });
+    }
+    const uniqueGenreList = Array.from(uniqueGenres);
+
     return (
         <div style={styles.container}>
 
@@ -650,16 +715,45 @@ function MovieDetailPage() {
                             </div>
                         </div>
 
+                        {/* 새로운 관련 영화 섹션 */}
                         <div style={styles.section}>
-                            <div style={styles.sectionTitle}>관련 도서</div>
+                            <div style={styles.sectionTitle}>관련 영화 추천</div>
                             <div style={styles.sectionContent}>
-                                {movieData.relatedBooks &&
-                                    movieData.relatedBooks.map((book) => (
-                                        <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title}/>
-                                            <div>{book.title}</div>
-                                        </div>
-                                    ))}
+                                {relatedMoviesLoading && <p>Loading related movies...</p>}
+                                {relatedMoviesError && (
+                                    <div>
+                                        <p>Error loading related movies.</p>
+                                    </div>
+                                )}
+                                {!relatedMoviesLoading && !relatedMoviesError && (
+                                    <MovieCarousel
+                                        movies={relatedMovies}
+                                        startIndex={relatedMoviesStartIndex}
+                                        handleNext={handleRelatedMoviesNext}
+                                        handlePrev={handleRelatedMoviesPrev}
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        {/* 관련 도서 섹션 */}
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>관련 도서 추천</div>
+                            <div style={styles.sectionContent}>
+                                {relatedBooksLoading && <p>Loading related books...</p>}
+                                {relatedBooksError && (
+                                    <div>
+                                        <p>Error loading related books.</p>
+                                    </div>
+                                )}
+                                {!relatedBooksLoading && !relatedBooksError && (
+                                    <BookGenreCarousel
+                                        books={relatedBooks}
+                                        startIndex={relatedBooksStartIndex}
+                                        handleNext={handleRelatedBooksNext}
+                                        handlePrev={handleRelatedBooksPrev}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -668,6 +762,7 @@ function MovieDetailPage() {
         </div>
     );
 }
+
 
 const styles = {
     container: {

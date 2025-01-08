@@ -1,20 +1,23 @@
 package movlit.be.movie.infra.persistence;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.*;
-
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionBoostMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScore;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScoreMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScoreQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.NestedQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.Genre;
 import movlit.be.movie.application.converter.main.MovieDocumentConverter;
 import movlit.be.movie.domain.Movie;
-import movlit.be.movie.domain.MovieRole;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.repository.MovieSearchRepository;
 import org.springframework.data.domain.Pageable;
@@ -33,19 +36,20 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
+    /**
+     * 취향 장르와 일치하는 장르가 있으면 가중치를 부여해서 점수 높은 순으로 가져오기
+     */
     @Override
-    public List<Movie> searchByUserInterestGenre(List<Genre> genreList, Pageable pageable) {
-        // 사용자 취향 장르와 일치하는 장르가 있으면 가중치를 부여해서 점수 높은 순으로 가져오기
-
+    public List<Movie> searchInterestGenre(List<Genre> genreList, Pageable pageable) {
         // Nested Query 생성
         NestedQuery nestedQuery = NestedQuery.of(n -> n
                 .path("movieGenre")
                 .query(q -> q.bool(b -> b.should(genreList.stream()
-                        .map(genre -> Query.of(query -> query.term(t -> t
-                                .field("movieGenre.genreId")
-                                .value(genre.getId())
-                        )))
-                        .collect(Collectors.toList()))
+                                .map(genre -> Query.of(query -> query.term(t -> t
+                                        .field("movieGenre.genreId")
+                                        .value(genre.getId())
+                                )))
+                                .collect(Collectors.toList()))
                         )
                 )
         );
@@ -249,9 +253,6 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
         return result;
 
     }
-
-
-
 
     private List<Movie> getMovieDocumentResult(SearchHits<MovieDocument> searchHits) {
         List<Movie> movieList = new ArrayList<>();

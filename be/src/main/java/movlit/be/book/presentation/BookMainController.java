@@ -10,12 +10,12 @@ import movlit.be.book.presentation.dto.BooksGenreResponse;
 import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto;
 import movlit.be.book.presentation.dto.BooksResponse;
 import movlit.be.book.presentation.dto.BooksResponse.BookItemDto;
-import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESDomain;
 import movlit.be.common.util.ids.MemberId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,12 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
 public class BookMainController {
+
     private final BookMainReadService bookMainReadService;
     private final GetBooksByRandomGenreService getBooksByRandomGenreService;
     private final BooksRecommendationService booksRecommendationService;
 
     @GetMapping("/bestseller")
-    public ResponseEntity<BooksResponse> getTopBestsellers(@RequestParam(defaultValue = "30") int limit){
+    public ResponseEntity<BooksResponse> getTopBestsellers(@RequestParam(defaultValue = "30") int limit) {
         List<BookItemDto> bookBestsellerDtos = bookMainReadService.getTopBestsellers(limit);
 
         BooksResponse booksResponse = BooksResponse.builder()
@@ -40,7 +41,7 @@ public class BookMainController {
     }
 
     @GetMapping("/new")
-    public ResponseEntity<BooksResponse> getRecentBookNew(@RequestParam(defaultValue = "30") int limit){
+    public ResponseEntity<BooksResponse> getRecentBookNew(@RequestParam(defaultValue = "30") int limit) {
         List<BookItemDto> bookNewDtos = bookMainReadService.getRecentBookNew(limit);
 
         BooksResponse booksResponse = BooksResponse.builder()
@@ -51,7 +52,7 @@ public class BookMainController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<BooksResponse> getPopularBookNewSpecial(@RequestParam(defaultValue = "30") int limit){
+    public ResponseEntity<BooksResponse> getPopularBookNewSpecial(@RequestParam(defaultValue = "30") int limit) {
         List<BookItemDto> bookNewSpecialsDtos = bookMainReadService.getPopularBookNewSpecial(limit);
 
         BooksResponse booksResponse = BooksResponse.builder()
@@ -64,7 +65,7 @@ public class BookMainController {
     // 랜덤장르 불러오기
     // 얘는 '마니아를 위해' : [장르명], [장르명], [장르명]
     @GetMapping("/genres/random")
-    public ResponseEntity<BooksGenreResponse> getBooksByRandomGenre(@RequestParam(defaultValue = "30") int limit){
+    public ResponseEntity<BooksGenreResponse> getBooksByRandomGenre(@RequestParam(defaultValue = "30") int limit) {
         List<BookItemWithGenreDto> booksByRandomGenresDto = getBooksByRandomGenreService.getBooksByRandomGenres(limit);
 
         BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
@@ -74,13 +75,27 @@ public class BookMainController {
         return ResponseEntity.ok(booksGenreResponse);
     }
 
+    /**
+     * 랜덤하지 않은 장르 불러오기
+     * 영화 상세 페이지에서 사용할 용도
+     */
+    @GetMapping("/genres/movies/{movieId}/detail")
+    public ResponseEntity<BooksGenreResponse> fetchBooksByMovieDetailGenres(@PathVariable Long movieId,
+                                                                            @RequestParam(defaultValue = "30") int limit) {
+        List<BookItemWithGenreDto> booksByDetailGenres = getBooksByRandomGenreService
+                .fetchBooksByMovieDetailGenres(limit, movieId);
+        BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
+                .books(booksByDetailGenres)
+                .build();
+        return ResponseEntity.ok(booksGenreResponse);
+    }
 
     // 로그인 했을 때, 멤버의 MemberGenre 3개 중 랜덤 2개 선택 + 나머지 랜덤장르 1개, 총 3개의 BooksGenreResponse 불러오기
     @GetMapping("/genres/personalized")
     public ResponseEntity<BooksGenreResponse> getBooksByPersonalizedRandomGenre(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(defaultValue = "30") int limit
-            ){
+    ) {
 
         System.out.println("details :: memberId >> " + details.getMemberId().getValue());
         System.out.println("details로부터 가져온 Member id :: " + details.getMemberId());
@@ -95,14 +110,12 @@ public class BookMainController {
         return ResponseEntity.ok(booksGenreResponse);
     }
 
-
-
     /**
      * 로그인 유저의 최근 찜 도서 기반으로 유사한 도서 리스트 가져오기 -- elasticsearch 기반
      * */
 
     @GetMapping("/recommendations")
-    public ResponseEntity<List<BookESDomain>> getRecommendations(@AuthenticationPrincipal MyMemberDetails details){
+    public ResponseEntity<List<BookESDomain>> getRecommendations(@AuthenticationPrincipal MyMemberDetails details) {
         System.out.println("/recommendationis, details ::: " + details);
         List<BookESDomain> recommendedBook = booksRecommendationService.getRecommendedBook(details.getMemberId());
         return ResponseEntity.ok(recommendedBook);
@@ -113,7 +126,7 @@ public class BookMainController {
      * */
     @GetMapping("/interestGenre")
     public ResponseEntity<List<BookESDomain>> getBookUserInterestByGenre(@AuthenticationPrincipal
-                                                                         MyMemberDetails details){
+                                                                         MyMemberDetails details) {
 
         System.out.println("/interestGenre, details ::: " + details);
         MemberId memberId = details.getMemberId();
@@ -121,4 +134,5 @@ public class BookMainController {
 
         return ResponseEntity.ok(userInterestByGenre);
     }
+
 }
