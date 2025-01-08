@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,6 +24,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -38,7 +40,18 @@ public class SecurityConfig {
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/testBook/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/detail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books/{bookId}/hearts").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/{bookId}/hearts").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/books/*/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books/comments/{bookCommentId}/likes").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/comments/{bookCommentId}/likes").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/myComment").authenticated()
                         .requestMatchers("/testBook//saveBooks/**").permitAll()
+                        .requestMatchers("/api/movies/search/searchMovie").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail/related").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books/genres/movies/*/detail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
@@ -52,7 +65,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/myPage").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/genreList").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/movies/search/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/interestGenre").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/lastHeart").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/genreList").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/{movieId}/myComment").authenticated()
@@ -62,7 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/members/delete").authenticated()
-                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
+                        .requestMatchers("/api/movies/search/searchMovie", "/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**")
                         .permitAll()
@@ -93,6 +107,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

@@ -21,7 +21,7 @@ public class BookHeartCount {
 
     private Long bookHeartCountId;
     private Book book;
-    private Long count; // 해당 책의 "찜"(heart) 갯수
+    private int count; // 해당 책의 "찜"(heart) 갯수
     private Long version;
 
 

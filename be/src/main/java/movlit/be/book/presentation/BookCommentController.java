@@ -2,21 +2,30 @@ package movlit.be.book.presentation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.book.application.converter.service.BookCommentReadService;
-import movlit.be.book.application.converter.service.BookCommentWriteService;
-import movlit.be.book.application.converter.service.BookDetailReadService;
-import movlit.be.book.application.converter.service.BookDetailWriteService;
+import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.book.application.service.BookCommentReadService;
+import movlit.be.book.application.service.BookCommentWriteService;
+import movlit.be.book.application.service.BookDetailReadService;
+import movlit.be.book.application.service.BookDetailWriteService;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookCommentRequestDto;
+import movlit.be.book.domain.BookCommentLike;
+import movlit.be.book.presentation.dto.BookCommentRequestDto;
+import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.exception.BookCommentAccessDenied;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.Member;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class BookCommentController {
+
     private final BookDetailReadService bookDetailReadService;
     private final BookDetailWriteService bookDetailWriteService;
     private final BookCommentReadService bookCommentReadService;
@@ -35,112 +45,161 @@ public class BookCommentController {
     private final MemberReadService memberReadService;
 
     // 리뷰 리스트
-    //    @GetMapping("{bookId}/comments")
-//    @ResponseBody
-//    public List<BookComment> bookCommentReadService(@PathVariable BookId bookId, @RequestParam(name = "p", defaultValue = "1") int page){
-//        Page<BookComment> pagedResult = bookCommentReadService.getPagedBookComments(bookId, page);
-//        int totalPages = pagedResult.getTotalPages();
-//        int startPage = (int) Math.ceil((page - 0.5) / bookCommentReadService.PAGE_SIZE - 1) * bookCommentReadService.PAGE_SIZE + 1;
-//        int endPage = Math.min(startPage + bookCommentReadService.PAGE_SIZE - 1, totalPages);
-//        List<Integer> pageList = new ArrayList<>();
-//        for (int i = startPage; i <= endPage; i++)
-//            pageList.add(i);
-//
-//       return pagedResult.getContent();
-//
-//    }
+    @GetMapping("{bookId}/comments")
+    public ResponseEntity<Slice<BookCommentResponseDto>> bookCommentReadService(@PathVariable BookId bookId,
+                                                                                @AuthenticationPrincipal MyMemberDetails details,
+                                                                                @PageableDefault(size = 4, sort = "regDt", direction = Direction.DESC)
+                                                                                Pageable pageable) {
+        MemberId memberId = null;
+        if(details != null)
+            memberId = details.getMemberId();
+
+        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.getPagedBookComments(bookId, memberId, pageable);
+
+        return ResponseEntity.ok(pagedResult);
+    }
+
+    // 해당 책 나의 리뷰
+    @GetMapping("{bookId}/myComment")
+    public ResponseEntity myComment(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            Member member = memberReadService.findByMemberId(memberId);
+            Book book = bookDetailReadService.findByBookId(bookId);
+
+            BookComment myComment = bookCommentReadService.findByMemberAndBook(member, book);
+            BookCommentResponseDto myCommentRes = BookCommentResponseDto.builder()
+                    .bookCommentId(myComment.getBookCommentId())
+                    .score(myComment.getScore())
+                    .comment(myComment.getComment())
+                    .nickname(member.getNickname())
+                    .profileImgUrl(member.getProfileImgUrl())
+                    .regDt(myComment.getRegDt())
+                    .updDt(myComment.getUpdDt())
+                    .build();
+
+            return ResponseEntity.ok(myCommentRes);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     // 도서 리뷰 작성
     @PostMapping("{bookId}/comments")
-    public String registerComment(@PathVariable BookId bookId, @RequestBody BookCommentRequestDto commentDto) {
-        // 임시 (추후 requestbody대신 session으로 memberId/email 받아오기)
-        MemberId memberIdTemp = new MemberId(commentDto.getMemberId());
-        System.out.println("############# memberID : " +memberIdTemp);
-        Member member = memberReadService.findByMemberId(memberIdTemp);
-        System.out.println("$$$$$$$$$$$$ member " + member);
+    public ResponseEntity registerComment(@PathVariable BookId bookId, @RequestBody BookCommentRequestDto commentDto,
+                                          @AuthenticationPrincipal MyMemberDetails details)
+            throws BookCommentAccessDenied {
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            Member member = memberReadService.findByMemberId(memberId);
 
+            Book book = bookDetailReadService.findByBookId(bookId);
+            System.out.println("### 리뷰등록controller member " + member + " book " + book);
+            System.out.println("### 리뷰등록controller dto " + commentDto);
 
-        Book book = bookDetailReadService.findByBookId(bookId);
-        //Member member = memberReadService.findByMemberId(memberId);
-
-        bookCommentWriteService.registerBookComment(member, book, commentDto);
-        return "성공";
+            BookComment savedComment = bookCommentWriteService.registerBookComment(member, book, commentDto);
+            return ResponseEntity.ok(savedComment);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // 도서 리뷰 수정
     @PostMapping("{bookId}/comments/{bookCommentId}")
     public ResponseEntity updateComment(@PathVariable BookId bookId,
-                                        @PathVariable BookCommentId bookCommentId, @RequestBody BookCommentRequestDto commentDto)
+                                        @PathVariable BookCommentId bookCommentId,
+                                        @RequestBody BookCommentRequestDto commentDto,
+                                        @AuthenticationPrincipal MyMemberDetails details)
             throws BookCommentAccessDenied {
-        // 임시 (추후 requestbody대신 session으로 memberId/email 받아오기)
-        System.out.println("############# memberID : " +commentDto.getMemberId());
-        MemberId memberIdTemp = new MemberId(commentDto.getMemberId());
-        Member member = memberReadService.findByMemberId(memberIdTemp);
-        System.out.println("$$$$$$$$$$$$ member " + member);
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            Member member = memberReadService.findByMemberId(memberId);
+            System.out.println("$$$$$$$$$$$$ member " + member);
+
+            Book book = bookDetailReadService.findByBookId(bookId);
+
+            BookComment updatedComment = bookCommentWriteService.updateBookComment(member, book, bookCommentId,
+                    commentDto);
+            BookCommentResponseDto updatedCommentRes = BookCommentResponseDto.builder()
+                    .bookCommentId(updatedComment.getBookCommentId())
+                    .score(updatedComment.getScore())
+                    .comment(updatedComment.getComment())
+                    .nickname(member.getNickname())
+                    .profileImgUrl(member.getProfileImgUrl())
+                    .regDt(updatedComment.getRegDt())
+                    .updDt(updatedComment.getUpdDt())
+                    .build();
+            return ResponseEntity.ok(updatedCommentRes);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
 
 
-        Book book = bookDetailReadService.findByBookId(bookId);
-        // Member member = memberReadService.findByMemberId(memberId);
-
-        bookCommentWriteService.updateBookComment(member, book, bookCommentId, commentDto);
-        return ResponseEntity.ok().build();
     }
 
-
-    // 도서 리뷰 삭제 - commentDto reuestBody 추후 삭제
-    @PostMapping("{bookId}/comments/{bookCommentId}/delete")
+    // 도서 리뷰 삭제
+    @DeleteMapping("{bookId}/comments/{bookCommentId}/delete")
     public ResponseEntity deleteComment(@PathVariable BookId bookId,
-                                        @PathVariable BookCommentId bookCommentId, @RequestBody BookCommentRequestDto commentDto)
+                                        @PathVariable BookCommentId bookCommentId,
+                                        @AuthenticationPrincipal MyMemberDetails details)
             throws BookCommentAccessDenied {
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            Member member = memberReadService.findByMemberId(memberId);
+            System.out.println("$$$$$$$$$$$$ member " + member);
 
-        System.out.println("############# memberID : " +commentDto.getMemberId());
-        MemberId memberIdTemp = new MemberId(commentDto.getMemberId());
-        Member member = memberReadService.findByMemberId(memberIdTemp);
-        System.out.println("$$$$$$$$$$$$ member " + member);
+            Book book = bookDetailReadService.findByBookId(bookId);
+
+            bookCommentWriteService.deleteBookComment(member, book, bookCommentId);
+
+            return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
 
 
-        Book book = bookDetailReadService.findByBookId(bookId);
-        // Member member = memberReadService.findByMemberId(memberId);
-
-        bookCommentWriteService.deleteBookComment(member, book, bookCommentId, commentDto);
-
-
-        return ResponseEntity.ok().build();
     }
 
     // 해당 도서 리뷰 좋아요(like) 하기
-    @PostMapping("{bookId}/comments/{bookCommentId}/likes/{memberTemp}")
-    public ResponseEntity addHearts(@PathVariable BookId bookId,
-                                    @PathVariable BookCommentId bookCommentId, @PathVariable String memberTemp){
-        //임시 - @CurrentMemberId 혹은 세션의 memberId로 원복필요
-        System.out.println("####멤버ID#### --> " + memberTemp);
-        Member member = memberReadService.findByMemberId(new MemberId(memberTemp));
+    @PostMapping("comments/{bookCommentId}/likes")
+    public ResponseEntity addHearts(@PathVariable BookCommentId bookCommentId,
+                                    @AuthenticationPrincipal MyMemberDetails details) {
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            Member member = memberReadService.findByMemberId(memberId);
 
-        //Member member = memberReadService.findByMemberId(memberId);
-        Book book = bookDetailReadService.findByBookId(bookId);
-        BookComment comment = bookCommentReadService.findByBookCommentId(bookCommentId);
+            BookComment comment = bookCommentReadService.findByBookCommentId(bookCommentId);
+            Book book = bookDetailReadService.findByBookId(comment.getBook().getBookId());
+            System.out.println("&& bookComment : " + comment + " book : " +book );
 
-        bookCommentWriteService.addLike(member, book, comment);
+            BookCommentLike savedLike = bookCommentWriteService.addLike(member, book, comment);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok(savedLike);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // 해당 도서 리뷰 좋아요(like) 삭제
-    @DeleteMapping("{bookId}/comments/{bookCommentId}/likes/{memberTemp}")
-    public ResponseEntity removeHearts(@PathVariable BookId bookId,
-                                       @PathVariable BookCommentId bookCommentId, @PathVariable String memberTemp)
+    @DeleteMapping("comments/{bookCommentId}/likes")
+    public ResponseEntity removeHearts(@PathVariable BookCommentId bookCommentId,
+                                       @AuthenticationPrincipal MyMemberDetails details)
             throws Exception {
-        //임시 - @CurrentMemberId 혹은 세션의 memberId로 원복필요
-        System.out.println("####멤버ID#### --> " + memberTemp);
-        Member member = memberReadService.findByMemberId(new MemberId(memberTemp));
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            Member member = memberReadService.findByMemberId(memberId);
 
-        //Member member = memberReadService.findByMemberId(memberId);
-        Book book = bookDetailReadService.findByBookId(bookId);
-        BookComment comment = bookCommentReadService.findByBookCommentId(bookCommentId);
 
-        bookCommentWriteService.removeLike(member, book, comment);
+            BookComment comment = bookCommentReadService.findByBookCommentId(bookCommentId);
+            Book book = bookDetailReadService.findByBookId(comment.getBook().getBookId());
 
-        return ResponseEntity.ok().build();
+            bookCommentWriteService.removeLike(member, book, comment);
+
+            return ResponseEntity.ok().build();
+        }
+        return
+                ResponseEntity.badRequest().build();
     }
 
 }

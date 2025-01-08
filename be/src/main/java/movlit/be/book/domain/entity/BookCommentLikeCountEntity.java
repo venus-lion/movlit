@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,25 +19,26 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Getter
 @Setter
-@Table(name = "book_heart_count")
+@Table(name = "book_comment_like_count")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookHeartCountEntity {
-
+public class BookCommentLikeCountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookHeartCountId;
+    private Long bookCommentLikeCountId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
-    private BookEntity bookEntity;
+    @JoinColumn(name = "book_comment_id", referencedColumnName = "id", nullable = false)
+    private BookCommentEntity bookCommentEntity;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    private int count; // 해당 책의 "찜"(heart) 갯수
+    @ColumnDefault("0") // 기본값을 0으로 설정
+    private int count; // 해당 리뷰의 "좋아요"(like) 갯수
 
     @Column
     private Long version;
+
+
 
 }
