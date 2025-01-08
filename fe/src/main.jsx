@@ -11,6 +11,7 @@ import MovieDetailPage from './components/MovieDetailPage';
 import BookDetailPage from './components/BookDetailPage';
 import MyPage from './components/MyPage';
 import MemberUpdate from './pages/MemberUpdate'; // MemberUpdate import
+import SearchPage from "./pages/SearchPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             {
                 path: 'member/update', // 회원 수정 라우트 추가
                 element: <MemberUpdate />,
+            },
+            {
+                path: '/search', // 검색기능 라우트 추가
+                element: <SearchPage />
             },
         ],
     },
