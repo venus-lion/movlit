@@ -17,10 +17,18 @@ public class MovieGenreRepositoryImpl implements MovieGenreRepository {
     private final MovieGenreJpaRepository movieGenreJpaRepository;
 
     @Override
-    public List<MovieDetailGenreResponse> fetchMovieDetailGenresByMovieId(Long movieId) {
+    public List<MovieDetailGenreResponse> fetchMovieDetailGenreNamesByMovieId(Long movieId) {
         return movieGenreJpaRepository.findGenreIdsByMovieId(movieId)
                 .stream()
                 .map(genreId -> new MovieDetailGenreResponse(Genre.of(genreId).getName()))
+                .toList();
+    }
+
+    @Override
+    public List<Genre> fetchMovieDetailGenresByMovieId(Long movieId) {
+        return movieGenreJpaRepository.findGenreIdsByMovieId(movieId)
+                .stream()
+                .map(Genre::of)
                 .toList();
     }
 
