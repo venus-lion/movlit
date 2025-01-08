@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import './SearchDetailPage.css'; // SearchPage.css 기반
+import axios from 'axios';
 
 function MovieSearchPage() {
     const [movieList, setMovieList] = useState([]);
     const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const {inputStr} = useParams();
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -13,11 +16,17 @@ function MovieSearchPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`/api/movies/main/popular?page=${page}&pageSize=9`); // 9개씩 가져오도록 pageSize 설정
-                const data = await response.json();
+                const response = await axios.get(`/api/movies/search/searchMovie`, {
+                    params: { page, pageSize, inputStr},
+                }); // 9개씩 가져오도록 pageSize 설정
+                const data = response.data;
 
                 setMovieList(data.movieList); // movieList로 응답하도록 수정
-                setTotalPages(data.totalPages); // totalPages 설정 (API 응답에 totalPages가 있다고 가정)
+                setPageSize(pageSize);
+
+                // setTotalPages(data.totalPages); // totalPages 설정 (API 응답에 totalPages가 있다고 가정)
+
+
 
             } catch (error) {
                 console.error('데이터 가져오기 실패:', error);

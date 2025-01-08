@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 
 import { useSearchParams, Link } from 'react-router-dom';
 import './searchPage.css';
+import axios from "axios";
 
 function SearchPage() {
     const [searchParams] = useSearchParams();
@@ -20,10 +21,17 @@ function SearchPage() {
                 console.log('API 호출 시작');
 
                 //  영화 데이터 가져오기
-                const movieResponse = await fetch(`/api/movies/main/popular`);
-                const movieData = await movieResponse.json();
+          //     const movieResponse = await fetch(`/api/movies/main/popular`);
+                const movieResponse = await axios.get(`/api/movies/search/searchMovie`, {
+                    params: {
+                        page: 1,
+                        pageSize: 20,
+                        inputStr: query
+                    },
+                });
+                const movieData = await movieResponse.data.movieList;
                 console.log('영화 데이터:', movieData);
-                setMovies(movieData.movieList || []);
+                setMovies(movieData|| []);
 
                 // 도서 데이터 가져오기
                 const bookResponse = await fetch(`/api/books/bestseller`);
@@ -54,7 +62,7 @@ function SearchPage() {
                 <h2>영화</h2>
                 <div className="more-link-container">
                     {movieList.length > 9 && (
-                        <Link className="more-link" to={`/movies/search?query=${query}`}>더 보기</Link>
+                        <Link className="more-link" key={query} to={`/movies/search?query=${query}`}>더 보기</Link>
                     )}
                 </div>
             </div>
@@ -74,7 +82,7 @@ function SearchPage() {
                 <h2>책</h2>
                 <div className="more-link-container">
                     {books.length > 9 && (
-                        <Link className="more-link" to={`/books/search?query=${query}`}>더 보기</Link>
+                        <Link className="more-link" key={query} to={`/books/search${query}`}>더 보기</Link>
                     )}
                 </div>
             </div>

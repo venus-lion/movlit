@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/books/comments/{bookCommentId}/likes").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/myComment").authenticated()
                         .requestMatchers("/testBook//saveBooks/**").permitAll()
+                        .requestMatchers("/api/movies/search/searchMovie").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail/related").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books/genres/movies/*/detail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
