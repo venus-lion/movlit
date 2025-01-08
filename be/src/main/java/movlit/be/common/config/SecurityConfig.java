@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/testBook/**").permitAll()
                         .requestMatchers("/testBook//saveBooks/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail/related").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books/genres/movies/*/detail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/images/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
