@@ -1,5 +1,11 @@
 package movlit.be.book.application.service;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookComment;
@@ -8,33 +14,45 @@ import movlit.be.book.domain.repository.BookCommentLikeCountRepository;
 import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.domain.repository.BookCommentRepository;
+import movlit.be.bookES.BookES;
+import movlit.be.bookES.BookESConvertor;
+import movlit.be.bookES.BookESDomain;
+import movlit.be.bookES.BookESRepository;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class BookCommentReadService {
-    public static final int PAGE_SIZE = 10;
 
+    public static final int PAGE_SIZE = 10;
 
     private final BookCommentRepository bookCommentRepository;
     private final BookCommentLikeRepository bookCommentLikeRepository;
     private final BookCommentLikeCountRepository bookCommentLikeCountRepository;
 
+
+
     // 리뷰 리스트
     public Slice<BookCommentResponseDto> getPagedBookComments(BookId bookId, MemberId memberId, Pageable pageable) {
         Slice<BookCommentResponseDto> bookCommentPage = null;
-        if(memberId == null)
+        if (memberId == null) {
             bookCommentPage = bookCommentRepository.findByBookId(bookId, pageable);
-        else
+        } else {
             bookCommentPage = bookCommentRepository.findByBookIdAndMemberId(bookId, memberId, pageable);
+        }
 
-        System.out.println("$$$$$$$ 리뷰리스트 : " );
+        System.out.println("$$$$$$$ 리뷰리스트 : ");
         for (BookCommentResponseDto comment : bookCommentPage.getContent()) {
             // 각 BookCommentResponseDto의 내용 출력
             System.out.println("Comment TEXT: " + comment.getComment());
@@ -56,18 +74,20 @@ public class BookCommentReadService {
         return bookCommentRepository.findByBookCommentId(bookCommentId);
     }
 
-
     // 댓글 좋아요 갯수
-    public int countLikesByCommentId(BookCommentId bookCommentId){
+    public int countLikesByCommentId(BookCommentId bookCommentId) {
         return bookCommentLikeCountRepository.countLikeByCommentId(bookCommentId);
     }
 
     // 해당 댓글 나의 좋아요 여부
-    public boolean isLikedByComment(BookComment bookComment, Member member){
-        if(bookCommentLikeRepository.findByBookCommentAndMember(bookComment, member) != null)
+    public boolean isLikedByComment(BookComment bookComment, Member member) {
+        if (bookCommentLikeRepository.findByBookCommentAndMember(bookComment, member) != null) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
+
+
 
 }

@@ -20,6 +20,8 @@ public interface BookCommentRepository {
 
     void deleteById(BookCommentId bookCommentId);
 
+    double getAverageScoreByBookId(BookId bookId);
+
 
     Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable);
 

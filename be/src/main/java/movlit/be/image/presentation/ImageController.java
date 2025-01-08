@@ -2,8 +2,12 @@ package movlit.be.image.presentation;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.image.application.service.ImageService;
 import movlit.be.image.presentation.dto.response.ImageResponse;
+import movlit.be.member.application.service.MemberReadService;
+import movlit.be.member.application.service.MemberWriteService;
+import movlit.be.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,11 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageController {
 
     private final ImageService imageService;
+    private final MemberReadService memberReadService;
+
 
     @PostMapping("/api/images/profile")
     public ResponseEntity<ImageResponse> uploadProfileImage(@AuthenticationPrincipal MyMemberDetails details,
                                                             @RequestPart(value = "file", required = false) MultipartFile file) {
-        var response = imageService.uploadProfileImage(details.getMemberId(), file);
+        MemberId memberId = details.getMemberId();
+        Member member = memberReadService.findByMemberId(memberId);
+        var response = imageService.uploadProfileImage(member, file);
         return ResponseEntity.ok(response);
     }
 

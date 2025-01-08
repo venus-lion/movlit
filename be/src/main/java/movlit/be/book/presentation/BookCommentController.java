@@ -68,6 +68,8 @@ public class BookCommentController {
             Book book = bookDetailReadService.findByBookId(bookId);
 
             BookComment myComment = bookCommentReadService.findByMemberAndBook(member, book);
+            if(myComment == null)
+                return ResponseEntity.badRequest().build();
             BookCommentResponseDto myCommentRes = BookCommentResponseDto.builder()
                     .bookCommentId(myComment.getBookCommentId())
                     .score(myComment.getScore())

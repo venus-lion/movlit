@@ -1,18 +1,30 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import {FaComment, FaHeart, FaRegHeart, FaUserCircle} from 'react-icons/fa';
-import {toast, ToastContainer} from 'react-toastify';
+import {
+    FaComment,
+    FaHeart,
+    FaRegHeart,
+    FaUserCircle,
+    FaStar,
+    FaRegStar,
+    FaStarHalfAlt,
+} from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MovieCarousel from '../pages/MovieCarousel';
-import useAuthMovieList from "../hooks/useAuthMovieList";
-import useBookList from "../hooks/useBookList";
-import BookGenreCarousel from "../pages/BookGenreCarousel";
+import useAuthMovieList from '../hooks/useAuthMovieList';
+import useBookList from '../hooks/useBookList';
+import BookGenreCarousel from '../pages/BookGenreCarousel';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 function MovieDetailPage() {
-    const {movieId} = useParams();
+    const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
-    const [myRating, setMyRating] = useState(0);
+    const [myRating, setMyRating] = useState(0); // 0~10 사이의 값 (0.5 단위)
+    const [hoverRating, setHoverRating] = useState(0); // 마우스 호버 시 별점 상태
+    const [dbRating, setDbRating] = useState(0); // 최신 별점 저장
     const [myComment, setMyComment] = useState('');
     const [crews, setCrews] = useState([]);
     const [visibleCrews, setVisibleCrews] = useState([]);
@@ -36,10 +48,10 @@ function MovieDetailPage() {
     const {
         movies: relatedMovies,
         loading: relatedMoviesLoading,
-        error: relatedMoviesError
+        error: relatedMoviesError,
     } = useAuthMovieList({
         endpoint: `movies/${movieId}/detail/related`,
-        params: {pageSize: 30},
+        params: { pageSize: 30 },
     });
     const [relatedMoviesStartIndex, setRelatedMoviesStartIndex] = useState(0);
 
@@ -61,10 +73,10 @@ function MovieDetailPage() {
     const {
         books: relatedBooks,
         loading: relatedBooksLoading,
-        error: relatedBooksError
+        error: relatedBooksError,
     } = useBookList({
         endpoint: `/api/books/genres/movies/${movieId}/detail`,
-        params: {limit: 30},
+        params: { limit: 30 },
     });
     const [relatedBooksStartIndex, setRelatedBooksStartIndex] = useState(0);
 
@@ -101,7 +113,7 @@ function MovieDetailPage() {
                     language: data.originalLanguage,
                     runtime: data.runtime,
                     status: data.status,
-                    voteAverage: Math.round(data.voteAverage) / 2,
+                    voteAverage: data.voteAverage,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
                     isHearted: data.isHearted,
@@ -163,7 +175,7 @@ function MovieDetailPage() {
         try {
             const response = await axiosInstance.get(`/movies/${movieId}/myComment`);
             if (response.data) {
-                const {movieCommentId, comment, score, nickname, profileImgUrl} =
+                const { movieCommentId, comment, score, nickname, profileImgUrl } =
                     response.data;
                 setUserComment({
                     nickname,
@@ -173,18 +185,20 @@ function MovieDetailPage() {
                 });
                 setUserCommentId(movieCommentId);
                 setMyRating(score);
+                setDbRating(score); // dbRating 업데이트
                 setMyComment(comment);
                 if (score > 0) {
                     setShowCommentInput(false);
                 } else {
-                    setShowCommentInput(true);
+                    setShowCommentInput(false); // 사용자가 코멘트를 남긴 적이 없으면 입력란을 숨김
                 }
             } else {
                 setUserComment(null);
                 setUserCommentId(null);
                 setMyRating(0);
+                setDbRating(0); // dbRating 업데이트
                 setMyComment('');
-                setShowCommentInput(false);
+                setShowCommentInput(false); // 사용자가 코멘트를 남긴 적이 없으면 입력란을 숨김
             }
         } catch (error) {
             console.error('Error fetching user comment:', error);
@@ -206,7 +220,7 @@ function MovieDetailPage() {
 
                 if (currentPage === 0) {
                     // 각 코멘트 객체에 isLiked와 commentLikeCount, profileImgUrl이 존재하는지 확인하고, 값이 없으면 false, 0, null으로 설정
-                    const updatedComments = response.data.content.map(comment => ({
+                    const updatedComments = response.data.content.map((comment) => ({
                         ...comment,
                         isLiked: comment.isLiked || false,
                         commentLikeCount: comment.commentLikeCount || 0,
@@ -218,7 +232,7 @@ function MovieDetailPage() {
                     );
                 } else {
                     // 마찬가지로 isLiked와 commentLikeCount, profileImgUrl 존재 여부 확인 및 기본값 설정
-                    const updatedComments = response.data.content.map(comment => ({
+                    const updatedComments = response.data.content.map((comment) => ({
                         ...comment,
                         isLiked: comment.isLiked || false,
                         commentLikeCount: comment.commentLikeCount || 0,
@@ -240,19 +254,20 @@ function MovieDetailPage() {
         }
     };
 
-    const handleRatingChange = (newRating) => {
-        if (userComment) {
-            setMyRating(newRating);
-            setShowCommentInput(true);
+    // 코멘트 별점 클릭 핸들러
+    const handleRatingClick = (newRating, e) => {
+        // 클릭 위치에 따라 반 별 또는 온전한 별로 설정
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const halfWidth = rect.width / 2;
+        const starIndex = newRating / 2;
+
+        if (x <= halfWidth) {
+            setMyRating(starIndex * 2 - 1);
         } else {
-            if (myRating === newRating) {
-                setMyRating(0);
-                setShowCommentInput(false);
-            } else {
-                setMyRating(newRating);
-                setShowCommentInput(true);
-            }
+            setMyRating(starIndex * 2);
         }
+        setShowCommentInput(true); // 별점 클릭 시 코멘트 입력란을 보이도록 설정
     };
 
     // 찜하기/찜해제 처리
@@ -417,6 +432,25 @@ function MovieDetailPage() {
         }
     };
 
+    // 별을 표시하는 함수 수정 (반 별: 1점, 온전한 별: 2점으로 계산)
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating / 2); // 온전한 별의 개수 (2점당 1개)
+        const halfStar = rating % 2 === 1; // 반 별의 여부 (나머지가 1이면 반 별)
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // 빈 별의 개수
+
+        return (
+            <>
+                {[...Array(fullStars)].map((_, index) => (
+                    <FaStar key={`full-${index}`} style={styles.starFilled} />
+                ))}
+                {halfStar && <FaStarHalfAlt style={styles.starFilled} />}
+                {[...Array(emptyStars)].map((_, index) => (
+                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty} />
+                ))}
+            </>
+        );
+    };
+
     if (!movieData) {
         return <div style={styles.loading}>Loading...</div>;
     }
@@ -424,9 +458,9 @@ function MovieDetailPage() {
     // 유니크한 장르 세트 생성
     const uniqueGenres = new Set();
     if (relatedBooks) {
-        relatedBooks.forEach(book => {
+        relatedBooks.forEach((book) => {
             if (book.genres && Array.isArray(book.genres)) {
-                book.genres.forEach(genre => uniqueGenres.add(genre.genreName));
+                book.genres.forEach((genre) => uniqueGenres.add(genre.genreName));
             }
         });
     }
@@ -434,7 +468,6 @@ function MovieDetailPage() {
 
     return (
         <div style={styles.container}>
-
             <div
                 style={{
                     ...styles.header,
@@ -444,13 +477,15 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
-                <ToastContainer/>
+                <ToastContainer />
                 <div style={styles.breadcrumbs}>
                     홈 / 영화 / {movieData.title}
                 </div>
                 <div style={styles.title}>{movieData.title}</div>
                 <div style={styles.subtitle}>
-                    {movieData.releaseDate ? movieData.releaseDate.substring(0, 4) : ''}{' '}
+                    {movieData.releaseDate
+                        ? movieData.releaseDate.substring(0, 4)
+                        : ''}{' '}
                     ・{' '}
                     {genres.map((genre, index) => (
                         <span key={index}>
@@ -464,7 +499,7 @@ function MovieDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title}/>
+                    <img src={movieData.posterUrl} alt={movieData.title} />
                 </div>
 
                 <div style={styles.info}>
@@ -472,40 +507,64 @@ function MovieDetailPage() {
                         <div style={styles.myRating}>
                             <span style={styles.ratingLabel}>내 별점</span>
                             <div style={styles.stars}>
-                                {Array(5)
-                                    .fill()
-                                    .map((_, index) => (
+                                {/* 별 5개로 10점 만점 표현 */}
+                                {[...Array(5)].map((_, index) => {
+                                    const starIndex = (index + 1);
+                                    const rating = myRating === 0 ? hoverRating : myRating;
+                                    return (
                                         <span
                                             key={index}
-                                            style={
-                                                index < myRating
-                                                    ? styles.starFilled
-                                                    : styles.starEmpty
-                                            }
-                                            onClick={() => handleRatingChange(index + 1)}
+                                            onClick={(e) => handleRatingClick(starIndex * 2, e)}
+                                            style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
+                                            onMouseMove={(e) => {
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const halfWidth = rect.width / 2;
+
+                                                // 클릭된 별점이 있든 없든 마우스 호버 이벤트는 항상 감지
+                                                if (x <= halfWidth) {
+                                                    setHoverRating(starIndex * 2 - 1);
+                                                } else {
+                                                    setHoverRating(starIndex * 2);
+                                                }
+                                            }}
+                                            onMouseLeave={() => {
+                                                setHoverRating(0);
+                                            }}
                                         >
-                      <span style={styles.starIcon}>★</span>
-                    </span>
-                                    ))}
+                                            {/* 클릭된 별점이 없으면 마우스 호버 상태에 따라 별을 표시하고, 클릭된 별점이 있으면 클릭된 별점을 기준으로 별을 표시 */}
+                                            {starIndex * 2 <= rating ? (
+                                                <FaStar style={styles.starFilled} />
+                                            ) : starIndex * 2 === rating + 1 ? (
+                                                <FaStarHalfAlt style={styles.starFilled} />
+                                            ) : (
+                                                <FaRegStar style={styles.starEmpty} />
+                                            )}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </div>
                         <div style={styles.averageRating}>
                             <span style={styles.ratingLabel}>평균 별점</span>
-                            <div style={styles.stars}>
-                                {Array(5)
-                                    .fill()
-                                    .map((_, index) => (
-                                        <span
-                                            key={index}
-                                            style={
-                                                index < movieData.voteAverage
-                                                    ? styles.starFilled
-                                                    : styles.starEmpty
-                                            }
-                                        >
-                                            <span style={styles.starIcon}>★</span>
-                                        </span>
-                                    ))}
+                            <div style={styles.starsAndProgress}>
+                                <div style={styles.stars}>
+                                    {renderStars(movieData.voteAverage)}
+                                </div>
+                                {/* Circular Progress Bar 추가 */}
+                                <div style={styles.progressBarContainer}>
+                                    <CircularProgressbar
+                                        value={movieData.voteAverage * 10}
+                                        maxValue={100}
+                                        text={`${Math.round(movieData.voteAverage * 10) / 10}`}
+                                        styles={buildStyles({
+                                            textSize: '22px',
+                                            pathColor: '#f8d90f',
+                                            textColor: '#000000',
+                                            trailColor: '#d6d6d6',
+                                        })}
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div style={styles.buttonGroup}>
@@ -543,21 +602,21 @@ function MovieDetailPage() {
                                 <span style={styles.userNickname}>{userComment.nickname}</span>
                             </div>
                             <div style={styles.userCommentContent}>
-                                <FaComment style={styles.commentIcon}/>
+                                <FaComment style={styles.commentIcon} />
                                 <p style={styles.userCommentText}>{userComment.comment}</p>
                             </div>
                         </div>
                     )}
 
                     {/* 코멘트 입력 및 수정/삭제 버튼 */}
-                    {showCommentInput && (
+                    {myRating > 0 && showCommentInput && (
                         <div style={styles.commentSection}>
-              <textarea
-                  style={styles.commentInput}
-                  placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
-                  value={userComment ? myComment : comment}
-                  onChange={handleCommentChange}
-              />
+                            <textarea
+                                style={styles.commentInput}
+                                placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+                                value={userComment ? myComment : comment}
+                                onChange={handleCommentChange}
+                            />
                             <button style={styles.submitButton} onClick={handleSubmitComment}>
                                 {userComment ? '수정하기' : '코멘트 남기기'}
                             </button>
@@ -583,7 +642,7 @@ function MovieDetailPage() {
                         </div>
                     )}
 
-                    <div style={{marginTop: '20px'}}/>
+                    <div style={{ marginTop: '20px' }} />
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -600,7 +659,8 @@ function MovieDetailPage() {
                                             <img
                                                 src={
                                                     crew.profileImgUrl
-                                                        ? 'http://image.tmdb.org/t/p/w200' + crew.profileImgUrl
+                                                        ? 'http://image.tmdb.org/t/p/w200' +
+                                                        crew.profileImgUrl
                                                         : '/default-profile-image.jpg'
                                                 }
                                                 alt={crew.name}
@@ -608,7 +668,9 @@ function MovieDetailPage() {
                                             />
                                             <div style={styles.crewInfo}>
                                                 <div style={styles.crewName}>{crew.name}</div>
-                                                <div style={styles.crewCharName}>{crew.charName}</div>
+                                                <div style={styles.crewCharName}>
+                                                    {crew.charName}
+                                                </div>
                                                 <div style={styles.crewRole}>
                                                     {crew.role === 'CAST'
                                                         ? '출연'
@@ -645,8 +707,12 @@ function MovieDetailPage() {
 
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>
-                                코멘트 <span style={styles.commentCount}>{totalComments.toLocaleString()}</span>
+                                코멘트{' '}
+                                <span style={styles.commentCount}>
+                  {totalComments.toLocaleString()}
+                </span>
                             </div>
+
                             <div style={styles.sectionContent}>
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
@@ -666,11 +732,24 @@ function MovieDetailPage() {
                                             </div>
                                             {/* 별점 및 좋아요 컨테이너 */}
                                             <div style={styles.commentActions}>
+                                                {/* 코멘트 별점 표시 */}
                                                 <div style={styles.commentRating}>
-                          <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
-                            ★
-                          </span>
-                                                    <span style={styles.commentScore}>{comment.score}</span>
+                                                    {/* 별 5개로 10점 만점 표현 */}
+                                                    {[...Array(5)].map((_, index) => {
+                                                        const starIndex = (index + 1);
+                                                        return (
+                                                            <span key={index} style={{display: 'inline-block'}}>
+                                                                {starIndex * 2 <= comment.score ? (
+                                                                    <FaStar style={styles.commentStarFilled}/>
+                                                                ) : starIndex * 2 === comment.score + 1 ? (
+                                                                    <FaStarHalfAlt style={styles.commentStarFilled}/>
+                                                                ) : (
+                                                                    <FaRegStar style={styles.commentStarEmpty}/>
+                                                                )}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                    {/*<span style={styles.commentScore}>{comment.score}</span>*/}
                                                 </div>
                                                 {/* 좋아요 버튼 및 카운트 컨테이너 */}
                                                 <div style={styles.likeContainer}>
@@ -820,15 +899,18 @@ const styles = {
     },
     stars: {
         display: 'inline-block',
+        alignItems: 'center', // 세로 중앙 정렬
         //marginLeft: '10px',
     },
     starFilled: {
         color: '#f8d90f',
         cursor: 'pointer',
+        fontSize: '40px', // 크기 조정
     },
     starEmpty: {
         color: '#ccc',
         cursor: 'pointer',
+        fontSize: '40px', // 크기 조정
     },
     starIcon: {
         fontSize: '40px',
@@ -1096,7 +1178,22 @@ const styles = {
     },
     averageRating: {
         marginLeft: '20px',
+        display: 'flex', // 가로 정렬
+        alignItems: 'center', // 세로 중앙 정렬
     },
+    voteAverage: {
+        marginLeft: '10px',
+        fontSize: '16px',
+        color: '#000000',
+    },
+    starsAndProgress: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    progressBarContainer: {
+        width: '60px', // 원하는 크기로 조정
+        marginLeft: '15px', // 별점과의 간격 조정
+    }
 };
 
 export default MovieDetailPage;

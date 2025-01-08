@@ -54,6 +54,22 @@ public class MovieSearchSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 검색어를_입력하여_영화_리스트를_조회한다(String inputStr, RequestSpecification spec){
+        return RestAssured
+                .given()
+                .param("inputStr", inputStr)
+                .param("page", 1)
+                .param("pageSize", 20)
+                .spec(spec)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .log().all()
+                .when()
+                .get("/api/movies/search/searchMovie")
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static void 상태코드가_200이고_응답_데이터가_존재한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK),

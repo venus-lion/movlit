@@ -5,25 +5,49 @@
     },
     "title": {
       "type": "text",
-      "analyzer": "english_analyzer",
+      "analyzer": "korean_analyzer",
+      "search_analyzer": "korean_analyzer",
       "fields": {
-        "english": {
+        "en": {
           "type": "text",
-          "analyzer": "korean_analyzer"
+          "analyzer": "english_analyzer",
+          "search_analyzer": "english_analyzer"
+        },
+        "ngram": {
+          "type": "text",
+          "analyzer": "my_ngram_analyzer",
+          "search_analyzer": "my_ngram_analyzer"
+        },
+        "standard": {
+          "type": "text",
+          "analyzer": "standard",
+          "search_analyzer": "standard"
         }
       }
     },
     "originalTitle": {
       "type": "text",
-      "analyzer": "korean_analyzer"
+      "analyzer": "english_analyzer"
     },
     "overview": {
       "type": "text",
       "analyzer": "korean_analyzer",
+      "search_analyzer": "korean_analyzer",
       "fields": {
-        "english": {
+        "en": {
           "type": "text",
-          "analyzer": "english_analyzer"
+          "analyzer": "english_analyzer",
+          "search_analyzer": "english_analyzer"
+        },
+        "ngram": {
+          "type": "text",
+          "analyzer": "my_ngram_analyzer",
+          "search_analyzer": "my_ngram_analyzer"
+        },
+        "standard": {
+          "type": "text",
+          "analyzer": "standard",
+          "search_analyzer": "standard"
         }
       }
     },
@@ -67,9 +91,20 @@
       "type": "text",
       "analyzer": "korean_analyzer",
       "fields": {
-        "english": {
+        "en": {
           "type": "text",
-          "analyzer": "english_analyzer"
+          "analyzer": "english_analyzer",
+          "search_analyzer": "english_analyzer"
+        },
+        "ngram": {
+          "type": "text",
+          "analyzer": "my_ngram_analyzer",
+          "search_analyzer": "my_ngram_analyzer"
+        },
+        "standard": {
+          "type": "text",
+          "analyzer": "standard",
+          "search_analyzer": "standard"
         }
       }
     },
@@ -89,9 +124,20 @@
         "genreName": {
           "type": "keyword",
           "fields": {
-            "english": {
+            "ko": {
               "type": "text",
-              "analyzer": "korean_analyzer"
+              "analyzer": "korean_analyzer",
+              "search_analyzer": "korean_analyzer"
+            },
+            "ngram": {
+              "type": "text",
+              "analyzer": "my_ngram_analyzer",
+              "search_analyzer": "my_ngram_analyzer"
+            },
+            "standard": {
+              "type": "text",
+              "analyzer": "standard",
+              "search_analyzer": "standard"
             }
           }
         }
@@ -104,7 +150,29 @@
           "type": "keyword"
         },
         "name": {
-          "type": "keyword"
+          "type": "keyword",
+          "fields": {
+            "ko": {
+              "type": "text",
+              "analyzer": "korean_analyzer",
+              "search_analyzer": "korean_analyzer"
+            },
+            "en": {
+              "type": "text",
+              "analyzer": "english_analyzer",
+              "search_analyzer": "english_analyzer"
+            },
+            "ngram": {
+              "type": "text",
+              "analyzer": "my_ngram_analyzer",
+              "search_analyzer": "my_ngram_analyzer"
+            },
+            "standard": {
+              "type": "text",
+              "analyzer": "standard",
+              "search_analyzer": "standard"
+            }
+          }
         },
         "role": {
           "type": "keyword"
@@ -127,10 +195,17 @@
         "tagName": {
           "type": "text",
           "analyzer": "english_analyzer",
+          "search_analyzer": "english_analyzer",
           "fields": {
-            "english": {
+            "ko": {
               "type": "text",
-              "analyzer": "korean_analyzer"
+              "analyzer": "korean_analyzer",
+              "search_analyzer": "korean_analyzer"
+            },
+            "standard": {
+              "type": "text",
+              "analyzer": "standard",
+              "search_analyzer": "standard"
             }
           }
         }

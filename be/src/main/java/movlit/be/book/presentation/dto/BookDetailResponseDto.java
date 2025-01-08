@@ -35,6 +35,8 @@ public class BookDetailResponseDto {
     private String stockStatus;
     @JsonProperty("mall_url")
     private String mallUrl;
+    @JsonProperty("average_score")
+    private BigDecimal averageScore;
     @JsonProperty("heart_count")
     private int heartCount;
     @JsonProperty("is_hearted")
