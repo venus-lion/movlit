@@ -1,13 +1,16 @@
 package movlit.be.common.util;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import movlit.be.common.exception.InvalidGenreIdException;
+import movlit.be.member.presentation.dto.response.GenreListReadResponse;
 
 public enum Genre {
 
     ACTION(1L, "액션"), // + 모험
-    ANIMATION(2l, "애니메이션"),
+    ANIMATION(2L, "애니메이션"),
     COMEDY(3L, "코미디"),
     CRIME(4L, "범죄"),
     DOCUMENTARY(5L, "다큐멘터리"),
@@ -37,6 +40,12 @@ public enum Genre {
     Genre(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static List<GenreListReadResponse> getGenreList() {
+        return Arrays.stream(Genre.values())
+                .map(genre -> new GenreListReadResponse(genre.id, genre.name))
+                .toList();
     }
 
     public Long getId() {

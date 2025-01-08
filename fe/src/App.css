@@ -53,3 +53,33 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.nav-right-logged-in {
+    display: flex;
+    align-items: center;
+}
+
+.nav-mypage {
+    margin-right: 15px; /* 로그아웃 버튼과의 간격 조정 */
+    display: flex; /* 아이콘과 텍스트를 가로로 정렬 */
+    align-items: center; /* 아이콘과 텍스트 수직 중앙 정렬 */
+}
+
+.nav-mypage-icon {
+    font-size: 30px; /* 아이콘 크기 조정 */
+    color: #666; /* 아이콘 색상 조정 */
+    margin-right: 5px; /* 아이콘과 텍스트 간격 조정 */
+}
+
+.nav-mypage .active {
+    color: #ff0000; /* 활성화된 마이페이지 링크 색상 */
+}
+
+/* 프로필 이미지 관련 스타일 */
+.nav-mypage-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* 원형 이미지 */
+    object-fit: cover; /* 이미지 비율 유지하면서 채우기 */
+    margin-right: 5px;
+}

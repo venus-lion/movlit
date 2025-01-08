@@ -28,7 +28,7 @@ public class MovieConvertor {
     }
 
     public static MovieCommentDataForDelete toMovieDetailCommentDataForDelete(MemberId memberId,
-                                                                              MovieCommentId movieCommentId) {
+                                                            MovieCommentId movieCommentId) {
         return new MovieCommentDataForDelete(memberId, movieCommentId);
     }
 
@@ -57,6 +57,15 @@ public class MovieConvertor {
                 .build();
     }
 
+    public static MovieHeartEntity toMovieHeartEntity(Long movieId, MemberId memberId) {
+        return MovieHeartEntity.builder()
+                .movieHeartId(IdFactory.createMovieHeartId())
+                .movieId(movieId)
+                .memberId(memberId)
+                .isHearted(true)
+                .build();
+    }
+
     public static MovieCommentLikeResponse toMovieCommentLikeResponse(MovieCommentLikeEntity movieCommentLikeEntity,
                                                                       Long movieCommentLikeCount) {
         return MovieCommentLikeResponse.builder()
@@ -65,15 +74,6 @@ public class MovieConvertor {
                 .memberId(movieCommentLikeEntity.getMemberId())
                 .isLiked(movieCommentLikeEntity.isLiked())
                 .movieCommentLikeCount(movieCommentLikeCount)
-                .build();
-    }
-
-    public static MovieHeartEntity toMovieHeartEntity(Long movieId, MemberId memberId) {
-        return MovieHeartEntity.builder()
-                .movieHeartId(IdFactory.createMovieHeartId())
-                .movieId(movieId)
-                .memberId(memberId)
-                .isHearted(true)
                 .build();
     }
 
@@ -102,5 +102,4 @@ public class MovieConvertor {
                 .count(0L)
                 .build();
     }
-
 }

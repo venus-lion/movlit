@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @Setter
 @ToString
 @Builder
+@Setting(settingPath = "/mappings/book-setting.json")
+@Mapping(mappingPath = "/mappings/book-mapping.json")
 public class BookES {
 
 
@@ -42,15 +45,19 @@ public class BookES {
     @Field(type = FieldType.Text)  // 텍스트로 처리, 전체 텍스트 검색 가능
     private String title;
 
+    // 시리즈 제거용 필드 추가
+    @Field(type = FieldType.Text)
+    private String titleKeyword;
+
     @Field(type = FieldType.Text)  // 텍스트로 처리, 전체 텍스트 검색 가능
     private List<String> crew; // 작가, 편집자, 기타..
 
     @Field(type = FieldType.Text)  // 텍스트로 처리
     private String publisher;
 
-    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd hh:mm:ss")
-    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime pubDate;
+    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate pubDate;
 
     @Field(type = FieldType.Text)  // 긴 설명을 텍스트로 처리
     private String description;
@@ -61,14 +68,14 @@ public class BookES {
     @Field(type = FieldType.Keyword)  // 책 이미지 URL
     private String bookImgUrl;
 
-    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd hh:mm:ss")
-    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
     // @Field(type = FieldType.Date)  // 생성일자
-    private LocalDateTime regDt;
+    private LocalDate regDt;
 
-    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd hh:mm:ss")
-    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
     // @Field(type = FieldType.Date)  // 수정일자
-    private LocalDateTime updDt;
+    private LocalDate updDt;
 
 }

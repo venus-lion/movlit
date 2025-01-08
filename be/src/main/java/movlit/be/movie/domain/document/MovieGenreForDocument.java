@@ -18,7 +18,10 @@ public class MovieGenreForDocument {
     @Field(type = FieldType.Keyword)
     private Long genreId; // 장르 ID
 
-    @Field(type = FieldType.Text, analyzer = "korean_analyzer")
+    @MultiField(mainField = @Field(type = FieldType.Keyword),
+            otherFields = {
+                    @InnerField(suffix = "ko", type = FieldType.Text, analyzer = "korean_analyzer"),
+            })
     private String genreName; // 장르 이름
 
 }

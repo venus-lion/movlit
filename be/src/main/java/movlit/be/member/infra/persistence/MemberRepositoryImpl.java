@@ -13,6 +13,8 @@ import movlit.be.member.domain.entity.MemberGenreEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.infra.persistence.jpa.MemberGenreJpaRepository;
 import movlit.be.member.infra.persistence.jpa.MemberJpaRepository;
+import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,20 +24,30 @@ import java.util.List;
 public class MemberRepositoryImpl implements MemberRepository {
 
     private final MemberJpaRepository memberJpaRepository;
-    private final MemberGenreJpaRepository memberGenreJpaRepository;
+
+    @Override
+    public MemberEntity saveEntity(MemberEntity memberEntity) {
+        return memberJpaRepository.save(memberEntity);
+    }
 
     @Override
     public Member save(Member member) {
-        MemberEntity memberToEntity = MemberConverter.toEntity(member);
-        MemberEntity memberEntity = memberJpaRepository.save(memberToEntity);
+        MemberEntity memberEntity = MemberConverter.toEntity(member);
+        memberJpaRepository.save(memberEntity);
         return MemberConverter.toDomain(memberEntity);
     }
 
     @Override
     public Member findById(MemberId memberId) {
-        MemberEntity memberEntity = memberJpaRepository.findById(memberId)
+        MemberEntity memberEntity = memberJpaRepository.findByMemberId(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         return MemberConverter.toDomain(memberEntity);
+    }
+
+    @Override
+    public MemberEntity findEntityById(MemberId memberId) {
+        return memberJpaRepository.findByMemberId(memberId)
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
@@ -67,11 +79,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public List<Genre> findUserInterestGenreList(MemberId memberId) {
-        List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findAllByMemberId(memberId)
-                .orElseThrow(MemberGenreNotFoundException::new);
+    public MemberReadMyPage fetchMyPageByMemberId(MemberId memberId) {
+        return memberJpaRepository.findMyPageByMemberId(memberId);
+    }
 
-        return memberGenreEntityList.stream().map(x -> Genre.of(x.getMemberGenreIdEntity().getGenreId())).toList();
+    @Override
+    public void softDeleteByMemberId(MemberId memberId) {
+        memberJpaRepository.softDeleteByMemberId(memberId);
     }
 
 }

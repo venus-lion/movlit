@@ -44,7 +44,7 @@
     },
     "originalLanguage": {
       "type": "keyword",
-      "normalizer": "lowercase_normalizer"
+      "normalizer": "lowercase"
     },
     "voteCount": {
       "type": "long"
@@ -54,14 +54,14 @@
     },
     "productionCountry": {
       "type": "keyword",
-      "normalizer": "lowercase_normalizer"
+      "normalizer": "lowercase"
     },
     "runtime": {
       "type": "integer"
     },
     "status": {
       "type": "keyword",
-      "normalizer": "lowercase_normalizer"
+      "normalizer": "lowercase"
     },
     "tagline": {
       "type": "text",
@@ -84,11 +84,36 @@
       "properties": {
         "genreId": {
           "type": "keyword",
-          "normalizer": "lowercase_normalizer"
+          "normalizer": "lowercase"
         },
         "genreName": {
-          "type": "text",
-          "analyzer": "korean_analyzer"
+          "type": "keyword",
+          "fields": {
+            "english": {
+              "type": "text",
+              "analyzer": "korean_analyzer"
+            }
+          }
+        }
+      }
+    },
+    "movieCrew": {
+      "type": "nested",
+      "properties": {
+        "movieCrewId": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "role": {
+          "type": "keyword"
+        },
+        "charName": {
+          "type": "keyword"
+        },
+        "orderNo": {
+          "type": "integer"
         }
       }
     },
@@ -97,7 +122,7 @@
       "properties": {
         "tagId": {
           "type": "keyword",
-          "normalizer": "lowercase_normalizer"
+          "normalizer": "lowercase"
         },
         "tagName": {
           "type": "text",

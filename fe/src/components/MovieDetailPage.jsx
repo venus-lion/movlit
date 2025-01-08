@@ -1,10 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useRef, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import { FaHeart, FaRegHeart, FaUserCircle, FaComment } from 'react-icons/fa';
+import {FaComment, FaHeart, FaRegHeart, FaUserCircle} from 'react-icons/fa';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import MovieCarousel from '../pages/MovieCarousel';
+import useAuthMovieList from "../hooks/useAuthMovieList";
+import useBookList from "../hooks/useBookList";
+import BookGenreCarousel from "../pages/BookGenreCarousel";
 
 function MovieDetailPage() {
-    const { movieId } = useParams();
+    const {movieId} = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0);
     const [myComment, setMyComment] = useState('');
@@ -26,6 +32,56 @@ function MovieDetailPage() {
 
     const initialVisibleCrews = 14;
 
+    // 관련 영화 데이터 가져오기
+    const {
+        movies: relatedMovies,
+        loading: relatedMoviesLoading,
+        error: relatedMoviesError
+    } = useAuthMovieList({
+        endpoint: `movies/${movieId}/detail/related`,
+        params: {pageSize: 30},
+    });
+    const [relatedMoviesStartIndex, setRelatedMoviesStartIndex] = useState(0);
+
+    const handleRelatedMoviesNext = () => {
+        const newIndex = relatedMoviesStartIndex + 5;
+        if (newIndex < relatedMovies.length) {
+            setRelatedMoviesStartIndex(newIndex);
+        }
+    };
+
+    const handleRelatedMoviesPrev = () => {
+        const newIndex = relatedMoviesStartIndex - 5;
+        if (newIndex >= 0) {
+            setRelatedMoviesStartIndex(newIndex);
+        }
+    };
+
+    // 관련 장르 도서 데이터 가져오기
+    const {
+        books: relatedBooks,
+        loading: relatedBooksLoading,
+        error: relatedBooksError
+    } = useBookList({
+        endpoint: `/api/books/genres/movies/${movieId}/detail`,
+        params: {limit: 30},
+    });
+    const [relatedBooksStartIndex, setRelatedBooksStartIndex] = useState(0);
+
+    const handleRelatedBooksNext = () => {
+        const newIndex = relatedBooksStartIndex + 5;
+        if (newIndex < relatedBooks.length) {
+            setRelatedBooksStartIndex(newIndex);
+        }
+    };
+
+    const handleRelatedBooksPrev = () => {
+        const newIndex = relatedBooksStartIndex - 5;
+        if (newIndex >= 0) {
+            setRelatedBooksStartIndex(newIndex);
+        }
+    };
+
     useEffect(() => {
         axiosInstance
             .get(`/movies/${movieId}/detail`)
@@ -45,7 +101,7 @@ function MovieDetailPage() {
                     language: data.originalLanguage,
                     runtime: data.runtime,
                     status: data.status,
-                    voteCount: data.voteCount,
+                    voteAverage: Math.round(data.voteAverage) / 2,
                     tagline: data.tagline,
                     ratingCount: data.voteCount,
                     isHearted: data.isHearted,
@@ -107,7 +163,7 @@ function MovieDetailPage() {
         try {
             const response = await axiosInstance.get(`/movies/${movieId}/myComment`);
             if (response.data) {
-                const { movieCommentId, comment, score, nickname, profileImgUrl } =
+                const {movieCommentId, comment, score, nickname, profileImgUrl} =
                     response.data;
                 setUserComment({
                     nickname,
@@ -213,6 +269,7 @@ function MovieDetailPage() {
                     heartCount: updatedHeartCount,
                     isHearted: false,
                 }));
+                toast.success('찜 목록에서 제거되었습니다.');
             } else {
                 // 찜하기 (POST 요청)
                 const response = await axiosInstance.post(`/movies/${movieId}/hearts`);
@@ -222,6 +279,7 @@ function MovieDetailPage() {
                     heartCount: updatedHeartCount,
                     isHearted: true,
                 }));
+                toast.success('찜 목록에 추가되었습니다.');
             }
 
             // 찜 상태에 따라 버튼 및 카운트 업데이트
@@ -239,7 +297,7 @@ function MovieDetailPage() {
             }
         } catch (error) {
             console.error('Error updating wish status:', error);
-            alert('찜하기/찜해제 처리에 실패했습니다.');
+            toast.error('찜하기/찜해제 처리에 실패했습니다.');
         }
     };
 
@@ -254,12 +312,12 @@ function MovieDetailPage() {
     // 코멘트 제출
     const handleSubmitComment = async () => {
         if (myRating === 0) {
-            alert('별점을 입력해주세요.');
+            toast.error('별점을 입력해주세요.');
             return;
         }
         const currentComment = userComment ? myComment : comment;
         if (currentComment.trim() === '') {
-            alert('코멘트를 입력해주세요.');
+            toast.error('코멘트를 입력해주세요.');
             return;
         }
 
@@ -275,11 +333,11 @@ function MovieDetailPage() {
                     `/movies/comments/${userCommentId}`,
                     requestBody
                 );
-                alert('코멘트가 수정되었습니다.');
+                toast.success('코멘트가 수정되었습니다.');
             } else {
                 // 새 코멘트 저장 (POST 요청)
                 await axiosInstance.post(`/movies/${movieId}/comments`, requestBody);
-                alert('코멘트가 저장되었습니다.');
+                toast.success('코멘트가 저장되었습니다.');
             }
 
             // 코멘트 상태 업데이트
@@ -287,7 +345,7 @@ function MovieDetailPage() {
             fetchComments(0);
         } catch (error) {
             console.error('코멘트 저장/수정 실패:', error);
-            alert('코멘트 저장/수정에 실패했습니다.');
+            toast.error('코멘트 저장/수정에 실패했습니다.');
         } finally {
             setComment('');
             setMyRating(0); // 코멘트 제출 후 별점을 다시 0으로 설정
@@ -302,12 +360,12 @@ function MovieDetailPage() {
         try {
             // 코멘트 삭제 (DELETE 요청)
             await axiosInstance.delete(`/movies/comments/${userCommentId}`);
-            alert('코멘트가 삭제되었습니다.');
+            toast.success('코멘트가 삭제되었습니다.');
             fetchUserComment();
             fetchComments(0);
         } catch (error) {
             console.error('Error deleting comment:', error);
-            alert('코멘트 삭제에 실패했습니다.');
+            toast.error('코멘트 삭제에 실패했습니다.');
         }
     };
 
@@ -344,16 +402,18 @@ function MovieDetailPage() {
             if (isLiked) {
                 // 좋아요 취소 (DELETE 요청)
                 await axiosInstance.delete(`/movies/comments/${commentId}/likes`);
+                toast.success('좋아요를 취소했습니다.');
             } else {
                 // 좋아요 (POST 요청)
                 await axiosInstance.post(`/movies/comments/${commentId}/likes`);
+                toast.success('좋아요를 눌렀습니다.');
             }
 
             // 코멘트 목록 다시 불러오기
             fetchComments(0);
         } catch (error) {
             console.error('Error updating like status:', error);
-            alert('좋아요/좋아요 취소 처리에 실패했습니다.');
+            toast.error('좋아요/좋아요 취소 처리에 실패했습니다.');
         }
     };
 
@@ -361,8 +421,20 @@ function MovieDetailPage() {
         return <div style={styles.loading}>Loading...</div>;
     }
 
+    // 유니크한 장르 세트 생성
+    const uniqueGenres = new Set();
+    if (relatedBooks) {
+        relatedBooks.forEach(book => {
+            if (book.genres && Array.isArray(book.genres)) {
+                book.genres.forEach(genre => uniqueGenres.add(genre.genreName));
+            }
+        });
+    }
+    const uniqueGenreList = Array.from(uniqueGenres);
+
     return (
         <div style={styles.container}>
+
             <div
                 style={{
                     ...styles.header,
@@ -372,6 +444,7 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
+                <ToastContainer/>
                 <div style={styles.breadcrumbs}>
                     홈 / 영화 / {movieData.title}
                 </div>
@@ -391,7 +464,7 @@ function MovieDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title} />
+                    <img src={movieData.posterUrl} alt={movieData.title}/>
                 </div>
 
                 <div style={styles.info}>
@@ -413,6 +486,25 @@ function MovieDetailPage() {
                                         >
                       <span style={styles.starIcon}>★</span>
                     </span>
+                                    ))}
+                            </div>
+                        </div>
+                        <div style={styles.averageRating}>
+                            <span style={styles.ratingLabel}>평균 별점</span>
+                            <div style={styles.stars}>
+                                {Array(5)
+                                    .fill()
+                                    .map((_, index) => (
+                                        <span
+                                            key={index}
+                                            style={
+                                                index < movieData.voteAverage
+                                                    ? styles.starFilled
+                                                    : styles.starEmpty
+                                            }
+                                        >
+                                            <span style={styles.starIcon}>★</span>
+                                        </span>
                                     ))}
                             </div>
                         </div>
@@ -446,12 +538,12 @@ function MovieDetailPage() {
                                         style={styles.profileImage}
                                     />
                                 ) : (
-                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                    <FaUserCircle style={styles.defaultProfileIcon}/>
                                 )}
                                 <span style={styles.userNickname}>{userComment.nickname}</span>
                             </div>
                             <div style={styles.userCommentContent}>
-                                <FaComment style={styles.commentIcon} />
+                                <FaComment style={styles.commentIcon}/>
                                 <p style={styles.userCommentText}>{userComment.comment}</p>
                             </div>
                         </div>
@@ -568,7 +660,7 @@ function MovieDetailPage() {
                                                         style={styles.commentProfileImage}
                                                     />
                                                 ) : (
-                                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                                    <FaUserCircle style={styles.defaultProfileIcon}/>
                                                 )}
                                                 <span style={styles.commentUser}>{comment.nickname}</span>
                                             </div>
@@ -586,22 +678,24 @@ function MovieDetailPage() {
                                                         style={styles.likeButton}
                                                         onClick={() => handleLikeClick(comment.movieCommentId, comment.isLiked)}
                                                     >
-                                                        {comment.isLiked ? <FaHeart style={styles.likedIcon} /> : <FaRegHeart style={styles.likeIcon} />}
+                                                        {comment.isLiked ? <FaHeart style={styles.likedIcon}/> :
+                                                            <FaRegHeart style={styles.likeIcon}/>}
                                                     </button>
                                                     {/* 좋아요 카운트 */}
-                                                    <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
+                                                    <span
+                                                        style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         {/* 코멘트 내용 */}
                                         <div style={styles.commentContent}>
-                                            <FaComment style={styles.commentIcon} />
+                                            <FaComment style={styles.commentIcon}/>
                                             <p style={styles.commentText}>{comment.comment}</p>
                                         </div>
                                     </div>
                                 ))}
                                 {/* 무한 스크롤 로딩 감지 Element */}
-                                <div ref={loader} />
+                                <div ref={loader}/>
                                 {/* 더보기 버튼 */}
                                 {hasMore && isInitialLoad && (
                                     <div style={styles.moreButtonContainer}>
@@ -621,16 +715,45 @@ function MovieDetailPage() {
                             </div>
                         </div>
 
+                        {/* 새로운 관련 영화 섹션 */}
                         <div style={styles.section}>
-                            <div style={styles.sectionTitle}>관련 도서</div>
+                            <div style={styles.sectionTitle}>관련 영화 추천</div>
                             <div style={styles.sectionContent}>
-                                {movieData.relatedBooks &&
-                                    movieData.relatedBooks.map((book) => (
-                                        <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title} />
-                                            <div>{book.title}</div>
-                                        </div>
-                                    ))}
+                                {relatedMoviesLoading && <p>Loading related movies...</p>}
+                                {relatedMoviesError && (
+                                    <div>
+                                        <p>Error loading related movies.</p>
+                                    </div>
+                                )}
+                                {!relatedMoviesLoading && !relatedMoviesError && (
+                                    <MovieCarousel
+                                        movies={relatedMovies}
+                                        startIndex={relatedMoviesStartIndex}
+                                        handleNext={handleRelatedMoviesNext}
+                                        handlePrev={handleRelatedMoviesPrev}
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        {/* 관련 도서 섹션 */}
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>관련 도서 추천</div>
+                            <div style={styles.sectionContent}>
+                                {relatedBooksLoading && <p>Loading related books...</p>}
+                                {relatedBooksError && (
+                                    <div>
+                                        <p>Error loading related books.</p>
+                                    </div>
+                                )}
+                                {!relatedBooksLoading && !relatedBooksError && (
+                                    <BookGenreCarousel
+                                        books={relatedBooks}
+                                        startIndex={relatedBooksStartIndex}
+                                        handleNext={handleRelatedBooksNext}
+                                        handlePrev={handleRelatedBooksPrev}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -639,6 +762,7 @@ function MovieDetailPage() {
         </div>
     );
 }
+
 
 const styles = {
     container: {
@@ -969,6 +1093,9 @@ const styles = {
         display: 'flex',
         alignItems: 'flex-start',
         marginLeft: '5px',
+    },
+    averageRating: {
+        marginLeft: '20px',
     },
 };
 

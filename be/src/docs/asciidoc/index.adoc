@@ -41,6 +41,12 @@ operation::signupMember_failedByDuplicateNickname[snippets='http-response']
 
 operation::signupMember_failedByReconfirmPasswordUnmatch[snippets='http-response']
 
+=== 회원 수정
+
+=== 성공
+
+operation::updateMember_success['http-request,http-response']
+
 [[movie]]
 === 상세 페이지
 
@@ -83,3 +89,11 @@ operation::fetchMyMovieComment_withSession_success[snippets='http-request,http-r
 === 코멘트 삭제
 
 operation::deleteMovieComment_success[snippets='http-request,http-response']
+
+[[image]]
+
+== 이미지
+
+=== 이미지 업로드
+
+operation::uploadMemberProfileImage_success[snippets='http-request,http-response']

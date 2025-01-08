@@ -40,7 +40,7 @@ public class MovieDetailReadService {
     }
 
     public List<MovieDetailGenreResponse> fetchMovieDetailGenres(Long movieId) {
-        return movieGenreRepository.fetchMovieDetailGenresByMovieId(movieId);
+        return movieGenreRepository.fetchMovieDetailGenreNamesByMovieId(movieId);
     }
 
     public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId, Pageable pageable) {

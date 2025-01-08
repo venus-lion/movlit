@@ -6,12 +6,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "member_genre")
+@Table(name = "member_genre", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"member_id", "genre_id"})
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class MemberGenreEntity {
@@ -19,8 +22,8 @@ public class MemberGenreEntity {
     @EmbeddedId
     private MemberGenreIdEntity memberGenreIdEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", updatable = false, insertable = false)
-    private MemberEntity memberEntity;
+    public MemberGenreEntity(MemberGenreIdEntity memberGenreIdEntity) {
+        this.memberGenreIdEntity = memberGenreIdEntity;
+    }
 
 }

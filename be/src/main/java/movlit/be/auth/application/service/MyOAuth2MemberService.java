@@ -5,9 +5,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MemberNotFoundException;
+import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
+import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -27,7 +29,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest memberRequest) throws OAuth2AuthenticationException {
-        String email, nickname, profileUrl;
+        String email, profileUrl;
         String hashedPwd = bCryptPasswordEncoder.encode("Social Login");
         Member member = null;
 
@@ -36,56 +38,20 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
         String provider = memberRequest.getClientRegistration().getRegistrationId();
         switch (provider) {
-            case "github":
-                // FIXME. 여기서 throw를 던져버리니까 이 OAuth 로직 자체를 수정해야 함
-                email = oAuth2User.getAttribute("email");
-                try {
-                    member = memberReadService.findByMemberEmail(email);
-                } catch (MemberNotFoundException e) {
-                    nickname = oAuth2User.getAttribute("name");
-                    nickname = (nickname == null) ? "github_Member" : nickname;
-                    profileUrl = oAuth2User.getAttribute("avatar_url");
-//                    member = Member.builder()
-//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
-//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-//                            .build();
-                    // FIXME: OAuth쪽은 register 분리
-                    MemberRegisterRequest request = MemberRegisterRequest.builder()
-                            .nickname(nickname)
-                            .email(email)
-                            .password(hashedPwd)
-                            .build();
-                    memberWriteService.registerMember(request);
-                    log.info("깃허브 계정을 통해 회원가입이 되었습니다. " + request.getNickname());
-                }
-
-                break;
-
             case "google":
                 email = oAuth2User.getAttribute("email");    // Google Email
                 try {
                     member = memberReadService.findByMemberEmail(email);
-
                     log.info("=== findByMemberEmail : {}", member);
                 } catch (MemberNotFoundException e) {
-                    nickname = oAuth2User.getAttribute("name");
                     profileUrl = oAuth2User.getAttribute("picture");
-                    // TODO : 생일 처리
-//                    member = Member.builder()
-//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl)
-//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-//                            .build();
-
-                    // FIXME: OAuth쪽은 register 분리
-                    MemberRegisterRequest request = MemberRegisterRequest.builder()
-                            .nickname(nickname)
+                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
                             .email(email)
                             .password(hashedPwd)
+                            .profileImgUrl(profileUrl)
                             .build();
-                    memberWriteService.registerMember(request);
-                    log.info("구글 계정을 통해 회원가입이 되었습니다. " + request.getNickname());
+                    memberWriteService.registerOAuth2Member(request);
+                    log.info("구글 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
                 }
                 break;
 
@@ -95,8 +61,8 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
                 try {
                     member = memberReadService.findByMemberEmail(email);
+                    log.info("로그인이 되었습니다. email={}", member.getEmail());
                 } catch (MemberNotFoundException e) {
-                    nickname = Optional.ofNullable((String) response.get("name")).orElse("naver_Member");
                     profileUrl = Optional.ofNullable((String) response.get("profile_image")).orElse("");
 
                     // 생일 처리
@@ -106,20 +72,14 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     if (birthday.isPresent() && birthyear.isPresent()) {
                         dob = birthyear.get() + "-" + birthday.get();
                     }
-
-//                    member = Member.builder()
-//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
-//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-//                            .build();
-
-                    // FIXME: OAuth쪽은 register 분리
-                    MemberRegisterRequest request = MemberRegisterRequest.builder()
-                            .nickname(nickname)
+                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
                             .email(email)
                             .password(hashedPwd)
+                            .profileImgUrl(profileUrl)
+                            .dob(dob)
                             .build();
-                    memberWriteService.registerMember(request);
+                    member = memberWriteService.registerOAuth2Member(request);
+                    log.info("네이버 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
                 }
                 break;
 
@@ -130,8 +90,6 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 try {
                     member = memberReadService.findByMemberEmail(email);
                 } catch (MemberNotFoundException e) {
-                    nickname = Optional.ofNullable((String) properties.get("nickname")).orElse("");
-
                     Optional<String> birthday = Optional.ofNullable((String) account.get("birthday"));
                     Optional<String> birthyear = Optional.ofNullable((String) account.get("birthyear"));
                     String dob = "";
@@ -141,43 +99,19 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                     }
 
                     profileUrl = Optional.ofNullable((String) account.get("profile_image")).orElse("");
-
-//                    member = Member.builder()
-//                            .memberId(IdFactory.createMemberId()).password(hashedPwd).nickname(nickname).email(email)
-//                            .role("ROLE_Member").provider(provider).profileImgUrl(profileUrl).dob(dob)
-//                            .regDt(LocalDateTime.now()).updDt(LocalDateTime.now())
-//                            .build();
-
-                    // FIXME: OAuth쪽은 register 분리
-                    MemberRegisterRequest request = MemberRegisterRequest.builder()
-                            .nickname(nickname)
+                    MemberRegisterOAuth2Request request = MemberRegisterOAuth2Request.builder()
                             .email(email)
                             .password(hashedPwd)
+                            .profileImgUrl(profileUrl)
+                            .dob(dob)
                             .build();
-                    memberWriteService.registerMember(request);
+                    memberWriteService.registerOAuth2Member(request);
 
-                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + request.getNickname());
+                    log.info("카카오 계정을 통해 회원가입이 되었습니다. " + request.getEmail());
                 }
 
                 break;
         }
-//            case "facebook":
-//                String fid = oAuth2User.getAttribute("id");    // Facebook ID
-//                memberId = provider + "_" + fid;
-//                member = memberReadService.findByMemberId(memberId);
-//                if (member == null) {         // 내 DB에 없으면 가입을 시켜줌
-//                    uname = oAuth2User.getAttribute("name");
-//                    uname = (uname == null) ? "facebook_Member" : uname;
-//                    email = oAuth2User.getAttribute("email");
-//                    member = Member.builder()
-//                            .memberId(memberId).password(hashedPwd).nickname(uname).email(email)
-//                            .regDt(LocalDateTime.now()).role("ROLE_Member").provider(provider)
-//                            .build();
-//                    memberWriteService.registerMember(member);
-//                    log.info("페이스북 계정을 통해 회원가입이 되었습니다. " + member.getNickname());
-//                }
-//                break;
-//        }
 
         return new MyMemberDetails(member, oAuth2User.getAttributes());
     }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyOAuth2MemberService;
+import movlit.be.auth.application.service.OAuth2AuthenticationSuccessHandler;
 import movlit.be.common.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class SecurityConfig {
     private final AuthenticationFailureHandler failureHandler;
     private final MyOAuth2MemberService myOAuth2MemberService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,6 +50,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/books/comments/{bookCommentId}/likes").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/books/comments/{bookCommentId}/likes").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/myComment").authenticated()
+                        .requestMatchers("/testBook//saveBooks/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/*/detail/related").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books/genres/movies/*/detail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/images/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/hearts").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/movies/comments/*/likes").authenticated()
@@ -55,15 +62,21 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/movies/*/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/members/myPage").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/members/genreList").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/genreList").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/{movieId}/myComment").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/crews").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail").permitAll()
-                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover", "/websocket/**", "/echo", "/personal",
-                                "/api/members/login", "/api/members/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**",
-                                "api/books/**")
+                        .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/members/delete").authenticated()
+                        .requestMatchers("/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
+                                "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
+                                "/error/**", "api/books/**")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
@@ -76,33 +89,22 @@ public class SecurityConfig {
                                 HttpServletResponse.SC_NO_CONTENT)))
                         .deleteCookies("refreshToken")
                 )
-//                .logout(auth -> auth
-//                        .logoutUrl("/member/logout")
-//                        .invalidateHttpSession(true)        // 로그아웃시 세션 삭제
-//                        .deleteCookies("JSESSIONID")
-//                        .logoutSuccessUrl("/member/login")
-//                )
                 .oauth2Login(auth -> auth
                         .loginPage("/member/login")
                         // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
                         // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
                         // 5. 프로바이더가 제공하는 정보
                         .userInfoEndpoint(
-                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService))
-                        .defaultSuccessUrl("/member/loginSuccess", true)
+                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+//                       .defaultSuccessUrl("http://localhost:5173", true)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         ;
 
         return http.build();
     }
-
-    // JWT Filter Bean 등록
-//    @Bean
-//    public JwtRequestFilter jwtRequestFilter() {
-//        return new JwtRequestFilter();
-//    }
 
 
 

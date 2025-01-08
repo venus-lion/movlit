@@ -1,8 +1,12 @@
 package movlit.be.movie.infra.persistence;
 
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
@@ -16,11 +20,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieJpaRepository movieJpaRepository;
-//    private final ElasticsearchOperations elasticsearchOperations;
-
 
     @Override
     public Movie save(Movie movie) {
@@ -46,11 +49,18 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public List<Movie> findAllOrderByHeartCountDescVoteCountDescPopularityDesc(Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findAllByOrderByVoteCountDescPopularityDesc(
-                pageable);
+    public List<Movie> findByVoteCountGreaterThan500OrderByPopularityDesc(Long minVoteCount, Pageable pageable) {
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByVoteCountGreaterThanEqualOrderByPopularityDesc(minVoteCount, pageable);
 //        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
+    }
+
+    @Override
+    public List<Movie> findByIdWithCrewIn(List<Long> movieIds) {
+        List<MovieEntity> movieEntity = movieJpaRepository.findByIdWithCrewIn(movieIds);
+        if(movieEntity.isEmpty()) throw new MovieNotFoundException();
+
+        return movieEntity.stream().map(MovieConverter::toDomain).toList();
     }
 
     @Override
@@ -59,10 +69,11 @@ public class MovieRepositoryImpl implements MovieRepository {
 //        Page<MovieGenreEntity> movieEntityPage2 = movieGenreJpaRepository.findByMovieGenreIdForEntity_GenreIdOrderByMovieEntity_ReleaseDateDesc(genreId, pageable);
 
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
-
-
     }
 
+    @Override
+    public Movie findMostRecentMovieHeart(MemberId memberId) {
+            return null;
 
-
+    }
 }

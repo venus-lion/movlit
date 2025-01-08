@@ -1,11 +1,14 @@
 package movlit.be.movie.domain.repository;
 
-import movlit.be.book.domain.Genre;
-import movlit.be.movie.domain.document.MovieDocument;
-import org.springframework.data.elasticsearch.core.SearchHits;
-
 import java.util.List;
+import movlit.be.common.util.Genre;
+import movlit.be.movie.domain.Movie;
+import org.springframework.data.domain.Pageable;
 
 public interface MovieSearchRepository {
-    SearchHits<MovieDocument> searchByUserInterestGenre(List<Genre> genreList);
+
+    List<Movie> searchInterestGenre(List<Genre> genreList, Pageable pageable);
+
+    List<Movie> searchByUserHeartMovieAndCrew(List<Movie> movieList, Pageable pageable);
+
 }

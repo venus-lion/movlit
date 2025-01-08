@@ -1,7 +1,11 @@
 package movlit.be.movie_heart.infra;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.NotExistMovieHeartByMember;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.movie_heart.application.converter.MovieHeartConverter;
+import movlit.be.movie_heart.domain.MovieHeart;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.domain.repository.MovieHeartRepository;
 import movlit.be.movie_heart.infra.persistence.MovieHeartJpaRepository;
@@ -26,6 +30,19 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
     @Override
     public boolean existsByMovieIdAndMemberId(Long movieId, MemberId memberId) {
         return movieHeartJpaRepository.existsByMovieIdAndMemberId(movieId, memberId);
+    }
+
+    @Override
+    public List<MovieHeart> findMostRecentMovieHeart(MemberId memberId) {
+        List<MovieHeartEntity> movieHeartList = movieHeartJpaRepository.findTop3ByMemberIdOrderByRegDtDesc(memberId);
+
+        if(movieHeartList.isEmpty()){
+            throw new NotExistMovieHeartByMember();
+        }
+
+        return movieHeartList.stream()
+                .map(MovieHeartConverter::toDomain)
+                .toList();
     }
 
 }

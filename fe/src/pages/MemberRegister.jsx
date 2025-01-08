@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../axiosInstance';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // CSS 임포트
+import 'react-datepicker/dist/react-datepicker.css';
+import Select from 'react-select';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MemberRegister = () => {
     const [email, setEmail] = useState('');
@@ -10,13 +13,57 @@ const MemberRegister = () => {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [nickname, setNickname] = useState('');
     const [dob, setDob] = useState('');
+    const [genres, setGenres] = useState([]);
+    const [selectedGenres, setSelectedGenres] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchGenres = async () => {
+            try {
+                const response = await axiosInstance.get('/genreList');
+                const genreOptions = response.data.map((genre) => ({
+                    value: genre.genreId,
+                    label: genre.genreName,
+                }));
+                setGenres(genreOptions);
+            } catch (error) {
+                console.error('Error fetching genres:', error);
+            }
+        };
+
+        fetchGenres();
+    }, []);
+
+    const handleGenreChange = (selectedOptions) => {
+        setSelectedGenres(selectedOptions);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (password !== repeatPassword) {
-            alert('패스워드가 일치하지 않습니다.');
+            toast.error('패스워드가 일치하지 않습니다.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
+        if (selectedGenres.length < 3) {
+            toast.error('최소 3개의 장르를 선택해야 합니다.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -26,26 +73,51 @@ const MemberRegister = () => {
                 password,
                 repeatPassword,
                 nickname,
-                dob: dob ? dob.toISOString().slice(0, 10) : null, // dob 변환,
+                dob: dob ? dob.toISOString().slice(0, 10) : null,
+                genreIds: selectedGenres.map((genre) => genre.value),
             });
 
             console.log('Registration successful:', response.data);
-            alert('회원 가입이 완료되었습니다.');
+            toast.success('회원 가입이 완료되었습니다.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
 
             navigate('/member/login');
         } catch (error) {
             console.error('Registration error:', error);
             if (error.response) {
-                alert(error.response.data.message);
+                toast.error(error.response.data.message, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             } else {
-                alert('요청 중 오류가 발생했습니다.');
+                toast.error('요청 중 오류가 발생했습니다.', {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
         }
     };
 
     return (
         <div className="bg-light">
-            <div className="container" style={{marginTop: '30px'}}>
+            <div className="container" style={{ marginTop: '30px' }}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">
@@ -56,15 +128,15 @@ const MemberRegister = () => {
                                         <strong>회원 가입</strong>
                                     </h3>
                                 </div>
-                                <hr/>
+                                <hr />
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{width: '45%'}}>
+                                            <td style={{ width: '45%' }}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{width: '55%'}}>
+                                            <td style={{ width: '55%' }}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -126,11 +198,35 @@ const MemberRegister = () => {
                                                 <DatePicker
                                                     selected={dob}
                                                     onChange={(date) => setDob(date)}
-                                                    dateFormat="yyyy-MM-dd" // 원하는 날짜 형식 지정
-                                                    className="form-control" // 부트스트랩 클래스 적용
-                                                    isClearable // 선택 해제 버튼 추가
-                                                    showYearDropdown // 연도 선택 드롭다운 표시
-                                                    scrollableYearDropdown // 연도 스크롤 가능
+                                                    dateFormat="yyyy-MM-dd"
+                                                    className="form-control"
+                                                    isClearable
+                                                    showYearDropdown
+                                                    scrollableYearDropdown
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label className="col-form-label">장르</label>
+                                            </td>
+                                            <td>
+                                                <Select
+                                                    isMulti
+                                                    options={genres}
+                                                    value={selectedGenres}
+                                                    onChange={handleGenreChange}
+                                                    placeholder="장르 선택 (최소 3개)"
+                                                    styles={{
+                                                        control: (provided) => ({
+                                                            ...provided,
+                                                            marginBottom: '15px',
+                                                        }),
+                                                        menu: (provided) => ({
+                                                            ...provided,
+                                                            zIndex: 9999,
+                                                        }),
+                                                    }}
                                                 />
                                             </td>
                                         </tr>
@@ -139,7 +235,7 @@ const MemberRegister = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     type="submit"
-                                                    style={{marginRight: '5px'}}
+                                                    style={{ marginRight: '5px' }}
                                                 >
                                                     확인
                                                 </button>
@@ -157,22 +253,11 @@ const MemberRegister = () => {
                                     <Link to="/member/login">로그인</Link>
                                 </p>
 
-                                {/* 소셜 로그인 버튼 */}
                                 <div className="mt-3 mb-3">
-                                <div className="social-login-header">
+                                    <div className="social-login-header">
                                         <span>소셜 계정으로 가입</span>
                                     </div>
                                     <div className="social-login-buttons">
-                                        <a
-                                            href="/oauth2/authorization/google"
-                                            className="social-login-button"
-                                        >
-                                            <img
-                                                src="/images/google-logo.png"
-                                                alt="Google"
-                                                className="social-login-icon"
-                                            />
-                                        </a>
                                         <a
                                             href="/oauth2/authorization/naver"
                                             className="social-login-button"
@@ -180,16 +265,6 @@ const MemberRegister = () => {
                                             <img
                                                 src="/images/naver-logo.jpg"
                                                 alt="Naver"
-                                                className="social-login-icon"
-                                            />
-                                        </a>
-                                        <a
-                                            href="/oauth2/authorization/kakao"
-                                            className="social-login-button"
-                                        >
-                                            <img
-                                                src="/images/kakao-logo.png"
-                                                alt="Kakao"
                                                 className="social-login-icon"
                                             />
                                         </a>
@@ -201,6 +276,7 @@ const MemberRegister = () => {
                     <div className="col-3"></div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

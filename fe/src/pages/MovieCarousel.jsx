@@ -1,110 +1,68 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-// import "../assets/css/main.css"; // 스타일 예시는 아래 참고
-import "./MovieCarousel.css";
-import "../assets/css/fontawesome-all.min.css";
+import React from 'react';
+import { Link } from "react-router-dom";
+import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa'; // 별 아이콘 임포트
+import './Home.css';
 
-/**
- * props 예시:
- *  - name: 화면에 표시할 목록 이름 (ex: "인기순 영화")
- *  - endpoint: API URL (ex: "/api/movies/main/popular")
- *  - defaultParams: { genreId: 1 } 등 기본 query params
- *    (최신순 등에서 필요 없으면 {} 로 전달)
- */
-function MovieCarousel({ name, endpoint, defaultParams = {} }) {
-    // 서버에서 누적받은 영화들 (각 호출마다 10개씩 추가됨)
-    const [movies, setMovies] = useState([]);
+function MovieCarousel({ title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 5 }) {
+    // 별을 표시하는 함수
+    const renderStars = (rating) => {
+        // rating 값을 0 ~ 10으로 받을 경우
+        const validRating = Math.max(0, Math.min(10, rating || 0));  // 0 ~ 10 사이로 제한
 
-    // API 호출에 쓰일 page 파라미터 (1부터 시작)
-    const [apiPage, setApiPage] = useState(1);
+        // 2점마다 1개의 꽉 찬 별로 환산
+        const fullStars = Math.floor(validRating / 2);  // 꽉 찬 별 개수
+        const halfStar = validRating % 2 >= 1 ? 1 : 0;  // 반쪽 별 여부 (나머지가 1 이상이면 반쪽 별)
+        const emptyStars = 5 - fullStars - halfStar;  // 빈 별 개수 (총 5개 별이므로 나머지)
 
-    // 화면에서 현재 몇 번째 5개 슬라이드(0부터)
-    const [uiPage, setUiPage] = useState(0);
-
-    // 한 번에 보여줄 영화 수
-    const itemsPerPage = 5;
-
-    // 컴포넌트 첫 로딩 시, page=1로 API 불러오기
-    useEffect(() => {
-        fetchMovies(1);
-        // eslint-disable-next-line
-    }, []);
-
-    // 서버에서 10개씩 받아오는 함수
-    const fetchMovies = async (pageToFetch) => {
-        try {
-            const response = await axios.get(endpoint, {
-                params: {
-                    ...defaultParams,
-                    page: pageToFetch,
-                    pageSize: 10
-                },
-            });
-            // 서버가 10개짜리 배열을 내려준다고 가정
-            const newData = response.data;
-            console.log(newData);
-            // 누적
-            setMovies((prev) => [...prev, ...newData]);
-            // apiPage 갱신
-            setApiPage(pageToFetch);
-        } catch (err) {
-            console.error("API 에러:", err);
-        }
+        return (
+            <>
+                {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon" />)}
+                {halfStar === 1 && <FaStarHalfAlt className="star-icon" />}
+                {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon" />)}
+            </>
+        );
     };
-
-    // 현재 UI에 보여줄 영화 5개
-    const startIndex = uiPage * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const visibleMovies = movies.slice(startIndex, endIndex);
-
-    // 오른쪽 화살표 핸들러
-    const handleNext = () => {
-        const nextUiPage = uiPage + 1;
-        const nextStartIndex = nextUiPage * itemsPerPage;
-
-        // 만약 로컬에 nextUiPage가 보여줄 5개가 충분치 않으면 (즉 nextStartIndex가 현재 movies 범위 밖)
-        if (nextStartIndex >= movies.length) {
-            // 다음 서버 page 호출 (예: apiPage=1 이었다면 2)
-            const nextApiPage = apiPage + 1;
-            fetchMovies(nextApiPage);
-        }
-
-        setUiPage(nextUiPage);
-    };
-
-    // 왼쪽 화살표 핸들러
-    const handlePrev = () => {
-        // uiPage가 0이면 더 이상 왼쪽으로 갈 수 없음
-        if (uiPage > 0) {
-            setUiPage(uiPage - 1);
-        }
-    };
-
-    // 왼쪽 화살표 버튼을 보일지 여부
-    const showLeftArrow = uiPage > 0;
 
     return (
-        <div className="carousel-wrapper">
-            <h2 className="theme-title">{name}</h2>
-            <div className="carousel-container">
-                {showLeftArrow && (
-                    <button className="arrow-button left" onClick={handlePrev}>
-                        &lt;
+        <div className="movie-carousel-section">
+            <h2>{title}</h2>
+            <div className="movie-carousel">
+                {startIndex > 0 && (
+                    <button className="prev-button" onClick={handlePrev} aria-label="Previous">
+                        {'<'}
                     </button>
                 )}
-
-                <div className="carousel-content">
-                    {visibleMovies.map((movie) => (
-                        <div className="movie-card" key={movie.id}>
-                            <img src={movie.imgUrl} alt={movie.title} />
-                            <p>{movie.title}</p>
-                        </div>
+                <div className="movie-list">
+                    {movies.slice(startIndex, startIndex + slideSize).map((movie, index) => (
+                        <Link className="movie-card" key={movie.movieId} to={`/movie/${movie.movieId}`}>
+                            <div className="movie-rank">{startIndex + index + 1}</div>
+                            <img
+                                src={movie.posterPath || '/default-poster.jpg'}
+                                alt={movie.title || '이미지를 준비중입니다.'}
+                                className="movie-image"
+                            />
+                            <div className="movie-info">
+                                <h3 className="movie-title">{movie.title}</h3>
+                                {renderStars(parseFloat(movie.voteAverage))}
+                                <span>({Math.round(parseFloat(movie.voteAverage) * 10) / 10})</span>
+                                <p className="movie-genres">
+                                    {movie.movieGenreList.map((g) => g.genreName).join(', ')}
+                                </p>
+                            </div>
+                        </Link>
                     ))}
                 </div>
-
-                <button className="arrow-button right" onClick={handleNext}>
-                    &gt;
-                </button>
+                {(startIndex + slideSize < movies.length || hasMore) && (
+                    <button
+                        className="next-button"
+                        onClick={handleNext}
+                        aria-label="Next"
+                        disabled={loading}
+                    >
+                        {'>'}
+                    </button>
+                )}
+                {loading && <p>Loading more movies...</p>}
             </div>
         </div>
     );

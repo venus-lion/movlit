@@ -1,13 +1,25 @@
 package movlit.be.movie.application.converter.main;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import movlit.be.common.util.Genre;
+import movlit.be.common.util.ids.MovieCrewId;
+import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.MovieCrew;
+import movlit.be.movie.domain.MovieGenre;
+import movlit.be.movie.domain.MovieRCrew;
+import movlit.be.movie.domain.MovieRCrewId;
+import movlit.be.movie.domain.MovieRole;
+import movlit.be.movie.domain.document.MovieCrewForDocument;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.document.MovieGenreForDocument;
 import movlit.be.movie.domain.document.MovieTagForDocument;
+import movlit.be.movie.domain.entity.MovieCrewEntity;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.entity.MovieGenreEntity;
+import movlit.be.movie.domain.entity.MovieRCrewEntity;
 import movlit.be.movie.domain.entity.MovieTagEntity;
 
 public class MovieDocumentConverter {
@@ -45,6 +57,9 @@ public class MovieDocumentConverter {
                                 .map(MovieDocumentConverter::entityToForDocument)
                                 .collect(Collectors.toList())
                 )
+                .movieCrew(
+                        MovieDocumentConverter.entityToForDocument(movieEntity.getMovieRCrewEntityList())
+                )
                 .build();
     }
 
@@ -68,4 +83,61 @@ public class MovieDocumentConverter {
                 .build();
     }
 
+    // MovieRCrewEntity -> MovieCrewEntity -> MovieCrewForDocument
+    public static List<MovieCrewForDocument> entityToForDocument(List<MovieRCrewEntity> movieRCrewEntityList) {
+        List<MovieCrew> movieCrewList = new ArrayList<>();
+
+        movieRCrewEntityList.forEach(e -> {
+            MovieCrewEntity movieCrewEntity = e.getMovieCrewEntity();
+            movieCrewList.add(MovieCrewConverter.toCrewDomain(movieCrewEntity));
+        });
+
+        return movieCrewList.stream()
+                .map(m -> MovieCrewForDocument.builder()
+                        .movieCrewId(m.getMovieCrewId().getValue())
+                        .name(m.getName())
+                        .role(m.getRole().getValue())
+                        .charName(m.getCharName())
+                        .orderNo(m.getOrderNo())
+                        .build())
+                .toList();
+    }
+
+    // Document -> Domain
+    public static Movie documentToDomain(MovieDocument movieDocument) {
+        return Movie.builder()
+                .movieId(movieDocument.getMovieId())
+                .title(movieDocument.getTitle())
+                .originalTitle(movieDocument.getOriginalTitle())
+                .overview(movieDocument.getOverview())
+                .popularity(movieDocument.getPopularity())
+                .posterPath(movieDocument.getPosterPath())
+                .backdropPath(movieDocument.getBackdropPath())
+                .releaseDate(movieDocument.getReleaseDate())
+                .originalLanguage(movieDocument.getOriginalLanguage())
+                .voteCount(movieDocument.getVoteCount())
+                .voteAverage(movieDocument.getVoteAverage())
+                .productionCountry(movieDocument.getProductionCountry())
+                .runtime(movieDocument.getRuntime())
+                .tagline(movieDocument.getTagline())
+                .delYn(movieDocument.isDelYn())
+                .movieGenreList(movieDocument.getMovieGenre().stream()
+                        .map(x -> new MovieGenre(x.getGenreId(), x.getGenreName()))
+                        .toList()
+                ).movieRCrewList(movieDocument.getMovieCrew().stream()
+                        .map(m -> MovieRCrew.builder()
+                                .movieRCrewId(new MovieRCrewId(
+                                        movieDocument.getMovieId(), new MovieCrewId(m.getMovieCrewId())
+                                ))
+                                .movieCrew(MovieCrew.builder()
+                                        .movieCrewId(new MovieCrewId(m.getMovieCrewId()))
+                                        .name(m.getName())
+                                        .role(MovieRole.CAST)
+                                        .charName(m.getCharName())
+                                        .orderNo(m.getOrderNo())
+                                        .build())
+
+                                .build()).toList()
+                ).build();
+    }
 }
