@@ -20,6 +20,7 @@ import movlit.be.movie.application.converter.main.MovieDocumentConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.repository.MovieSearchRepository;
+import movlit.be.movie.presentation.dto.response.MovieDocumentResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -36,11 +37,10 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
-    /**
-     * 취향 장르와 일치하는 장르가 있으면 가중치를 부여해서 점수 높은 순으로 가져오기
-     */
     @Override
     public List<Movie> searchInterestGenre(List<Genre> genreList, Pageable pageable) {
+        // 사용자 취향 장르와 일치하는 장르가 있으면 가중치를 부여해서 점수 높은 순으로 가져오기
+
         // Nested Query 생성
         NestedQuery nestedQuery = NestedQuery.of(n -> n
                 .path("movieGenre")
@@ -176,7 +176,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
     }
 
     @Override
-    public List<MovieDocument> searchMovieList(String inputStr, Pageable pageable) {
+    public MovieDocumentResponseDto searchMovieList(String inputStr, Pageable pageable) {
         // 영화 검색 API (should(term) 쿼리 : 현재는 제목, 배우 이름, 장르로 검색가능)
         log.info("검색 시작 : {}", inputStr);
         Query query = Query.of(q -> q
@@ -250,7 +250,14 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                 .map(SearchHit::getContent)
                 .toList();
 
-        return result;
+        // Total Page 구하기
+        int pageSize = pageable.getPageSize();
+        long totalHits = searchHits.getTotalHits();
+        long totalPages = totalHits / pageSize;
+        if (totalHits % pageSize != 0) {
+            totalPages++;
+        }
+        return new MovieDocumentResponseDto(result, totalPages);
 
     }
 
@@ -267,4 +274,5 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                 .toList();
         return movieList;
     }
+
 }

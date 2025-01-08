@@ -75,6 +75,6 @@ public class MovieMainSearchService {
     public MovieDocumentResponseDto getSearchMovie(String inputStr, int page, int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
-        return new MovieDocumentResponseDto(movieSearchRepository.searchMovieList(inputStr, pageable));
+        return movieSearchRepository.searchMovieList(inputStr, pageable);
     }
 }
