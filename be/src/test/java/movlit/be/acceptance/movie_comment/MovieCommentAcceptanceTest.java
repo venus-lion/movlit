@@ -1,8 +1,11 @@
 package movlit.be.acceptance.movie_comment;
 
+import static movlit.be.acceptance.movie_comment.MovieCommentSteps.로그인_후_내_영화_코멘트_조회를_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.로그인_후_영화_코멘트_목록_조회를_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_200이다;
+import static movlit.be.acceptance.movie_comment.MovieCommentSteps.상태코드가_404이고_오류코드는_m105이다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_목록_조회를_요청한다;
+import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_수정을_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다_2;
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다_3;
@@ -45,6 +48,55 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
             상태코드가_200이다(response);
         }
 
+        @DisplayName("한 멤버가 영화 코멘트를 이미 작성을 했는데도 불구하고 또 작성한다면, 테스트는 실패하고 상태코드 404를 반환한다.")
+        @Test
+        void when_create_movie_comment_twice_then_response_404() {
+            // docs
+            api_문서_타이틀("createMovieComment_failed_duplicated_404", spec);
+
+            // given
+            String accessToken = 회원_원준_액세스토큰;
+
+            // when
+            영화_코멘트_작성을_요청한다(accessToken, movieId, spec);
+            var response = 영화_코멘트_작성을_요청한다(accessToken, movieId, spec);
+
+            // then
+            상태코드가_404이고_오류코드는_m105이다(response);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("영화 코멘트 수정 인수 테스트")
+    class UpdateMovieComment {
+
+        String movieCommentId;
+
+        @BeforeEach
+        public void before() {
+            String accessToken = 회원_원준_액세스토큰;
+            String movieId = String.valueOf(767L);
+            movieCommentId = 영화_코멘트_작성을_요청한다(accessToken, movieId, spec)
+                    .body().jsonPath().getString("commentId");
+        }
+
+        @DisplayName("영화 코멘트를 수정하는 데 성공하면, 상태코드 200과 body를 반환한다.")
+        @Test
+        void when_update_movie_comment_then_response_200_and_body() {
+            // docs
+            api_문서_타이틀("updateMovieComment_success", spec);
+
+            // given
+            String accessToken = 회원_원준_액세스토큰;
+
+            // when
+            var response = 영화_코멘트_수정을_요청한다(accessToken, movieCommentId, spec);
+
+            // then
+            상태코드가_200이다(response);
+        }
+
     }
 
     @Nested
@@ -64,7 +116,7 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("로그인하지 않은 상태에서, 영화 코멘트 목록을 조회하는 데 성공하면, 상태코드 200을 반환한다.")
         @Test
-        void when_read_movie_comment_list_then_response_200_and_body() {
+        void when_read_movie_comment_list_then_response_200() {
             // docs
             api_문서_타이틀("fetchMovieCommentList_success", spec);
 
@@ -78,13 +130,27 @@ public class MovieCommentAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("로그인 한 상태에서, 영화 코멘트 목록을 조회하는 데 성공하면, 상태코드 200을 반환한다.")
         @Test
-        void when_read_movie_comment_list_with_session_then_response_200_and_body() {
+        void when_read_movie_comment_list_with_session_then_response_200() {
             // docs
             api_문서_타이틀("fetchMovieCommentList_withSession_success", spec);
 
             // given
             // when
             var response = 로그인_후_영화_코멘트_목록_조회를_요청한다(회원_원준_액세스토큰, movieId, spec);
+
+            // then
+            상태코드가_200이다(response);
+        }
+
+        @DisplayName("로그인 한 상태에서, 내가 작성한 영화 코멘트를 조회하는 데 성공하면, 상태코드 200을 반환한다.")
+        @Test
+        void when_read_my_movie_comment_with_session_then_response_200() {
+            // docs
+            api_문서_타이틀("fetchMyMovieComment_withSession_success", spec);
+
+            // given
+            // when
+            var response = 로그인_후_내_영화_코멘트_조회를_요청한다(회원_원준_액세스토큰, movieId, spec);
 
             // then
             상태코드가_200이다(response);

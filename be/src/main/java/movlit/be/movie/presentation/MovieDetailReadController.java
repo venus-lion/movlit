@@ -1,6 +1,7 @@
 package movlit.be.movie.presentation;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
@@ -9,6 +10,7 @@ import movlit.be.movie.presentation.dto.response.MovieCommentReadResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailGenreResponse;
 import movlit.be.movie.presentation.dto.response.MovieDetailResponse;
+import movlit.be.movie.presentation.dto.response.MovieMyCommentReadResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort.Direction;
@@ -26,8 +28,14 @@ public class MovieDetailReadController {
     private final MovieDetailReadService movieDetailReadService;
 
     @GetMapping("/api/movies/{movieId}/detail")
-    public ResponseEntity<MovieDetailResponse> fetchMovieDetail(@PathVariable Long movieId) {
-        var response = movieDetailReadService.fetchMovieDetail(movieId);
+    public ResponseEntity<MovieDetailResponse> fetchMovieDetail(@PathVariable Long movieId,
+                                                                @AuthenticationPrincipal MyMemberDetails details) {
+        if (Objects.isNull(details)) {
+            var response = movieDetailReadService.fetchMovieDetail(movieId);
+            return ResponseEntity.ok(response);
+        }
+
+        var response = movieDetailReadService.fetchMovieDetailWithMember(movieId, details.getMemberId());
         return ResponseEntity.ok(response);
     }
 
@@ -58,6 +66,17 @@ public class MovieDetailReadController {
 
         MemberId currentMemberId = details.getMemberId();
         var response = movieDetailReadService.fetchMovieComments(movieId, currentMemberId, pageable); // TODO: data 사용
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/movies/{movieId}/myComment")
+    public ResponseEntity<MovieMyCommentReadResponse> fetchMyMovieComment(
+            @PathVariable Long movieId,
+            @AuthenticationPrincipal
+            MyMemberDetails details
+    ) {
+        MemberId currentMemberId = details.getMemberId();
+        var response = movieDetailReadService.fetchMyMovieComment(movieId, currentMemberId); // TODO: data 사용
         return ResponseEntity.ok(response);
     }
 

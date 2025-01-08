@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -34,7 +35,8 @@ public class BookHeartCountEntity {
     private BookEntity bookEntity;
 
     @Column(nullable = false)
-    private Long count; // 해당 책의 "찜"(heart) 갯수
+    @ColumnDefault("0")
+    private int count; // 해당 책의 "찜"(heart) 갯수
 
     @Column
     private Long version;

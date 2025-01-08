@@ -89,45 +89,4 @@ public class BookMainReadService {
             throw new BookIllegalArgumentException();
         }
     }
-
-//    // BookBestseller -> BookItemDto 로 변환
-//    private BookItemDto ModelToDto(BookBestseller bookBestseller){
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//
-//        List<WriterDto> writers = bookBestseller.getBook().getBookRCrews().stream()
-//                .map(rc -> WriterDto.builder()
-//                        .name(rc.getBookcrew().getName())
-//                        .role(rc.getBookcrew().getRole().name())
-//                        .build())
-//                .collect(Collectors.toList());
-//
-//        return BookItemDto.builder()
-//                .bookId(bookBestseller.getBook().getBookId().getValue())
-//                .title(bookBestseller.getBook().getTitle()) // BookBestseller -> Book 호출 (N+1)
-//                .writers(writers) // BookBestseller -> Book -> BookRCrew -> BookCrew 호출 (N+1)
-//                .pubDate(bookBestseller.getBook().getPubDate().format(formatter))
-//                .bookImgUrl(bookBestseller.getBook().getBookImgUrl())
-//                .build();
-//    }
-//
-//    // BookNew -> BookItemDto 로 변환
-//    private BookItemDto ModelToDto(BookNew bookNew){
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//
-//        List<WriterDto> writers = bookNew.getBook().getBookRCrews().stream()
-//                .map(rc -> WriterDto.builder()
-//                        .name(rc.getBookcrew().getName())
-//                        .role(rc.getBookcrew().getRole().name())
-//                        .build())
-//                .collect(Collectors.toList());
-//
-//        return BookItemDto.builder()
-//                .bookId(bookNew.getBook().getBookId().getValue())
-//                .title(bookNew.getBook().getTitle())
-//                .writers(writers)
-//                .pubDate(bookNew.getBook().getPubDate().format(formatter))
-//                .bookImgUrl(bookNew.getBook().getBookImgUrl())
-//                .build();
-//
-//    }
 }

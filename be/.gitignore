@@ -42,3 +42,5 @@ out/
 src/main/resources/application-jwt.yml
 src/main/resources/application-oauth2.yml
 src/main/resources/application-api-key.yml
+src/main/resources/application-es-local.yml
+src/main/resources/application-db-local.yml

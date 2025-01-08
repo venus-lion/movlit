@@ -13,7 +13,6 @@ import movlit.be.common.util.ids.BookRCrewId;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Builder
 public class BookRCrew {
 

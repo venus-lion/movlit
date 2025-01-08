@@ -48,6 +48,14 @@ public class MovieCommentSteps {
         return 영화_코멘트를_작성한다(accessToken, movieId, spec, body);
     }
 
+    public static ExtractableResponse<Response> 영화_코멘트_수정을_요청한다(String accessToken, String movieId,
+                                                                RequestSpecification spec) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("score", 4);
+        body.put("comment", "수정할 정도로 다시 보니 재밌습니다");
+        return 영화_코멘트를_수정한다(accessToken, movieId, spec, body);
+    }
+
     public static ExtractableResponse<Response> 영화_코멘트_목록_조회를_요청한다(String movieId,
                                                              RequestSpecification spec) {
         return RestAssured
@@ -72,6 +80,21 @@ public class MovieCommentSteps {
                 .auth().oauth2(accessToken)
                 .when()
                 .get("/api/movies/{movieId}/comments", movieId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_후_내_영화_코멘트_조회를_요청한다(String accessToken, String movieId,
+                                                                         RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/movies/{movieId}/myComment", movieId)
                 .then()
                 .log().all()
                 .extract();
@@ -109,9 +132,32 @@ public class MovieCommentSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 영화_코멘트를_수정한다(String accessToken, String commentId,
+                                                             RequestSpecification spec, Map<String, Object> body) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .when()
+                .put("/api/movies/comments/{commentId}", commentId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK));
+    }
+
+    public static void 상태코드가_404이고_오류코드는_m105이다(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.NOT_FOUND),
+                () -> 오류코드를_검증한다(response, "m105"));
     }
 
     public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,

@@ -1,5 +1,7 @@
 package movlit.be.bookES;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.OneToMany;
@@ -14,6 +16,7 @@ import lombok.Setter;
 import lombok.ToString;
 import movlit.be.common.util.ids.BookId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -45,7 +48,8 @@ public class BookES {
     @Field(type = FieldType.Text)  // 텍스트로 처리
     private String publisher;
 
-    @Field(type = FieldType.Date)  // 날짜 타입
+    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime pubDate;
 
     @Field(type = FieldType.Text)  // 긴 설명을 텍스트로 처리
@@ -57,10 +61,14 @@ public class BookES {
     @Field(type = FieldType.Keyword)  // 책 이미지 URL
     private String bookImgUrl;
 
-    @Field(type = FieldType.Date)  // 생성일자
+    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    // @Field(type = FieldType.Date)  // 생성일자
     private LocalDateTime regDt;
 
-    @Field(type = FieldType.Date)  // 수정일자
+    @Field(type = FieldType.Date, format = DateFormat.date, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    // @Field(type = FieldType.Date)  // 수정일자
     private LocalDateTime updDt;
 
 }

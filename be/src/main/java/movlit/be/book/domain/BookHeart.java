@@ -19,5 +19,6 @@ public class BookHeart {
     private Long bookHeartId;
     private Book book;
     private Member member;
+    Boolean isHearted;
 
 }

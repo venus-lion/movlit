@@ -19,7 +19,7 @@ public class BookRCrewConverter {
     public static BookRCrewEntity toEntity(BookRCrew bookRCrew) {
         return BookRCrewEntity.builder()
                 .bookRCrewId(bookRCrew.getBookRCrewId())
-                .book(BookConverter.toEntity(bookRCrew.getBook()))
+                //.book(BookConverter.toEntity(bookRCrew.getBook()))
                 .bookcrewEntity(BookcrewConverter.toEntity(bookRCrew.getBookcrew()))
                 .build();
     }

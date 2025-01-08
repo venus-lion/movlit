@@ -10,15 +10,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Table(name = "movie")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@ToString
 public class MovieEntity {
 
     // Discover
@@ -49,7 +48,6 @@ public class MovieEntity {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
     private boolean delYn;
-    private Long heartCount;
 
     @OneToMany(mappedBy = "movieEntity")
     private List<MovieRCrewEntity> movieRCrewEntityList = new ArrayList<>();
@@ -64,8 +62,9 @@ public class MovieEntity {
     public MovieEntity(Long movieId, String title, String originalTitle, String overview, Double popularity,
                        String posterPath, String backdropPath, LocalDate releaseDate, String originalLanguage,
                        Long voteCount, Double voteAverage, String productionCountry, Integer runtime, String status,
-                       String tagline, LocalDateTime regDt, LocalDateTime updDt, boolean delYn, Long heartCount,
-                       List<MovieRCrewEntity> movieRCrewEntityList, List<MovieGenreEntity> movieGenreEntities) {
+                       String tagline, LocalDateTime regDt, LocalDateTime updDt, boolean delYn,
+                       List<MovieRCrewEntity> movieRCrewEntityList, List<MovieTagEntity> movieTagEntityList,
+                       List<MovieGenreEntity> movieGenreEntityList) {
         this.movieId = movieId;
         this.title = title;
         this.originalTitle = originalTitle;
@@ -84,7 +83,6 @@ public class MovieEntity {
         this.regDt = regDt;
         this.updDt = updDt;
         this.delYn = delYn;
-        this.heartCount = heartCount;
         this.movieRCrewEntityList = movieRCrewEntityList;
         this.movieTagEntityList = movieTagEntityList;
         this.movieGenreEntityList = movieGenreEntityList;

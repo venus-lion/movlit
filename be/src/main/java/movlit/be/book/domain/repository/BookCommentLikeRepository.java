@@ -11,4 +11,7 @@ public interface BookCommentLikeRepository {
 
     BookCommentLike save(BookCommentLike bookCommentLike);
 
+    void delete(BookCommentLike bookCommentLike);
+
+
 }

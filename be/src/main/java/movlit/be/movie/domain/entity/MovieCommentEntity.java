@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
+import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 
 @Table(name = "movie_comment")
 @Getter
@@ -31,12 +32,11 @@ public class MovieCommentEntity {
     private Integer score;
     private LocalDateTime regDt;
     private LocalDateTime updDt;
-    private boolean delYn;
 
     @Builder
     public MovieCommentEntity(MovieCommentId movieCommentId, MemberId memberId, Long movieId, String comment,
                               Integer score,
-                              LocalDateTime regDt, LocalDateTime updDt, boolean delYn) {
+                              LocalDateTime regDt, LocalDateTime updDt) {
         this.movieCommentId = movieCommentId;
         this.memberId = memberId;
         this.movieId = movieId;
@@ -44,7 +44,12 @@ public class MovieCommentEntity {
         this.score = score;
         this.regDt = regDt;
         this.updDt = updDt;
-        this.delYn = delYn;
+    }
+
+    public void updateComment(MovieCommentRequest request, LocalDateTime now) {
+        this.comment = request.getComment();
+        this.score = request.getScore();
+        this.updDt = now;
     }
 
 }

@@ -56,9 +56,17 @@ operation::fetchMovieDetailGenres_success[snippets='http-request,http-response']
 
 === 코멘트
 
-==== 코멘트 작성
+==== 코멘트 등록
 
 operation::createMovieComment_success[snippets='http-request,http-response']
+
+==== 코멘트 등록 실패 (해당 영화 코멘트에 현재 멤버가 이미 존재합니다.)
+
+operation::createMovieComment_failed_duplicated_404[snippets='http-request,http-response']
+
+==== 코멘트 수정
+
+operation::updateMovieComment_success[snippets='http-request,http-response']
 
 === 코멘트 전체 조회 (비로그인)
 
@@ -67,6 +75,10 @@ operation::fetchMovieCommentList_success[snippets='http-request,http-response']
 === 코멘트 전체 조회 (로그인)
 
 operation::fetchMovieCommentList_withSession_success[snippets='http-request,http-response']
+
+=== 코멘트 단일 조회 (로그인)
+
+operation::fetchMyMovieComment_withSession_success[snippets='http-request,http-response']
 
 === 코멘트 삭제
 

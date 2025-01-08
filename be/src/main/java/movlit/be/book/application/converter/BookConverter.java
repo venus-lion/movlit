@@ -30,6 +30,7 @@ public class BookConverter {
                 .regDt(book.getRegDt())
                 .updDt(book.getUpdDt())
                 .bookRCrewEntities(BookRCrewConverter.toEntityList(book.getBookRCrews()))
+                .bookGenreEntities(BookGenreConverter.toEntityList(book.getBookGenres()))
                 .build();
     }
 
@@ -50,6 +51,7 @@ public class BookConverter {
                 .regDt(bookEntity.getRegDt())
                 .updDt(bookEntity.getUpdDt())
                 .bookRCrews(BookRCrewConverter.toDomainList(bookEntity.getBookRCrewEntities()))
+                .bookGenres(BookGenreConverter.toDomainList(bookEntity.getBookGenreEntities()))
                 .build();
     }
 
