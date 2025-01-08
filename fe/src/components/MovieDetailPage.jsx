@@ -1,18 +1,26 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import {FaComment, FaHeart, FaRegHeart, FaRegStar, FaStar, FaStarHalfAlt, FaUserCircle,} from 'react-icons/fa';
-import {toast, ToastContainer} from 'react-toastify';
+import {
+    FaComment,
+    FaHeart,
+    FaRegHeart,
+    FaUserCircle,
+    FaStar,
+    FaRegStar,
+    FaStarHalfAlt,
+} from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MovieCarousel from '../pages/MovieCarousel';
 import useAuthMovieList from '../hooks/useAuthMovieList';
 import useBookList from '../hooks/useBookList';
 import BookGenreCarousel from '../pages/BookGenreCarousel';
-import {buildStyles, CircularProgressbar} from 'react-circular-progressbar';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function MovieDetailPage() {
-    const {movieId} = useParams();
+    const { movieId } = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0); // 0~10 사이의 값 (0.5 단위)
     const [myComment, setMyComment] = useState('');
@@ -41,7 +49,7 @@ function MovieDetailPage() {
         error: relatedMoviesError,
     } = useAuthMovieList({
         endpoint: `movies/${movieId}/detail/related`,
-        params: {pageSize: 30},
+        params: { pageSize: 30 },
     });
     const [relatedMoviesStartIndex, setRelatedMoviesStartIndex] = useState(0);
 
@@ -66,7 +74,7 @@ function MovieDetailPage() {
         error: relatedBooksError,
     } = useBookList({
         endpoint: `/api/books/genres/movies/${movieId}/detail`,
-        params: {limit: 30},
+        params: { limit: 30 },
     });
     const [relatedBooksStartIndex, setRelatedBooksStartIndex] = useState(0);
 
@@ -165,7 +173,7 @@ function MovieDetailPage() {
         try {
             const response = await axiosInstance.get(`/movies/${movieId}/myComment`);
             if (response.data) {
-                const {movieCommentId, comment, score, nickname, profileImgUrl} =
+                const { movieCommentId, comment, score, nickname, profileImgUrl } =
                     response.data;
                 setUserComment({
                     nickname,
@@ -246,7 +254,7 @@ function MovieDetailPage() {
     const handleRatingChange = (newRating) => {
         // 사용자가 별 반 개를 클릭한 경우에도 적절히 처리
         setMyRating(newRating);
-        if (newRating > 0) {
+        if(newRating > 0){
             setShowCommentInput(true);
         }
     };
@@ -422,11 +430,11 @@ function MovieDetailPage() {
         return (
             <>
                 {[...Array(fullStars)].map((_, index) => (
-                    <FaStar key={`full-${index}`} style={styles.starFilled}/>
+                    <FaStar key={`full-${index}`} style={styles.starFilled} />
                 ))}
-                {halfStar && <FaStarHalfAlt style={styles.starFilled}/>}
+                {halfStar && <FaStarHalfAlt style={styles.starFilled} />}
                 {[...Array(emptyStars)].map((_, index) => (
-                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty}/>
+                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty} />
                 ))}
             </>
         );
@@ -458,7 +466,7 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
-                <ToastContainer/>
+                <ToastContainer />
                 <div style={styles.breadcrumbs}>
                     홈 / 영화 / {movieData.title}
                 </div>
@@ -480,7 +488,7 @@ function MovieDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title}/>
+                    <img src={movieData.posterUrl} alt={movieData.title} />
                 </div>
 
                 <div style={styles.info}>
@@ -495,7 +503,7 @@ function MovieDetailPage() {
                                         <span
                                             key={index}
                                             onClick={() => handleRatingChange(starIndex * 2)} // 클릭 시 handleRatingChange에 starIndex * 2를 전달 (2, 4, 6, 8, 10)
-                                            style={{cursor: 'pointer', position: 'relative', display: 'inline-block'}}
+                                            style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
                                             onMouseMove={(e) => {
                                                 // 별 아이콘의 왼쪽 절반 클릭 시 반 별만 칠해지도록
                                                 const rect = e.currentTarget.getBoundingClientRect();
@@ -509,19 +517,17 @@ function MovieDetailPage() {
                                                 }
                                             }}
                                             onMouseLeave={() => {
-                                                // myRating이 0일 때만 fetchUserComment 호출
-                                                if (myRating === 0) {
-                                                    fetchUserComment();
-                                                }
+                                                // onMouseLeave 시 myRating을 최신 DB값으로
+                                                fetchUserComment();
                                             }}
                                         >
                                             {/* 별 1개당 2점씩 계산하여 꽉 찬 별, 반 별, 빈 별 표시 */}
                                             {starIndex * 2 <= myRating ? (
-                                                <FaStar style={styles.starFilled}/>
+                                                <FaStar style={styles.starFilled} />
                                             ) : starIndex * 2 === myRating + 1 ? (
-                                                <FaStarHalfAlt style={styles.starFilled}/>
+                                                <FaStarHalfAlt style={styles.starFilled} />
                                             ) : (
-                                                <FaRegStar style={styles.starEmpty}/>
+                                                <FaRegStar style={styles.starEmpty} />
                                             )}
                                         </span>
                                     );
@@ -585,7 +591,7 @@ function MovieDetailPage() {
                                 <span style={styles.userNickname}>{userComment.nickname}</span>
                             </div>
                             <div style={styles.userCommentContent}>
-                                <FaComment style={styles.commentIcon}/>
+                                <FaComment style={styles.commentIcon} />
                                 <p style={styles.userCommentText}>{userComment.comment}</p>
                             </div>
                         </div>
@@ -625,7 +631,7 @@ function MovieDetailPage() {
                         </div>
                     )}
 
-                    <div style={{marginTop: '20px'}}/>
+                    <div style={{ marginTop: '20px' }} />
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -776,7 +782,6 @@ function MovieDetailPage() {
                                 )}
                             </div>
                         </div>
-
 
                         {/* 새로운 관련 영화 섹션 */}
                         <div style={styles.section}>
