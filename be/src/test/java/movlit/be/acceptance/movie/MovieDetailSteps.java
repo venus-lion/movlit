@@ -36,7 +36,7 @@ public class MovieDetailSteps {
                 .spec(spec)
                 .log().all()
                 .when()
-                .get("/api/movies/" + movieId + "/crews")
+                .get("/api/movies/{movieId}/crews", movieId)
                 .then()
                 .log().all()
                 .extract();

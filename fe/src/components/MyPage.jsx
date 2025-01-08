@@ -103,8 +103,10 @@ function MyPage() {
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
+        const MAX_FILE_SIZE = 2800 * 1024; // 2800KB in bytes
+
         if (!file) {
-            toast.warn('파일을 선택해주세요.', {
+            toast.warn('이미지를 선택해주세요.', {
                 position: 'top-right',
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -118,6 +120,19 @@ function MyPage() {
 
         if (file.size === 0) {
             toast.error('빈 파일은 업로드할 수 없습니다.', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            toast.error('이미지 크기가 2800KB를 초과합니다.', {
                 position: 'top-right',
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -149,16 +164,27 @@ function MyPage() {
                 progress: undefined,
             });
         } catch (error) {
-            console.error('Error uploading image:', error);
-            toast.error('이미지 업로드 중 오류가 발생했습니다.', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            if (error.response && error.response.status === 413) {
+                toast.error('이미지 크기가 너무 큽니다. 2800KB 이하의 이미지를 업로드해주세요.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } else {
+                toast.error('이미지 업로드 중 오류가 발생했습니다.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         }
     };
 

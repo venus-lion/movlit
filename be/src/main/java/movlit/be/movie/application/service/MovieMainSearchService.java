@@ -41,7 +41,7 @@ public class MovieMainSearchService {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
         // elasticsearch에서 가져오기
-        List<Movie> movieList = movieSearchRepository.searchByUserInterestGenre(movieGenreList, pageable);
+        List<Movie> movieList = movieSearchRepository.searchInterestGenre(movieGenreList, pageable);
         return new MovieListResponseDto(movieList);
     }
 
