@@ -1,16 +1,15 @@
-package movlit.be.book.application.converter.service;
+package movlit.be.book.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;
-import movlit.be.book.domain.dto.BookDetailResponseDto;
+import movlit.be.book.presentation.dto.BookDetailResponseDto;
 import movlit.be.book.domain.Bookcrew;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.domain.repository.BookHeartRepository;
 import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.domain.repository.BookcrewRepository;
 import movlit.be.common.util.ids.BookId;
-import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +53,7 @@ public class BookDetailReadService {
         return bookRepository.findByBookId(bookId);
     }
 
+    // 해당 책의 크루
     public List<Bookcrew> findBookcrewByBook(Book book) {
         return bookcrewRepository.findByBook(book);
     }

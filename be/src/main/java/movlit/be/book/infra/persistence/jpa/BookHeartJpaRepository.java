@@ -16,10 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookHeartJpaRepository extends JpaRepository<BookHeartEntity, Long> {
 
-
-
-
-
     Optional<BookHeartEntity> findByBookEntityAndMemberEntity(BookEntity book, MemberEntity member);
 
 }

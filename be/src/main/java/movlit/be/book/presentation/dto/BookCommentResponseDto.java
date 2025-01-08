@@ -1,4 +1,4 @@
-package movlit.be.book.domain.dto;
+package movlit.be.book.presentation.dto;
 
 
 import java.math.BigDecimal;
@@ -22,10 +22,14 @@ public class BookCommentResponseDto {
     private String nickname;
     private String profileImgUrl;
     private boolean isLiked; // 기본값 false
-    private Long likeCount; // 해당 리뷰 카운트
+    private int likeCount; // 해당 리뷰 카운트
     private LocalDateTime regDt;
     private LocalDateTime updDt;
     private Long allCommentsCount;
+
+
+
+
 
 
 }

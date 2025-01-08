@@ -1,4 +1,4 @@
-package movlit.be.book.application.converter.service;
+package movlit.be.book.application.service;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Book;

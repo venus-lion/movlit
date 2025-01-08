@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -32,7 +33,8 @@ public class BookCommentLikeCountEntity {
     private BookCommentEntity bookCommentEntity;
 
     @Column(nullable = false)
-    private Long count; // 해당 리뷰의 "좋아요"(like) 갯수
+    @ColumnDefault("0") // 기본값을 0으로 설정
+    private int count; // 해당 리뷰의 "좋아요"(like) 갯수
 
     @Column
     private Long version;

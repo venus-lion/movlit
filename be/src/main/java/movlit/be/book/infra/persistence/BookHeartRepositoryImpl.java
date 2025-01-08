@@ -40,10 +40,8 @@ public class BookHeartRepositoryImpl implements BookHeartRepository {
 
     @Override
     public void delete(BookHeart bookHeart) {
-        BookHeart existingHeart = findByBookAndMember(bookHeart.getBook(), bookHeart.getMember());
-        if(existingHeart != null){
             bookHeartJpaRepository.delete(BookHeartConverter.toEntity(bookHeart));
-        }
+
     }
 
 }
