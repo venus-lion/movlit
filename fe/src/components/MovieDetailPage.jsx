@@ -738,7 +738,7 @@ function MovieDetailPage() {
                                                             </span>
                                                         );
                                                     })}
-                                                    <span style={styles.commentScore}>{comment.score}</span>
+                                                    {/*<span style={styles.commentScore}>{comment.score}</span>*/}
                                                 </div>
                                                 {/* 좋아요 버튼 및 카운트 컨테이너 */}
                                                 <div style={styles.likeContainer}>
