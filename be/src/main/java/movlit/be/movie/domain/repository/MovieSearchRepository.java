@@ -3,6 +3,7 @@ package movlit.be.movie.domain.repository;
 import java.util.List;
 import movlit.be.common.util.Genre;
 import movlit.be.movie.domain.Movie;
+import movlit.be.movie.domain.document.MovieDocument;
 import org.springframework.data.domain.Pageable;
 
 public interface MovieSearchRepository {
@@ -11,4 +12,5 @@ public interface MovieSearchRepository {
 
     List<Movie> searchByUserHeartMovieAndCrew(List<Movie> movieList, Pageable pageable);
 
+    List<MovieDocument> searchMovieList(String inputStr, Pageable pageable);
 }

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Repository;
 
@@ -86,7 +87,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
         SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
 
-        log.info("Explain output: {}", searchHits.getSearchHits().get(0).getExplanation());
+//        log.info("Explain output: {}", searchHits.getSearchHits().get(0).getExplanation());
         List<Movie> movieList = this.getMovieDocumentResult(searchHits);
 
         return movieList;
@@ -95,7 +96,6 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
     @Override
     public List<Movie> searchByUserHeartMovieAndCrew(List<Movie> heartedMovieList, Pageable pageable) {
-        // TODO : 위와 같이 비슷한 로직(대표 crew 1명 뽑기)
         Set<String> crewNameSet = new HashSet<>();
 
         heartedMovieList.forEach(movie -> {
@@ -109,7 +109,6 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                     // 4) crewNameSet에 영화인 이름 추가
                     .forEach(rc -> crewNameSet.add(rc.getMovieCrew().getName()));
         });
-        log.info("===crewNameSet : {}", crewNameSet);
 
         List<Query> mustNotQueryList = new ArrayList<>();
         heartedMovieList.forEach(m -> {
@@ -170,10 +169,89 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
         SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
 
-        log.info("Explain output: {}", searchHits.getSearchHits().get(0).getExplanation());
+//        log.info("Explain output: {}", searchHits.getSearchHits().get(0).getExplanation());
         List<Movie> movieList = this.getMovieDocumentResult(searchHits);
 
         return movieList;
+    }
+
+    @Override
+    public List<MovieDocument> searchMovieList(String inputStr, Pageable pageable) {
+        // 영화 검색 API (should(term) 쿼리 : 현재는 제목, 배우 이름, 장르로 검색가능)
+        log.info("검색 시작 : {}", inputStr);
+        Query query = Query.of(q -> q
+                .bool(b -> b
+                        .should(Query.of(q1 -> q1.match(m -> m.field("title").query(inputStr)
+                                        .boost(1.8f))),
+                                Query.of(q1 -> q1.match(t -> t.field("title.en").query(inputStr)
+                                        .boost(1.8f))),
+                                Query.of(q1 -> q1.match(t -> t.field("title.ngram").query(inputStr)
+                                        .boost(1.8f))),
+                                Query.of(fq -> fq.fuzzy(t -> t.field("title.standard").value(inputStr)
+                                        .fuzziness("AUTO").boost(1.4f))),
+                                Query.of(q2 -> q2.nested(n -> n
+                                        .path("movieGenre").query(nq -> nq
+                                                .term(t -> t.field("movieGenre.genreName").value(inputStr)
+                                                        .boost(1.8f))
+                                        )
+                                )),
+                                Query.of(q2 -> q2.nested(n -> n
+                                        .path("movieGenre").query(nq -> nq
+                                                .match(t -> t.field("movieGenre.genreName.ko").query(inputStr)
+                                                        .boost(1.8f))
+                                        )
+                                )),
+                                Query.of(q2 -> q2.nested(n -> n
+                                        .path("movieGenre").query(fq -> fq
+                                                .fuzzy(t -> t.field("movieGenre.genreName.standard").value(inputStr)
+                                                        .fuzziness("AUTO").boost(1.4f))
+                                        )
+                                )),
+                                Query.of(q3 -> q3.nested(n -> n
+                                        .path("movieCrew").query(nq -> nq
+                                                .match(t -> t.field("movieCrew.name.ko").query(inputStr)
+                                                        .boost(1.8f))
+                                        )
+                                )),
+                                Query.of(q3 -> q3.nested(n -> n
+                                        .path("movieCrew").query(nq -> nq
+                                                .match(t -> t.field("movieCrew.name.en").query(inputStr)
+                                                        .boost(1.8f))
+                                        )
+                                )),
+                                Query.of(q3 -> q3.nested(n -> n
+                                        .path("movieCrew").query(nq -> nq
+                                                .match(t -> t.field("movieCrew.name.ngram").query(inputStr)
+                                                        .boost(1.8f))
+                                        )
+                                )),
+                                Query.of(q3 -> q3.nested(n -> n
+                                        .path("movieCrew").query(fq -> fq
+                                                .fuzzy(t -> t.field("movieCrew.name.ngram").value(inputStr)
+                                                        .fuzziness("AUTO").boost(1.4f))
+                                        )
+                                ))
+                        )
+                )
+        );
+
+        NativeQuery nativeQuery = new NativeQueryBuilder()
+                .withQuery(query)
+                .withPageable(pageable)
+                .withSort(Sort.by(
+                        Sort.Order.desc("_score")
+                ))
+                .build();
+        nativeQuery.setExplain(true);
+
+        SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
+
+        List<MovieDocument> result = searchHits.stream()
+                .map(SearchHit::getContent)
+                .toList();
+
+        return result;
+
     }
 
     private List<Movie> getMovieDocumentResult(SearchHits<MovieDocument> searchHits) {
@@ -189,5 +267,4 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                 .toList();
         return movieList;
     }
-
 }
