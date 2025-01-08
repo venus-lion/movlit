@@ -28,11 +28,14 @@
     display: flex;
     /*width: 100%;*/
     overflow: hidden;
-    width: 80%;
+    width: 100%;
     justify-content: flex-start;
 
     align-items: flex-start;     /* 카드들이 위아래로도 상단 정렬되도록(선택 사항) */
     /*margin: 0 auto;        !* 필요한 경우 수평 중앙에 배치 *!*/
+}
+.movie-card img{
+    margin: 0px;
 }
 
 .book-card, .movie-card{
@@ -59,9 +62,18 @@
 
 .book-image, .movie-image{
     width: 100%;
-    height: auto;
+    /*padding-top: 56.25%; !* 16:9 비율 유지 (높이는 비율로 계산) *!*/
+    /*position: relative;*/
     border-radius: 8px;
-    margin-bottom: 10px;
+}
+
+.book-image img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 비율 유지하면서 div를 채우도록 설정 */
 }
 
 .book-info, .movie-info{

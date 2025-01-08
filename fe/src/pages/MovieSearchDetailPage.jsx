@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {Link, useParams} from 'react-router-dom';
 import './SearchDetailPage.css'; // SearchPage.css 기반
 import axios from 'axios';
@@ -51,13 +51,13 @@ function MovieSearchPage() {
     return (
         <div className="search-body-detail">
             <div className="search-section-detail">
-                <h2>영화</h2>
+                <h2>영화 {'"' + inputStr + '" 의 전체 결과'}</h2>
             </div>
             <div className="search-results-detail movies">
                 {movieList.map((movie) => (
                     <div key={movie.movieId} className="search-item-detail">
                         <Link to={`/movie/${movie.movieId}`}>
-                            <img src={movie.posterPath} alt={movie.title} />
+                            <img src={movie.posterPath} alt={movie.title}/>
                             <p>{movie.title}</p>
                         </Link>
                     </div>
@@ -67,7 +67,7 @@ function MovieSearchPage() {
             {loading && <div>Loading...</div>}
 
             <div className="pagination-detail">
-                {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNum) => (
+                {Array.from({length: totalPages}, (_, index) => index + 1).map((pageNum) => (
                     <button
                         key={pageNum}
                         className={page === pageNum ? "active" : ""}

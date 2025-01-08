@@ -18,7 +18,7 @@
 }
 
 .search-results.movies, .search-results.books {
-    grid-template-columns: repeat(5, minmax(80px, 1fr));
+    grid-template-columns: repeat(8, minmax(80px, 1fr));
 }
 
 .search-item {
@@ -26,7 +26,7 @@
 }
 
 .search-item img {
-    width: 80%;
+    width: 95%;
     height: auto;
     aspect-ratio: 2 / 3;
     object-fit: cover;
@@ -45,14 +45,14 @@
 
 .more-link-container {
 
-    text-align: right; /* 더 보기 링크 오른쪽 정렬 */
+    text-align: left; /* 더 보기 링크 오른쪽 정렬 */
 
     margin-bottom: 5px; /* 더 보기 링크 아래 여백 */
 }
 
 .more-link {
-    color: red;
-    font-size: 0.8em;
+    color: #3c3c3c;
+    font-size: 1.2em;
     text-decoration: none;
     white-space: nowrap; /* 줄바꿈 방지 */
 }
