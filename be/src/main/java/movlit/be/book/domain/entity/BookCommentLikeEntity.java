@@ -36,6 +36,6 @@ public class BookCommentLikeEntity {
     private MemberEntity memberEntity;
 
     @Column(name = "is_liked")
-    private Boolean isLiked; // 도서 리뷰에 대한 좋아요 여부
+    private Boolean isLiked; // 해당 도서 리뷰에 대한 나의 "좋아요(like)" 여부
 
 }

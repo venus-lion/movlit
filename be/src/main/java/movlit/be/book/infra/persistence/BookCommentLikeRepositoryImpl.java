@@ -11,6 +11,7 @@ import movlit.be.book.domain.entity.BookCommentLikeEntity;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.infra.persistence.jpa.BookCommentLikeJpaRepository;
 import movlit.be.common.exception.BookCommentNotFoundException;
+import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +23,8 @@ public class BookCommentLikeRepositoryImpl implements BookCommentLikeRepository 
     @Override
     public BookCommentLike findByBookCommentAndMember(BookComment bookcomment, Member member) {
         BookCommentLikeEntity bookCommentLikeEntity =
-                bookCommentLikeJpaRepository.findByIdAndMemberEntity(bookcomment, member).orElse(null);
+                bookCommentLikeJpaRepository.findByBookCommentEntityAndMemberEntity(BookCommentConverter.toEntity(bookcomment), MemberConverter.toEntity(member))
+                        .orElse(null);
 
         return BookCommentLikeConverter.toDomain(bookCommentLikeEntity);
     }
@@ -31,6 +33,11 @@ public class BookCommentLikeRepositoryImpl implements BookCommentLikeRepository 
     public BookCommentLike save(BookCommentLike bookCommentLike) {
         BookCommentLikeEntity bookCommentLikeEntity = bookCommentLikeJpaRepository.save(BookCommentLikeConverter.toEntity(bookCommentLike));
         return BookCommentLikeConverter.toDomain(bookCommentLikeEntity);
+    }
+
+    @Override
+    public void delete(BookCommentLike bookCommentLike) {
+       bookCommentLikeJpaRepository.delete(BookCommentLikeConverter.toEntity(bookCommentLike));
     }
 
 }

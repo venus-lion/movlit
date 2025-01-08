@@ -43,9 +43,14 @@ public class BookHeartEntity {
     @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
     private MemberEntity memberEntity;
 
+
+    @Column(name = "is_hearted")
+    Boolean isHearted;
+
     @CreatedDate
 //    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt; // 찜한 시간,날짜 추가
+
 
 
 }

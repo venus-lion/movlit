@@ -21,10 +21,13 @@ public class BookCommentLikeConverter {
 
     // Domain -> Entity
     public static BookCommentLikeEntity toEntity(BookCommentLike bookCommentLike) {
-        return BookCommentLikeEntity.builder()
+        if(bookCommentLike == null)
+            return null;
+        else
+            return BookCommentLikeEntity.builder()
                 .id(bookCommentLike.getId())
                 .bookCommentEntity(BookCommentConverter.toEntity(bookCommentLike.getBookComment()))
-                .bookEntity(BookConverter.toEntity(bookCommentLike.getBook()))
+                .bookEntity(BookDetailConverter.toEntity(bookCommentLike.getBook()))
                 .memberEntity(MemberConverter.toEntity(bookCommentLike.getMember()))
                 .isLiked(bookCommentLike.getIsLiked())
                 .build();
@@ -32,10 +35,13 @@ public class BookCommentLikeConverter {
 
     // Entity -> Domain
     public static BookCommentLike toDomain(BookCommentLikeEntity bookCommentLikeEntity) {
-        return BookCommentLike.builder()
+        if (bookCommentLikeEntity == null)
+            return null;
+        else
+            return BookCommentLike.builder()
                 .id(bookCommentLikeEntity.getId())
                 .bookComment(BookCommentConverter.toDomain(bookCommentLikeEntity.getBookCommentEntity()))
-                .book(BookConverter.toDomain(bookCommentLikeEntity.getBookEntity()))
+                .book(BookDetailConverter.toDomain(bookCommentLikeEntity.getBookEntity()))
                 .member(MemberConverter.toDomain(bookCommentLikeEntity.getMemberEntity()))
                 .isLiked(bookCommentLikeEntity.getIsLiked())
                 .build();

@@ -19,7 +19,7 @@ public class BookHeartCountConverter {
         else
             return BookHeartCountEntity.builder()
                     .bookHeartCountId(bookHeartCount.getBookHeartCountId())
-                    .bookEntity(BookConverter.toEntity(bookHeartCount.getBook()))
+                    .bookEntity(BookDetailConverter.toEntity(bookHeartCount.getBook()))
                     .count(bookHeartCount.getCount())
                     .build();
     }
@@ -31,7 +31,7 @@ public class BookHeartCountConverter {
         else
             return BookHeartCount.builder()
                     .bookHeartCountId(bookHeartCountEntity.getBookHeartCountId())
-                    .book(BookConverter.toDomain(bookHeartCountEntity.getBookEntity()))
+                    .book(BookDetailConverter.toDomain(bookHeartCountEntity.getBookEntity()))
                     .count(bookHeartCountEntity.getCount())
                     .build();
 

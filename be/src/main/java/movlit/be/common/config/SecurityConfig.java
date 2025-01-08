@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,6 +24,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -38,6 +40,16 @@ public class SecurityConfig {
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/testBook/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/detail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books/{bookId}/hearts").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/{bookId}/hearts").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/books/*/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books/comments/{bookCommentId}/likes").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/comments/{bookCommentId}/likes").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/myComment").authenticated()
                         .requestMatchers("/testBook//saveBooks/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail/related").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books/genres/movies/*/detail").permitAll()
@@ -93,6 +105,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
