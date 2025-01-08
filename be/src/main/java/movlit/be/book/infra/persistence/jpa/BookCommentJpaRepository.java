@@ -9,8 +9,6 @@ import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.Member;
-import org.springframework.data.domain.Page;
 import movlit.be.member.domain.entity.MemberEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntity, BookCommentId> {
+
 
 
     @Query("SELECT NEW movlit.be.book.presentation.dto.BookCommentResponseDto( "
@@ -58,13 +57,4 @@ public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntit
     Optional<BookCommentEntity> findByMemberEntityAndBookEntity(MemberEntity memberEntity, BookEntity bookEntity);
 
     void deleteById(BookCommentId bookCommentId);
-
-
-
-
-
-
-
-
-
 }
