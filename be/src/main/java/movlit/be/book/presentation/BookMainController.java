@@ -68,7 +68,7 @@ public class BookMainController {
         List<BookItemWithGenreDto> booksByRandomGenresDto = getBooksByRandomGenreService.getBooksByRandomGenres(limit);
 
         BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
-                .bookWithGenres(booksByRandomGenresDto)
+                .books(booksByRandomGenresDto)
                 .build();
 
         return ResponseEntity.ok(booksGenreResponse);
@@ -89,7 +89,7 @@ public class BookMainController {
         List<BookItemWithGenreDto> booksByPersonalizedRandomGenre = getBooksByRandomGenreService.getBooksByPersonalizedRandomGenre(
                 limit, memberId);
         BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
-                .bookWithGenres(booksByPersonalizedRandomGenre)
+                .books(booksByPersonalizedRandomGenre)
                 .build();
 
         return ResponseEntity.ok(booksGenreResponse);

@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class BooksGenreResponse {
 
-    private List<BookItemWithGenreDto> bookWithGenres;
+    private List<BookItemWithGenreDto> books;
     @Data
     @Builder
     public static class BookItemWithGenreDto {

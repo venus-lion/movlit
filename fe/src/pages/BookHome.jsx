@@ -5,9 +5,9 @@ import { useOutletContext } from 'react-router-dom';
 import BestsellerBooksComponent from "./BestsellerBooksComponent.jsx";
 import PopularBooksComponent from "./PopularBooksComponent.jsx";
 import NewBooksComponent from "./NewBooksComponent.jsx";
-import UserRecommendedBooks from "../hooks/UserRecommendedBooks.jsx";
 import BookCarouselRecommend from "./BookCarouselRecommend.jsx";
 import useApiData from "../hooks/userRecommendBookApi.jsx";
+import RandomGenreBooksComponent from "./RandomGenreBooksComponent.jsx";
 
 function BookHome() {
     const { isLoggedIn } = useOutletContext();
@@ -55,6 +55,7 @@ function BookHome() {
             <BestsellerBooksComponent />
             <PopularBooksComponent />
             <NewBooksComponent />
+            <RandomGenreBooksComponent />
 
             {isLoggedIn && interestGenreBooks.length > 0 && (
                 <BookCarouselRecommend
