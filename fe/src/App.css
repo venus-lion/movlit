@@ -54,6 +54,16 @@
     cursor: pointer;
 }
 
+/* 검색 버튼 추가 */
+.search-button {
+    padding: 8px 15px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(255, 51, 102);
+}
+
 .nav-right-logged-in {
     display: flex;
     align-items: center;

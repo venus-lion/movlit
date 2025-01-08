@@ -54,7 +54,7 @@ const router = createBrowserRouter([
                 element: <MemberUpdate />,
             },
             {
-                path: 'search', // 검색기능 라우트 추가
+                path: 'search/:inputStr', // 검색기능 라우트 추가
                 element: <SearchPage />
             },
             {

@@ -13,6 +13,7 @@ function MovieSearchPage() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        console.log("input Str : "+ inputStr);
         const fetchData = async () => {
             setLoading(true);
             try {

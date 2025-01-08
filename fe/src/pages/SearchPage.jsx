@@ -1,19 +1,19 @@
 import {useEffect, useState} from "react";
 
-import { useSearchParams, Link } from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import './searchPage.css';
 import axios from "axios";
 
 function SearchPage() {
-    const [searchParams] = useSearchParams();
-    const query = searchParams.get('q'); // 쿼리 파라미터에서 검색어 가져오기
+    const {inputStr} = useParams();
+    // const inputStr = searchParams.get('inputStr'); // 쿼리 파라미터에서 검색어 가져오기
     const [movieList, setMovies] = useState([]);
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log('useEffect 실행됨, query:', query);
+        console.log('useEffect 실행됨, query:', inputStr);
 
         const fetchData = async () => {
             setLoading(true);
@@ -21,12 +21,11 @@ function SearchPage() {
                 console.log('API 호출 시작');
 
                 //  영화 데이터 가져오기
-          //     const movieResponse = await fetch(`/api/movies/main/popular`);
                 const movieResponse = await axios.get(`/api/movies/search/searchMovie`, {
                     params: {
                         page: 1,
                         pageSize: 20,
-                        inputStr: query
+                        inputStr: inputStr
                     },
                 });
                 const movieData = await movieResponse.data.movieList;
@@ -49,20 +48,20 @@ function SearchPage() {
         };
 
         fetchData();
-    }, [query]); // query가 변경될 때마다 useEffect 실행
+    }, [inputStr]); // query가 변경될 때마다 useEffect 실행
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
         <div className="search-body">
-            <h1>{query || '의 검색결과'}</h1>
+            <h1>{ '"' + inputStr + '"의 검색결과'}</h1>
 
             <div className="search-section">
                 <h2>영화</h2>
                 <div className="more-link-container">
-                    {movieList.length > 9 && (
-                        <Link className="more-link" key={query} to={`/movies/search?query=${query}`}>더 보기</Link>
+                    {movieList.length > 2 && (
+                        <Link className="more-link" key={inputStr} to={`/movies/search/${inputStr}`}>더 보기</Link>
                     )}
                 </div>
             </div>
@@ -82,7 +81,7 @@ function SearchPage() {
                 <h2>책</h2>
                 <div className="more-link-container">
                     {books.length > 9 && (
-                        <Link className="more-link" key={query} to={`/books/search${query}`}>더 보기</Link>
+                        <Link className="more-link" key={inputStr} to={`/books/search${inputStr}`}>더 보기</Link>
                     )}
                 </div>
             </div>

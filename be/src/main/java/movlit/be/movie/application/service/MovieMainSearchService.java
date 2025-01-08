@@ -58,6 +58,7 @@ public class MovieMainSearchService {
             List<Long> movieIds = lastMovieHeart.stream().map(MovieHeart::getMovieId).collect(Collectors.toList());
 
             List<Movie> heartedMovieList = movieRepository.findByIdWithCrewIn(movieIds);
+            log.info("=== hearted Movie : {}", heartedMovieList);
 
             Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 

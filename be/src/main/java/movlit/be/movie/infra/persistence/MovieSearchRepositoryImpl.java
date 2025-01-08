@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.Genre;
@@ -120,9 +122,14 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                 .path("movieCrew")
                 .query(q -> q.bool(b -> b
                                 .should(crewNameSet.stream()
-                                        .map(name -> Query.of(query -> query.term(t -> t
-                                                .field("movieCrew.name").value(name)
-                                        )))
+                                        .flatMap(name -> Stream.of(
+                                                Query.of(query -> query.match(t -> t
+                                                .field("movieCrew.name.ko").query(name)
+                                                )),
+                                                Query.of(query -> query.match(t -> t
+                                                        .field("movieCrew.name.en").query(name)
+                                                ))
+                                        ))
                                         .collect(Collectors.toList())
                                 )
                         )
@@ -138,17 +145,28 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
         // FunctionScoreQuery: 각 장르에 대해 가중치 설정
         List<FunctionScore> functions = new ArrayList<>();
 
-        crewNameSet.forEach(name ->
-                functions.add(FunctionScore.of(f -> f
-                        .filter(NestedQuery.of(n -> n
-                                .path("movieCrew")
-                                .query(q -> q.term(t -> t
-                                        .field("movieCrew.name")
-                                        .value(name)
-                                ))
-                        )._toQuery())
-                        .weight(1.5))
-                )
+        crewNameSet.forEach(name -> {
+                    functions.add(FunctionScore.of(f -> f
+                            .filter(NestedQuery.of(n -> n
+                                    .path("movieCrew")
+                                    .query(q -> q.match(t -> t
+                                            .field("movieCrew.name.ko")
+                                            .query(name)
+                                    ))
+                            )._toQuery())
+                            .weight(1.5))
+                    );
+                    functions.add(FunctionScore.of(f -> f
+                    .filter(NestedQuery.of(n -> n
+                            .path("movieCrew")
+                            .query(q -> q.match(t -> t
+                                    .field("movieCrew.name.en")
+                                    .query(name)
+                            ))
+                    )._toQuery())
+                    .weight(1.5))
+            );
+                }
         );
 
         FunctionScoreQuery functionScoreQuery = FunctionScoreQuery.of(f -> f
@@ -170,6 +188,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
         SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
 
 //        log.info("Explain output: {}", searchHits.getSearchHits().get(0).getExplanation());
+        log.info("Explain output: {}", searchHits.getSearchHits());
         List<Movie> movieList = this.getMovieDocumentResult(searchHits);
 
         return movieList;
