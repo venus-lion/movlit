@@ -34,6 +34,7 @@ public class MemberConverter {
 
     // Domain -> Entity
     public static MemberEntity toEntity(Member member) {
+        System.out.println("%% member 장르리스트 : " + member.getMemberGenreEntityList());
         return MemberEntity.builder()
                 .memberId(member.getMemberId())
                 .memberGenreEntityList(member.getMemberGenreEntityList())

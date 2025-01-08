@@ -2,6 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import { FaHeart, FaRegHeart, FaUserCircle, FaComment } from 'react-icons/fa';
+import useBookList from "../hooks/useBookList.jsx";
+import BookCarousel from "../pages/BookCarousel.jsx";
+import axios from "axios";
+import BookCarouselRecommend from "../pages/BookCarouselRecommend.jsx";
 
 function BookDetailPage() {
     const {bookId} = useParams();
@@ -29,6 +33,13 @@ function BookDetailPage() {
     const [bookCommentId, setBookCommentId] = useState(null);
     const loader = useRef(null);
 
+    // 추천 책 리스트
+    const [recommendedBooks, setRecommendedBooks] = useState([]); // 전체 도서 목록
+
+    const [startIndex, setStartIndex] = useState(0); // 화면에 보이는 도서 시작 인덱스
+    const [startIndexRecommended, setStartIndexRecommended] = useState(0);
+
+
 
     useEffect(() => {
         axiosInstance
@@ -46,6 +57,7 @@ function BookDetailPage() {
                     categoryName: data.category_name,
                     stockStatus: data.stock_status,
                     mallUrl: data.mall_url,
+                    averageScore : data.average_score,
                     heartCount: data.heart_count
                 });
                 setCrews(data.book_crew)
@@ -75,6 +87,43 @@ function BookDetailPage() {
             return () => observer.disconnect();
         }
     }, [comments, hasMore, isInitialLoad]);
+
+    // 관련 책 추천
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const response = await axiosInstance.get(`/books/${bookId}/recommendedBooks`);
+                 // const response = await axios.get('/api/books/popular', {
+                 //     params: {limit : 30},
+                 // });
+
+                //const response = await axiosInstance.get(`/api/books/popular`);
+                console.log('#### 추천책 response 값 :'+ response.data);
+                setRecommendedBooks(response.data);
+            } catch (err){
+                console.error(`Error fetching books : `, err);
+            }
+        }
+
+        fetchBooks();
+    }, []);
+
+    //API에서 책 정보 가져오기
+    const handleNext = (startIndex, setStartIndex, length) => {
+        const newIndex = startIndex + 5;
+        if (newIndex < length) {
+            setStartIndex(newIndex);
+        }
+    };
+
+    const handlePrev = (startIndex, setStartIndex) => {
+        const newIndex = startIndex - 5;
+        if (newIndex >= 0) {
+            setStartIndex(newIndex);
+        }
+    };
+    const handleNextRecommended = () => handleNext(startIndexRecommended, setStartIndexRecommended, recommendedBooks.length);
+    const handlePrevRecommended = () => handlePrev(startIndexRecommended, setStartIndexRecommended);
 
     // 사용자 코멘트 가져오기
     const fetchUserComment = async () => {
@@ -328,6 +377,16 @@ function BookDetailPage() {
         }
     };
 
+
+
+    // HTML 엔티티를 꺽쇠로 변환하는 함수
+    function replaceHtmlEntities(str) {
+        return str
+            .replace(/&lt;/g, '<') // &lt;를 <
+            .replace(/&gt;/g, '>'); // &gt;를 >
+    }
+
+
     if (!bookData) {
         return <div style={styles.loading}>Loading...</div>;
     }
@@ -349,6 +408,7 @@ function BookDetailPage() {
                     {bookData.pubDate ? bookData.pubDate.substring(0, 10).replaceAll('-', ' ・ ') : ''}
                     <br /><br />
                     {bookData.categoryName}
+                    <br /><br />
                     {/* 장르 목록 출력 */}
                     {/*{genres.map((genre, index) => (*/}
                     {/*    <span key={index}>{genre.name}*/}
@@ -356,6 +416,9 @@ function BookDetailPage() {
                     {/*        {index < genres.length - 1 ? ', ' : ''}*/}
                     {/*    </span>*/}
                     {/*))}*/}
+                </div>
+                <div style={styles.score}>
+                    평점 : {bookData.averageScore} / 5
                 </div>
             </div>
 
@@ -480,7 +543,9 @@ function BookDetailPage() {
                     <div style={styles.details}>
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>줄거리</div>
-                            <div style={styles.sectionContent}>{bookData.overview}</div>
+                            <div style={styles.sectionContent}>
+                                {bookData?.overview ? replaceHtmlEntities(bookData.overview) : '읽을 내용이 없습니다.'}
+                            </div>
                         </div>
 
                         <div style={styles.section}>
@@ -587,6 +652,15 @@ function BookDetailPage() {
 
                         <div style={styles.section}>
                             <div style={styles.sectionTitle}>관련 도서</div>
+
+                            <BookCarouselRecommend
+                                books={recommendedBooks}
+                                startIndex={startIndexRecommended}
+                                handlePrev={handlePrevRecommended}
+                                handleNext={handleNextRecommended}
+                            />
+
+
                             <div style={styles.sectionContent}>
                                 {bookData.relatedBooks &&
                                     bookData.relatedBooks.map((book) => (
@@ -610,7 +684,7 @@ const styles = {
         fontFamily: 'Arial, sans-serif',
     },
     header: {
-        padding: '210px 20px',
+        padding: '110px 20px',
         borderBottom: '1px solid #e7e7e7',
         marginBottom: '20px',
     },
@@ -627,6 +701,10 @@ const styles = {
     },
     subtitle: {
         fontSize: '16px',
+        color: '#ffffff',
+    },
+    score: {
+        fontSize: '20px',
         color: '#ffffff',
     },
     mainContent: {

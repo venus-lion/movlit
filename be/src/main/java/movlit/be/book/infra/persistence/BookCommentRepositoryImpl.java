@@ -66,6 +66,10 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
         bookCommentJpaRepository.deleteById(bookCommentId);
     }
 
+    @Override
+    public double getAverageScoreByBookId(BookId bookId) {
+        return bookCommentJpaRepository.getAverageScoreByBookId(bookId).orElse(0.0);
+    }
 
 
 }
