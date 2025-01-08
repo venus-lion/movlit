@@ -12,6 +12,7 @@ public class BookESConvertor {
                 .title(bookES.getTitle())
                 .crew(bookES.getCrew())
                 .publisher(bookES.getPublisher())
+                .categoryName(bookES.getCategoryName())
                 .pubDate(bookES.getPubDate())
                 .description(bookES.getDescription())
                 .bookImgUrl(bookES.getBookImgUrl())
