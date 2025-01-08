@@ -12,6 +12,9 @@ import BookDetailPage from './components/BookDetailPage';
 import MyPage from './components/MyPage';
 import MemberUpdate from './pages/MemberUpdate'; // MemberUpdate import
 import SearchPage from "./pages/SearchPage.jsx";
+// import BookSearchDetailPage from "./pages/BookSearchDetailPage.jsx";
+//
+import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -51,9 +54,17 @@ const router = createBrowserRouter([
                 element: <MemberUpdate />,
             },
             {
-                path: '/search', // 검색기능 라우트 추가
+                path: 'search', // 검색기능 라우트 추가
                 element: <SearchPage />
             },
+            {
+                path: 'movies/search',
+                element: <MovieSearchDetailPage />
+            },
+            // {
+            //     path: '/books/search', // 도서 더 보기 라우트 추가
+            //     element: <BookSearchDetailPage />,
+            // },
         ],
     },
 ]);

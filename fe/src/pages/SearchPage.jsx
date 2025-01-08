@@ -91,46 +91,6 @@ function SearchPage() {
         </div>
     );
 }
-//     return (
-//         <div className="search-body">
-//             <h1>{query || '의 검색결과'}</h1>
-//
-//             <h2 >영화</h2>
-//             <div className="component-container">
-//                 <div className="search-results movies">
-//                     {movieList.slice(0, 9).map((movie) => (
-//                         <div key={movie.movieId} className="search-item">
-//                             <Link to={`/movie/${movie.movieId}`}>
-//                                 <img src={movie.posterPath} alt={movie.title} />
-//                                 <h3>{movie.title}</h3>
-//                             </Link>
-//                         </div>
-//                     ))}
-//                 </div>
-//                 {movieList.length > 9 && (
-//                     <Link to={`/movies/search?query=${query}`}>더 보기</Link>
-//                 )}
-//             </div>
-//
-//             <h2>책</h2>
-//             <div className="component-container">
-//                 <div className="search-results books">
-//                     {books.slice(0, 9).map((book) => (
-//                         <div key={book.bookId} className="search-item">
-//                             <Link to={`/book/${book.bookId}`}>
-//                                 <img src={book.bookImgUrl} alt={book.title} />
-//                                 <h3>{book.title}</h3>
-//                             </Link>
-//                         </div>
-//                     ))}
-//                     {books.length > 9 && (
-//                         <Link to={`/books/search?query=${query}`}>더 보기</Link>
-//                     )}
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
 
 
 
