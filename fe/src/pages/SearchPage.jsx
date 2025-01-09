@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
 import {Link, useParams} from 'react-router-dom';
-import './searchPage.css';
+import './SearchPage.css';
 import './Home.css'
 import axios from "axios";
 
