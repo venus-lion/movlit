@@ -25,6 +25,8 @@ jobs:
           echo "${{ secrets.FE_ENV }}" > .env
       - name: 어플리케이션을 빌드한다
         run: |
+          rm -rf package-lock.json
+          rm -rf node_modules
           npm install
           npm run build
         working-directory: ${{ env.ROOT_PATH }}
