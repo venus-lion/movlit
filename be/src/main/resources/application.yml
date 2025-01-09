@@ -1,5 +1,5 @@
 spring:
   profiles:
     group:
-      local: db-dev, oauth2, jwt, core, api-key, es-dev, servlet, aws
-    active: local
+      local: db-local, oauth2, jwt, core, api-key, es-local, servlet, aws
+      dev: db-dev, oauth2, jwt, core, api-key, es-dev, servlet, aws
