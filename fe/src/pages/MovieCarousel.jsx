@@ -50,8 +50,13 @@ function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMo
                                 <h3 className="movie-title">{movie.title}</h3>
                                 {renderStars(parseFloat(movie.voteAverage))}
                                 <span>({Math.round(parseFloat(movie.voteAverage) * 10) / 10})</span>
+                                {/*<p className="movie-genres">*/}
+                                {/*    {movie.movieGenreList.map((g) => g.genreName).join(', ')}*/}
+                                {/*</p>*/}
                                 <p className="movie-genres">
-                                    {movie.movieGenreList.map((g) => g.genreName).join(', ')}
+                                    {movie.movieGenreList && movie.movieGenreList.length > 0
+                                        ? movie.movieGenreList.map((g) => g.genreName).join(', ')
+                                        : '장르 정보가 없습니다.'}
                                 </p>
                             </div>
                         </Link>
