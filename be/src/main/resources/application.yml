@@ -1,4 +1,4 @@
 spring:
   profiles:
     group:
-      dev: db-dev, oauth2, jwt, core, api-key, es-dev, servlet, aws
+      dev: db-dev
