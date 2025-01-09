@@ -8,6 +8,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.auth.domain.repository.RefreshTokenStorage;
 import movlit.be.common.util.JwtTokenUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -20,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenUtil jwtTokenUtil;
+    private final RefreshTokenStorage refreshTokenStorage;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -34,8 +36,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String accessToken = jwtTokenUtil.generateAccessToken(email);
         String refreshToken = jwtTokenUtil.generateRefreshToken(email);
 
+        refreshTokenStorage.saveRefreshToken(email, refreshToken);
+
         // 프론트엔드로 리다이렉트할 URL 생성 (쿼리 파라미터로 토큰 포함)
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173") // 리다이렉트할 프론트엔드 주소
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/oauth/callback") // 리다이렉트할 프론트엔드 주소
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build().toUriString();

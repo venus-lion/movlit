@@ -13,8 +13,10 @@ import MyPage from './components/MyPage';
 import MemberUpdate from './pages/MemberUpdate'; // MemberUpdate import
 import SearchPage from "./pages/SearchPage.jsx";
 import BookSearchDetailPage from "./pages/BookSearchDetailPage.jsx";
-//
 import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
+
+// OAuthCallback 컴포넌트 import
+import OAuthCallback from './OAuthCallback';
 
 const router = createBrowserRouter([
     {
@@ -55,15 +57,20 @@ const router = createBrowserRouter([
             },
             {
                 path: 'search/:inputStr', // 검색기능 라우트 추가
-                element: <SearchPage />
+                element: <SearchPage />,
             },
             {
                 path: 'movies/search/:inputStr',
-                element: <MovieSearchDetailPage />
+                element: <MovieSearchDetailPage />,
             },
             {
                 path: 'books/search/:inputStr', // 도서 더 보기 라우트 추가
                 element: <BookSearchDetailPage />,
+            },
+            // OAuthCallback 라우트 추가
+            {
+                path: 'oauth/callback',
+                element: <OAuthCallback />,
             },
         ],
     },
@@ -71,6 +78,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
     // <StrictMode>
-        <RouterProvider router={router} />
+    <RouterProvider router={router} />,
     // </StrictMode>
 );

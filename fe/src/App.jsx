@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
-import { FaUserCircle } from 'react-icons/fa'; // React Icons에서 FaUserCircle 아이콘 import
+import { FaUserCircle } from 'react-icons/fa';
 
 export const AppContext = createContext();
 
@@ -32,30 +32,29 @@ function App() {
             console.error('Logout error:', error);
         }
     };
+
     // Enter 키 이벤트 처리
     const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            handleSearch(); // Enter 키를 누르면 handleSearch 실행
+        if (event.key === 'Enter') {
+            handleSearch();
         }
     };
 
-
-    const [inputStr, setInputStr] = useState(""); // 검색어 상태 관리
+    const [inputStr, setInputStr] = useState('');
 
     // 입력 값 변경 시 실행
     const handleInputChange = (event) => {
-        setInputStr(event.target.value); // 입력된 값 업데이트
+        setInputStr(event.target.value);
     };
 
     const handleSearch = async () => {
-        if (inputStr.trim() === "") {
-            alert("검색어를 입력해주세요!");
+        if (inputStr.trim() === '') {
+            alert('검색어를 입력해주세요!');
             return;
         }
 
-        // 페이지 이동하면서 searchTerm을 쿼리 파라미터로 전달
         navigate(`/search/${encodeURIComponent(inputStr)}`);
-    }
+    };
 
     useEffect(() => {
         const fetchProfileImage = async () => {
@@ -98,14 +97,16 @@ function App() {
                 </div>
                 <div className="nav-right">
                     <input
-                        id={"searchInput"}
+                        id={'searchInput'}
                         type="text"
                         placeholder="검색어를 입력하세요"
                         className="search-box"
                         onChange={(e) => setInputStr(e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e)}
                     />
-                    <button className="search-button" onClick={handleSearch}>검색</button>
+                    <button className="search-button" onClick={handleSearch}>
+                        검색
+                    </button>
                     {!isLoggedIn && (
                         <>
                             <NavLink
@@ -147,7 +148,10 @@ function App() {
                     )}
                 </div>
             </nav>
+
+            {/* Outlet에 context 전달 */}
             <Outlet context={{ updateLoginStatus, isLoggedIn }} />
+
             <ToastContainer />
         </AppContext.Provider>
     );
