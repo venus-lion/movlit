@@ -23,6 +23,7 @@ import movlit.be.bookES.BookESDomain;
 import movlit.be.bookES.BookESRepository;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.member.domain.Member;
+import movlit.be.movie.domain.document.MovieDocument;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -177,6 +178,90 @@ public class BookDetailReadService {
                     .collect(Collectors.toList());
 
             return bookESDomainList;
+
+        } else {
+            return null;
+        }
+
+
+    }
+
+
+    // 관련 영화 추천
+    public List<MovieDocument> getRecommendedMovies(BookId bookId) {
+        Pageable pageable = PageRequest.of(0, 10);
+        BookES bookES = bookESRepository.findById(bookId.getValue()).orElse(null);
+        MovieDocument movieDocument = null;
+        System.out.println("## bookId : " + bookId.getValue() + "\n## bookES : " + bookES);
+        if (bookES != null) {
+            String category = bookES.getCategoryName();
+            String titleKeyword = bookES.getTitleKeyword();
+            String description = bookES.getDescription();
+            System.out.println("%% 해당 책의 category : " + category + "\n%% 해당 책의 titleKeyword : " + titleKeyword);
+
+            // 3. elasticsearch 쿼리
+            BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
+
+            // 첫 번째 MatchQuery: description에 대한 쿼리와 boost 3.0 설정
+            Query titleKeywordMatchQueryForShould = MatchQuery.of(t -> t
+                    .field("title")
+                    .query(titleKeyword)
+                    //  .boost(2.0f) // boost 값 추가
+                    .fuzziness("AUTO")
+            )._toQuery();
+
+            // 두 번째 MatchQuery: categoryName에 대한 쿼리와 boost 1.5 설정
+            Query categoryNameMatchQuery = MatchQuery.of(t -> t
+                    .field("movieGenre")
+                    .query(category)
+                    .boost(1.5f) // boost 값 추가
+            )._toQuery();
+
+            Query DescriptionMatchQueryForShould = MatchQuery.of(t -> t
+                    .field("overview")
+                    .query(description)
+                    .boost(1.5f) // boost 값 추가
+            )._toQuery();
+
+            // BoolQuery에 MatchQuery 추가
+            boolQueryBuilder
+                    .should(titleKeywordMatchQueryForShould)
+                    .should(categoryNameMatchQuery)
+                    .should(DescriptionMatchQueryForShould)
+                    .minimumShouldMatch("1");
+
+            // BoolQuery 빌드
+            BoolQuery boolQuery = boolQueryBuilder.build();
+
+            // NativeSearchQuery 빌드 -- 최종 쿼리
+            NativeQuery nativeQuery = new NativeQueryBuilder()
+                    .withQuery(boolQuery._toQuery())
+                    .withPageable(pageable)
+//                .withSort(Sort.by(
+//                        Sort.Order.desc("_score")
+////                        Sort.Order.desc("voteAverage")      // score순, 평점 순
+//                ))
+                    .build();
+
+            // 검색 실행
+            SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
+
+            // 값이 없을경우
+            if (!searchHits.hasSearchHits()) {
+                System.out.println("사용자 취향에 맞는 영화가 없습니다.");
+                return null; // 사용자 취향 리스트가 없음
+            }
+
+            List<MovieDocument> MovieDocumentListForReturn = searchHits.getSearchHits().stream()
+                    .map(hit -> hit.getContent())
+                    .collect(Collectors.toList());
+
+            System.out.println("MovieDocumentListForReturn ::: " + MovieDocumentListForReturn);
+
+            List<MovieDocument> MovieDocumentList = MovieDocumentListForReturn.stream()
+                    .collect(Collectors.toList());
+
+            return MovieDocumentList;
 
         } else {
             return null;
