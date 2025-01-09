@@ -80,12 +80,12 @@ tasks.named('test') {
     outputs.dir snippetsDir
 }
 
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    outputDir file("src/main/resources/static/docs")
-    configurations "asciidoctorExt"
-    dependsOn test
-}
+//tasks.named('asciidoctor') {
+//    inputs.dir snippetsDir
+//    outputDir file("src/main/resources/static/docs")
+//    configurations "asciidoctorExt"
+//    dependsOn test
+//}
 
 tasks.named("jar") {
     enabled = false
