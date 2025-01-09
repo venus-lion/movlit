@@ -88,7 +88,6 @@ function MovieSearchPage() {
                                     </p>
                                 </div>
                             </div>
-                            <p>{movie.title}</p>
                         </Link>
                     </div>
                 ))}
