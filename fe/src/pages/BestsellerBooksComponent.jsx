@@ -4,7 +4,7 @@ import BookCarousel from "./BookCarousel.jsx";
 
 function BestsellerBooksComponent(){
     const {books, loading, error} = useBookList({
-        endpoint : '/api/books/bestseller',
+        endpoint : '/books/bestseller',
         params: {limit : 30},
     });
 

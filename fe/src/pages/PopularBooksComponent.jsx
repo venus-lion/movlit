@@ -4,7 +4,7 @@ import BookCarousel from "./BookCarousel.jsx";
 
 function PopularBooksComponent(){
     const {books, loading, error} = useBookList({
-        endpoint : '/api/books/popular',
+        endpoint : '/books/popular',
         params: {limit : 30},
     });
 

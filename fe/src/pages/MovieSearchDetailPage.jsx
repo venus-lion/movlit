@@ -17,7 +17,7 @@ function MovieSearchPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`/api/movies/search/searchMovie`, {
+                const response = await axios.get(`/movies/search/searchMovie`, {
                     params: { page, pageSize, inputStr},
                 }); // 9개씩 가져오도록 pageSize 설정
                 const data = response.data;

@@ -41,7 +41,7 @@ function SearchPage() {
                 console.log('API 호출 시작');
 
                 //  영화 데이터 가져오기
-                const movieResponse = await axios.get(`/api/movies/search/searchMovie`, {
+                const movieResponse = await axios.get(`/movies/search/searchMovie`, {
                     params: {
                         page: 1,
                         pageSize: 20,
@@ -53,7 +53,7 @@ function SearchPage() {
                 setMovies(movieData || []);
 
                 // 도서 데이터 가져오기
-                const bookResponse = await axios.get(`/api/books/search/searchBook`, {
+                const bookResponse = await axios.get(`/books/search/searchBook`, {
                     params: {
                         page: 1,
                         pageSize : 20,

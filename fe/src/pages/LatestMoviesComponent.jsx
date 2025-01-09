@@ -4,7 +4,7 @@ import MovieCarousel from './MovieCarousel';
 
 function LatestMoviesComponent() {
     const { movies, loading, error } = useMovieList({
-        endpoint: '/api/movies/main/latest',
+        endpoint: '/movies/main/latest',
         params: { pageSize: 20 },
     });
 

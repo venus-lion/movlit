@@ -75,7 +75,7 @@ function MovieDetailPage() {
         loading: relatedBooksLoading,
         error: relatedBooksError,
     } = useBookList({
-        endpoint: `/api/books/genres/movies/${movieId}/detail`,
+        endpoint: `/books/genres/movies/${movieId}/detail`,
         params: { limit: 30 },
     });
     const [relatedBooksStartIndex, setRelatedBooksStartIndex] = useState(0);

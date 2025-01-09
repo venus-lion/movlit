@@ -4,7 +4,7 @@ import MovieCarousel from './MovieCarousel';
 
 function PopularMoviesComponent() {
     const { movies, loading, error } = useMovieList({
-        endpoint: '/api/movies/main/popular',
+        endpoint: '/movies/main/popular',
         params: { pageSize: 20 },
     });
 

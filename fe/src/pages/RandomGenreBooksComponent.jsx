@@ -4,7 +4,7 @@ import BookGenreCarousel from "./BookGenreCarousel.jsx";
 
 function RandomGenreBooksComponent(){
     const {books, loading, error} = useBookList({
-        endpoint : '/api/books/genres/random',
+        endpoint : '/books/genres/random',
         params: {limit : 30},
     });
 

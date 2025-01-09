@@ -4,7 +4,7 @@ import useGenreMovieList from "../hooks/useGenreMovieList.jsx";
 
 function GenreMoviesComponent({ genreId }) {
     const { movies, loading, error, genreName } = useGenreMovieList({
-        endpoint: '/api/movies/main/genre',
+        endpoint: '/movies/main/genre',
         params: { genreId: genreId, pageSize: 50 },
     });
 

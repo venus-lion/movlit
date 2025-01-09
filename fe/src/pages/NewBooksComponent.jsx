@@ -4,7 +4,7 @@ import BookCarousel from "./BookCarousel.jsx";
 
 function NewBooksComponent(){
     const {books, loading, error} = useBookList({
-        endpoint : '/api/books/new',
+        endpoint : '/books/new',
         params: {limit : 30},
     });
 
