@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         refreshTokenStorage.saveRefreshToken(email, refreshToken);
 
         // 프론트엔드로 리다이렉트할 URL 생성 (쿼리 파라미터로 토큰 포함)
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/oauth/callback") // 리다이렉트할 프론트엔드 주소
+        String targetUrl = UriComponentsBuilder.fromUriString("https://movlit.store/oauth/callback") // 리다이렉트할 프론트엔드 주소
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
