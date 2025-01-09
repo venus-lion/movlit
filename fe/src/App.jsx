@@ -80,7 +80,7 @@ function App() {
                         to="/"
                         className={({ isActive }) => (isActive ? 'active' : '')}
                     >
-                        WATCHA PEDIA
+                        Movlit
                     </NavLink>
                     <NavLink
                         to="/"
