@@ -14,10 +14,10 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
 
   //  @Value("${spring.elasticsearch.password}")
-    private String password = "123456";
+    private String password = "30wne=PkQKzjzF-eqE5u";
 
 //    @Value("${spring.elasticsearch.uris}")
-    private String esHost = "localhost:9200";
+    private String esHost = "15.164.150.76:9200";
 
     @Override
     public ClientConfiguration clientConfiguration() {
