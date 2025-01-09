@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 //@PropertySource("classpath:application-jwt.yml")
 public class JwtTokenUtil {
 
-    @Value("${jwt.secret}")
-    private String secret;
+//    @Value("${jwt.secret}")
+    private String secret = "823e399822c5170927c9802b3feb60b1fe54debefb406ca5f4eaf05e0014ea63";
 
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10시간
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 14; // 2주
