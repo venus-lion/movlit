@@ -4,6 +4,7 @@ import {Link, useParams} from 'react-router-dom';
 import './SearchPage.css';
 import './Home.css'
 import axios from "axios";
+import axiosInstance from "../axiosInstance.js";
 
 function SearchPage() {
     // 별을 표시하는 함수
@@ -41,7 +42,7 @@ function SearchPage() {
                 console.log('API 호출 시작');
 
                 //  영화 데이터 가져오기
-                const movieResponse = await axios.get(`/movies/search/searchMovie`, {
+                const movieResponse = await axiosInstance.get(`/movies/search/searchMovie`, {
                     params: {
                         page: 1,
                         pageSize: 20,
@@ -53,7 +54,7 @@ function SearchPage() {
                 setMovies(movieData || []);
 
                 // 도서 데이터 가져오기
-                const bookResponse = await axios.get(`/books/search/searchBook`, {
+                const bookResponse = await axiosInstance.get(`/books/search/searchBook`, {
                     params: {
                         page: 1,
                         pageSize : 20,
