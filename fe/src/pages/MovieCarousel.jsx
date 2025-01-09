@@ -4,6 +4,8 @@ import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa'; // 별 아이�
 import './Home.css';
 
 function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 8}) {
+    console.log('slice 전, movies={}', movies);
+
     // 별을 표시하는 함수
     const renderStars = (rating) => {
         // rating 값을 0 ~ 10으로 받을 경우
