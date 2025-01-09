@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/books/comments/{bookCommentId}/likes").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/books/{bookId}/myComment").authenticated()
                         .requestMatchers("/testBook//saveBooks/**").permitAll()
-                        .requestMatchers("/api/movies/search/searchMovie").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/search/searchMovie").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/*/detail/related").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books/genres/movies/*/detail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/images/profile").authenticated()
@@ -77,7 +77,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/members/update").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/members/delete").authenticated()
-                        .requestMatchers("/api/movies/search/searchMovie", "/api/movies/main/**", "/collect/indices/**", "/collect/movie/**", "/discover",
+                        .requestMatchers(HttpMethod.GET, "/api/movies/main/latest").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/main/popular").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/main/genre").permitAll()
+                        .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**")
                         .permitAll()
