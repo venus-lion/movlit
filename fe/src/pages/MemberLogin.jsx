@@ -22,7 +22,7 @@ const MemberLogin = () => {
 
             console.log('refreshToken = ', refreshToken);
 
-            document.cookie = `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=1209600`;
+            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
             // Secure; <- Https 후 꼭 추가해주기
 
             updateLoginStatus(true);
