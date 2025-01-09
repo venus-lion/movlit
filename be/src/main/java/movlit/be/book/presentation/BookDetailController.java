@@ -17,6 +17,7 @@ import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.Member;
+import movlit.be.movie.domain.document.MovieDocument;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,9 +103,20 @@ public class BookDetailController {
             System.out.println("@@ 추천 책 제목 : " + recBook.getTitle());
             System.out.println("@@ 추천 책 카테고리: " + recBook.getCategoryName());
             System.out.println("@@ 추천 책 설명 : " + recBook.getDescription());
-            // 필요에 따라 추가 속성을 출력할 수 있습니다.
         }
         return ResponseEntity.ok(recommendedBookList);
+    }
+
+    @GetMapping("{bookId}/recommendedMovies")
+    public ResponseEntity<List<MovieDocument>> getRecommendedMovies(@PathVariable BookId bookId) {
+        List<MovieDocument> recommendedMovieList = bookDetailReadService.getRecommendedMovies(bookId);
+        for (MovieDocument recMovie: recommendedMovieList) {
+            // 각 MovieDocument의 내용 출력
+            System.out.println("@@ 추천 영화 제목 : " + recMovie.getTitle());
+            System.out.println("@@ 추천 영화 카테고리: " + recMovie.getMovieGenre().stream());
+            System.out.println("@@ 추천 영화 설명 : " + recMovie.getOverview());
+        }
+        return ResponseEntity.ok(recommendedMovieList);
     }
 
 
