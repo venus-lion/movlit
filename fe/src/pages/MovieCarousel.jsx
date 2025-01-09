@@ -56,7 +56,7 @@ function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMo
                                 <p className="movie-genres">
                                     {movie.movieGenreList && movie.movieGenreList.length > 0
                                         ? movie.movieGenreList.map((g) => g.genreName).join(', ')
-                                        : '장르 정보가 없습니다.'}
+                                        : ''}
                                 </p>
                             </div>
                         </Link>
