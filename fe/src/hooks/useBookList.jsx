@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from 'axios';
+import axiosInstance from "../axiosInstance.js";
 
 const useBookList = ({endpoint, params = {}}) => {
     const [books, setBooks] = useState([]); // 전체 도서 목록
@@ -9,7 +10,7 @@ const useBookList = ({endpoint, params = {}}) => {
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await axios.get(endpoint, {
+                const response = await axiosInstance.get(endpoint, {
                     params: { ...params},
                 });
 

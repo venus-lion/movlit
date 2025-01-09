@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import axiosInstance from "../axiosInstance.js";
 
 const useGenreMovieList = ({ endpoint, params = {}, pageSize = 20 }) => {
     const [movies, setMovies] = useState([]);  // 전체 영화 목록
@@ -12,7 +13,7 @@ const useGenreMovieList = ({ endpoint, params = {}, pageSize = 20 }) => {
         console.log(endpoint + " init");
         const fetchMovies = async () => {
             try {
-                const response = await axios.get(endpoint, {
+                const response = await axiosInstance.get(endpoint, {
                     params: { ...params, pageSize },
                 });
                 setMovies(response.data.movieList);  // 영화 목록 저장
