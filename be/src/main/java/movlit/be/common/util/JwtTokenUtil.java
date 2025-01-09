@@ -20,9 +20,9 @@ public class JwtTokenUtil {
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10시간
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 14; // 2주
 
-//    public JwtTokenUtil() {
+    public JwtTokenUtil() {
 //        this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
-//    }
+    }
 
     // 수정: Claims 추출 로직 변경
     private Claims extractAllClaims(String token) {
