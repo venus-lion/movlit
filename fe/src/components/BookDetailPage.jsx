@@ -1,17 +1,30 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import { FaHeart, FaRegHeart, FaUserCircle, FaComment } from 'react-icons/fa';
+import {
+    FaComment,
+    FaHeart,
+    FaRegHeart,
+    FaUserCircle,
+    FaStar,
+    FaRegStar,
+    FaStarHalfAlt,
+} from 'react-icons/fa';
 import useBookList from "../hooks/useBookList.jsx";
 import BookCarousel from "../pages/BookCarousel.jsx";
 import axios from "axios";
 import BookCarouselRecommend from "../pages/BookCarouselRecommend.jsx";
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import MovieCarousel from "../pages/MovieCarousel.jsx";
 
 function BookDetailPage() {
     const {bookId} = useParams();
     const [bookData, setBookData] = useState(null);
 
-    const [myRating, setMyRating] = useState(0);
+    const [myRating, setMyRating] = useState(0); // 0~10 사이의 값 (0.5 단위)
+    const [hoverRating, setHoverRating] = useState(0); // 마우스 호버 시 별점 상태
+    const [dbRating, setDbRating] = useState(0); // 최신 별점 저장
     const [myComment, setMyComment] = useState('');
     const [crews, setCrews] = useState([]);
     const [member, setMember] = useState(null);
@@ -19,11 +32,7 @@ function BookDetailPage() {
     const [genres, setGenres] = useState([]);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
-    const [comments, setComments] = useState([]);
-    // const [visibleCrews, setVisibleCrews] = useState([]);
-    // const [showMoreCrews, setShowMoreCrews] = useState(false);
-    // const [genres, setGenres] = useState([]);
-    // const [showCommentInput, setShowCommentInput] = useState(false);
+    const [comments, setComments] = useState([]);    
     const [hasMore, setHasMore] = useState(true);
     const [showLessComments, setShowLessComments] = useState(false);
     const [totalComments, setTotalComments] = useState(0);
@@ -35,9 +44,13 @@ function BookDetailPage() {
 
     // 추천 책 리스트
     const [recommendedBooks, setRecommendedBooks] = useState([]); // 전체 도서 목록
-
     const [startIndex, setStartIndex] = useState(0); // 화면에 보이는 도서 시작 인덱스
     const [startIndexRecommended, setStartIndexRecommended] = useState(0);
+
+    // 추천 영화 리스트
+    const [recommendedMovies, setRecommendedMovies] = useState([]); // 전체 영화 목록
+    const [mStartIndex, setMStartIndex] = useState(0); // 화면에 보이는 영화 시작 인덱스
+    const [mStartIndexRecommended, setMStartIndexRecommended] = useState(0);
 
 
 
@@ -58,6 +71,7 @@ function BookDetailPage() {
                     stockStatus: data.stock_status,
                     mallUrl: data.mall_url,
                     averageScore : data.average_score,
+                    isHearted : data.is_hearted,
                     heartCount: data.heart_count
                 });
                 setCrews(data.book_crew)
@@ -108,6 +122,26 @@ function BookDetailPage() {
         fetchBooks();
     }, []);
 
+    // 관련 영화 추천
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await axiosInstance.get(`/books/${bookId}/recommendedMovies`);
+                // const response = await axios.get('/api/books/popular', {
+                //     params: {limit : 30},
+                // });
+
+                //const response = await axiosInstance.get(`/api/books/popular`);
+                console.log('#### 추천영화 response 값 :'+ response.data);
+                setRecommendedMovies(response.data);
+            } catch (err){
+                console.error(`Error fetching books : `, err);
+            }
+        }
+
+        fetchMovies();
+    }, []);
+
     //API에서 책 정보 가져오기
     const handleNext = (startIndex, setStartIndex, length) => {
         const newIndex = startIndex + 5;
@@ -122,8 +156,24 @@ function BookDetailPage() {
             setStartIndex(newIndex);
         }
     };
+    const mHandleNext = (mStartIndex, setMStartIndex, length) => {
+        const newIndex = mStartIndex + 5;
+        if (newIndex < length) {
+            setMStartIndex(newIndex);
+        }
+    };
+
+    const mHandlePrev = (mStartIndex, setMStartIndex) => {
+        const newIndex = mStartIndex - 5;
+        if (newIndex >= 0) {
+            setMStartIndex(newIndex);
+        }
+    };
+
     const handleNextRecommended = () => handleNext(startIndexRecommended, setStartIndexRecommended, recommendedBooks.length);
     const handlePrevRecommended = () => handlePrev(startIndexRecommended, setStartIndexRecommended);
+    const mHandleNextRecommended = () => mHandleNext(mStartIndexRecommended, setMStartIndexRecommended, recommendedMovies.length);
+    const mHandlePrevRecommended = () => mHandlePrev(mStartIndexRecommended, setMStartIndexRecommended);
 
     // 사용자 코멘트 가져오기
     const fetchUserComment = async () => {
@@ -142,6 +192,7 @@ function BookDetailPage() {
                 });
                 setBookCommentId(bookCommentId);
                 setMyRating(score);
+                setDbRating(score); // dbRating 업데이트
                 setMyComment(comment);
                 if (score > 0) {
                     setShowCommentInput(false);
@@ -153,6 +204,7 @@ function BookDetailPage() {
                 setUserComment(null);
                 setBookCommentId(null);
                 setMyRating(0);
+                setDbRating(0); // dbRating 업데이트
                 setMyComment('');
                 setShowCommentInput(false);
             }
@@ -163,7 +215,7 @@ function BookDetailPage() {
         }
     };
 
-    // 코멘트 불러오기 함수
+    // 코멘트 불러오기
     const fetchComments = (currentPage = 0) => {
         axiosInstance
             .get(`/books/${bookId}/comments?page=${currentPage}`)
@@ -172,35 +224,37 @@ function BookDetailPage() {
                     response.data.content && response.data.content.length > 0
                         ? response.data.content[0].allCommentsCount
                         : 0;
-                setTotalComments(fetchedTotalComments);
+                setTotalComments(fetchedTotalComments); // 총 댓글 수 업데이트
+
+                // 댓글에 필요한 필드 추가
+                const updatedComments = response.data.content.map(comment => ({
+                    ...comment,
+                    isLiked: comment.liked || false,
+                    commentLikeCount: comment.likeCount || 0,
+                    profileImgUrl: comment.profileImgUrl || null,
+                }));
 
                 if (currentPage === 0) {
-                    // 각 코멘트 객체에 isLiked와 commentLikeCount, profileImgUrl이 존재하는지 확인하고, 값이 없으면 false, 0, null으로 설정
-                    const updatedComments = response.data.content.map(comment => ({
-                        ...comment,
-                        isLiked: comment.liked || false,
-                        commentLikeCount: comment.likeCount || 0,
-                        profileImgUrl: comment.profileImgUrl || null,
-                    }));
-                    setComments(updatedComments);
-                    setHasMore(
-                        response.data.content.length > 4 || fetchedTotalComments > 4
-                    );
+                    // 페이지가 0인 경우 처음 댓글 설정
+                    setComments(updatedComments); // 새로운 댓글 세팅
+                    setHasMore(response.data.content.length > 4 || fetchedTotalComments > 4);
                 } else {
-                    // 마찬가지로 isLiked와 commentLikeCount, profileImgUrl 존재 여부 확인 및 기본값 설정
-                    const updatedComments = response.data.content.map(comment => ({
-                        ...comment,
-                        isLiked: comment.liked || false,
-                        commentLikeCount: comment.likeCount || 0,
-                        profileImgUrl: comment.profileImgUrl || null,
-                    }));
-                    setComments((prevComments) => [...prevComments, ...updatedComments]);
+                    // 이전 댓글과 새로운 댓글 합치기
+                    setComments((prevComments) => {
+                        const allComments = [...prevComments, ...updatedComments];
+                        const uniqueCommentsMap = {};
+                        allComments.forEach(comment => {
+                            uniqueCommentsMap[comment.bookCommentId] = comment; // id를 키로 하여 중복 제거
+                        });
+                        return Object.values(uniqueCommentsMap); // 고유한 댓글 값만 반환
+                    });
                     setHasMore(!response.data.last);
                 }
                 setPage(currentPage + 1);
             })
             .catch((error) => console.error('Error fetching comments:', error));
     };
+
 
     // Intersection Observer 콜백 함수
     const handleObserver = (entities) => {
@@ -210,19 +264,20 @@ function BookDetailPage() {
         }
     };
 
-    const handleRatingChange = (newRating) => {
-        if (userComment) {
-            setMyRating(newRating);
-            setShowCommentInput(true);
+    // 코멘트 별점 클릭 핸들러
+    const handleRatingClick = (newRating, e) => {
+        // 클릭 위치에 따라 반 별 또는 온전한 별로 설정
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const halfWidth = rect.width / 2;
+        const starIndex = newRating / 2;
+
+        if (x <= halfWidth) {
+            setMyRating(starIndex * 2 - 1);
         } else {
-            if (myRating === newRating) {
-                setMyRating(0);
-                setShowCommentInput(false);
-            } else {
-                setMyRating(newRating);
-                setShowCommentInput(true);
-            }
+            setMyRating(starIndex * 2);
         }
+        setShowCommentInput(true); // 별점 클릭 시 코멘트 입력란을 보이도록 설정
     };
 
     // 찜하기/찜해제 처리
@@ -239,6 +294,7 @@ function BookDetailPage() {
                     heartCount: updatedHeartCount,
                     isHearted: false,
                 }));
+                console.log('찜하기 완료' + updatedHeartCount) ;
             } else {
                 // 찜하기 (POST 요청)
                 const response = await axiosInstance.post(`/books/${bookId}/hearts`);
@@ -248,6 +304,7 @@ function BookDetailPage() {
                     heartCount: updatedHeartCount,
                     isHearted: true,
                 }));
+                console.log('찜하기 완료' + updatedHeartCount) ;
             }
 
             // 찜 상태에 따라 버튼 및 카운트 업데이트
@@ -260,9 +317,9 @@ function BookDetailPage() {
                     : '#4080ff';
             }
 
-            if (heartCountSpan) {
-                heartCountSpan.textContent = updatedHeartCount.toLocaleString();
-            }
+            // if (heartCountSpan) {
+                heartCountSpan.textContent = updatedHeartCount;
+            // }
         } catch (error) {
             console.error('Error updating wish status:', error);
             alert('찜하기/찜해제 처리에 실패했습니다.');
@@ -377,7 +434,24 @@ function BookDetailPage() {
         }
     };
 
+    // 별을 표시하는 함수 수정 (반 별: 1점, 온전한 별: 2점으로 계산)
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating / 2); // 온전한 별의 개수 (2점당 1개)
+        const halfStar = rating % 2 === 1; // 반 별의 여부 (나머지가 1이면 반 별)
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // 빈 별의 개수
 
+        return (
+            <>
+                {[...Array(fullStars)].map((_, index) => (
+                    <FaStar key={`full-${index}`} style={styles.starFilled} />
+                ))}
+                {halfStar && <FaStarHalfAlt style={styles.starFilled} />}
+                {[...Array(emptyStars)].map((_, index) => (
+                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty} />
+                ))}
+            </>
+        );
+    };
 
     // HTML 엔티티를 꺽쇠로 변환하는 함수
     function replaceHtmlEntities(str) {
@@ -417,9 +491,9 @@ function BookDetailPage() {
                     {/*    </span>*/}
                     {/*))}*/}
                 </div>
-                <div style={styles.score}>
-                    평점 : {bookData.averageScore} / 5
-                </div>
+                {/*<div style={styles.score}>*/}
+                {/*    평점 : {bookData.averageScore} / 5*/}
+                {/*</div>*/}
             </div>
 
             <div style={styles.mainContent}>
@@ -443,21 +517,64 @@ function BookDetailPage() {
                         <div style={styles.myRating}>
                             <span style={styles.ratingLabel}>내 별점</span>
                             <div style={styles.stars}>
-                                {Array(5)
-                                    .fill()
-                                    .map((_, index) => (
+                                {/* 별 5개로 10점 만점 표현 */}
+                                {[...Array(5)].map((_, index) => {
+                                    const starIndex = (index + 1);
+                                    const rating = myRating === 0 ? hoverRating : myRating;
+                                    return (
                                         <span
                                             key={index}
-                                            style={
-                                                index < myRating
-                                                    ? styles.starFilled
-                                                    : styles.starEmpty
+                                            onClick={(e) => handleRatingClick(starIndex * 2, e)}
+                                            style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
+                                            onMouseMove={(e) => {
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const halfWidth = rect.width / 2;
+
+                                                // 클릭된 별점이 있든 없든 마우스 호버 이벤트는 항상 감지
+                                                if (x <= halfWidth) {
+                                                    setHoverRating(starIndex * 2 - 1);
+                                                } else {
+                                                    setHoverRating(starIndex * 2);
                                             }
-                                            onClick={() => handleRatingChange(index + 1)}
+                                            }}
+                                            onMouseLeave={() => {
+                                                setHoverRating(0);
+                                            }}
                                         >
-                      <span style={styles.starIcon}>★</span>
+                                            {/* 클릭된 별점이 없으면 마우스 호버 상태에 따라 별을 표시하고, 클릭된 별점이 있으면 클릭된 별점을 기준으로 별을 표시 */}
+                                            {starIndex * 2 <= rating ? (
+                                                <FaStar style={styles.starFilled} />
+                                            ) : starIndex * 2 === rating + 1 ? (
+                                                <FaStarHalfAlt style={styles.starFilled} />
+                                            ) : (
+                                                <FaRegStar style={styles.starEmpty} />
+                                            )}
                     </span>
-                                    ))}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        <div style={styles.averageRating}>
+                            <span style={styles.ratingLabel}>평균 별점</span>
+                            <div style={styles.starsAndProgress}>
+                                <div style={styles.stars}>
+                                    {renderStars(bookData.averageScore)}
+                                </div>
+                                {/* Circular Progress Bar 추가 */}
+                                <div style={styles.progressBarContainer}>
+                                    <CircularProgressbar
+                                        value={bookData.averageScore * 10}s
+                                        maxValue={100}
+                                        text={`${Math.round(bookData.averageScore * 10) / 10}`}
+                                        styles={buildStyles({
+                                            textSize: '22px',
+                                            pathColor: '#f8d90f',
+                                            textColor: '#000000',
+                                            trailColor: '#d6d6d6',
+                                        })}
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div style={styles.buttonGroup}>
@@ -474,7 +591,7 @@ function BookDetailPage() {
                                 {bookData.isHearted ? '찜 완료' : '찜'}
                             </button>
                             <span id="heartCount" style={styles.heartCountContainer}>
-                {bookData.heartCount}
+                        {bookData.heartCount}
               </span>
                         </div>
                     </div>
@@ -602,11 +719,24 @@ function BookDetailPage() {
                                             </div>
                                             {/* 별점 및 좋아요 컨테이너 */}
                                             <div style={styles.commentActions}>
+                                                {/* 코멘트 별점 표시 */}
                                                 <div style={styles.commentRating}>
-                          <span style={comment.score >= 1 ? styles.commentStarFilled : styles.commentStarEmpty}>
-                            ★
+                                                    {/* 별 5개로 10점 만점 표현 */}
+                                                    {[...Array(5)].map((_, index) => {
+                                                        const starIndex = (index + 1);
+                                                        return (
+                                                            <span key={index} style={{display: 'inline-block'}}>
+                                                                {starIndex * 2 <= comment.score ? (
+                                                                    <FaStar style={styles.commentStarFilled}/>
+                                                                ) : starIndex * 2 === comment.score + 1 ? (
+                                                                    <FaStarHalfAlt style={styles.commentStarFilled}/>
+                                                                ) : (
+                                                                    <FaRegStar style={styles.commentStarEmpty}/>
+                                                                )}
                           </span>
-                                                    <span style={styles.commentScore}>{comment.score}</span>
+                                                        );
+                                                    })}
+                                                    {/*<span style={styles.commentScore}>{comment.score}</span>*/}
                                                 </div>
                                                 {/* 좋아요 버튼 및 카운트 컨테이너 */}
                                                 <div style={styles.likeContainer}>
@@ -659,17 +789,17 @@ function BookDetailPage() {
                                 handlePrev={handlePrevRecommended}
                                 handleNext={handleNextRecommended}
                             />
+                        </div>
+                        <div style={styles.section}>
+                            <div style={styles.sectionTitle}>관련 영화</div>
+                            <MovieCarousel
+                                movies={recommendedMovies}
+                                startIndex={mStartIndexRecommended}
+                                handleNext={mHandleNextRecommended}
+                                handlePrev={mHandlePrevRecommended}
+                            />
 
 
-                            <div style={styles.sectionContent}>
-                                {bookData.relatedBooks &&
-                                    bookData.relatedBooks.map((book) => (
-                                        <div key={book.id} style={styles.book}>
-                                            <img src={book.coverUrl} alt={book.title} />
-                                            <div>{book.title}</div>
-                                        </div>
-                                    ))}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -742,15 +872,18 @@ const styles = {
     },
     stars: {
         display: 'inline-block',
+        alignItems: 'center', // 세로 중앙 정렬
         //marginLeft: '10px',
     },
     starFilled: {
         color: '#f8d90f',
         cursor: 'pointer',
+        fontSize: '40px', // 크기 조정
     },
     starEmpty: {
         color: '#ccc',
         cursor: 'pointer',
+        fontSize: '40px', // 크기 조정
     },
     starIcon: {
         fontSize: '40px',
@@ -1016,6 +1149,24 @@ const styles = {
         alignItems: 'flex-start',
         marginLeft: '5px',
     },
+    averageRating: {
+        marginLeft: '20px',
+        display: 'flex', // 가로 정렬
+        alignItems: 'center', // 세로 중앙 정렬
+    },
+    voteAverage: {
+        marginLeft: '10px',
+        fontSize: '16px',
+        color: '#000000',
+    },
+    starsAndProgress: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    progressBarContainer: {
+        width: '60px', // 원하는 크기로 조정
+        marginLeft: '15px', // 별점과의 간격 조정
+    }
 };
 
 export default BookDetailPage;
