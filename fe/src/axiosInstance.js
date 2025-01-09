@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: '/api', // 기본 URL 설정
+    baseURL: 'https://movlit.store/api', // 기본 URL 설정
 });
 
 // Request Interceptor

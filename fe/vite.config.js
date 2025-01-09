@@ -20,5 +20,6 @@ export default defineConfig({
                 // rewrite: (path) => path.replace(/^\/oauth2/, ''), // 필요에 따라 경로 재작성
             },
         },
+
     },
 });
