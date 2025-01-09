@@ -52,7 +52,7 @@ public class BookCommentEntity {
     @Column(name = "comment")
     private String comment; //  리뷰 - 코멘트
 
-    @Column(nullable = false, precision = 2, scale = 1)
+    @Column(nullable = false, precision = 3, scale = 1)
     private BigDecimal score; // 리뷰 - 별점 (not null)
 
     @CreatedDate
