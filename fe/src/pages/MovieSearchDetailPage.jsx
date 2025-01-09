@@ -47,7 +47,6 @@ function MovieSearchPage() {
     };
 
     if (error) return <div>Error: {error.message}</div>;
-
     return (
         <div className="search-body-detail">
             <div className="search-section-detail">

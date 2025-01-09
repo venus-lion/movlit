@@ -89,18 +89,18 @@ function SearchPage() {
             <div className="search-section">
                 <h2>영화</h2>
                 <div className="more-link-container">
-
                     {movieList.length > 9 && (
                         <a>
                         <Link className="more-link" key={inputStr} to={`/movies/search/${inputStr}`}>더 보기</Link>
                         </a>
                     )}
-
-
                 </div>
             </div>
             <div className="search-results movies">
-                {movieList.slice(0, 9).map((movie) => (
+                {movieList.length === 0 ? (
+                    <p>검색 결과가 없습니다.</p>
+                ) : (
+                    movieList.slice(0, 9).map((movie) => (
                     <div key={movie.movieId} className="search-item">
                         <Link to={`/movie/${movie.movieId}`}>
                             <div className="movie-info">
@@ -116,27 +116,31 @@ function SearchPage() {
                             </div>
                         </Link>
                     </div>
-                ))}
+                )))}
             </div>
 
 
             <div className="search-section">
                 <h2>책</h2>
                 <div className="more-link-container">
-                    {books.length > 9 && (
+                    {
+                        books.length > 9 && (
                         <Link className="more-link" key={inputStr} to={`/books/search/${inputStr}`}>더 보기</Link>
                     )}
                 </div>
             </div>
             <div className="search-results books">
-                {books.slice(0, 9).map((book) => (
+                {books.length === 0 ? (
+                    <p>검색 결과가 없습니다.</p>
+                ) : (
+                    books.slice(0, 9).map((book) => (
                     <div key={book.bookId} className="search-item">
                         <Link to={`/book/${book.bookId}`}>
                             <img src={book.bookImgUrl} alt={book.title}/>
                             <p>{book.title}</p>
                         </Link>
                     </div>
-                ))}
+                )))}
             </div>
         </div>
     );

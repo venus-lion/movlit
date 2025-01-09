@@ -4,7 +4,6 @@ import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa'; // 별 아이�
 import './Home.css';
 
 function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 8}) {
-    console.log('slice 전, movies={}', movies);
 
     // 별을 표시하는 함수
     const renderStars = (rating) => {
@@ -35,7 +34,9 @@ function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMo
                     </button>
                 )}
                 <div className="movie-list">
-                    {movies.slice(startIndex, startIndex + slideSize).map((movie, index) => (
+                    {(!movies || movies.length === 0) && !loading ? (
+                        <p>데이터가 없습니다.</p>
+                    ) : (movies.slice(startIndex, startIndex + slideSize).map((movie, index) => (
                         <Link className="movie-card" key={movie.movieId} to={`/movie/${movie.movieId}`}>
                             <div className="movie-rank">{startIndex + index + 1}</div>
                             <div className="movie-image">
@@ -54,9 +55,9 @@ function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMo
                                 </p>
                             </div>
                         </Link>
-                    ))}
+                    )))}
                 </div>
-                {(startIndex + slideSize < movies.length || hasMore) && (
+                {(startIndex + slideSize < (movies?.length || 0) || hasMore) && (
                     <button
                         className="next-button"
                         onClick={handleNext}
