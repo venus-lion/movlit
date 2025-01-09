@@ -17,10 +17,11 @@ public class JwtTokenUtil {
 
     @Value("${jwt.secret}")
     private String secret;
+
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10시간
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 14; // 2주
 
-    public JwtTokenUtil(@Value("${jwt.secret}") String secret) {
+    public JwtTokenUtil() {
         this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
