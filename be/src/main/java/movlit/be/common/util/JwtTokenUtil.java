@@ -3,7 +3,7 @@ package movlit.be.common.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,18 +15,19 @@ import org.springframework.stereotype.Component;
 public class JwtTokenUtil {
 
     @Value("${jwt.secret}")
-    private String secret;
+    private final String secret;
 
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10시간
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 14; // 2주
 
-    public JwtTokenUtil() {
-//        this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
+    public JwtTokenUtil(@Value("${jwt.secret}") String secret) {
+        this.secret = secret;
     }
 
     // 수정: Claims 추출 로직 변경
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token)
+                .getBody();
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
