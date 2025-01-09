@@ -2,4 +2,5 @@ spring:
   profiles:
     group:
       local: db-local, oauth2, jwt, core, api-key, ec2, es-local, servlet, aws
-    active: local
+      dev: db-dev, oauth2, jwt, core, api-key, ec2, es-dev, servlet, aws
+    active: dev
