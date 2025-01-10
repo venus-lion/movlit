@@ -104,7 +104,6 @@ public class SecurityConfig {
                                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService)
                         )
                         .successHandler(oAuth2AuthenticationSuccessHandler)
-//                       .defaultSuccessUrl("http://localhost:5173", true)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         ;

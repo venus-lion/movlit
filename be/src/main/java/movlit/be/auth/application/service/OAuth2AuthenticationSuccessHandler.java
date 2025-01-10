@@ -7,9 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.auth.domain.repository.RefreshTokenStorage;
 import movlit.be.common.util.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,6 +22,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final JwtTokenUtil jwtTokenUtil;
     private final RefreshTokenStorage refreshTokenStorage;
+
+    @Value("${share.url}")
+    private String url;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -39,7 +42,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         refreshTokenStorage.saveRefreshToken(email, refreshToken);
 
         // 프론트엔드로 리다이렉트할 URL 생성 (쿼리 파라미터로 토큰 포함)
-        String targetUrl = UriComponentsBuilder.fromUriString("https://movlit.store/oauth/callback") // 리다이렉트할 프론트엔드 주소
+        String targetUrl = UriComponentsBuilder.fromUriString(url + "/oauth/callback") // 리다이렉트할 프론트엔드 주소
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
@@ -47,4 +50,5 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // 리다이렉트 수행
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
+
 }

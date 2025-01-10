@@ -1,23 +1,33 @@
-import {defineConfig} from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
-export default defineConfig({
-    plugins: [react()],
-    server: {
-        port : 3000
-        // proxy: {
-        //     '/api': {
-        //         target: 'http://localhost:8080', // Spring Boot 백엔드 주소
-        //         changeOrigin: true,
-        //         secure: false, // HTTPS가 아닌 경우 필요
-        //         // rewrite: (path) => path.replace(/^\/api/, ''), // 필요에 따라 경로 재작성
-        //     },
-            // '/oauth2': {
-            //     target: 'http://localhost:8080', // Spring Boot 백엔드 주소
-            //     changeOrigin: true,
-            //     secure: false, // HTTPS가 아닌 경우 필요
-            //     // rewrite: (path) => path.replace(/^\/oauth2/, ''), // 필요에 따라 경로 재작성
-            // },
+export default defineConfig(({ command, mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+
+    const isProduction = mode === 'production'; // mode 사용
+    const baseUrl = env.VITE_BASE_URL || 'http://localhost:8080'; // VITE_BASE_URL 사용
+
+    const config = {
+        plugins: [react()],
+        server: {
+            port: 3000,
         },
+    };
+
+    if (!isProduction) {
+        config.server.proxy = {
+            '/api': {
+                target: baseUrl,
+                changeOrigin: true,
+                secure: false,
+            },
+            '/oauth2': { // 배포 환경에서 이걸 추가해야 하나?
+                target: baseUrl,
+                changeOrigin: true,
+                secure: false,
+            },
+        };
+    }
+
+    return config;
 });

@@ -140,7 +140,7 @@ const MemberLogin = () => {
                                         {/*        className="social-login-icon"*/}
                                         {/*    />*/}
                                         {/*</a>*/}
-                                        <a href="/api/oauth2/authorization/naver" className="social-login-button">
+                                        <a href="/oauth2/authorization/naver" className="social-login-button">
                                             <img
                                                 src="/images/naver-logo.jpg"
                                                 alt="Naver"
