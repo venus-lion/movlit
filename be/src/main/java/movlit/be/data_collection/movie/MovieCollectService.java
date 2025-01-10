@@ -87,7 +87,7 @@ public class MovieCollectService {
         String region = "&region=KR";
 
         String includeAdult = "&include_adult=false";
-        String sortBy = "&sort_by=popularity.desc";
+        String sortBy = "&sort_by=vote_average"; //vote_average.desc
 
         // 개봉일자 between (YYYY-MM-DD)        String dateGte = "2024-12-24";
         LocalDate today = LocalDate.now();
