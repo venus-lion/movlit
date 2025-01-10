@@ -4,7 +4,7 @@ import useAuthMovieList from "../hooks/useAuthMovieList.jsx";
 
 function InterestGenreMoviesComponent() {
     const { movies, loading, error } = useAuthMovieList({
-        endpoint: 'movies/search/interestGenre',
+        endpoint: '/movies/search/interestGenre',
         params: { pageSize: 30 },
     });
 

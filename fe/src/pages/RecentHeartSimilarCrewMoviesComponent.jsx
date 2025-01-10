@@ -4,7 +4,7 @@ import useAuthMovieList from "../hooks/useAuthMovieList.jsx";
 
 function RecentHeartSimilarCrewMoviesComponent() {
     const { movies, loading, error } = useAuthMovieList({
-        endpoint: 'movies/search/lastHeart',
+        endpoint: '/movies/search/lastHeart',
         params: { pageSize: 30 },
     });
 
