@@ -50,7 +50,7 @@ function MovieDetailPage() {
         loading: relatedMoviesLoading,
         error: relatedMoviesError,
     } = useAuthMovieList({
-        endpoint: `movies/${movieId}/detail/related`,
+        endpoint: `/movies/${movieId}/detail/related`,
         params: { pageSize: 30 },
     });
     const [relatedMoviesStartIndex, setRelatedMoviesStartIndex] = useState(0);
