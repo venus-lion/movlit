@@ -1,8 +1,9 @@
 // axiosInstance.js
 import axios from 'axios';
+const { VITE_BASE_URL } = import.meta.env;
 
 const axiosInstance = axios.create({
-    baseURL: 'https://movlit.store/api', // 기본 URL 설정
+    baseURL: VITE_BASE_URL,
 });
 
 // Request Interceptor
