@@ -4,20 +4,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
 public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
-   // @Value("${spring.elasticsearch.username}")
-    private String username = "elastic";
+    @Value("${spring.elasticsearch.username}")
+    private String username;
 
+    @Value("${spring.elasticsearch.password}")
+    private String password;
 
-  //  @Value("${spring.elasticsearch.password}")
-    private String password = "30wne=PkQKzjzF-eqE5u";
-
-//    @Value("${spring.elasticsearch.uris}")
-    private String esHost = "15.164.150.76:9200";
+    @Value("${spring.elasticsearch.uris}")
+    private String esHost;
 
     @Override
     public ClientConfiguration clientConfiguration() {
@@ -26,4 +24,5 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
                 .withBasicAuth(username, password)
                 .build();
     }
+
 }
