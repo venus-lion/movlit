@@ -4,7 +4,7 @@ import './SearchDetailPage.css'; // SearchPage.css 기반
 import axios from 'axios';
 import axiosInstance from "../axiosInstance.js";
 
-function MovieSearchPage() {
+function BookSearchDetailPage() {
     const [books, setBooksList] = useState([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
@@ -58,7 +58,7 @@ function MovieSearchPage() {
             <div className="search-results-detail movies">
                 {books.map((bookES) => (
                     <div key={bookES.bookId} className="search-item-detail">
-                        <Link to={`/movie/${bookES.bookId}`}>
+                        <Link to={`/book/${bookES.bookId}`}>
                             <img src={bookES.bookImgUrl} alt={bookES.title}/>
                             <p>{bookES.title}</p>
                         </Link>
@@ -83,4 +83,4 @@ function MovieSearchPage() {
     );
 }
 
-export default MovieSearchPage;
+export default BookSearchDetailPage;
