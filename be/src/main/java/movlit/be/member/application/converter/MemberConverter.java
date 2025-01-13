@@ -92,6 +92,25 @@ public class MemberConverter {
                 .build();
     }
 
+    // Member -> MemberEntity
+    public static MemberEntity toMemberEntity(Member member){
+        return MemberEntity.builder()
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .password(member.getPassword())
+                .dob(member.getDob())
+                .profileImgId(member.getProfileImgId())
+                .profileImgUrl(member.getProfileImgUrl())
+                .role(member.getRole())
+                .provider(member.getProvider())
+                .regDt(member.getRegDt())
+                .updDt(member.getUpdDt())
+                .memberGenreEntityList(member.getMemberGenreEntityList())
+                .delYn(false)
+                .build();
+    }
+
     public static MemberRegisterResponse toMemberRegisterResponse(MemberId memberId) {
         return MemberRegisterResponse.from(memberId);
     }
@@ -192,6 +211,22 @@ public class MemberConverter {
     public static Member oAuth2RequestToMemberEntity(MemberRegisterOAuth2Request request, String nickname, List<MemberGenreEntity> memberGenreEntityList,
                                                      MemberId memberId) {
         return Member.builder()
+                .memberId(memberId)
+                .nickname(nickname)
+                .email(request.getEmail())
+                .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()))
+                .dob(request.getDob())
+                .memberGenreEntityList(memberGenreEntityList)
+                // TODO: profileImgId
+                .profileImgUrl(request.getProfileImgUrl())
+                .provider("oauth2")
+                .regDt(LocalDateTime.now())
+                .build();
+    }
+
+    public static MemberEntity toMemberEntity(MemberRegisterOAuth2Request request, String nickname, List<MemberGenreEntity> memberGenreEntityList,
+                                        MemberId memberId) {
+        return MemberEntity.builder()
                 .memberId(memberId)
                 .nickname(nickname)
                 .email(request.getEmail())

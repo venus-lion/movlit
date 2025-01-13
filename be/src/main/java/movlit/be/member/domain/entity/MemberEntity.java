@@ -10,12 +10,14 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "member")
+@ToString
 public class MemberEntity {
 
     @EmbeddedId

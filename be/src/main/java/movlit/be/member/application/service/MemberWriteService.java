@@ -2,6 +2,7 @@ package movlit.be.member.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.AuthTokenService;
 import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
 import movlit.be.common.exception.DuplicateEmailException;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberWriteService {
 
     private final MemberRepository memberRepository;
@@ -51,9 +53,17 @@ public class MemberWriteService {
         MemberId memberId = IdFactory.createMemberId();
         String nickname = UniqueNicknameGenerator.generate();
         List<MemberGenreEntity> memberGenreEntities = makeMemberGenreEntities(memberId, List.of(1L, 2L, 3L));
+
+        log.info("=== nickname : {}, memberGenreEntities : {}", nickname, memberGenreEntities);
         Member member = MemberConverter.oAuth2RequestToMemberEntity(request, nickname,
                 memberGenreEntities, memberId);
-        return memberRepository.save(member);
+
+        log.info("==== Member 셋팅 : {}", member);
+
+        MemberEntity memberEntity = MemberConverter.toMemberEntity(request, nickname, memberGenreEntities, memberId);
+        log.info("==== Member Entity 셋팅 : {}", member);
+
+        return MemberConverter.toDomain(memberRepository.saveEntity(memberEntity));
     }
 
     public void updateMember(MemberId memberId, MemberUpdateRequest request) {
