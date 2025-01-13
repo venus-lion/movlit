@@ -74,7 +74,7 @@ public class MemberConverter {
     }
 
     public static MemberGenreEntity toMemberGenreEntity(Long genreId, MemberId memberId) {
-        return new MemberGenreEntity(new MemberGenreIdEntity(genreId, memberId));
+        return new MemberGenreEntity(genreId, memberId);
     }
 
     public static MemberEntity toMemberEntity(MemberRegisterRequest request,

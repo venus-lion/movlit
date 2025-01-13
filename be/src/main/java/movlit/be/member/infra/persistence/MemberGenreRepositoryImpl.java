@@ -31,7 +31,7 @@ public class MemberGenreRepositoryImpl implements MemberGenreRepository {
     public List<Genre> findUserInterestGenreList(MemberId memberId) {
         List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findAllByMemberId(memberId);
 
-        return memberGenreEntityList.stream().map(x -> Genre.of(x.getMemberGenreIdEntity().getGenreId())).toList();
+        return memberGenreEntityList.stream().map(x -> Genre.of(x.getGenreId())).toList();
     }
 
 }

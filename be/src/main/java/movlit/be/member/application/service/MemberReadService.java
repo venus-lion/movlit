@@ -55,7 +55,7 @@ public class MemberReadService {
         MemberEntity memberEntity = memberRepository.findEntityById(memberId);
         return memberEntity.getMemberGenreEntityList().stream()
                 .map(genre -> {
-                    Long genreId = genre.getMemberGenreIdEntity().getGenreId();
+                    Long genreId = genre.getGenreId();
                     String genreName = Genre.of(genreId).getName();
                     return new GenreListReadResponse(genreId, genreName);
                 })

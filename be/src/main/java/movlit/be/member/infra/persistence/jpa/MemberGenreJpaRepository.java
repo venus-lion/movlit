@@ -12,12 +12,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface MemberGenreJpaRepository extends JpaRepository<MemberGenreEntity, MemberGenreIdEntity> {
 
-    @Query("SELECT mg.memberGenreIdEntity.genreId FROM MemberGenreEntity mg WHERE mg.memberGenreIdEntity.memberId = :memberId")
+    @Query("SELECT mg.genreId FROM MemberGenreEntity mg WHERE mg.memberId = :memberId")
     List<Long> findGenreIdsByMemberId(@Param("memberId")MemberId memberId);
 
     @Query("SELECT mg "
             + "FROM MemberGenreEntity mg "
-            + "WHERE mg.memberGenreIdEntity.memberId = :memberId")
+            + "WHERE mg.memberId = :memberId")
     List<MemberGenreEntity> findAllByMemberId(MemberId memberId);
 
 }
