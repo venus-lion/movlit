@@ -30,7 +30,7 @@ jobs:
       - name: 어플리케이션을 빌드한다
         run: |
           chmod +x gradlew
-          ./gradlew build --exclude-task test
+          ./gradlew build --exclude-task test --exclude-task asciidoctor
 
         working-directory: ${{ env.ROOT_PATH }}
       - name: 도커 허브에 로그인한다
