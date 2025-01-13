@@ -18,6 +18,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -45,17 +49,26 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
     testImplementation 'org.testcontainers:mysql:1.18.3'
 
-    // REST Assured
-    testImplementation 'io.rest-assured:rest-assured:5.3.2'
+//    // REST Assured
+//    testImplementation 'io.rest-assured:rest-assured:5.3.2'
+//
+//    // Rest Docs
+//    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
+//
+//    // configurations 블록을 dependencies 안으로 이동 (수정 필요)
+//    configurations {
+//        asciidoctorExt
+//    }
+//    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
 
-    // Rest Docs
-    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
+    // Rest Assured
+    testImplementation 'io.rest-assured:rest-assured:5.3.0'
+    testImplementation 'io.rest-assured:json-path:5.3.0'
+    testImplementation 'io.rest-assured:xml-path:5.3.0'
 
-    // configurations 블록을 dependencies 안으로 이동 (수정 필요)
-    configurations {
-        asciidoctorExt
-    }
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
+    // Spring REST Docs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.0' // Rest Assured와 함께 사용
 
     // Spring Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -76,24 +89,37 @@ ext {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
     outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
-//tasks.named('asciidoctor') {
-//    inputs.dir snippetsDir
-//    outputDir file("src/main/resources/static/docs")
-//    configurations "asciidoctorExt"
-//    dependsOn test
-//}
-
-tasks.named("jar") {
-    enabled = false
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+    doFirst {
+        delete file('src/main/resources/static/docs') // 기존 문서 삭제 (선택 사항)
+    }
+    doLast {
+        copy {
+            from "${asciidoctor.outputDir}"
+            into 'src/main/resources/static/docs' // 문서 위치 (선택 사항)
+        }
+    }
 }
 
-tasks.named("bootJar") {
+task copyDocument(type: Copy) {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}") {
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}") {
         into 'static/docs'
     }
 }
