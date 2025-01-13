@@ -1,35 +1,38 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ command, mode }) => {
-    const env = loadEnv(mode, process.cwd(), '');
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), ''); // 모든 환경 변수를 로드합니다.
 
-    const isProduction = mode === 'production'; // mode 사용
-    const baseUrl = env.VITE_BASE_URL || 'http://localhost:8080'; // VITE_BASE_URL 사용
+    const isDev = env.VITE_IS_DEV === 'true'; // VITE_IS_DEV 값이 'true'인지 확인
+
+    const proxyConfig = {
+        '/oauth2': {
+            target: `${env.VITE_BASE_URL_FOR_CONF}`, // 런타임에 env에서 VITE_BASE_URL_FOR_CONF를 가져옵니다.
+            changeOrigin: true,
+            secure: false,
+        },
+    };
+
+    // 개발 모드인 경우에만 '/api' 프록시를 추가
+    if (isDev) {
+        proxyConfig['/api'] = {
+            target: `${env.VITE_BASE_URL_FOR_CONF}`,
+            changeOrigin: true,
+            secure: false,
+        };
+    }
 
     const config = {
         plugins: [react()],
+        define: {
+            'process.env': env,
+        },
         server: {
             port: 3000,
+            proxy: proxyConfig, // 동적으로 구성된 proxyConfig 사용
         },
-        proxy: {
-            '/oauth2': { // 배포 환경에서 이걸 추가해야 하나?
-                target: baseUrl,
-                changeOrigin: true,
-                secure: false,
-            }
-        }
     };
-
-    if (!isProduction) {
-        config.server.proxy = {
-            '/api': {
-                target: baseUrl,
-                changeOrigin: true,
-                secure: false,
-            }
-        };
-    }
 
     return config;
 });
