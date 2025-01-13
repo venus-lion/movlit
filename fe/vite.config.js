@@ -12,6 +12,13 @@ export default defineConfig(({ command, mode }) => {
         server: {
             port: 3000,
         },
+        proxy: {
+            '/oauth2': { // 배포 환경에서 이걸 추가해야 하나?
+                target: baseUrl,
+                changeOrigin: true,
+                secure: false,
+            }
+        }
     };
 
     if (!isProduction) {
@@ -20,12 +27,7 @@ export default defineConfig(({ command, mode }) => {
                 target: baseUrl,
                 changeOrigin: true,
                 secure: false,
-            },
-            '/oauth2': { // 배포 환경에서 이걸 추가해야 하나?
-                target: baseUrl,
-                changeOrigin: true,
-                secure: false,
-            },
+            }
         };
     }
 

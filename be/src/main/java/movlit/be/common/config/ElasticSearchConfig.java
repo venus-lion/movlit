@@ -8,13 +8,13 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfigurat
 @Configuration
 public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
-    @Value("${spring.elasticsearch.username}")
+    @Value("${spring.elastic.username}")
     private String username;
 
-    @Value("${spring.elasticsearch.password}")
+    @Value("${spring.elastic.password}")
     private String password;
 
-    @Value("${spring.elasticsearch.uris}")
+    @Value("${spring.elastic.uris}")
     private String esHost;
 
     @Override
