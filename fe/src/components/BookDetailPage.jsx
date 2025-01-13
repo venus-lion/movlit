@@ -298,7 +298,7 @@ function BookDetailPage() {
             } else {
                 // 찜하기 (POST 요청)
                 const bookIdJson = JSON.stringify(bookId);
-                const response = await axiosInstance.post(`/books/${bookIdJson}/hearts`);
+                const response = await axiosInstance.post(`/books/${bookId}/hearts`);
                 updatedHeartCount = bookData.heartCount + 1;
                 setBookData((prevbookData) => ({
                     ...prevbookData,
