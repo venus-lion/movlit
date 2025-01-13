@@ -23,8 +23,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final JwtTokenUtil jwtTokenUtil;
     private final RefreshTokenStorage refreshTokenStorage;
 
-//    @Value("${share.url}")
-    private String url = "https://movlit.store";
+    @Value("${share.url}")
+    private String url;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
