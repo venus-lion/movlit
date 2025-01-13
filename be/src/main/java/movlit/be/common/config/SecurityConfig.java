@@ -97,8 +97,14 @@ public class SecurityConfig {
                                 HttpServletResponse.SC_NO_CONTENT)))
                         .deleteCookies("refreshToken")
                 )
+                // 폼 로그인 활성화
+                .formLogin(form -> form
+                         .loginPage("/member/login")  // 사용자 정의 로그인 페이지
+                         .permitAll()
+                        // 필요 시 성공/실패 핸들러 및 기타 설정 추가
+                )
                 .oauth2Login(auth -> auth
-                        .loginPage("/member/login")
+                        .loginPage("/api/member/login")
                         // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
                         // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
                         // 5. 프로바이더가 제공하는 정보
@@ -107,6 +113,16 @@ public class SecurityConfig {
                         )
                         .successHandler(oAuth2AuthenticationSuccessHandler)
                 )
+//                .oauth2Login(auth -> auth
+//                        .loginPage("/member/login")
+//                        // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
+//                        // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
+//                        // 5. 프로바이더가 제공하는 정보
+//                        .userInfoEndpoint(
+//                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService)
+//                        )
+//                        .successHandler(oAuth2AuthenticationSuccessHandler)
+//                )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         ;
 

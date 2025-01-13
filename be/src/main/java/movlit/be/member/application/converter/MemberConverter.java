@@ -8,7 +8,6 @@ import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.entity.MemberGenreEntity;
-import movlit.be.member.domain.entity.MemberGenreIdEntity;
 import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
