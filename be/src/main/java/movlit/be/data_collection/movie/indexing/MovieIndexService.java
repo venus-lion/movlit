@@ -2,6 +2,7 @@ package movlit.be.data_collection.movie.indexing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.data_collection.movie.jpa.MovieCollectRepository;
@@ -24,14 +25,26 @@ public class MovieIndexService {
     public List<MovieDocument> getMovieIndices() {
         List<MovieEntity> movieList = movieCollectRepository.findAll();
         List<MovieDocument> movieDocumentList = new ArrayList<>();
+        AtomicInteger cnt = new AtomicInteger(1);
 
         // Movie정보(MovieEntity, MovieGenreEntity, MovieTagEntity)를 Document로 convert
         movieList.forEach(movie -> {
             MovieDocument movieDocument = MovieDocumentConverter.entityToDocument(movie);
             movieDocumentList.add(movieDocument);
+
+            if (cnt.get() == 40) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            movieDocumentRepository.saveAll(movieDocumentList);
+            movieDocumentList.clear();
+            cnt.getAndIncrement();
         });
 
-        movieDocumentRepository.saveAll(movieDocumentList);
+
 
         return movieDocumentList;
     }
