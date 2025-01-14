@@ -1,10 +1,9 @@
 package movlit.be.book.application.service;
 
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookHeart;
-import movlit.be.book.domain.BookHeartCount;
+import movlit.be.book.domain.BookHeartVo;
+import movlit.be.book.domain.BookHeartCountVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.domain.repository.BookHeartRepository;
 import movlit.be.book.domain.repository.BookRepository;
@@ -22,26 +21,26 @@ public class BookDetailWriteService {
 
     // 찜하기
     @Transactional
-    public BookHeart addHeart(Member member, Book book) {
-        BookHeart existingHeart = bookHeartRepository.findByBookAndMember(book, member);
+    public BookHeartVo addHeart(Member member, BookVo bookVo) {
+        BookHeartVo existingHeart = bookHeartRepository.fetchByBookAndMember(bookVo, member);
         if (existingHeart == null) {
             // bookHeart 추가
-            BookHeart bookHeart = BookHeart.builder()
-                    .book(book)
+            BookHeartVo bookHeartVo = BookHeartVo.builder()
+                    .bookVo(bookVo)
                     .member(member)
                     .isHearted(true)
                     .build();
-            BookHeart savedHeart = bookHeartRepository.save(bookHeart);
+            BookHeartVo savedHeart = bookHeartRepository.save(bookHeartVo);
             // bookHeartCount 증가
             if (savedHeart != null) {
-                BookHeartCount existingCount = bookHeartCountRepository.findByBook(book);
+                BookHeartCountVo existingCount = bookHeartCountRepository.fetchByBook(bookVo);
                 if(existingCount == null){
-                    BookHeartCount heartCount = BookHeartCount.builder()
-                            .book(book)
+                    BookHeartCountVo heartCount = BookHeartCountVo.builder()
+                            .bookVo(bookVo)
                             .build();
                     existingCount = bookHeartCountRepository.save(heartCount);
                 }
-                bookHeartCountRepository.increaseHeartCount(book);
+                bookHeartCountRepository.increaseHeartCount(bookVo);
             }
             return savedHeart;
         } else {
@@ -51,13 +50,13 @@ public class BookDetailWriteService {
 
     // 찜하기 제거
     @Transactional
-    public void removeHeart(Member member, Book book) throws Exception {
-        BookHeart existingHeart = bookHeartRepository.findByBookAndMember(book, member);
+    public void removeHeart(Member member, BookVo bookVo) throws Exception {
+        BookHeartVo existingHeart = bookHeartRepository.fetchByBookAndMember(bookVo, member);
         if (existingHeart != null) {
             bookHeartRepository.delete(existingHeart);
-            BookHeartCount existingCount = bookHeartCountRepository.findByBook(book);
+            BookHeartCountVo existingCount = bookHeartCountRepository.fetchByBook(bookVo);
             if(existingCount != null && existingCount.getCount() > 0)
-                bookHeartCountRepository.decreaseHeartCount(book);
+                bookHeartCountRepository.decreaseHeartCount(bookVo);
         } else {
             throw new Exception("찜하기를 삭제할 수 없습니다");
         }

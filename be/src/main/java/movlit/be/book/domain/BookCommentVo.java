@@ -17,10 +17,10 @@ import movlit.be.member.domain.Member;
 @Setter
 @ToString
 @Builder
-public class BookComment {
+public class BookCommentVo {
 
     private BookCommentId bookCommentId;
-    private Book book;
+    private BookVo bookVo;
     private Member member;
     private String comment; //  리뷰 - 코멘트
     private BigDecimal score; // 리뷰 - 별점 (not null)

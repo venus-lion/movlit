@@ -1,18 +1,17 @@
 package movlit.be.book.domain.repository;
 
-import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookCommentLike;
-import movlit.be.common.util.ids.BookId;
+import movlit.be.book.domain.BookCommentVo;
+import movlit.be.book.domain.BookCommentLikeVo;
 import movlit.be.member.domain.Member;
 
 public interface BookCommentLikeRepository {
 
     // 나의 도서 리뷰 좋아요
-    BookCommentLike findByBookCommentAndMember(BookComment bookcomment, Member member);
+    BookCommentLikeVo fetchByBookCommentAndMember(BookCommentVo bookcomment, Member member);
 
-    BookCommentLike save(BookCommentLike bookCommentLike);
+    BookCommentLikeVo save(BookCommentLikeVo bookCommentLikeVo);
 
-    void delete(BookCommentLike bookCommentLike);
+    void delete(BookCommentLikeVo bookCommentLikeVo);
 
 
 

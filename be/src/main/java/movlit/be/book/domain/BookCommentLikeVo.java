@@ -14,11 +14,12 @@ import movlit.be.member.domain.Member;
 @Setter
 @ToString
 @Builder
-public class BookHeart {
+public class BookCommentLikeVo {
 
-    private Long bookHeartId;
-    private Book book;
+    private Long id;
+    private BookCommentVo bookCommentVo;
+    private BookVo bookVo;
     private Member member;
-    Boolean isHearted;
+    private Boolean isLiked; // 도서 리뷰에 대한 좋아요 여부
 
 }

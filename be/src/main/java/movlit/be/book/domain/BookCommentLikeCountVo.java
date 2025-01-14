@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import movlit.be.member.domain.Member;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,12 +13,11 @@ import movlit.be.member.domain.Member;
 @Setter
 @ToString
 @Builder
-public class BookCommentLike {
+public class BookCommentLikeCountVo {
 
-    private Long id;
-    private BookComment bookComment;
-    private Book book;
-    private Member member;
-    private Boolean isLiked; // 도서 리뷰에 대한 좋아요 여부
+    private Long bookCommentLikeCountId;
+    private BookCommentVo bookCommentVo;
+    private int count; // 해당 리뷰의 "좋아요"(like) 갯수
+    private Long version;
 
 }

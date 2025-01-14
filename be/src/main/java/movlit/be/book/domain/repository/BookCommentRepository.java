@@ -1,7 +1,7 @@
 package movlit.be.book.domain.repository;
 
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookComment;
+import movlit.be.book.domain.BookCommentVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
@@ -12,18 +12,18 @@ import org.springframework.data.domain.Slice;
 
 public interface BookCommentRepository {
 
-    BookComment findByBookCommentId(BookCommentId bookCommentId);
+    BookCommentVo fetchByBookCommentId(BookCommentId bookCommentId);
 
-    BookComment findByMemberAndBook(Member member, Book book);
+    BookCommentVo fetchByMemberAndBook(Member member, BookVo bookVo);
 
-    BookComment save(BookComment bookComment);
+    BookCommentVo save(BookCommentVo bookCommentVo);
 
     void deleteById(BookCommentId bookCommentId);
 
-    double getAverageScoreByBookId(BookId bookId);
+    double fetchAverageScoreByBookId(BookId bookId);
 
 
-    Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable);
+    Slice<BookCommentResponseDto> fetchByBookId(BookId bookId, Pageable pageable);
 
-    Slice<BookCommentResponseDto> findByBookIdAndMemberId(BookId bookId, MemberId memberId, Pageable pageable);
+    Slice<BookCommentResponseDto> fetchByBookIdAndMemberId(BookId bookId, MemberId memberId, Pageable pageable);
 }

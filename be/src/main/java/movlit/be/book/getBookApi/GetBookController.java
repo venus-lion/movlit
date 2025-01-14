@@ -23,13 +23,13 @@ public class GetBookController {
     // BookNew 저장 api
     @GetMapping("/saveBooks/bookNew")
     public void BookNewApiToDb(){
-        getBookNewService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
+        getBookNewService.repeatGet(5); // 한번에 최대 50개씩, 20번 실행
     }
 
     // BookNewSpecial 저장 api
     @GetMapping("/saveBooks/bookNewSpecial")
     public void BookNewSpecialApiToDb(){
-        getBookNewSpecialService.repeatGet(20); // 한번에 최대 50개씩, 20번 실행
+        getBookNewSpecialService.repeatGet(10); // 한번에 최대 50개씩, 20번 실행
     }
 
 

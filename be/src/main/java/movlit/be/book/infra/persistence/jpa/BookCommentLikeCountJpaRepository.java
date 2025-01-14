@@ -1,11 +1,8 @@
 package movlit.be.book.infra.persistence.jpa;
 
 import java.util.Optional;
-import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.BookCommentLikeCount;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.entity.BookCommentLikeCountEntity;
-import movlit.be.book.domain.entity.BookHeartCountEntity;
 import movlit.be.common.util.ids.BookCommentId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -13,5 +13,5 @@ import lombok.Setter;
 @Builder
 public class BookGenre {
     private Long genreId;
-    private Book book; // 해당 genreId에 매핑되는 Book 도메인
+    private BookVo bookVo; // 해당 genreId에 매핑되는 Book 도메인
 }

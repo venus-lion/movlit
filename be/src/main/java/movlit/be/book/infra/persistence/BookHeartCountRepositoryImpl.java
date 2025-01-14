@@ -3,8 +3,8 @@ package movlit.be.book.infra.persistence;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookDetailConverter;
 import movlit.be.book.application.converter.BookHeartCountConverter;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookHeartCount;
+import movlit.be.book.domain.BookHeartCountVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.entity.BookHeartCountEntity;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.infra.persistence.jpa.BookHeartCountJpaRepository;
@@ -17,8 +17,9 @@ public class BookHeartCountRepositoryImpl implements BookHeartCountRepository {
     private final BookHeartCountJpaRepository bookHeartCountJpaRepository;
 
     @Override
-    public BookHeartCount findByBook(Book book) {
-        BookHeartCountEntity heartCountEntity = bookHeartCountJpaRepository.findByBookEntity(BookDetailConverter.toEntity(book))
+    public BookHeartCountVo fetchByBook(BookVo bookVo) {
+        BookHeartCountEntity heartCountEntity = bookHeartCountJpaRepository.findByBookEntity(BookDetailConverter.toEntity(
+                        bookVo))
                 .orElse(null);
         return BookHeartCountConverter.toDomain(heartCountEntity);
     }
@@ -32,20 +33,21 @@ public class BookHeartCountRepositoryImpl implements BookHeartCountRepository {
     }
 
     @Override
-    public BookHeartCount save(BookHeartCount bookHeartCount) {
-        BookHeartCountEntity countEntity = bookHeartCountJpaRepository.save(BookHeartCountConverter.toEntity(bookHeartCount));
+    public BookHeartCountVo save(BookHeartCountVo bookHeartCountVo) {
+        BookHeartCountEntity countEntity = bookHeartCountJpaRepository.save(BookHeartCountConverter.toEntity(
+                bookHeartCountVo));
         return BookHeartCountConverter.toDomain(countEntity);
     }
 
 
     @Override
-    public void increaseHeartCount(Book book) {
-          bookHeartCountJpaRepository.increaseHeartCount(BookDetailConverter.toEntity(book));
+    public void increaseHeartCount(BookVo bookVo) {
+          bookHeartCountJpaRepository.increaseHeartCount(BookDetailConverter.toEntity(bookVo));
     }
 
     @Override
-    public void decreaseHeartCount(Book book) {
-        bookHeartCountJpaRepository.decreaseHeartCount(BookDetailConverter.toEntity(book));
+    public void decreaseHeartCount(BookVo bookVo) {
+        bookHeartCountJpaRepository.decreaseHeartCount(BookDetailConverter.toEntity(bookVo));
     }
 
 

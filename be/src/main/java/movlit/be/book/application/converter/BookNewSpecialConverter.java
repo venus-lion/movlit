@@ -8,7 +8,7 @@ public class BookNewSpecialConverter {
     public static BookNewSpecialEntity toEntity(BookNewSpecial bookNewSpecial){
         return BookNewSpecialEntity.builder()
                 .bookNewSpecialId(bookNewSpecial.getBookNewSpecialId())
-                .bookEntity(BookConverter.toEntity(bookNewSpecial.getBook()))
+                .bookEntity(BookConverter.toEntity(bookNewSpecial.getBookVo()))
                 .build();
     }
 
@@ -16,7 +16,7 @@ public class BookNewSpecialConverter {
     public static BookNewSpecial toDomain(BookNewSpecialEntity bookNewSpecialEntity){
         return BookNewSpecial.builder()
                 .bookNewSpecialId(bookNewSpecialEntity.getBookNewSpecialId())
-                .book(BookConverter.toDomain(bookNewSpecialEntity.getBookEntity()))
+                .bookVo(BookConverter.toDomain(bookNewSpecialEntity.getBookEntity()))
                 .build();
     }
 

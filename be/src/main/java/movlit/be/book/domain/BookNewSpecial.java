@@ -10,5 +10,5 @@ import movlit.be.common.util.ids.BookNewSpecialId;
 @Builder
 public class BookNewSpecial {
     private BookNewSpecialId bookNewSpecialId;
-    private Book book;
+    private BookVo bookVo;
 }

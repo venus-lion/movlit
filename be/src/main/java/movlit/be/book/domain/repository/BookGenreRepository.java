@@ -1,9 +1,9 @@
 package movlit.be.book.domain.repository;
 
+import movlit.be.book.domain.BookVo;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
-import movlit.be.book.domain.Book;
 
 public interface BookGenreRepository {
-    List<Book> findBooksByGenreIds(List<Long> genreIds, Pageable pageable);
+    List<BookVo> findBooksByGenreIds(List<Long> genreIds, Pageable pageable);
 }

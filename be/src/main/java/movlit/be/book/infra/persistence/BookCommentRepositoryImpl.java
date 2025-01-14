@@ -3,8 +3,8 @@ package movlit.be.book.infra.persistence;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookCommentConverter;
 import movlit.be.book.application.converter.BookDetailConverter;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookComment;
+import movlit.be.book.domain.BookCommentVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.book.domain.entity.BookCommentEntity;
 import movlit.be.book.domain.repository.BookCommentRepository;
@@ -25,39 +25,39 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
     private final BookCommentJpaRepository bookCommentJpaRepository;
 
     @Override
-    public BookComment findByBookCommentId(BookCommentId bookCommentId) {
+    public BookCommentVo fetchByBookCommentId(BookCommentId bookCommentId) {
         BookCommentEntity bookCommentEntity = bookCommentJpaRepository.findById(bookCommentId)
                 .orElseThrow(BookCommentNotFoundException::new);
         return BookCommentConverter.toDomain(bookCommentEntity);
     }
 
     @Override
-    public BookComment findByMemberAndBook(Member member, Book book) {
+    public BookCommentVo fetchByMemberAndBook(Member member, BookVo bookVo) {
         BookCommentEntity bookCommentEntity =
                 bookCommentJpaRepository.findByMemberEntityAndBookEntity(MemberConverter.toEntity(member),
-                                BookDetailConverter.toEntity(book)).orElse(null);
+                                BookDetailConverter.toEntity(bookVo)).orElse(null);
 
         return BookCommentConverter.toDomain(bookCommentEntity);
     }
 
 
     @Override
-    public Slice<BookCommentResponseDto> findByBookId(BookId bookId, Pageable pageable) {
+    public Slice<BookCommentResponseDto> fetchByBookId(BookId bookId, Pageable pageable) {
         Slice<BookCommentResponseDto> bookCommentEntity = bookCommentJpaRepository.getCommentsByBookId(bookId, pageable);
 
         return bookCommentEntity;
     }
 
     @Override
-    public Slice<BookCommentResponseDto> findByBookIdAndMemberId(BookId bookId, MemberId memberId, Pageable pageable) {
+    public Slice<BookCommentResponseDto> fetchByBookIdAndMemberId(BookId bookId, MemberId memberId, Pageable pageable) {
         Slice<BookCommentResponseDto> bookCommentEntity = bookCommentJpaRepository.getCommentsByBookIdAndMemberId(bookId, memberId, pageable);
 
         return bookCommentEntity;
     }
 
     @Override
-    public BookComment save(BookComment bookComment) {
-        BookCommentEntity bookCommentEntity = bookCommentJpaRepository.save(BookCommentConverter.toEntity(bookComment));
+    public BookCommentVo save(BookCommentVo bookCommentVo) {
+        BookCommentEntity bookCommentEntity = bookCommentJpaRepository.save(BookCommentConverter.toEntity(bookCommentVo));
         return BookCommentConverter.toDomain(bookCommentEntity);
     }
 
@@ -67,7 +67,7 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
     }
 
     @Override
-    public double getAverageScoreByBookId(BookId bookId) {
+    public double fetchAverageScoreByBookId(BookId bookId) {
         return bookCommentJpaRepository.getAverageScoreByBookId(bookId).orElse(0.0);
     }
 

@@ -7,9 +7,9 @@ import movlit.be.book.application.service.BookCommentReadService;
 import movlit.be.book.application.service.BookCommentWriteService;
 import movlit.be.book.application.service.BookDetailReadService;
 import movlit.be.book.application.service.BookDetailWriteService;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookCommentLike;
+import movlit.be.book.domain.BookCommentVo;
+import movlit.be.book.domain.BookCommentLikeVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.presentation.dto.BookCommentRequestDto;
 import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.exception.BookCommentAccessDenied;
@@ -54,7 +54,7 @@ public class BookCommentController {
         if(details != null)
             memberId = details.getMemberId();
 
-        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.getPagedBookComments(bookId, memberId, pageable);
+        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.fetchPagedBookComments(bookId, memberId, pageable);
 
         return ResponseEntity.ok(pagedResult);
     }
@@ -65,9 +65,9 @@ public class BookCommentController {
         if (details != null) {
             MemberId memberId = details.getMemberId();
             Member member = memberReadService.findByMemberId(memberId);
-            Book book = bookDetailReadService.findByBookId(bookId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            BookComment myComment = bookCommentReadService.findByMemberAndBook(member, book);
+            BookCommentVo myComment = bookCommentReadService.fetchByMemberAndBook(member, bookVo);
             if(myComment == null)
                 return ResponseEntity.badRequest().build();
             BookCommentResponseDto myCommentRes = BookCommentResponseDto.builder()
@@ -95,11 +95,11 @@ public class BookCommentController {
             MemberId memberId = details.getMemberId();
             Member member = memberReadService.findByMemberId(memberId);
 
-            Book book = bookDetailReadService.findByBookId(bookId);
-            System.out.println("### 리뷰등록controller member " + member + " book " + book);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
+            System.out.println("### 리뷰등록controller member " + member + " book " + bookVo);
             System.out.println("### 리뷰등록controller dto " + commentDto);
 
-            BookComment savedComment = bookCommentWriteService.registerBookComment(member, book, commentDto);
+            BookCommentVo savedComment = bookCommentWriteService.registerBookComment(member, bookVo, commentDto);
             return ResponseEntity.ok(savedComment);
         } else {
             return ResponseEntity.badRequest().build();
@@ -118,9 +118,9 @@ public class BookCommentController {
             Member member = memberReadService.findByMemberId(memberId);
             System.out.println("$$$$$$$$$$$$ member " + member);
 
-            Book book = bookDetailReadService.findByBookId(bookId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            BookComment updatedComment = bookCommentWriteService.updateBookComment(member, book, bookCommentId,
+            BookCommentVo updatedComment = bookCommentWriteService.updateBookComment(member, bookVo, bookCommentId,
                     commentDto);
             BookCommentResponseDto updatedCommentRes = BookCommentResponseDto.builder()
                     .bookCommentId(updatedComment.getBookCommentId())
@@ -150,9 +150,9 @@ public class BookCommentController {
             Member member = memberReadService.findByMemberId(memberId);
             System.out.println("$$$$$$$$$$$$ member " + member);
 
-            Book book = bookDetailReadService.findByBookId(bookId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            bookCommentWriteService.deleteBookComment(member, book, bookCommentId);
+            bookCommentWriteService.deleteBookComment(member, bookVo, bookCommentId);
 
             return ResponseEntity.ok().build();
 
@@ -171,11 +171,11 @@ public class BookCommentController {
             MemberId memberId = details.getMemberId();
             Member member = memberReadService.findByMemberId(memberId);
 
-            BookComment comment = bookCommentReadService.findByBookCommentId(bookCommentId);
-            Book book = bookDetailReadService.findByBookId(comment.getBook().getBookId());
-            System.out.println("&& bookComment : " + comment + " book : " +book );
+            BookCommentVo comment = bookCommentReadService.fetchByBookCommentId(bookCommentId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(comment.getBookVo().getBookId());
+            System.out.println("&& bookComment : " + comment + " book : " + bookVo);
 
-            BookCommentLike savedLike = bookCommentWriteService.addLike(member, book, comment);
+            BookCommentLikeVo savedLike = bookCommentWriteService.addLike(member, bookVo, comment);
 
             return ResponseEntity.ok(savedLike);
         } else {
@@ -193,10 +193,10 @@ public class BookCommentController {
             Member member = memberReadService.findByMemberId(memberId);
 
 
-            BookComment comment = bookCommentReadService.findByBookCommentId(bookCommentId);
-            Book book = bookDetailReadService.findByBookId(comment.getBook().getBookId());
+            BookCommentVo comment = bookCommentReadService.fetchByBookCommentId(bookCommentId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(comment.getBookVo().getBookId());
 
-            bookCommentWriteService.removeLike(member, book, comment);
+            bookCommentWriteService.removeLike(member, bookVo, comment);
 
             return ResponseEntity.ok().build();
         }

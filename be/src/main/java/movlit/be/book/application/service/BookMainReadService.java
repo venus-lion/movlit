@@ -4,10 +4,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.Book;
 import movlit.be.book.domain.BookBestseller;
 import movlit.be.book.domain.BookNew;
 import movlit.be.book.domain.BookNewSpecial;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookBestsellerRepository;
 import movlit.be.book.domain.repository.BookNewRepository;
 import movlit.be.book.domain.repository.BookNewSpecialRepository;
@@ -57,9 +57,9 @@ public class BookMainReadService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // BookBestseller, BookNew, BookNewSpecial 일 때에 따라 다른 타입으로 변환
-        Book book = getBookFromEntity(bookObject);
+        BookVo bookVo = getBookFromEntity(bookObject);
 
-        List<WriterDto> writers = book.getBookRCrews().stream()
+        List<WriterDto> writers = bookVo.getBookRCrews().stream()
                 .map(rc -> WriterDto.builder()
                         .name(rc.getBookcrew().getName())
                         .role(rc.getBookcrew().getRole().name())
@@ -67,23 +67,23 @@ public class BookMainReadService {
                 .collect(Collectors.toList());
 
         return BookItemDto.builder()
-                .bookId(book.getBookId().getValue())
-                .title(book.getTitle())
+                .bookId(bookVo.getBookId().getValue())
+                .title(bookVo.getTitle())
                 .writers(writers)
-                .pubDate(book.getPubDate().format(formatter))
-                .bookImgUrl(book.getBookImgUrl())
+                .pubDate(bookVo.getPubDate().format(formatter))
+                .bookImgUrl(bookVo.getBookImgUrl())
                 .build();
 
     }
 
     // Entity에 맞는 Book 객체를 가져옴
-    private Book getBookFromEntity(Object bookEntity){
+    private BookVo getBookFromEntity(Object bookEntity){
         if (bookEntity instanceof BookBestseller){
-            return ((BookBestseller)bookEntity).getBook();
+            return ((BookBestseller)bookEntity).getBookVo();
         } else if (bookEntity instanceof BookNew) {
-            return ((BookNew)bookEntity).getBook();
+            return ((BookNew)bookEntity).getBookVo();
         } else if (bookEntity instanceof BookNewSpecial){
-            return ((BookNewSpecial)bookEntity).getBook();
+            return ((BookNewSpecial)bookEntity).getBookVo();
         }
         else {
             throw new BookIllegalArgumentException();

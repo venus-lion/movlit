@@ -17,7 +17,7 @@ import movlit.be.common.util.ids.BookId;
 @Setter
 @ToString
 @Builder
-public class Book {
+public class BookVo {
 
     private BookId bookId; // isbn13 , uuid
     private String isbn; // isbn

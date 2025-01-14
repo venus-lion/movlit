@@ -1,10 +1,7 @@
 package movlit.be.book.application.converter;
 
-import movlit.be.book.domain.BookHeart;
-import movlit.be.book.domain.BookHeartCount;
+import movlit.be.book.domain.BookHeartCountVo;
 import movlit.be.book.domain.entity.BookHeartCountEntity;
-import movlit.be.book.domain.entity.BookHeartEntity;
-import movlit.be.member.application.converter.MemberConverter;
 
 public class BookHeartCountConverter {
     private BookHeartCountConverter() {
@@ -13,25 +10,25 @@ public class BookHeartCountConverter {
 
 
     // Domain -> Entity
-    public static BookHeartCountEntity toEntity(BookHeartCount bookHeartCount) {
-        if(bookHeartCount == null)
+    public static BookHeartCountEntity toEntity(BookHeartCountVo bookHeartCountVo) {
+        if(bookHeartCountVo == null)
             return null;
         else
             return BookHeartCountEntity.builder()
-                    .bookHeartCountId(bookHeartCount.getBookHeartCountId())
-                    .bookEntity(BookDetailConverter.toEntity(bookHeartCount.getBook()))
-                    .count(bookHeartCount.getCount())
+                    .bookHeartCountId(bookHeartCountVo.getBookHeartCountId())
+                    .bookEntity(BookDetailConverter.toEntity(bookHeartCountVo.getBookVo()))
+                    .count(bookHeartCountVo.getCount())
                     .build();
     }
 
     // Entity -> Domain
-    public static BookHeartCount toDomain(BookHeartCountEntity bookHeartCountEntity) {
+    public static BookHeartCountVo toDomain(BookHeartCountEntity bookHeartCountEntity) {
         if(bookHeartCountEntity == null)
             return null;
         else
-            return BookHeartCount.builder()
+            return BookHeartCountVo.builder()
                     .bookHeartCountId(bookHeartCountEntity.getBookHeartCountId())
-                    .book(BookDetailConverter.toDomain(bookHeartCountEntity.getBookEntity()))
+                    .bookVo(BookDetailConverter.toDomain(bookHeartCountEntity.getBookEntity()))
                     .count(bookHeartCountEntity.getCount())
                     .build();
 

@@ -1,10 +1,7 @@
 package movlit.be.book.application.converter;
 
-import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.BookCommentLikeCount;
+import movlit.be.book.domain.BookCommentLikeCountVo;
 import movlit.be.book.domain.entity.BookCommentLikeCountEntity;
-import movlit.be.book.domain.entity.BookCommentLikeEntity;
-import movlit.be.member.application.converter.MemberConverter;
 
 public class BookCommentLikeCountConverter {
     private BookCommentLikeCountConverter() {
@@ -13,25 +10,25 @@ public class BookCommentLikeCountConverter {
 
 
     // Domain -> Entity
-    public static BookCommentLikeCountEntity toEntity(BookCommentLikeCount bookCommentLikeCount) {
-        if(bookCommentLikeCount == null)
+    public static BookCommentLikeCountEntity toEntity(BookCommentLikeCountVo bookCommentLikeCountVo) {
+        if(bookCommentLikeCountVo == null)
             return null;
         else
             return BookCommentLikeCountEntity.builder()
-                    .bookCommentLikeCountId(bookCommentLikeCount.getBookCommentLikeCountId())
-                    .bookCommentEntity(BookCommentConverter.toEntity(bookCommentLikeCount.getBookComment()))
-                    .count(bookCommentLikeCount.getCount())
+                    .bookCommentLikeCountId(bookCommentLikeCountVo.getBookCommentLikeCountId())
+                    .bookCommentEntity(BookCommentConverter.toEntity(bookCommentLikeCountVo.getBookCommentVo()))
+                    .count(bookCommentLikeCountVo.getCount())
                     .build();
     }
 
     // Entity -> Domain
-    public static BookCommentLikeCount toDomain(BookCommentLikeCountEntity bookCommentLikeCountEntity) {
+    public static BookCommentLikeCountVo toDomain(BookCommentLikeCountEntity bookCommentLikeCountEntity) {
         if (bookCommentLikeCountEntity == null)
             return null;
         else
-            return BookCommentLikeCount.builder()
+            return BookCommentLikeCountVo.builder()
                     .bookCommentLikeCountId(bookCommentLikeCountEntity.getBookCommentLikeCountId())
-                    .bookComment(BookCommentConverter.toDomain(bookCommentLikeCountEntity.getBookCommentEntity()))
+                    .bookCommentVo(BookCommentConverter.toDomain(bookCommentLikeCountEntity.getBookCommentEntity()))
                     .count(bookCommentLikeCountEntity.getCount())
                     .build();
     }

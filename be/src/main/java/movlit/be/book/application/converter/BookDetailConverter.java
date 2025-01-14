@@ -1,9 +1,7 @@
 package movlit.be.book.application.converter;
 
 
-import java.time.LocalDateTime;
-import movlit.be.common.util.ids.BookId;
-import movlit.be.book.domain.Book;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.entity.BookEntity;
 
 public class BookDetailConverter {
@@ -13,33 +11,33 @@ public class BookDetailConverter {
     }
 
     // Domain -> Entity
-    public static BookEntity toEntity(Book book) {
-        if(book == null)
+    public static BookEntity toEntity(BookVo bookVo) {
+        if(bookVo == null)
             return null;
         else
             return BookEntity.builder()
-                .bookId(book.getBookId())
-                .isbn(book.getIsbn())
-                .title(book.getTitle())
-                .publisher(book.getPublisher())
-                .pubDate(book.getPubDate())
-                .description(book.getDescription())
-                .categoryName(book.getCategoryName())
-                .bookImgUrl(book.getBookImgUrl())
-                .stockStatus(book.getStockStatus())
-                .mallUrl(book.getMallUrl())
-                .heartCount(book.getHeartCount())
-                .regDt(book.getRegDt())
-                .updDt(book.getUpdDt())
+                .bookId(bookVo.getBookId())
+                .isbn(bookVo.getIsbn())
+                .title(bookVo.getTitle())
+                .publisher(bookVo.getPublisher())
+                .pubDate(bookVo.getPubDate())
+                .description(bookVo.getDescription())
+                .categoryName(bookVo.getCategoryName())
+                .bookImgUrl(bookVo.getBookImgUrl())
+                .stockStatus(bookVo.getStockStatus())
+                .mallUrl(bookVo.getMallUrl())
+                .heartCount(bookVo.getHeartCount())
+                .regDt(bookVo.getRegDt())
+                .updDt(bookVo.getUpdDt())
                 .build();
     }
 
     // Entity -> Domain
-    public static Book toDomain(BookEntity bookEntity) {
+    public static BookVo toDomain(BookEntity bookEntity) {
         if(bookEntity == null)
             return null;
         else
-            return Book.builder()
+            return movlit.be.book.domain.BookVo.builder()
                 .bookId(bookEntity.getBookId())
                 .isbn(bookEntity.getIsbn())
                 .title(bookEntity.getTitle())

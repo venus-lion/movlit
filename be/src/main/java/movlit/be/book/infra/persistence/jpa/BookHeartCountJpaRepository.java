@@ -1,17 +1,12 @@
 package movlit.be.book.infra.persistence.jpa;
 
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.QueryHint;
 import java.util.Optional;
-import movlit.be.book.domain.BookHeartCount;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.entity.BookHeartCountEntity;
 import movlit.be.common.util.ids.BookId;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

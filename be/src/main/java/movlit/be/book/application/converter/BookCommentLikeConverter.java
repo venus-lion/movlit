@@ -1,17 +1,8 @@
 package movlit.be.book.application.converter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.entity.BookCommentEntity;
+import movlit.be.book.domain.BookCommentLikeVo;
 import movlit.be.book.domain.entity.BookCommentLikeEntity;
-import movlit.be.book.domain.entity.BookEntity;
-import movlit.be.common.util.ids.BookCommentId;
-import movlit.be.common.util.ids.BookCommentLikeId;
 import movlit.be.member.application.converter.MemberConverter;
-import movlit.be.member.domain.Member;
 
 public class BookCommentLikeConverter {
     private BookCommentLikeConverter() {
@@ -20,28 +11,28 @@ public class BookCommentLikeConverter {
 
 
     // Domain -> Entity
-    public static BookCommentLikeEntity toEntity(BookCommentLike bookCommentLike) {
-        if(bookCommentLike == null)
+    public static BookCommentLikeEntity toEntity(BookCommentLikeVo bookCommentLikeVo) {
+        if(bookCommentLikeVo == null)
             return null;
         else
             return BookCommentLikeEntity.builder()
-                .id(bookCommentLike.getId())
-                .bookCommentEntity(BookCommentConverter.toEntity(bookCommentLike.getBookComment()))
-                .bookEntity(BookDetailConverter.toEntity(bookCommentLike.getBook()))
-                .memberEntity(MemberConverter.toEntity(bookCommentLike.getMember()))
-                .isLiked(bookCommentLike.getIsLiked())
+                .id(bookCommentLikeVo.getId())
+                .bookCommentEntity(BookCommentConverter.toEntity(bookCommentLikeVo.getBookCommentVo()))
+                .bookEntity(BookDetailConverter.toEntity(bookCommentLikeVo.getBookVo()))
+                .memberEntity(MemberConverter.toEntity(bookCommentLikeVo.getMember()))
+                .isLiked(bookCommentLikeVo.getIsLiked())
                 .build();
     }
 
     // Entity -> Domain
-    public static BookCommentLike toDomain(BookCommentLikeEntity bookCommentLikeEntity) {
+    public static BookCommentLikeVo toDomain(BookCommentLikeEntity bookCommentLikeEntity) {
         if (bookCommentLikeEntity == null)
             return null;
         else
-            return BookCommentLike.builder()
+            return BookCommentLikeVo.builder()
                 .id(bookCommentLikeEntity.getId())
-                .bookComment(BookCommentConverter.toDomain(bookCommentLikeEntity.getBookCommentEntity()))
-                .book(BookDetailConverter.toDomain(bookCommentLikeEntity.getBookEntity()))
+                .bookCommentVo(BookCommentConverter.toDomain(bookCommentLikeEntity.getBookCommentEntity()))
+                .bookVo(BookDetailConverter.toDomain(bookCommentLikeEntity.getBookEntity()))
                 .member(MemberConverter.toDomain(bookCommentLikeEntity.getMemberEntity()))
                 .isLiked(bookCommentLikeEntity.getIsLiked())
                 .build();

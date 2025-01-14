@@ -6,12 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.book.application.service.BookDetailReadService;
 import movlit.be.book.application.service.BookDetailWriteService;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookHeart;
-import movlit.be.book.presentation.dto.BookCommentResponseDto;
+import movlit.be.book.domain.BookHeartVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
-import movlit.be.book.presentation.dto.BooksResponse;
-import movlit.be.book.presentation.dto.BooksResponse.BookItemDto;
 import movlit.be.bookES.BookESDomain;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,7 +36,7 @@ public class BookDetailController {
 
     // 해당 도서 상세 내역
     @GetMapping("{bookId}/detail")
-    public BookDetailResponseDto getBookDetail(@PathVariable BookId bookId,
+    public BookDetailResponseDto fetchBookDetail(@PathVariable BookId bookId,
                                                @AuthenticationPrincipal MyMemberDetails details) {
         Member member = null;
         if(details != null){
@@ -48,7 +44,7 @@ public class BookDetailController {
             member = memberReadService.findByMemberId(memberId);
         }
 
-        BookDetailResponseDto bookDetailResponse = bookDetailReadService.getBookDetail(bookId, member);
+        BookDetailResponseDto bookDetailResponse = bookDetailReadService.fetchBookDetail(bookId, member);
         if (details != null) {
             System.out.println("&&detail 있니? : " + details);
             System.out.println("&&detail의 mem정보" + details.getMemberId());
@@ -63,11 +59,12 @@ public class BookDetailController {
     public ResponseEntity addHearts(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
             MemberId memberId = details.getMemberId();
+            System.out.println("##책 ID --> " + bookId.getValue());
 
             Member member = memberReadService.findByMemberId(memberId);
-            Book book = bookDetailReadService.findByBookId(bookId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            BookHeart savedHeart = bookDetailWriteService.addHeart(member, book);
+            BookHeartVo savedHeart = bookDetailWriteService.addHeart(member, bookVo);
             return ResponseEntity.ok(savedHeart);
         } else {
             return ResponseEntity.badRequest().build();
@@ -83,10 +80,10 @@ public class BookDetailController {
 
             Member member = memberReadService.findByMemberId(memberId);
 
-            Book book = bookDetailReadService.findByBookId(bookId);
+            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
 
-            bookDetailWriteService.removeHeart(member, book);
+            bookDetailWriteService.removeHeart(member, bookVo);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -96,8 +93,8 @@ public class BookDetailController {
     }
 
     @GetMapping("{bookId}/recommendedBooks")
-    public ResponseEntity<List<BookESDomain>> getRecommendedBooks(@PathVariable BookId bookId) {
-        List<BookESDomain> recommendedBookList = bookDetailReadService.getRecommendedBooks(bookId);
+    public ResponseEntity<List<BookESDomain>> fetchRecommendedBooks(@PathVariable BookId bookId) {
+        List<BookESDomain> recommendedBookList = bookDetailReadService.fetchRecommendedBooks(bookId);
         for (BookESDomain recBook : recommendedBookList) {
             // 각 BookCommentResponseDto의 내용 출력
             System.out.println("@@ 추천 책 제목 : " + recBook.getTitle());
@@ -108,8 +105,8 @@ public class BookDetailController {
     }
 
     @GetMapping("{bookId}/recommendedMovies")
-    public ResponseEntity<List<MovieDocument>> getRecommendedMovies(@PathVariable BookId bookId) {
-        List<MovieDocument> recommendedMovieList = bookDetailReadService.getRecommendedMovies(bookId);
+    public ResponseEntity<List<MovieDocument>> fetchRecommendedMovies(@PathVariable BookId bookId) {
+        List<MovieDocument> recommendedMovieList = bookDetailReadService.fetchRecommendedMovies(bookId);
         for (MovieDocument recMovie: recommendedMovieList) {
             // 각 MovieDocument의 내용 출력
             System.out.println("@@ 추천 영화 제목 : " + recMovie.getTitle());

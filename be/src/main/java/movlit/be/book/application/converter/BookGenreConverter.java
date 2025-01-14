@@ -10,8 +10,8 @@ public class BookGenreConverter {
     // Domain -> Entity
     public static BookGenreEntity toEntity(BookGenre bookGenre){
         return BookGenreEntity.builder()
-                .bookGenreIdEntity(new BookGenreIdEntity(bookGenre.getGenreId(), bookGenre.getBook().getBookId()))
-                .bookEntity(BookConverter.toEntity(bookGenre.getBook()))
+                .bookGenreIdEntity(new BookGenreIdEntity(bookGenre.getGenreId(), bookGenre.getBookVo().getBookId()))
+                .bookEntity(BookConverter.toEntity(bookGenre.getBookVo()))
                 .build();
     }
 

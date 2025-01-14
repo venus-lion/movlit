@@ -7,9 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.repository.BookCommentLikeRepository;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookCommentRepository;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
 import movlit.be.book.domain.Bookcrew;
@@ -47,26 +45,26 @@ public class BookDetailReadService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     // 도서 상세 정보
-    public BookDetailResponseDto getBookDetail(BookId bookId, Member member) {
-        Book book = findByBookId(bookId);
+    public BookDetailResponseDto fetchBookDetail(BookId bookId, Member member) {
+        BookVo bookVo = fetchByBookId(bookId);
         // 평점 - 소수 둘째자리까지
-        double averageScore = Math.round(getAverageScoreByBookId(bookId)*100)/100.0;
+        double averageScore = Math.round(fetchAverageScoreByBookId(bookId)*100)/100.0;
         int heartCount = countHeartsByBookId(bookId);
         boolean isHearted = false;
         if(member != null)
-            isHearted = isHeartedByBook(book, member);
-        List<Bookcrew> bookcrewList = findBookcrewByBook(book);
+            isHearted = isHeartedByBook(bookVo, member);
+        List<Bookcrew> bookcrewList = fetchBookcrewByBook(bookVo);
         BookDetailResponseDto bookDetailResponse = BookDetailResponseDto.builder()
-                .bookId(book.getBookId())
-                .isbn(book.getIsbn())
-                .title(book.getTitle())
-                .publisher(book.getPublisher())
-                .pubDate(book.getPubDate())
-                .description(book.getDescription())
-                .categoryName(book.getCategoryName())
-                .bookImgUrl(book.getBookImgUrl())
-                .stockStatus(book.getStockStatus())
-                .mallUrl(book.getMallUrl())
+                .bookId(bookVo.getBookId())
+                .isbn(bookVo.getIsbn())
+                .title(bookVo.getTitle())
+                .publisher(bookVo.getPublisher())
+                .pubDate(bookVo.getPubDate())
+                .description(bookVo.getDescription())
+                .categoryName(bookVo.getCategoryName())
+                .bookImgUrl(bookVo.getBookImgUrl())
+                .stockStatus(bookVo.getStockStatus())
+                .mallUrl(bookVo.getMallUrl())
                 .averageScore(BigDecimal.valueOf(averageScore))
                 .heartCount(heartCount)
                 .isHearted(isHearted)
@@ -76,18 +74,18 @@ public class BookDetailReadService {
         return bookDetailResponse;
     }
 
-    public Book findByBookId(BookId bookId) {
-        return bookRepository.findByBookId(bookId);
+    public BookVo fetchByBookId(BookId bookId) {
+        return bookRepository.fetchByBookId(bookId);
     }
 
     // 해당 책의 크루
-    public List<Bookcrew> findBookcrewByBook(Book book) {
-        return bookcrewRepository.findByBook(book);
+    public List<Bookcrew> fetchBookcrewByBook(BookVo bookVo) {
+        return bookcrewRepository.fetchByBook(bookVo);
     }
 
     // 해당 책의 평점
-    public double getAverageScoreByBookId(BookId bookId){
-        return bookCommentRepository.getAverageScoreByBookId(bookId);
+    public double fetchAverageScoreByBookId(BookId bookId){
+        return bookCommentRepository.fetchAverageScoreByBookId(bookId);
     }
 
     // 찜 갯수
@@ -96,15 +94,15 @@ public class BookDetailReadService {
     }
 
     // 해당 책 나의 찜 여부
-    public boolean isHeartedByBook(Book book, Member member){
-         if(bookHeartRepository.findByBookAndMember(book, member) != null)
+    public boolean isHeartedByBook(BookVo bookVo, Member member){
+         if(bookHeartRepository.fetchByBookAndMember(bookVo, member) != null)
              return true;
          else
              return false;
     }
 
     // 관련 도서 추천
-    public List<BookESDomain> getRecommendedBooks(BookId bookId) {
+    public List<BookESDomain> fetchRecommendedBooks(BookId bookId) {
         Pageable pageable = PageRequest.of(0, 10);
         BookES bookES = bookESRepository.findById(bookId.getValue()).orElse(null);
         System.out.println("## bookId : " + bookId.getValue() + "\n## bookES : " + bookES);
@@ -188,7 +186,7 @@ public class BookDetailReadService {
 
 
     // 관련 영화 추천
-    public List<MovieDocument> getRecommendedMovies(BookId bookId) {
+    public List<MovieDocument> fetchRecommendedMovies(BookId bookId) {
         Pageable pageable = PageRequest.of(0, 10);
         BookES bookES = bookESRepository.findById(bookId.getValue()).orElse(null);
         MovieDocument movieDocument = null;

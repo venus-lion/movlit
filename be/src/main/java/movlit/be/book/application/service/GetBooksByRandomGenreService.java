@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.Book;
+import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.Genre;
 import movlit.be.book.domain.repository.BookGenreRepository;
 import movlit.be.book.domain.repository.BookRepository;
@@ -50,7 +50,7 @@ public class GetBooksByRandomGenreService {
             System.out.println("뽑힌 장르 >>>>>>>> " + Genre.of(genreId).getName());
         }
         // 해당 랜덤장르 3개에 속하는 BookList (paging, 디폴트 : 30개)
-        List<Book> booksByGenreIds = bookGenreRepository.findBooksByGenreIds(genreIds, pageable);
+        List<BookVo> booksByGenreIds = bookGenreRepository.findBooksByGenreIds(genreIds, pageable);
 
         // 해당 Book의 id 뽑아내기
         List<BookId> bookIds = booksByGenreIds.stream()
@@ -58,18 +58,18 @@ public class GetBooksByRandomGenreService {
                 .collect(Collectors.toList());
 
         // 해당 Book id에 연관된 엔디티들 한번에 불러오기
-        List<Book> booksCrewDetails = bookRepository.findBooksWithCrewDetails(bookIds);
+        List<BookVo> booksCrewDetails = bookRepository.findBooksWithCrewDetails(bookIds);
 
         return booksCrewDetails.stream()
                 .map(book -> convertToDto(book))
                 .collect(Collectors.toList());
     }
 
-    public BookItemWithGenreDto convertToDto(Book book) {
+    public BookItemWithGenreDto convertToDto(BookVo bookVo) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // book -> List<WriterDto>
-        List<WriterDto> writerDtos = book.getBookRCrews().stream()
+        List<WriterDto> writerDtos = bookVo.getBookRCrews().stream()
                 .map(rc -> WriterDto.builder()
                         .name(rc.getBookcrew().getName())
                         .role(rc.getBookcrew().getRole().name())
@@ -77,7 +77,7 @@ public class GetBooksByRandomGenreService {
                 .collect(Collectors.toList());
 
         // book -> List<GenreDto> ->> 여기서 에러가 남. 해당 장르 id는 유효하지 않대
-        List<GenreDto> genreDtos = book.getBookGenres().stream()
+        List<GenreDto> genreDtos = bookVo.getBookGenres().stream()
                 .map(bg -> GenreDto.builder()
                         .genreId(bg.getGenreId())
                         .genreName(Genre.of(bg.getGenreId()).getName())
@@ -85,12 +85,12 @@ public class GetBooksByRandomGenreService {
                 .collect(Collectors.toList());
 
         return BookItemWithGenreDto.builder()
-                .bookId(book.getBookId().getValue())
-                .title(book.getTitle())
+                .bookId(bookVo.getBookId().getValue())
+                .title(bookVo.getTitle())
                 .writers(writerDtos)
                 .genres(genreDtos)
-                .pubDate(book.getPubDate().format(formatter))
-                .bookImgUrl(book.getBookImgUrl())
+                .pubDate(bookVo.getPubDate().format(formatter))
+                .bookImgUrl(bookVo.getBookImgUrl())
                 .build();
 
     }
@@ -119,8 +119,8 @@ public class GetBooksByRandomGenreService {
             System.out.println("최종적으로 뽑힌 멤버장르 3개 ::: " + genreId);
         }
         // 6. 최종 장르 ID 3개 -> Dto로 변환
-        List<Book> books = bookRepository.findBooksByGenreIds(genreIdsForQuery, pageable);
-        return books.stream()
+        List<BookVo> bookVos = bookRepository.findBooksByGenreIds(genreIdsForQuery, pageable);
+        return bookVos.stream()
                 .map(book -> convertToDto(book))
                 .collect(Collectors.toList());
     }
@@ -135,15 +135,15 @@ public class GetBooksByRandomGenreService {
                 .toList();
 
         // 해당 랜덤장르 3개에 속하는 BookList (paging, 디폴트 : 30개)
-        List<Book> booksByGenreIds = bookGenreRepository.findBooksByGenreIds(genreIds, pageable);
+        List<BookVo> booksByGenreIds = bookGenreRepository.findBooksByGenreIds(genreIds, pageable);
 
         // 해당 Book의 id 뽑아내기
         List<BookId> bookIds = booksByGenreIds.stream()
-                .map(Book::getBookId)
+                .map(BookVo::getBookId)
                 .collect(Collectors.toList());
 
         // 해당 Book id에 연관된 엔디티들 한번에 불러오기
-        List<Book> booksCrewDetails = bookRepository.findBooksWithCrewDetails(bookIds);
+        List<BookVo> booksCrewDetails = bookRepository.findBooksWithCrewDetails(bookIds);
 
         return booksCrewDetails.stream()
                 .map(this::convertToDto)

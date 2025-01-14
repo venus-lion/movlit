@@ -1,22 +1,24 @@
 package movlit.be.book.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import movlit.be.common.util.ids.BookRCrewId;
+import lombok.ToString;
+import movlit.be.member.domain.Member;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Builder
-public class BookRCrew {
+public class BookHeartVo {
 
-    private BookRCrewId bookRCrewId;
+    private Long bookHeartId;
     private BookVo bookVo;
-    private Bookcrew bookcrew;
+    private Member member;
+    Boolean isHearted;
 
 }

@@ -1,8 +1,6 @@
 package movlit.be.book.application.converter;
 
 import movlit.be.book.domain.BookBestseller;
-import movlit.be.member.domain.Member;
-import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
 public class BookBestsellerConverter {
 
@@ -14,7 +12,7 @@ public class BookBestsellerConverter {
     public static BookBestsellerEntity toEntity(BookBestseller bookBestseller) {
         return BookBestsellerEntity.builder()
                 .bookBestsellerId(bookBestseller.getBookBestsellerId())
-                .book(BookConverter.toEntity(bookBestseller.getBook())) // bookentity로
+                .book(BookConverter.toEntity(bookBestseller.getBookVo())) // bookentity로
                 .bestRank(bookBestseller.getBestRank())
                 .bestDuration(bookBestseller.getBestDuration())
                 .build();
@@ -24,7 +22,7 @@ public class BookBestsellerConverter {
     public static BookBestseller toDomain(BookBestsellerEntity bookBestsellerEntity) {
         return BookBestseller.builder()
                 .bookBestsellerId(bookBestsellerEntity.getBookBestsellerId())
-                .book(BookConverter.toDomain(bookBestsellerEntity.getBook()))
+                .bookVo(BookConverter.toDomain(bookBestsellerEntity.getBook()))
                 .bestRank(bookBestsellerEntity.getBestRank())
                 .bestDuration(bookBestsellerEntity.getBestDuration())
                 .build();

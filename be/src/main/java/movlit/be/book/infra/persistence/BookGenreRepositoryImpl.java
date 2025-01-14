@@ -1,11 +1,11 @@
 package movlit.be.book.infra.persistence;
 
+import movlit.be.book.domain.BookVo;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookConverter;
-import movlit.be.book.domain.Book;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.repository.BookGenreRepository;
 import movlit.be.book.infra.persistence.jpa.BookGenreJpaRepository;
@@ -18,7 +18,7 @@ public class BookGenreRepositoryImpl implements BookGenreRepository {
     private final BookGenreJpaRepository bookGenreJpaRepository;
 
     @Override
-    public List<Book> findBooksByGenreIds(List<Long> genreIds, Pageable pageable) {
+    public List<BookVo> findBooksByGenreIds(List<Long> genreIds, Pageable pageable) {
         List<BookEntity> booksByGenreIds = bookGenreJpaRepository.findBooksByGenreIds(genreIds, pageable);
 
         if (booksByGenreIds.isEmpty()){

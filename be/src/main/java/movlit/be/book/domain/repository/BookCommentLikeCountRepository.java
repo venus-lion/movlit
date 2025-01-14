@@ -1,20 +1,16 @@
 package movlit.be.book.domain.repository;
 
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookCommentLike;
-import movlit.be.book.domain.BookCommentLikeCount;
-import movlit.be.book.domain.BookHeartCount;
+import movlit.be.book.domain.BookCommentVo;
+import movlit.be.book.domain.BookCommentLikeCountVo;
 import movlit.be.common.util.ids.BookCommentId;
-import movlit.be.common.util.ids.BookId;
 
 public interface BookCommentLikeCountRepository {
 
-    BookCommentLikeCount findByBookComment(BookComment bookComment);
+    BookCommentLikeCountVo fetchByBookComment(BookCommentVo bookCommentVo);
     int countLikeByCommentId(BookCommentId bookCommentId);
-    void increaseLikeCount(BookComment bookComment);
+    void increaseLikeCount(BookCommentVo bookCommentVo);
 
-    void decreaseHeartCount(BookComment bookComment);
-    BookCommentLikeCount save(BookCommentLikeCount bookCommentLikeCount);
+    void decreaseHeartCount(BookCommentVo bookCommentVo);
+    BookCommentLikeCountVo save(BookCommentLikeCountVo bookCommentLikeCountVo);
 
 }

@@ -3,13 +3,11 @@ package movlit.be.book.infra.persistence;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookCommentConverter;
 import movlit.be.book.application.converter.BookCommentLikeCountConverter;
-import movlit.be.book.domain.BookComment;
-import movlit.be.book.domain.BookCommentLikeCount;
+import movlit.be.book.domain.BookCommentVo;
+import movlit.be.book.domain.BookCommentLikeCountVo;
 import movlit.be.book.domain.entity.BookCommentLikeCountEntity;
-import movlit.be.book.domain.entity.BookCommentLikeEntity;
 import movlit.be.book.domain.repository.BookCommentLikeCountRepository;
 import movlit.be.book.infra.persistence.jpa.BookCommentLikeCountJpaRepository;
-import movlit.be.book.infra.persistence.jpa.BookCommentLikeJpaRepository;
 import movlit.be.common.util.ids.BookCommentId;
 import org.springframework.stereotype.Repository;
 
@@ -19,8 +17,9 @@ public class BookCommentLikeCountRepositoryImpl implements BookCommentLikeCountR
     private final BookCommentLikeCountJpaRepository bookCommentLikeCountJpaRepository;
 
     @Override
-    public BookCommentLikeCount findByBookComment(BookComment bookComment) {
-        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.findByBookCommentEntity(BookCommentConverter.toEntity(bookComment))
+    public BookCommentLikeCountVo fetchByBookComment(BookCommentVo bookCommentVo) {
+        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.findByBookCommentEntity(BookCommentConverter.toEntity(
+                        bookCommentVo))
                 .orElse(null);
 
         return BookCommentLikeCountConverter.toDomain(likeCountEntity);
@@ -33,19 +32,20 @@ public class BookCommentLikeCountRepositoryImpl implements BookCommentLikeCountR
     }
 
     @Override
-    public void increaseLikeCount(BookComment bookComment) {
-        bookCommentLikeCountJpaRepository.increaseLikeCount(BookCommentConverter.toEntity(bookComment));
+    public void increaseLikeCount(BookCommentVo bookCommentVo) {
+        bookCommentLikeCountJpaRepository.increaseLikeCount(BookCommentConverter.toEntity(bookCommentVo));
     }
 
     @Override
-    public void decreaseHeartCount(BookComment bookComment) {
-        bookCommentLikeCountJpaRepository.decreaseLikeCount(BookCommentConverter.toEntity(bookComment));
+    public void decreaseHeartCount(BookCommentVo bookCommentVo) {
+        bookCommentLikeCountJpaRepository.decreaseLikeCount(BookCommentConverter.toEntity(bookCommentVo));
 
     }
 
     @Override
-    public BookCommentLikeCount save(BookCommentLikeCount bookCommentLikeCount) {
-        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.save(BookCommentLikeCountConverter.toEntity(bookCommentLikeCount));
+    public BookCommentLikeCountVo save(BookCommentLikeCountVo bookCommentLikeCountVo) {
+        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.save(BookCommentLikeCountConverter.toEntity(
+                bookCommentLikeCountVo));
         return BookCommentLikeCountConverter.toDomain(likeCountEntity);
     }
 

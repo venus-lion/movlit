@@ -1,15 +1,15 @@
 package movlit.be.book.domain.repository;
 
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookHeartCount;
+import movlit.be.book.domain.BookHeartCountVo;
+import movlit.be.book.domain.BookVo;
 import movlit.be.common.util.ids.BookId;
 
 public interface BookHeartCountRepository {
-    BookHeartCount findByBook(Book book);
+    BookHeartCountVo fetchByBook(BookVo bookVo);
     int countHeartByBookId(BookId bookId);
-    void increaseHeartCount(Book book);
+    void increaseHeartCount(BookVo bookVo);
 
-    void decreaseHeartCount(Book book);
-    BookHeartCount save(BookHeartCount bookHeartCount);
+    void decreaseHeartCount(BookVo bookVo);
+    BookHeartCountVo save(BookHeartCountVo bookHeartCountVo);
 
 }
