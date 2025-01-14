@@ -1,6 +1,5 @@
 package movlit.be.movie.infra.persistence;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieCommentNotFound;
 import movlit.be.common.util.ids.MemberId;
@@ -48,8 +47,8 @@ public class MovieCommentRepositoryImpl implements MovieCommentRepository {
     }
 
     @Override
-    public Optional<MovieCommentEntity> fetchByMemberIdAndMovieId(MemberId memberId, Long movieId) {
-        return movieCommentJpaRepository.findByMemberIdAndMovieId(memberId, movieId);
+    public boolean existsByMemberIdAndMovieId(MemberId memberId, Long movieId) {
+        return movieCommentJpaRepository.existsByMemberIdAndMovieId(memberId, movieId);
     }
 
     @Override
