@@ -35,7 +35,7 @@ public class MovieMainSearchController {
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
         MemberId currentMemberId = details.getMemberId();
-//        MemberId currentMemberId = new MemberId("3e5bd1120000003fa8ece4dd");
+
         MovieListResponseDto response = movieMainSearchService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
         return ResponseEntity.ok(response);
     }
