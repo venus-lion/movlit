@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MovieMainService {
 
     private final MovieRepository movieRepository;
-    private final MemberGenreRepository memberGenreRepository;
-    private final MovieSearchRepository movieSearchRepository;
 
     @Transactional(readOnly = true)
     public MovieListResponseDto getMoviePopular(int page, int pageSize) {

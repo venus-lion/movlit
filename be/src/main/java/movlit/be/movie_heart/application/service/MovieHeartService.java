@@ -1,10 +1,12 @@
 package movlit.be.movie_heart.application.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieHeartAlreadyExistsException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
+import movlit.be.movie_heart.domain.MovieHeart;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.domain.repository.MovieHeartRepository;
 import movlit.be.movie_heart.presentation.dto.response.MovieHeartResponse;
@@ -50,6 +52,11 @@ public class MovieHeartService {
         if (!movieHeartRepository.existsByMovieIdAndMemberId(movieId, memberId)) {
             throw new MovieHeartAlreadyExistsException();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovieHeart> fetchMovieHeartRecentByMember(MemberId memberId) {
+        return movieHeartRepository.findMostRecentMovieHeart(memberId);
     }
 
 }

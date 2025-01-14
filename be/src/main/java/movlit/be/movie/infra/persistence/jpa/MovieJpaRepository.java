@@ -22,13 +22,14 @@ public interface MovieJpaRepository extends JpaRepository<MovieEntity, Long> {
     Page<MovieEntity> findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(
             Long genreId, Pageable pageable);
 
-//    @Query("SELECT m FROM MovieEntity m LEFT JOIN FETCH m.movieGenreEntityList "
-//            + "WHERE m.movieId = :movieId")
-//    Optional<MovieEntity> findByMovieIdWithGenre(Long movieId);
-
     @Query("SELECT m FROM MovieEntity m "
             + "LEFT JOIN FETCH m.movieRCrewEntityList mrc "
             + "LEFT JOIN FETCH mrc.movieCrewEntity mc "
             + "WHERE m.movieId IN :movieIds ")
     List<MovieEntity> findByIdWithCrewIn(List<Long> movieIds);
+
+    @Query("SELECT m FROM MovieEntity m, MovieHeartEntity mh "
+            + "WHERE m.movieId = mh.movieId "
+            + "AND mh.memberId = :memberId")
+    Page<MovieEntity> findMoviesByMemberHeart(Pageable pageable, Long memberId);
 }

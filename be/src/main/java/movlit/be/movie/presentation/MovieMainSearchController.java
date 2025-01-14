@@ -22,21 +22,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class MovieMainSearchController {
 
-    private final MovieMainService movieMainService;
     private final MovieMainSearchService movieMainSearchService;
 
     /**
      * 사용자 별 취향 (장르) 가져오기
      * */
     @GetMapping("/interestGenre")
-    public ResponseEntity<MovieListResponseDto> getMovieUserInterestByGenre(
+    public ResponseEntity<MovieListResponseDto> fetchMovieByMemberInterestGenre(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
         MemberId currentMemberId = details.getMemberId();
+        MovieListResponseDto response = movieMainSearchService.fetchMovieByMemberInterestGenre(currentMemberId, page, pageSize);
 
-        MovieListResponseDto response = movieMainSearchService.getMovieUserInterestByGenre(currentMemberId, page, pageSize);
         return ResponseEntity.ok(response);
     }
 
@@ -50,8 +49,7 @@ public class MovieMainSearchController {
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
         MemberId currentMemberId = details.getMemberId();
-//        MemberId currentMemberId = new MemberId("3e5bd1120000003fa8ece4dd");
-        MovieListResponseDto response = movieMainSearchService.getMovieByUserRecentHeart(currentMemberId, page, pageSize);
+        MovieListResponseDto response = movieMainSearchService.fetchMovieByMemberRecentHeart(currentMemberId, page, pageSize);
 
         return ResponseEntity.ok(response);
     }
