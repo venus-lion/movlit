@@ -38,7 +38,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
                 .headers(x -> x.frameOptions(FrameOptionsConfig::disable))     // H2-console
                 .authorizeHttpRequests(requests -> requests
@@ -112,6 +111,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
     // Authentication Manager 빈 등록
     @Bean
