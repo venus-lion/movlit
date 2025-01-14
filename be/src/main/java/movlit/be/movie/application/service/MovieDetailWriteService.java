@@ -13,7 +13,7 @@ import movlit.be.movie.domain.entity.MovieCommentEntity;
 import movlit.be.movie.domain.repository.MovieCommentRepository;
 import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
-import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountService;
+import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountWriteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +24,7 @@ public class MovieDetailWriteService {
 
     private final MovieCommentRepository movieCommentRepository;
     private final MovieDetailReadService movieDetailReadService;
-    private final MovieCommentLikeCountService movieCommentLikeCountService;
+    private final MovieCommentLikeCountWriteService movieCommentLikeCountWriteService;
 
     public MovieCommentResponse createComment(Long movieId, MemberId memberId, MovieCommentRequest request) {
         validateMemberExistsInMovieComment(memberId, movieId);
@@ -36,7 +36,7 @@ public class MovieDetailWriteService {
 
         MovieCommentEntity movieCommentEntity = MovieConvertor.toMovieCommentEntity(
                 movieId, memberId, comment, score, movieCommentId, now);
-        movieCommentLikeCountService.save(
+        movieCommentLikeCountWriteService.save(
                 MovieConvertor.toMovieCommentLikeCountEntity(movieCommentEntity.getMovieCommentId()));
         return MovieConvertor.toMovieCommentResponse(movieCommentRepository.createComment(movieCommentEntity));
     }

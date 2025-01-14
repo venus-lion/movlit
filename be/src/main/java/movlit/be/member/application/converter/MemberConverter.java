@@ -162,17 +162,6 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MovieCommentLikeResponse toMovieCommentLikeResponse(MovieCommentLikeEntity movieCommentLikeEntity,
-                                                                      Long movieCommentLikeCount) {
-        return MovieCommentLikeResponse.builder()
-                .movieCommentLikeId(movieCommentLikeEntity.getMovieCommentLikeId())
-                .movieCommentId(movieCommentLikeEntity.getMovieCommentId())
-                .memberId(movieCommentLikeEntity.getMemberId())
-                .isLiked(movieCommentLikeEntity.isLiked())
-                .movieCommentLikeCount(movieCommentLikeCount)
-                .build();
-    }
-
     public static MovieHeartEntity toMovieHeartEntity(Long movieId, MemberId memberId) {
         return MovieHeartEntity.builder()
                 .movieHeartId(IdFactory.createMovieHeartId())

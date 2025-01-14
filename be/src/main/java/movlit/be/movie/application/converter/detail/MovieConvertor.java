@@ -60,19 +60,8 @@ public class MovieConvertor {
                 .build();
     }
 
-    public static MovieCommentLikeResponse toMovieCommentLikeResponse(MovieCommentLikeEntity movieCommentLikeEntity,
-                                                                      Long movieCommentLikeCount) {
-        return MovieCommentLikeResponse.builder()
-                .movieCommentLikeId(movieCommentLikeEntity.getMovieCommentLikeId())
-                .movieCommentId(movieCommentLikeEntity.getMovieCommentId())
-                .memberId(movieCommentLikeEntity.getMemberId())
-                .isLiked(movieCommentLikeEntity.isLiked())
-                .movieCommentLikeCount(movieCommentLikeCount)
-                .build();
-    }
-
-    public static MovieCommentLikeEntity toMovieCommentLikeEntity(MemberId memberId,
-                                                                  MovieCommentId movieCommentId) {
+    public static MovieCommentLikeEntity makeMovieCommentLikeEntity(MemberId memberId,
+                                                                    MovieCommentId movieCommentId) {
         return MovieCommentLikeEntity.builder()
                 .movieCommentLikeId(IdFactory.createMovieCommentLikeId())
                 .movieCommentId(movieCommentId)

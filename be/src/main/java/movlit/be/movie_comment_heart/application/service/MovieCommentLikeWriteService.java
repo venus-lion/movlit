@@ -9,48 +9,47 @@ import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
 import movlit.be.movie_comment_heart.domain.repository.MovieCommentLikeRepository;
 import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
-import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountService;
+import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountReadService;
+import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountWriteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class MovieCommentLikeService {
+@Transactional
+public class MovieCommentLikeWriteService {
 
     private final MovieCommentLikeRepository movieCommentLikeRepository;
-    private final MovieCommentLikeCountService movieCommentLikeCountService;
+    private final MovieCommentLikeReadService movieCommentLikeReadService;
+    private final MovieCommentLikeCountWriteService movieCommentLikeCountWriteService;
+    private final MovieCommentLikeCountReadService movieCommentLikeCountReadService;
     private final MemberReadService memberReadService;
 
-    @Transactional
     public MovieCommentLikeResponse like(MemberId memberId, MovieCommentId movieCommentId) {
         memberReadService.validateMemberIdExists(memberId);
         validateMovieCommentLikeExists(movieCommentId, memberId);
         MovieCommentLikeEntity movieCommentLikeEntity = movieCommentLikeRepository.like(
-                MovieConvertor.toMovieCommentLikeEntity(memberId, movieCommentId));
-        movieCommentLikeCountService.incrementMovieCommentLikeCount(movieCommentLikeEntity.getMovieCommentId());
-        Long movieCommentLikeCount = movieCommentLikeCountService.fetchMovieCommentLikeCountByMovieIdAndMovieCommentId(
+                MovieConvertor.makeMovieCommentLikeEntity(memberId, movieCommentId));
+        movieCommentLikeCountWriteService.incrementMovieCommentLikeCount(movieCommentLikeEntity.getMovieCommentId());
+        return movieCommentLikeCountReadService.fetchMovieCommentLikeResponseByMovieCommentId(
                 movieCommentLikeEntity.getMovieCommentId());
-        return MovieConvertor.toMovieCommentLikeResponse(movieCommentLikeEntity, movieCommentLikeCount);
     }
 
-    @Transactional
     public void unlike(MemberId memberId, MovieCommentId commentId) {
         memberReadService.validateMemberIdExists(memberId);
         validateMovieCommentLikeNotExist(commentId, memberId);
         movieCommentLikeRepository.deleteByMovieCommentId(commentId);
-        movieCommentLikeCountService.decrementMovieCommentLikeCount(commentId);
+        movieCommentLikeCountWriteService.decrementMovieCommentLikeCount(commentId);
     }
 
-    @Transactional(readOnly = true)
     public void validateMovieCommentLikeExists(MovieCommentId movieCommentId, MemberId memberId) {
-        if (movieCommentLikeRepository.existsByMovieCommentIdAndMemberId(movieCommentId, memberId)) {
+        if (movieCommentLikeReadService.existsByMovieCommentIdAndMemberId(movieCommentId, memberId)) {
             throw new MovieCommentLikeAlreadyExistsException();
         }
     }
 
-    @Transactional(readOnly = true)
     public void validateMovieCommentLikeNotExist(MovieCommentId movieCommentId, MemberId memberId) {
-        if (!movieCommentLikeRepository.existsByMovieCommentIdAndMemberId(movieCommentId, memberId)) {
+        if (!movieCommentLikeReadService.existsByMovieCommentIdAndMemberId(movieCommentId, memberId)) {
             throw new MovieCommentLikeAlreadyExistsException();
         }
     }
