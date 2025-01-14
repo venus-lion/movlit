@@ -18,7 +18,7 @@ const OAuthCallback = () => {
             sessionStorage.setItem('accessToken', accessToken);
             document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
 
-            console.error('OAuth2 로그인 성공, accessToken=', accessToken);
+            console.log('OAuth2 로그인 성공, accessToken=', accessToken);
             updateLoginStatus(true);
             navigate('/'); // 메인 페이지로 리다이렉트
         } else {
