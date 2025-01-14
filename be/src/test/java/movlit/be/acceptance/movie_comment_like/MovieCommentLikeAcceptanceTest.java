@@ -2,6 +2,7 @@ package movlit.be.acceptance.movie_comment_like;
 
 import static movlit.be.acceptance.movie_comment.MovieCommentSteps.영화_코멘트_작성을_요청한다;
 import static movlit.be.acceptance.movie_comment_like.MovieCommentLikeSteps.상태코드가_200이다;
+import static movlit.be.acceptance.movie_comment_like.MovieCommentLikeSteps.영화_코멘트_좋아요를_취소한다;
 import static movlit.be.acceptance.movie_comment_like.MovieCommentLikeSteps.영화_코멘트에_좋아요를_누른다;
 
 import movlit.be.acceptance.AcceptanceTest;
@@ -30,6 +31,23 @@ public class MovieCommentLikeAcceptanceTest extends AcceptanceTest {
 
         // when
         var response = 영화_코멘트에_좋아요를_누른다(movieCommentId, 회원_민지_액세스토큰, spec);
+
+        // then
+        상태코드가_200이다(response);
+    }
+
+    @DisplayName("영화 댓글 좋아요의 취소가 성공적으로 되면, 상태코드 200과 body를 반환한다.")
+    @Test
+    void when_unlike_movie_comment_then_response_200_and_body() {
+        // docs
+        api_문서_타이틀("movie_comment_unlike_decrement_success", spec);
+
+        // when
+//        영화_코멘트에_좋아요를_누른다(movieCommentId, 회원_지원_액세스토큰, spec);
+        영화_코멘트에_좋아요를_누른다(movieCommentId, 회원_민지_액세스토큰, spec);
+//        영화_코멘트에_좋아요를_누른다(movieCommentId, 회원_윤기_액세스토큰, spec);
+
+        var response = 영화_코멘트_좋아요를_취소한다(movieCommentId, 회원_민지_액세스토큰, spec);
 
         // then
         상태코드가_200이다(response);

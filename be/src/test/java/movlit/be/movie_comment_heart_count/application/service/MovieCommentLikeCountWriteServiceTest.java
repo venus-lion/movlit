@@ -8,10 +8,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.common.util.ids.MovieCommentLikeCountId;
-import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
 import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEntity;
 import movlit.be.movie_comment_heart_count.infra.persistence.jpa.MovieCommentLikeCountJpaRepository;
-import movlit.be.utils.SpringBootIntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,9 +63,40 @@ class MovieCommentLikeCountWriteServiceTest {
         }
 
         // then
-        var response = movieCommentLikeCountJpaRepository.findByMovieCommentId(movieCommentId);
+        Optional<MovieCommentLikeCountEntity> response = movieCommentLikeCountJpaRepository.findByMovieCommentId(
+                movieCommentId);
         assertThat(response).isPresent();
         assertThat(response.get()).hasFieldOrPropertyWithValue("count", 101L);
+    }
+
+    @DisplayName("코멘트 좋아요 카운트를 100번 비동기로 증가시키면 100번 증가한다.")
+    @Test
+    void decrement() {
+        // given
+        MovieCommentId movieCommentId = new MovieCommentId("1");
+        MovieCommentLikeCountId movieCommentLikeCountId = IdFactory.createMovieCommentLikeCountId();
+        movieCommentLikeCountJpaRepository.save(
+                new MovieCommentLikeCountEntity(movieCommentLikeCountId, movieCommentId, 100L));
+        CountDownLatch latch = new CountDownLatch(100);
+
+        // when
+        for (int i = 0; i < 100; i++) {
+            threadPoolExecutor.execute(() -> {
+                movieCommentLikeCountWriteService.decrementMovieCommentLikeCount(movieCommentId);
+                latch.countDown();
+            });
+        }
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // then
+        Optional<MovieCommentLikeCountEntity> response = movieCommentLikeCountJpaRepository.findByMovieCommentId(
+                movieCommentId);
+        assertThat(response).isPresent();
+        assertThat(response.get()).hasFieldOrPropertyWithValue("count", 0L);
     }
 
 

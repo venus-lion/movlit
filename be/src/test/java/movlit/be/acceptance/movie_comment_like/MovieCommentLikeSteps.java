@@ -32,6 +32,24 @@ public class MovieCommentLikeSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 영화_코멘트_좋아요를_취소한다(
+            String commentId,
+            String accessToken,
+            RequestSpecification spec
+    ) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .auth().oauth2(accessToken)
+                .log().all()
+                .when()
+                .delete("/api/movies/comments/{commentId}/likes", commentId)
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK));
