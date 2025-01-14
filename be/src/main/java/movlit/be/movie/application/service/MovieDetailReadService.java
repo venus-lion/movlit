@@ -25,9 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MovieDetailReadService {
 
     private final MovieDetailRepository movieDetailRepository;
-    private final MovieCrewRepository movieCrewRepository;
-    private final MovieGenreRepository movieGenreRepository;
-    private final MovieCommentRepository movieCommentRepository;
+    private final MovieCrewReadService movieCrewReadService;
+    private final MovieGenreReadService movieGenreReadService;
+    private final MovieCommentReadService movieCommentReadService;
 
     public MovieDetailResponse fetchMovieDetail(Long movieId) {
         return movieDetailRepository.fetchMovieDetailByMovieId(movieId);
@@ -38,27 +38,27 @@ public class MovieDetailReadService {
     }
 
     public List<MovieDetailCrewResponse> fetchMovieDetailCrews(Long movieId) {
-        return movieCrewRepository.fetchMovieDetailCrewsByMovieId(movieId);
+        return movieCrewReadService.fetchMovieDetailCrews(movieId);
     }
 
     public List<MovieDetailGenreResponse> fetchMovieDetailGenres(Long movieId) {
-        return movieGenreRepository.fetchMovieDetailGenreNamesByMovieId(movieId);
+        return movieGenreReadService.fetchMovieDetailGenres(movieId);
     }
 
     public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId, Pageable pageable) {
-        return movieCommentRepository.fetchComments(movieId, pageable);
+        return movieCommentReadService.fetchMovieComments(movieId, pageable);
     }
 
     public Slice<MovieCommentReadResponse> fetchMovieComments(Long movieId, MemberId memberId, Pageable pageable) {
-        return movieCommentRepository.fetchComments(movieId, memberId, pageable);
+        return movieCommentReadService.fetchMovieComments(movieId, memberId, pageable);
     }
 
     public MovieMyCommentReadResponse fetchMyMovieComment(Long movieId, MemberId currentMemberId) {
-        return movieCommentRepository.fetchMyComment(movieId, currentMemberId);
+        return movieCommentReadService.fetchMyMovieComment(movieId, currentMemberId);
     }
 
     public boolean isExistsByMemberIdAndMovieId(MemberId memberId, Long movieId) {
-        return movieCommentRepository.existsByMemberIdAndMovieId(memberId, movieId);
+        return movieCommentReadService.isExistsByMemberIdAndMovieId(memberId, movieId);
     }
 
 }
