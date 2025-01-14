@@ -16,7 +16,7 @@ const OAuthCallback = () => {
 
         if (accessToken && refreshToken) {
             sessionStorage.setItem('accessToken', accessToken);
-            document.cookie = `refreshToken=${refreshToken}; Secure; HttpOnly; Path=/; Max-Age=1209600`;
+            document.cookie = `refreshToken=${refreshToken}; SameSite=None; Secure; HttpOnly; Path=/; Max-Age=1209600`;
 
             console.log('OAuth2 로그인 성공, accessToken=', accessToken);
             updateLoginStatus(true);
