@@ -56,7 +56,7 @@ public class MovieHeartService {
 
     @Transactional(readOnly = true)
     public List<MovieHeart> fetchMovieHeartRecentByMember(MemberId memberId) {
-        return movieHeartRepository.findMostRecentMovieHeart(memberId);
+        return movieHeartRepository.fetchMovieHeartRecentByMember(memberId);
     }
 
 }

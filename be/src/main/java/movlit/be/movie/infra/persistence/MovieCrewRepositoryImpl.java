@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieCrewNotFoundException;
 import movlit.be.movie.domain.repository.MovieCrewRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieRCrewJpaRepository;
+import movlit.be.movie.presentation.dto.response.MovieCrewResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,16 @@ public class MovieCrewRepositoryImpl implements MovieCrewRepository {
     public List<MovieDetailCrewResponse> fetchMovieDetailCrewsByMovieId(Long movieId) {
         List<MovieDetailCrewResponse> response = movieRCrewJpaRepository.findMovieCrewsByMovieId(movieId);
 
+        if (response.isEmpty()) {
+            throw new MovieCrewNotFoundException();
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<MovieCrewResponseDto> fetchMovieCrewByMovieIds(List<Long> movieIds) {
+        List<MovieCrewResponseDto> response = movieRCrewJpaRepository.findMovieCrewByMovieIds(movieIds);
         if (response.isEmpty()) {
             throw new MovieCrewNotFoundException();
         }

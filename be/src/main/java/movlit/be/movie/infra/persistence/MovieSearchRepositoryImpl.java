@@ -40,7 +40,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public List<Movie> searchInterestGenre(List<Genre> genreList, Pageable pageable) {
+    public List<Movie> searchMovieByMemberInterestGenre(List<Genre> genreList, Pageable pageable) {
         // 사용자 취향 장르와 일치하는 장르가 있으면 가중치를 부여해서 점수 높은 순으로 가져오기
 
         // Nested Query 생성
@@ -97,7 +97,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
     }
 
     @Override
-    public List<Movie> searchByUserHeartMovieAndCrew(List<Movie> heartedMovieList, Pageable pageable) {
+    public List<Movie> searchMovieAndCrewByMemberHeart(List<Movie> heartedMovieList, Pageable pageable) {
         Set<String> crewNameSet = new HashSet<>();
 
         heartedMovieList.forEach(movie -> {

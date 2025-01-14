@@ -3,13 +3,9 @@ package movlit.be.movie.application.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.exception.MemberGenreNotFoundException;
 import movlit.be.common.util.Genre;
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.repository.MemberGenreRepository;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.repository.MovieRepository;
-import movlit.be.movie.domain.repository.MovieSearchRepository;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MovieMainService {
+public class MovieReadService {
 
     private final MovieRepository movieRepository;
 
@@ -51,6 +47,11 @@ public class MovieMainService {
 
         MovieListByGenreResponseDto responseDto = new MovieListByGenreResponseDto(genreId, genre.getName(), movieList);
         return responseDto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Movie> fetchMovieWithCrewInMovieIds(List<Long> movieIds){
+        return movieRepository.fetchMovieWithCrewInMovieIds(movieIds);
     }
 
 }

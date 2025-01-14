@@ -1,16 +1,11 @@
 package movlit.be.movie.presentation;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.auth.application.service.MyMemberDetails;
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.movie.application.service.MovieMainService;
-import movlit.be.movie.domain.Movie;
+import movlit.be.movie.application.service.MovieReadService;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/movies/main")
 @RequiredArgsConstructor
 @Slf4j
-public class MovieMainController {
+public class MovieReadController {
 
-    private final MovieMainService movieMainService;
+    private final MovieReadService movieReadService;
 
     /**
      * 최신 영화 내림차순 리스트
@@ -33,7 +28,7 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-        MovieListResponseDto result = movieMainService.getMovieLatest(page, pageSize);
+        MovieListResponseDto result = movieReadService.getMovieLatest(page, pageSize);
 
         return ResponseEntity.ok().body(result);
     }
@@ -47,7 +42,7 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-        MovieListResponseDto result = movieMainService.getMoviePopular(page, pageSize);
+        MovieListResponseDto result = movieReadService.getMoviePopular(page, pageSize);
 
         return ResponseEntity.ok().body(result);
     }
@@ -63,7 +58,7 @@ public class MovieMainController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-        MovieListByGenreResponseDto reponseDto = movieMainService.getMovieGroupbyGenre(genreId, page, pageSize);
+        MovieListByGenreResponseDto reponseDto = movieReadService.getMovieGroupbyGenre(genreId, page, pageSize);
         return ResponseEntity.ok().body(reponseDto);
     }
 }

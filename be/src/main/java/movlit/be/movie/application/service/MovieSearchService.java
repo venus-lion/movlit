@@ -3,23 +3,20 @@ package movlit.be.movie.application.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.exception.MemberGenreNotFoundException;
 import movlit.be.common.exception.NotExistMovieHeartByMember;
 import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberGenreService;
-import movlit.be.member.domain.repository.MemberGenreRepository;
 import movlit.be.movie.domain.Movie;
-import movlit.be.movie.domain.document.MovieDocument;
-import movlit.be.movie.domain.repository.MovieRepository;
 import movlit.be.movie.domain.repository.MovieSearchRepository;
+import movlit.be.movie.presentation.dto.response.MovieCrewResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieDocumentResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import movlit.be.movie_heart.application.service.MovieHeartService;
 import movlit.be.movie_heart.domain.MovieHeart;
-import movlit.be.movie_heart.domain.repository.MovieHeartRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,41 +24,42 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MovieMainSearchService {
+public class MovieSearchService {
 
     private final MemberGenreService memberGenreService;
     private final MovieHeartService movieHeartService;
-    private final MovieRepository movieRepository;
+    private final MovieReadService movieReadService;
+    private final MovieCrewReadService movieCrewReadService;
     private final MovieSearchRepository movieSearchRepository;
-    private final MovieHeartRepository movieHeartRepository;
 
     @Transactional(readOnly = true)
-    public MovieListResponseDto fetchMovieByMemberInterestGenre(MemberId currentMemberId, int page, int pageSize) {
+    public MovieListResponseDto searchMovieByMemberInterestGenre(MemberId currentMemberId, int page, int pageSize) {
         // 로그인 유저의 취향 장르 3개 가져오기
         List<Genre> movieGenreList = memberGenreService.fetchMemberInterestGenre(currentMemberId);
 
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
         // elasticsearch에서 가져오기
-        List<Movie> movieList = movieSearchRepository.searchInterestGenre(movieGenreList, pageable);
+        List<Movie> movieList = movieSearchRepository.searchMovieByMemberInterestGenre(movieGenreList, pageable);
         return new MovieListResponseDto(movieList);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, noRollbackFor = NotExistMovieHeartByMember.class)
     public MovieListResponseDto fetchMovieByMemberRecentHeart(MemberId currentMemberId, int page, int pageSize) {
-        // 로그인 유저의 가장 최근 찜한 영화 가져오기
         List<Movie> movieList;
 
         try {
+            // 로그인 유저의 가장 최근 찜한 영화 가져오기
             List<MovieHeart> movieHeartList = movieHeartService.fetchMovieHeartRecentByMember(currentMemberId);
             List<Long> movieIds = movieHeartList.stream().map(MovieHeart::getMovieId).collect(Collectors.toList());
-
-            List<Movie> heartedMovieList = movieRepository.findByIdWithCrewIn(movieIds);
-            log.info("=== hearted Movie : {}", heartedMovieList);
-
+            log.info("=== heartedMovieIds : {}", movieIds);
+            // 멤버가 찜한 Movie와 MovieCrew 가져오기
+            List<Movie> heartedMovieList = movieReadService.fetchMovieWithCrewInMovieIds(movieIds);
+            log.info("=== heartedMovies : {}", heartedMovieList);
+//            List<MovieCrewResponseDto> heartedMovieCrewList = movieCrewReadService.fetchMovieCrewByMovieId(movieIds);
             Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
-            movieList = movieSearchRepository.searchByUserHeartMovieAndCrew(heartedMovieList, pageable);
+            movieList = movieSearchRepository.searchMovieAndCrewByMemberHeart(heartedMovieList, pageable);
             return new MovieListResponseDto(movieList);
 
         } catch (NotExistMovieHeartByMember e) {

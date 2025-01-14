@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.movie.application.service.MovieMainSearchService;
-import movlit.be.movie.application.service.MovieMainService;
+import movlit.be.movie.application.service.MovieSearchService;
 import movlit.be.movie.presentation.dto.response.MovieDocumentResponseDto;
-import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieListResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/movies/search")
 @RequiredArgsConstructor
 @Slf4j
-public class MovieMainSearchController {
+public class MovieSearchController {
 
-    private final MovieMainSearchService movieMainSearchService;
+    private final MovieSearchService movieSearchService;
 
     /**
      * 사용자 별 취향 (장르) 가져오기
@@ -34,7 +32,7 @@ public class MovieMainSearchController {
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
         MemberId currentMemberId = details.getMemberId();
-        MovieListResponseDto response = movieMainSearchService.fetchMovieByMemberInterestGenre(currentMemberId, page, pageSize);
+        MovieListResponseDto response = movieSearchService.searchMovieByMemberInterestGenre(currentMemberId, page, pageSize);
 
         return ResponseEntity.ok(response);
     }
@@ -49,7 +47,7 @@ public class MovieMainSearchController {
             @RequestParam(required = false, defaultValue = "20") int pageSize
     ){
         MemberId currentMemberId = details.getMemberId();
-        MovieListResponseDto response = movieMainSearchService.fetchMovieByMemberRecentHeart(currentMemberId, page, pageSize);
+        MovieListResponseDto response = movieSearchService.fetchMovieByMemberRecentHeart(currentMemberId, page, pageSize);
 
         return ResponseEntity.ok(response);
     }
@@ -62,7 +60,7 @@ public class MovieMainSearchController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize,
             @RequestParam String inputStr){
-        MovieDocumentResponseDto response = movieMainSearchService.getSearchMovie(inputStr, page, pageSize);
+        MovieDocumentResponseDto response = movieSearchService.getSearchMovie(inputStr, page, pageSize);
 
         return ResponseEntity.ok(response);
     }
