@@ -180,7 +180,7 @@ public class BooksRecommendationService {
 
         // 값이 없을경우
         if (!searchHits.hasSearchHits()) {
-            System.out.println("사용자 취향에 맞는 도서가 없습니다.");
+            System.out.println("사용자 취향에 맞는 도서가 없습니다. -- /recommendations");
             return null; // 사용자 취향 리스트가 없음
         }
 
@@ -261,7 +261,7 @@ public class BooksRecommendationService {
 
         // 값이 없다면..
         if (!searchHits.hasSearchHits()){
-            System.out.println("사용자 취향에 맞는 도서가 없습니다.");
+            System.out.println("사용자 취향에 맞는 도서가 없습니다. -- /interestGenre");
             return null;
         }
 

@@ -26,6 +26,8 @@ function BookHome() {
         error: errorInterestGenre
     } = useApiData('/books/interestGenre', isLoggedIn);
 
+    console.log('interestgenreBooks :: ' + interestGenreBooks);
+
     const [startIndexRecommended, setStartIndexRecommended] = useState(0);
     const [startIndexInterestGenre, setStartIndexInterestGenre] = useState(0);
 

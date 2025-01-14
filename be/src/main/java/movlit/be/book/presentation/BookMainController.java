@@ -77,13 +77,13 @@ public class BookMainController {
 
     /**
      * 랜덤하지 않은 장르 불러오기
-     * 영화 상세 페이지에서 사용할 용도
+     * 도서 상세 페이지에서 사용할 용도
      */
-    @GetMapping("/genres/movies/{movieId}/detail")
-    public ResponseEntity<BooksGenreResponse> fetchBooksByMovieDetailGenres(@PathVariable Long movieId,
+    @GetMapping("/genres/books/{bookId}/detail")
+    public ResponseEntity<BooksGenreResponse> fetchBooksByMovieDetailGenres(@PathVariable Long bookId,
                                                                             @RequestParam(defaultValue = "30") int limit) {
         List<BookItemWithGenreDto> booksByDetailGenres = getBooksByRandomGenreService
-                .fetchBooksByMovieDetailGenres(limit, movieId);
+                .fetchBooksByMovieDetailGenres(limit, bookId);
         BooksGenreResponse booksGenreResponse = BooksGenreResponse.builder()
                 .books(booksByDetailGenres)
                 .build();

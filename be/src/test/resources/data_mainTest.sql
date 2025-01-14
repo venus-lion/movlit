@@ -588,3 +588,35 @@ INSERT INTO test.movie_r_crew (movie_id, movie_crew_id)
 VALUES (767, '11355');
 INSERT INTO test.movie_r_crew (movie_id, movie_crew_id)
 VALUES (767, '10967');
+
+INSERT INTO test.book (id, book_img_url, category_id, category_name, description, heart_count, isbn, mall_url, pub_date, publisher, reg_dt, stock_status, title, upd_dt)
+VALUES
+    ('9791141601706', 'https://image.aladin.co.kr/product/35497/59/cover500/k302035650_1.jpg', '51371', '국내도서>에세이>한국에세이', '박완서 작가가 생전에 남한산성과 강릉 등의 국내 지역부터 바티칸, 티베트, 에티오피아 등의 미지의 해외, 그리고 우리에게 형용하기 어려운 감정을 불러일으키는 개성과 백두산에 이르기까지 다양한 곳을 방문하고 남긴 생생한 여행기이다.', NULL, 'K302035650', 'http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=354975956&partner=openAPI&start=api', '2025-01-07 00:00:00.000000', '문학동네', '2025-01-10 15:14:35.422707', '판매중', '다만 여행자가 될 수 있다면', '2025-01-10 15:14:35.422707'),
+    ('9791157280292', 'https://image.aladin.co.kr/product/6216/39/cover500/k852433226_3.jpg', '51167', '국내도서>소설/시/희곡>시>한국시', 'J.H Classic 2권. 나태주 시집. 나태주 시인의 작품 가운데에서 인터넷의 블로그나 트위터에 자주 오르내리는 시들만 모았다.', NULL, 'K852433226', 'http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=62163905&partner=openAPI&start=api', '2015-06-20 00:00:00.000000', '지혜', '2025-01-10 15:14:45.049262', '판매중', '꽃을 보듯 너를 본다', '2025-01-10 15:14:45.049262'),
+    ('9791139717013', 'https://image.aladin.co.kr/product/34361/12/cover500/k922932902_1.jpg', '51381', '국내도서>인문학>인문 에세이', '서울대 법학전문대학원 이효원 교수는 헌법이야말로 인간 삶의 투명한 거울이라고 말하며 살면서 누구나 한번쯤은 헌법을 읽을 것을 강력히 권한다. 대한민국이 어떠한 나라가 되어야 한다고 축약해놓은 규범이자, 다양한 사고방식과 생활양식을 지닌 사람들이 더불어 살아가기 위해 만든 기반인 헌법을 공부함으로써 내가 어떤 사람이 되어야 하는지, 어떻게 살아야 하는지를 성찰할 수 있기 때문이다.', NULL, 'K922932902', 'http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=343611289&partner=openAPI&start=api', '2024-08-05 00:00:00.000000', '현대지성', '2025-01-10 15:14:34.605909', '판매중', '일생에 한번은 헌법을 읽어라 - 흔들릴 때마다 삶의 중심을 잡아주는 기준에 관하여', '2025-01-10 15:14:34.605909'),
+    ('9791141601454', 'https://image.aladin.co.kr/product/35230/55/cover500/k632934748_1.jpg', '51167', '국내도서>소설/시/희곡>시>한국시', '대화를 건네는 듯한 친숙한 어법, 부드럽고 섬세한 감성으로 우리 안의 닫힌 마음을 두드려 깨우는 시인 유수연의 두번째 시집 『사랑하고 선량하게 잦아드네』가 문학동네시인선 224번으로 출간되었다.', NULL, 'K632934748', 'http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=352305511&partner=openAPI&start=api', '2024-11-18 00:00:00.000000', '문학동네', '2025-01-10 15:14:39.593119', '판매중', '사랑하고 선량하게 잦아드네', '2025-01-10 15:14:39.593119'),
+    ('9788931475944', 'https://image.aladin.co.kr/product/34764/43/cover500/8931475942_1.jpg', '7006', '국내도서>컴퓨터/모바일>활용능력>컴퓨터활용능력>컴퓨터활용능력 필기', '1급 필기와 실기를 하나의 도서로 한 번에 합격할 수 있도록 합본 구성한 도서이다. 1권 필기는 대표 기출 60선에서 자주 출제되는 기출문제를 엄선하여 대표 문제를 포인트 설명과 함께 풀어 볼 수 있고, 핵심 암기 노트에는 실제 출제된 지문으로 암기할 핵심을 정리했다.', NULL, '8931475942', 'http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=347644314&partner=openAPI&start=api', '2024-09-19 00:00:00.000000', '영진.com(영진닷컴)', '2025-01-10 15:14:55.928290', '판매중', '2025 이기적 컴퓨터활용능력 1급 필기 + 실기 올인원 - 최신 출제기준 반영 + 동영상 강의 무료 + CBT 온라인 문제집 제공', '2025-01-10 15:14:55.928290'),
+    ('9788937604706', 'https://image.aladin.co.kr/product/14523/89/cover500/8937604701_1.jpg', '3431', '국내도서>역사>한국근현대사>근대개화기', '20대 청년 우남 이승만이 옥중에서 집필한 그의 대표 저서로서, 5천년 동안 지속되어온 우리나라 왕정(王政)의 역사를 민주 공화정(共和政)으로 탈바꿈시키고, 대륙문화권에 속해 있던 우리나라의 정치, 사회, 문화적 전통을 해양문화권으로 옮겨놓는 데 이론적 기초가 된 책이다.', NULL, '8937604701', 'http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=145238964&partner=openAPI&start=api', '2018-05-05 00:00:00.000000', '비봉출판사', '2025-01-10 15:14:37.742869', '판매중', '독립정신', '2025-01-10 15:14:37.742869');
+
+
+INSERT INTO test.book_best_seller (id, book_id, best_rank, best_duration) VALUES
+('002c174a-6c18-4b38-9171-4b6192251ac8', '9791141601706', 307, NULL),
+('018812e9-d373-454e-b993-91923c7cc5c0', '9791157280292', 675, '종합 10위 4주'),
+('019fc25f-c70f-48ab-970d-6b276d1ffa15', '9791139717013', 272, '종합 100위 6주'),
+('01b8e3f3-a327-4ea6-83c6-9dd2ec7a0ddb', '9791141601454', 481, '소설/시/희곡 100위 8주'),
+('01bb3c92-2637-441f-9e6f-c8a4c793228b', '9788931475944', 953, '컴퓨터/모바일 10위 9주'),
+('022c55aa-bbdf-451a-bcb1-b98d692cf579', '9788937604706', 404, '역사 100위 36주');
+
+INSERT INTO test.book_crew (id, name, role, profile_image_url) VALUES
+('crew_id_1', '이름1', 'AUTHOR', 'https://example.com/profile1.jpg'),
+('crew_id_2', '이름2', 'TRANSLATOR', 'https://example.com/profile2.jpg'),
+('crew_id_3', '이름3', 'UNKNOWN', 'https://example.com/profile3.jpg');
+
+
+INSERT INTO test.book_r_crew (id, book_id, crew_id) VALUES
+('book_r_crew_id1', '9791141601706', 'crew_id_2'),
+('book_r_crew_id2',  '9791157280292', 'crew_id_3'),
+('book_r_crew_id3', '9791139717013', 'crew_id_1'),
+('book_r_crew_id4',  '9791141601454', 'crew_id_2'),
+('book_r_crew_id5',  '9788931475944', 'crew_id_3'),
+('book_r_crew_id6',  '9788937604706', 'crew_id_1');
