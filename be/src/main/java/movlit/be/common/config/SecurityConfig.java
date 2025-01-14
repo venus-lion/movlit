@@ -31,8 +31,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-//    @Value("${share.url}")
-    private String url = "https://movlit.store/api"; // 배포 환경의 프론트엔드 URL
+    @Value("${share.url}")
+    private String url; // 배포 환경의 프론트엔드 URL
 
     private final AuthenticationFailureHandler failureHandler;
     private final MyOAuth2MemberService myOAuth2MemberService;
@@ -120,8 +120,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of(url)); // allowedOrigins 대신 setAllowedOriginPatterns 사용
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(List.of(url)); // allowedOrigins 대신 setAllowedOriginPatterns 사용
+//        configuration.setAllowedOriginPatterns(List.of("*.movlit.store"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
