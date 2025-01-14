@@ -1,5 +1,6 @@
 package movlit.be.movie_comment_heart_count.infra.persistence.jpa;
 
+import java.util.List;
 import java.util.Optional;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.common.util.ids.MovieCommentLikeId;
@@ -32,5 +33,7 @@ public interface MovieCommentLikeCountJpaRepository extends JpaRepository<MovieC
             + "LEFT JOIN MovieCommentLikeCountEntity mclc ON mclc.movieCommentId = mcl.movieCommentId "
             + "WHERE mcl.movieCommentId = :movieCommentId")
     Optional<MovieCommentLikeResponse> findMovieCommentLikeResponse(@Param("movieCommentId") MovieCommentId movieCommentId);
+
+    Optional<MovieCommentLikeCountEntity> findByMovieCommentId(MovieCommentId movieCommentId);
 
 }
