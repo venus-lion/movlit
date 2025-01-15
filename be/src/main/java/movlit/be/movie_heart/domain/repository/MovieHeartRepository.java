@@ -13,6 +13,6 @@ public interface MovieHeartRepository {
 
     void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
 
-    List<MovieHeart> findMostRecentMovieHeart(MemberId memberId);
+    List<MovieHeart> fetchMovieHeartRecentByMember(MemberId memberId);
 
 }
