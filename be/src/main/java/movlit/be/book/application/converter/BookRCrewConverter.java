@@ -2,11 +2,8 @@ package movlit.be.book.application.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import movlit.be.book.domain.BookRCrew;
-import movlit.be.book.domain.entity.BookEntity;
+import movlit.be.book.domain.BookRCrewVo;
 import movlit.be.book.domain.entity.BookRCrewEntity;
-import movlit.be.book.domain.entity.BookcrewEntity;
-import movlit.be.common.util.ids.BookRCrewId;
 
 public class BookRCrewConverter {
 
@@ -16,32 +13,32 @@ public class BookRCrewConverter {
 
 
     // Domain -> Entity
-    public static BookRCrewEntity toEntity(BookRCrew bookRCrew) {
+    public static BookRCrewEntity toEntity(BookRCrewVo bookRCrewVo) {
         return BookRCrewEntity.builder()
-                .bookRCrewId(bookRCrew.getBookRCrewId())
+                .bookRCrewId(bookRCrewVo.getBookRCrewId())
                 //.book(BookConverter.toEntity(bookRCrew.getBook()))
-                .bookcrewEntity(BookcrewConverter.toEntity(bookRCrew.getBookcrew()))
+                .bookcrewEntity(BookcrewConverter.toEntity(bookRCrewVo.getBookcrewVo()))
                 .build();
     }
 
     // Domain list -> Entity list
-    public static List<BookRCrewEntity> toEntityList(List<BookRCrew> bookRCrews){
-        return bookRCrews.stream()
+    public static List<BookRCrewEntity> toEntityList(List<BookRCrewVo> bookRCrewVos){
+        return bookRCrewVos.stream()
                 .map(BookRCrewConverter::toEntity)
                 .collect(Collectors.toList());
     }
 
     // Entity -> Domain
-    public static BookRCrew toDomain(BookRCrewEntity bookRCrewEntity) {
-        return BookRCrew.builder()
+    public static BookRCrewVo toDomain(BookRCrewEntity bookRCrewEntity) {
+        return BookRCrewVo.builder()
                 .bookRCrewId(bookRCrewEntity.getBookRCrewId())
                 //.book(BookConverter.toDomain(bookRCrewEntity.getBook())) -- BookRCrew에서 BookEntity 필요 없음 -- 컨버터간 순환 참조 방지
-                .bookcrew(BookcrewConverter.toDomain(bookRCrewEntity.getBookcrewEntity()))
+                .bookcrewVo(BookcrewConverter.toDomain(bookRCrewEntity.getBookcrewEntity()))
                 .build();
     }
 
     // Entity List -> Domain List
-    public static List<BookRCrew> toDomainList(List<BookRCrewEntity> bookRCrewEntities){
+    public static List<BookRCrewVo> toDomainList(List<BookRCrewEntity> bookRCrewEntities){
         return bookRCrewEntities.stream()
                 .map(BookRCrewConverter::toDomain)
                 .collect(Collectors.toList());

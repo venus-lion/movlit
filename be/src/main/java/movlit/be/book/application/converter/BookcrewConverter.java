@@ -2,10 +2,8 @@ package movlit.be.book.application.converter;
 
 import java.util.ArrayList;
 import java.util.List;
-import movlit.be.book.domain.Bookcrew;
+import movlit.be.book.domain.BookcrewVo;
 import movlit.be.book.domain.entity.BookcrewEntity;
-import movlit.be.member.domain.Member;
-import movlit.be.member.domain.entity.MemberEntity;
 
 public class BookcrewConverter {
     private BookcrewConverter() {
@@ -13,15 +11,15 @@ public class BookcrewConverter {
     }
 
     // DomainList -> EntityList
-    public static List<BookcrewEntity> toEntityList(List<Bookcrew> bookcrewList) {
+    public static List<BookcrewEntity> toEntityList(List<BookcrewVo> bookcrewVoList) {
         List<BookcrewEntity> bookcrewEntityList = new ArrayList<>();;
 
-        for(Bookcrew bookcrew : bookcrewList){
+        for(BookcrewVo bookcrewVo : bookcrewVoList){
             BookcrewEntity bookcrewEntity = BookcrewEntity.builder()
-                    .crewId(bookcrew.getCrewId())
-                    .name(bookcrew.getName())
-                    .role(bookcrew.getRole())
-                    .profileImageUrl(bookcrew.getProfileImageUrl())
+                    .crewId(bookcrewVo.getCrewId())
+                    .name(bookcrewVo.getName())
+                    .role(bookcrewVo.getRole())
+                    .profileImageUrl(bookcrewVo.getProfileImageUrl())
                     .build();
 
             bookcrewEntityList.add(bookcrewEntity);
@@ -30,38 +28,38 @@ public class BookcrewConverter {
     }
 
     // Domain -> Entity
-    public static BookcrewEntity toEntity(Bookcrew bookcrew) {
+    public static BookcrewEntity toEntity(BookcrewVo bookcrewVo) {
 
             return BookcrewEntity.builder()
-                    .crewId(bookcrew.getCrewId())
-                    .name(bookcrew.getName())
-                    .role(bookcrew.getRole())
-                    .profileImageUrl(bookcrew.getProfileImageUrl())
+                    .crewId(bookcrewVo.getCrewId())
+                    .name(bookcrewVo.getName())
+                    .role(bookcrewVo.getRole())
+                    .profileImageUrl(bookcrewVo.getProfileImageUrl())
                     .build();
     }
 
     // EntityList -> DomainList
-    public static List<Bookcrew> toDomainList(List<BookcrewEntity> bookcrewEntityList) {
-        List<Bookcrew> bookcrewList = new ArrayList<>();;
+    public static List<BookcrewVo> toDomainList(List<BookcrewEntity> bookcrewEntityList) {
+        List<BookcrewVo> bookcrewVoList = new ArrayList<>();;
 
         for(BookcrewEntity crewEntity : bookcrewEntityList){
-            Bookcrew bookcrew = Bookcrew.builder()
+            BookcrewVo bookcrewVo = BookcrewVo.builder()
                     .crewId(crewEntity.getCrewId())
                     .name(crewEntity.getName())
                     .role(crewEntity.getRole())
                     .profileImageUrl(crewEntity.getProfileImageUrl())
                     .build();
 
-            bookcrewList.add(bookcrew);
+            bookcrewVoList.add(bookcrewVo);
         }
 
-       return bookcrewList;
+       return bookcrewVoList;
     }
 
     // Entity -> Domain
-    public static Bookcrew toDomain(BookcrewEntity bookcrewEntity) {
+    public static BookcrewVo toDomain(BookcrewEntity bookcrewEntity) {
 
-            return Bookcrew.builder()
+            return BookcrewVo.builder()
                     .crewId(bookcrewEntity.getCrewId())
                     .name(bookcrewEntity.getName())
                     .role(bookcrewEntity.getRole())

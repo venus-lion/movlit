@@ -7,30 +7,23 @@ import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEn
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @Service
-public class MovieCommentLikeCountService {
+public class MovieCommentLikeCountWriteService {
 
     private final MovieCommentLikeCountRepository movieCommentLikeCountRepository;
 
-    @Transactional
     public void save(MovieCommentLikeCountEntity movieCommentLikeCountEntity) {
         movieCommentLikeCountRepository.save(movieCommentLikeCountEntity);
     }
 
-    @Transactional
     public void incrementMovieCommentLikeCount(MovieCommentId movieCommentId) {
         movieCommentLikeCountRepository.incrementMovieHeartCount(movieCommentId);
     }
 
-    @Transactional
     public void decrementMovieCommentLikeCount(MovieCommentId movieCommentId) {
         movieCommentLikeCountRepository.decrementMovieHeartCount(movieCommentId);
-    }
-
-    public Long fetchMovieCommentLikeCountByMovieIdAndMovieCommentId(MovieCommentId movieCommentId) {
-        return movieCommentLikeCountRepository.fetchMovieCommentLikeCountByMovieCommentId(movieCommentId);
     }
 
 }

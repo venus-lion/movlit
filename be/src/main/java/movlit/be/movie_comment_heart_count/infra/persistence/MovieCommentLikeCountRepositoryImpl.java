@@ -3,6 +3,9 @@ package movlit.be.movie_comment_heart_count.infra.persistence;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieCommentLikeNotFoundException;
 import movlit.be.common.util.ids.MovieCommentId;
+import movlit.be.common.util.ids.MovieCommentLikeId;
+import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
+import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
 import movlit.be.movie_comment_heart_count.domain.MovieCommentLikeCountRepository;
 import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEntity;
 import movlit.be.movie_comment_heart_count.infra.persistence.jpa.MovieCommentLikeCountJpaRepository;
@@ -30,8 +33,8 @@ public class MovieCommentLikeCountRepositoryImpl implements MovieCommentLikeCoun
     }
 
     @Override
-    public Long fetchMovieCommentLikeCountByMovieCommentId(MovieCommentId movieCommentId) {
-        return movieCommentLikeCountJpaRepository.findMovieCommentLikeCountByMovieCommentId(movieCommentId)
+    public MovieCommentLikeResponse fetchMovieCommentLikeResponse(MovieCommentLikeId movieCommentLikeId) {
+        return movieCommentLikeCountJpaRepository.  findMovieCommentLikeResponse(movieCommentLikeId)
                 .orElseThrow(MovieCommentLikeNotFoundException::new);
     }
 

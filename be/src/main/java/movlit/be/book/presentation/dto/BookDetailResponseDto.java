@@ -10,8 +10,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+<<<<<<< HEAD
 import lombok.ToString;
 import movlit.be.book.domain.Bookcrew;
+=======
+import movlit.be.book.domain.BookcrewVo;
+>>>>>>> f072a7d4d9bdfacf3b25fae5631207df7673741a
 import movlit.be.common.util.ids.BookId;
 
 @Getter
@@ -45,6 +49,7 @@ public class BookDetailResponseDto {
     @JsonProperty("is_hearted")
     private boolean isHearted;
     @JsonProperty("book_crew")
+
     private List<BookCrewResponseDto> bookcrewList = new ArrayList<>();
 
     public BookDetailResponseDto(BookId bookId, String isbn, String title, String publisher, LocalDateTime pubDate, String description,

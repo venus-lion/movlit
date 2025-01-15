@@ -48,7 +48,22 @@ operation::signupMember_failedByReconfirmPasswordUnmatch[snippets='http-response
 operation::updateMember_success['http-request,http-response']
 
 [[movie]]
+=== 메인 페이지
+
+==== 메인 페이지 조회
+operation::fetchMovieListByLatest_success[snippets='http-response']
+
+operation::fetchMovieListByPopular_success[snippets='http-response']
+
+operation::fetchMovieListByGenre_success[snippets='http-response']
+
 === 상세 페이지
+
+operation::userLoginHasInterestGenre_success[snippets='http-response']
+
+operation::recentHeartSimilarCrewMovie_success[snippets='http-response']
+
+operation::searchMovie_success[snippets='http-request, http-response']
 
 ==== 상세 페이지 조회
 
@@ -59,6 +74,9 @@ operation::fetchMovieComment_success[snippets='http-request,http-response']
 operation::fetchMovieDetailCrews_success[snippets='http-request,http-response']
 
 operation::fetchMovieDetailGenres_success[snippets='http-request,http-response']
+
+=== 검색 페이지
+
 
 === 코멘트
 
@@ -89,6 +107,14 @@ operation::fetchMyMovieComment_withSession_success[snippets='http-request,http-r
 === 코멘트 삭제
 
 operation::deleteMovieComment_success[snippets='http-request,http-response']
+
+=== 코멘트 좋아요
+
+operation::movie_comment_like_increment_success[snippets='http-request,http-response']
+
+=== 코멘트 좋아요 취소
+
+operation::movie_comment_unlike_decrement_success[snippets='http-request,http-response']
 
 [[image]]
 

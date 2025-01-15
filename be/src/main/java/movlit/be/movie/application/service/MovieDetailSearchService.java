@@ -20,7 +20,7 @@ public class MovieDetailSearchService {
     public MovieListResponseDto fetchMovieDetailRelated(int page, int pageSize, Long movieId) {
         List<Genre> movieGenreList = movieGenreRepository.fetchMovieDetailGenresByMovieId(movieId);
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
-        List<Movie> movieList = movieSearchRepository.searchInterestGenre(movieGenreList, pageable);
+        List<Movie> movieList = movieSearchRepository.searchMovieByMemberInterestGenre(movieGenreList, pageable);
         return new MovieListResponseDto(movieList);
     }
 

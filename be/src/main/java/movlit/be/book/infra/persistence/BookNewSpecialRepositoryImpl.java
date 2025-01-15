@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookNewSpecialConverter;
-import movlit.be.book.domain.BookNewSpecial;
+import movlit.be.book.domain.BookNewSpecialVo;
 import movlit.be.book.domain.entity.BookNewSpecialEntity;
 import movlit.be.book.domain.repository.BookNewSpecialRepository;
 import movlit.be.book.infra.persistence.jpa.BookNewSpecialJpaRepository;
@@ -18,7 +18,7 @@ public class BookNewSpecialRepositoryImpl implements BookNewSpecialRepository {
     private final BookNewSpecialJpaRepository bookNewSpecialJpaRepository;
 
     @Override
-    public List<BookNewSpecial> findAllBookNewSpecial(Pageable pageable) {
+    public List<BookNewSpecialVo> findAllBookNewSpecial(Pageable pageable) {
         List<BookNewSpecialEntity> bookNewSpecialEntities = bookNewSpecialJpaRepository.findBookNewSpecialEntitiesByPaging(
                 pageable);
 

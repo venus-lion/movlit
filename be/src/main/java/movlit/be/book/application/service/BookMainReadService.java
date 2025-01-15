@@ -4,9 +4,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.BookBestseller;
-import movlit.be.book.domain.BookNew;
-import movlit.be.book.domain.BookNewSpecial;
+import movlit.be.book.domain.BookBestsellerVo;
+import movlit.be.book.domain.BookNewVo;
+import movlit.be.book.domain.BookNewSpecialVo;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookBestsellerRepository;
 import movlit.be.book.domain.repository.BookNewRepository;
@@ -25,29 +25,29 @@ public class BookMainReadService {
     private final BookNewRepository bookNewRepository;
     private final BookNewSpecialRepository bookNewSpecialRepository;
 
-    public List<BookItemDto> getTopBestsellers(int limit){
-        Pageable pageable = PageRequest.of(0, limit); // 0페이지부터 limit 개만큼 가져옴
-        List<BookBestseller> bookbestsellers = bookBestsellerRepository.findAllBestsellers(pageable);
+    public List<BookItemDto> fetchBestsellers(int limit){
+        Pageable pageable = PageRequest.of(0, limit); // 0페이지 ~ limit 개수만큼 가져옴
+        List<BookBestsellerVo> bookbestsellers = bookBestsellerRepository.findAllBestsellers(pageable);
 
         return bookbestsellers.stream()
                 .map(bookbestseller -> convertToDto(bookbestseller))
                 .collect(Collectors.toList());
     }
 
-    public List<BookItemDto> getRecentBookNew(int limit){
-        Pageable pageable = PageRequest.of(5, limit); // 0페이지 ~ limit 개수만큼 가져옴
-        List<BookNew> bookNews = bookNewRepository.findAllBookNew(pageable);
+    public List<BookItemDto> fetchBookNews(int limit){
+        Pageable pageable = PageRequest.of(5, limit);
+        List<BookNewVo> bookNewVos = bookNewRepository.findAllBookNew(pageable);
 
-        return bookNews.stream()
-                .map(bookNew -> convertToDto(bookNew))
+        return bookNewVos.stream()
+                .map(bookNewVo -> convertToDto(bookNewVo))
                 .collect(Collectors.toList());
     }
 
-    public List<BookItemDto> getPopularBookNewSpecial(int limit){
+    public List<BookItemDto> fetchBookNewSpecials(int limit){
         Pageable pageable = PageRequest.of(0, limit);
-        List<BookNewSpecial> bookNewSpecials = bookNewSpecialRepository.findAllBookNewSpecial(pageable);
+        List<BookNewSpecialVo> bookNewSpecialVos = bookNewSpecialRepository.findAllBookNewSpecial(pageable);
 
-        return bookNewSpecials.stream()
+        return bookNewSpecialVos.stream()
                 .map(bookNewSpecial -> convertToDto(bookNewSpecial))
                 .collect(Collectors.toList());
     }
@@ -59,10 +59,10 @@ public class BookMainReadService {
         // BookBestseller, BookNew, BookNewSpecial 일 때에 따라 다른 타입으로 변환
         BookVo bookVo = getBookFromEntity(bookObject);
 
-        List<WriterDto> writers = bookVo.getBookRCrews().stream()
+        List<WriterDto> writers = bookVo.getBookRCrewVos().stream()
                 .map(rc -> WriterDto.builder()
-                        .name(rc.getBookcrew().getName())
-                        .role(rc.getBookcrew().getRole().name())
+                        .name(rc.getBookcrewVo().getName())
+                        .role(rc.getBookcrewVo().getRole().name())
                         .build())
                 .collect(Collectors.toList());
 
@@ -78,12 +78,12 @@ public class BookMainReadService {
 
     // Entity에 맞는 Book 객체를 가져옴
     private BookVo getBookFromEntity(Object bookEntity){
-        if (bookEntity instanceof BookBestseller){
-            return ((BookBestseller)bookEntity).getBookVo();
-        } else if (bookEntity instanceof BookNew) {
-            return ((BookNew)bookEntity).getBookVo();
-        } else if (bookEntity instanceof BookNewSpecial){
-            return ((BookNewSpecial)bookEntity).getBookVo();
+        if (bookEntity instanceof BookBestsellerVo){
+            return ((BookBestsellerVo)bookEntity).getBookVo();
+        } else if (bookEntity instanceof BookNewVo) {
+            return ((BookNewVo)bookEntity).getBookVo();
+        } else if (bookEntity instanceof BookNewSpecialVo){
+            return ((BookNewSpecialVo)bookEntity).getBookVo();
         }
         else {
             throw new BookIllegalArgumentException();

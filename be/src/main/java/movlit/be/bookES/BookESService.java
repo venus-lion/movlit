@@ -1,18 +1,11 @@
 package movlit.be.bookES;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.Book;
-import movlit.be.book.domain.BookNewSpecial;
 import movlit.be.book.domain.entity.BookEntity;
-import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.infra.persistence.jpa.BookJpaRepository;
-import movlit.be.book.presentation.dto.BooksResponse.BookItemDto;
-import movlit.be.book.presentation.dto.BooksResponse.BookItemDto.WriterDto;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 // Book 엔디티 -> BookES save 파싱하기
@@ -24,11 +17,16 @@ public class BookESService {
     private final BookESRepository bookESRepository;
     private final BookJpaRepository bookJpaRepository;
 
-    //    public void repeatGet(int times) {
-//        for (int i = 1; i < times + 1; i++) {
-//            saveBookESIndex();
-//        }
-//    }
+
+    // 전달받은 bookIds를 기준으로, Elasticsearch에서 데이터를 조회하는 메서드
+    public List<BookES> fetchAllBookESByBookIds(List<String> bookIds){
+        Iterable<BookES> bookESList = bookESRepository.findAllById(bookIds);
+
+        return StreamSupport.stream(bookESList.spliterator(), false)
+                .toList(); // 결과가 없으면 빈 리스트 반환
+    }
+
+
     public void saveBookESIndex() {
         List<BookEntity> bookEntitiesAndRelated = bookJpaRepository.findBookEntitiesAndRelated();
 

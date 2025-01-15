@@ -1,6 +1,6 @@
 package movlit.be.book.application.converter;
 
-import movlit.be.book.domain.BookBestseller;
+import movlit.be.book.domain.BookBestsellerVo;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
 public class BookBestsellerConverter {
 
@@ -9,18 +9,18 @@ public class BookBestsellerConverter {
     }
 
     // Domain -> Entity
-    public static BookBestsellerEntity toEntity(BookBestseller bookBestseller) {
+    public static BookBestsellerEntity toEntity(BookBestsellerVo bookBestsellerVo) {
         return BookBestsellerEntity.builder()
-                .bookBestsellerId(bookBestseller.getBookBestsellerId())
-                .book(BookConverter.toEntity(bookBestseller.getBookVo())) // bookentity로
-                .bestRank(bookBestseller.getBestRank())
-                .bestDuration(bookBestseller.getBestDuration())
+                .bookBestsellerId(bookBestsellerVo.getBookBestsellerId())
+                .book(BookConverter.toEntity(bookBestsellerVo.getBookVo())) // bookentity로
+                .bestRank(bookBestsellerVo.getBestRank())
+                .bestDuration(bookBestsellerVo.getBestDuration())
                 .build();
     }
 
     // Entity -> Domain
-    public static BookBestseller toDomain(BookBestsellerEntity bookBestsellerEntity) {
-        return BookBestseller.builder()
+    public static BookBestsellerVo toDomain(BookBestsellerEntity bookBestsellerEntity) {
+        return BookBestsellerVo.builder()
                 .bookBestsellerId(bookBestsellerEntity.getBookBestsellerId())
                 .bookVo(BookConverter.toDomain(bookBestsellerEntity.getBook()))
                 .bestRank(bookBestsellerEntity.getBestRank())

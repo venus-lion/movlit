@@ -1,6 +1,5 @@
 package movlit.be.movie.infra.persistence.jpa;
 
-import java.util.Optional;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.movie.domain.entity.MovieCommentEntity;
@@ -45,10 +44,10 @@ public interface MovieCommentJpaRepository extends JpaRepository<MovieCommentEnt
                                                                 @Param("memberId") MemberId memberId,
                                                                 @Param("pageable") Pageable pageable);
 
-    @Query("SELECT mc "
+    @Query("SELECT CASE WHEN COUNT(mc) > 0 THEN true ELSE false END "
             + "FROM MovieCommentEntity mc "
             + "WHERE mc.memberId = :memberId AND mc.movieId = :movieId")
-    Optional<MovieCommentEntity> findByMemberIdAndMovieId(MemberId memberId, Long movieId);
+    boolean existsByMemberIdAndMovieId(@Param("memberId") MemberId memberId, @Param("movieId") Long movieId);
 
     @Query("SELECT NEW movlit.be.movie.presentation.dto.response.MovieMyCommentReadResponse"
             + "(mb.nickname, mb.profileImgUrl, mc.movieCommentId, mc.comment, mc.score) "

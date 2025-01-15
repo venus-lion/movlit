@@ -55,6 +55,7 @@ public enum ErrorMessage {
     BOOKNEW_NOT_FOUND("bookNew가 존재하지 않습니다.", "b002"),
     BOOKNEWSPECIAL_NOT_FOUND("bookNewSpecial이 존재하지 않습니다", "b003"),
     UNKNOWN_BOOK_ENTITY_TYPE("알 수 없는 BookEntity 타입입니다.", "b004"),
+    NOT_FOUND_BOOK_HEART_BY_MEMBER("해당 유저가 찜한 도서가 존재하지 않습니다.", "b005"),
 
     // book
     BOOK_NOT_FOUND("해당 도서가 존재하지 않습니다.", "b010"),

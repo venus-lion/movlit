@@ -11,14 +11,14 @@ import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookCommentRepository;
 import movlit.be.book.presentation.dto.BookCrewResponseDto;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
-import movlit.be.book.domain.Bookcrew;
+import movlit.be.book.domain.BookcrewVo;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.domain.repository.BookHeartRepository;
 import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.domain.repository.BookcrewRepository;
 import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESConvertor;
-import movlit.be.bookES.BookESDomain;
+import movlit.be.bookES.BookESVo;
 import movlit.be.bookES.BookESRepository;
 import movlit.be.common.exception.BookNotFoundException;
 import movlit.be.common.util.ids.BookId;
@@ -48,6 +48,7 @@ public class BookDetailReadService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     // 도서 상세 정보
+
 //    public BookDetailResponseDto fetchBookDetail1(BookId bookId, Member member) {
 //        BookVo bookVo = fetchByBookId(bookId);
 //        // 평점 - 소수 둘째자리까지
@@ -77,6 +78,8 @@ public class BookDetailReadService {
 //        return bookDetailResponse;
 //    }
 
+
+
     // 도서 상세 정보 (리팩토링 후)
     public BookDetailResponseDto fetchBookDetail(BookId bookId, MemberId memberId){
 
@@ -102,7 +105,7 @@ public class BookDetailReadService {
     }
 
     // 해당 책의 크루
-    public List<Bookcrew> fetchBookcrewByBook(BookVo bookVo) {
+    public List<BookcrewVo> fetchBookcrewByBook(BookVo bookVo) {
         return bookcrewRepository.fetchByBook(bookVo);
     }
 
@@ -125,7 +128,7 @@ public class BookDetailReadService {
     }
 
     // 관련 도서 추천
-    public List<BookESDomain> fetchRecommendedBooks(BookId bookId) {
+    public List<BookESVo> fetchRecommendedBooks(BookId bookId) {
         Pageable pageable = PageRequest.of(0, 10);
         BookES bookES = bookESRepository.findById(bookId.getValue()).orElse(null);
         System.out.println("## bookId : " + bookId.getValue() + "\n## bookES : " + bookES);
@@ -194,11 +197,11 @@ public class BookDetailReadService {
 
             System.out.println("bookESListForReturn ::: " + bookESListForReturn);
 
-            List<BookESDomain> bookESDomainList = bookESListForReturn.stream()
+            List<BookESVo> bookESVoList = bookESListForReturn.stream()
                     .map(resultbookES -> BookESConvertor.documentToDomain(resultbookES))
                     .collect(Collectors.toList());
 
-            return bookESDomainList;
+            return bookESVoList;
 
         } else {
             return null;
