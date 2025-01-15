@@ -33,7 +33,7 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
     }
 
     @Override
-    public List<MovieHeart> findMostRecentMovieHeart(MemberId memberId) {
+    public List<MovieHeart> fetchMovieHeartRecentByMember(MemberId memberId) {
         List<MovieHeartEntity> movieHeartList = movieHeartJpaRepository.findTop3ByMemberIdOrderByRegDtDesc(memberId);
 
         if(movieHeartList.isEmpty()){

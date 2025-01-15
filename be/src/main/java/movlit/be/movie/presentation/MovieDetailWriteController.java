@@ -30,8 +30,7 @@ public class MovieDetailWriteController {
                                                               @AuthenticationPrincipal MyMemberDetails details,
                                                               @RequestBody MovieCommentRequest request) {
         MemberId memberId = details.getMemberId();
-        var data = MovieConvertor.toMovieDetailCommentData(movieId, memberId, request);
-        var response = movieDetailWriteService.createComment(data);
+        var response = movieDetailWriteService.createComment(movieId, memberId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -40,16 +39,14 @@ public class MovieDetailWriteController {
                                               @AuthenticationPrincipal MyMemberDetails details,
                                               @RequestBody MovieCommentRequest request) {
         MemberId currentMemberId = details.getMemberId();
-        movieDetailWriteService.updateComment(movieCommentId, currentMemberId, request); // TODO: data로
+        movieDetailWriteService.updateComment(movieCommentId, currentMemberId, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/api/movies/comments/{movieCommentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable MovieCommentId movieCommentId,
                                               @AuthenticationPrincipal MyMemberDetails details) {
-        MemberId currentMemberId = details.getMemberId();
-        var data = MovieConvertor.toMovieDetailCommentDataForDelete(currentMemberId, movieCommentId);
-        movieDetailWriteService.deleteComment(data);
+        movieDetailWriteService.deleteComment(details.getMemberId(), movieCommentId);
         return ResponseEntity.ok().build();
     }
 

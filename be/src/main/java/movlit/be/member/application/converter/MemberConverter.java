@@ -92,25 +92,6 @@ public class MemberConverter {
                 .build();
     }
 
-    // Member -> MemberEntity
-    public static MemberEntity toMemberEntity(Member member){
-        return MemberEntity.builder()
-                .memberId(member.getMemberId())
-                .email(member.getEmail())
-                .nickname(member.getNickname())
-                .password(member.getPassword())
-                .dob(member.getDob())
-                .profileImgId(member.getProfileImgId())
-                .profileImgUrl(member.getProfileImgUrl())
-                .role(member.getRole())
-                .provider(member.getProvider())
-                .regDt(member.getRegDt())
-                .updDt(member.getUpdDt())
-                .memberGenreEntityList(member.getMemberGenreEntityList())
-                .delYn(false)
-                .build();
-    }
-
     public static MemberRegisterResponse toMemberRegisterResponse(MemberId memberId) {
         return MemberRegisterResponse.from(memberId);
     }
@@ -120,8 +101,6 @@ public class MemberConverter {
                 .nickname(request.getNickname())
                 .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()))
                 .dob(request.getDob())
-//                .profileImgId() TODO
-//                .profileImgUrl()
                 .updDt(LocalDateTime.now())
                 .build();
     }
@@ -130,82 +109,6 @@ public class MemberConverter {
     public static MovieCommentData toMovieDetailCommentData(Long movieId, MemberId memberId,
                                                             MovieCommentRequest request) {
         return new MovieCommentData(movieId, memberId, request);
-    }
-
-    public static MovieCommentDataForDelete toMovieDetailCommentDataForDelete(MemberId memberId,
-                                                                              MovieCommentId movieCommentId) {
-        return new MovieCommentDataForDelete(memberId, movieCommentId);
-    }
-
-    public static MovieCommentEntity toMovieCommentEntity(MovieCommentData data, MovieCommentId movieCommentId,
-                                                          LocalDateTime now) {
-        return MovieCommentEntity.builder()
-                .movieCommentId(movieCommentId)
-                .memberId(data.memberId())
-                .movieId(data.movieId())
-                .score(data.request().getScore())
-                .comment(data.request().getComment())
-                .build();
-    }
-
-    public static MovieCommentResponse toMovieCommentResponse(MovieCommentId comment) {
-        return new MovieCommentResponse(comment);
-    }
-
-    public static MovieHeartResponse toMovieHeartResponse(MovieHeartEntity movieHeartEntity, Long movieHeartCount) {
-        return MovieHeartResponse.builder()
-                .movieHeartId(movieHeartEntity.getMovieHeartId())
-                .isHearted(movieHeartEntity.isHearted())
-                .movieId(movieHeartEntity.getMovieId())
-                .memberId(movieHeartEntity.getMemberId())
-                .movieHeartCnt(movieHeartCount)
-                .build();
-    }
-
-    public static MovieCommentLikeResponse toMovieCommentLikeResponse(MovieCommentLikeEntity movieCommentLikeEntity,
-                                                                      Long movieCommentLikeCount) {
-        return MovieCommentLikeResponse.builder()
-                .movieCommentLikeId(movieCommentLikeEntity.getMovieCommentLikeId())
-                .movieCommentId(movieCommentLikeEntity.getMovieCommentId())
-                .memberId(movieCommentLikeEntity.getMemberId())
-                .isLiked(movieCommentLikeEntity.isLiked())
-                .movieCommentLikeCount(movieCommentLikeCount)
-                .build();
-    }
-
-    public static MovieHeartEntity toMovieHeartEntity(Long movieId, MemberId memberId) {
-        return MovieHeartEntity.builder()
-                .movieHeartId(IdFactory.createMovieHeartId())
-                .movieId(movieId)
-                .memberId(memberId)
-                .isHearted(true)
-                .build();
-    }
-
-    public static MovieCommentLikeEntity toMovieCommentLikeEntity(MemberId memberId,
-                                                                  MovieCommentId movieCommentId) {
-        return MovieCommentLikeEntity.builder()
-                .movieCommentLikeId(IdFactory.createMovieCommentLikeId())
-                .movieCommentId(movieCommentId)
-                .memberId(memberId)
-                .isLiked(true)
-                .build();
-    }
-
-    public static MovieHeartCountEntity toMovieHeartCountEntity(Long movieId) {
-        return MovieHeartCountEntity.builder()
-                .movieHeartCountId(IdFactory.createMovieHeartCountId())
-                .movieId(movieId)
-                .count(0L)
-                .build();
-    }
-
-    public static MovieCommentLikeCountEntity toMovieCommentLikeCountEntity(MovieCommentEntity movieCommentEntity) {
-        return MovieCommentLikeCountEntity.builder()
-                .movieCommentLikeCountId(IdFactory.createMovieCommentLikeCountId())
-                .movieCommentId(movieCommentEntity.getMovieCommentId())
-                .count(0L)
-                .build();
     }
 
     public static Member oAuth2RequestToMemberEntity(MemberRegisterOAuth2Request request, String nickname, List<MemberGenreEntity> memberGenreEntityList,

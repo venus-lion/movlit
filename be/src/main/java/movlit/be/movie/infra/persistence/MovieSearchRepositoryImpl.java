@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +23,7 @@ import movlit.be.movie.application.converter.main.MovieDocumentConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.document.MovieDocument;
 import movlit.be.movie.domain.repository.MovieSearchRepository;
+import movlit.be.movie.presentation.dto.response.MovieCrewResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieDocumentResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,7 +42,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public List<Movie> searchInterestGenre(List<Genre> genreList, Pageable pageable) {
+    public List<Movie> searchMovieByMemberInterestGenre(List<Genre> genreList, Pageable pageable) {
         // 사용자 취향 장르와 일치하는 장르가 있으면 가중치를 부여해서 점수 높은 순으로 가져오기
 
         // Nested Query 생성
@@ -97,24 +99,30 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
     }
 
     @Override
-    public List<Movie> searchByUserHeartMovieAndCrew(List<Movie> heartedMovieList, Pageable pageable) {
-        Set<String> crewNameSet = new HashSet<>();
+    public List<Movie> searchMovieByMemberHeartCrew(List<MovieCrewResponseDto> crewList, Pageable pageable) {
 
-        heartedMovieList.forEach(movie -> {
-            movie.getMovieRCrewList().stream()
-                    // 1) orderNo(또는 원하는 필드)에 따라 정렬
-                    .sorted(Comparator.comparing(rc -> rc.getMovieCrew().getOrderNo()))
-                    // 2) role이 "CAST"인 것만 필터링
-                    .filter(rc -> "C".equals(rc.getMovieCrew().getRole().getValue()))
-                    // 3) 그 중 상위 3개만
-                    .limit(3)
-                    // 4) crewNameSet에 영화인 이름 추가
-                    .forEach(rc -> crewNameSet.add(rc.getMovieCrew().getName()));
-        });
+        Map<Long, Set<String>> groupedMap = crewList.stream()
+                // role 값이 "c"인 항목만 필터링
+                .filter(dto -> "C".equals(dto.role().getValue()))
+                // movieId 기준으로 먼저 정렬하고, 그 다음 orderNo 기준으로 정렬
+                .collect(Collectors.groupingBy(
+                        MovieCrewResponseDto::movieId,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> list.stream().sorted(Comparator.comparingInt(MovieCrewResponseDto::orderNo))
+                                        .limit(3)
+                                        .map(MovieCrewResponseDto::name)
+                                        .collect(Collectors.toSet())
+                        )
+                ));
+
+        Set<String> crewNameSet = groupedMap.values().stream()
+                .flatMap(Set::stream).collect(Collectors.toSet());
+        log.info("CrewNameSet: {}", crewNameSet);
 
         List<Query> mustNotQueryList = new ArrayList<>();
-        heartedMovieList.forEach(m -> {
-            mustNotQueryList.add(Query.of(q -> q.term(t -> t.field("movieId").value(m.getMovieId()))));
+        crewList.forEach(c -> {
+            mustNotQueryList.add(Query.of(q -> q.term(t -> t.field("movieId").value(c.movieId()))));
         });
 
         // Nested Query 생성
@@ -124,7 +132,7 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                                 .should(crewNameSet.stream()
                                         .flatMap(name -> Stream.of(
                                                 Query.of(query -> query.match(t -> t
-                                                .field("movieCrew.name.ko").query(name)
+                                                        .field("movieCrew.name.ko").query(name)
                                                 )),
                                                 Query.of(query -> query.match(t -> t
                                                         .field("movieCrew.name.en").query(name)
@@ -157,15 +165,15 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                             .weight(1.5))
                     );
                     functions.add(FunctionScore.of(f -> f
-                    .filter(NestedQuery.of(n -> n
-                            .path("movieCrew")
-                            .query(q -> q.match(t -> t
-                                    .field("movieCrew.name.en")
-                                    .query(name)
-                            ))
-                    )._toQuery())
-                    .weight(1.5))
-            );
+                            .filter(NestedQuery.of(n -> n
+                                    .path("movieCrew")
+                                    .query(q -> q.match(t -> t
+                                            .field("movieCrew.name.en")
+                                            .query(name)
+                                    ))
+                            )._toQuery())
+                            .weight(1.5))
+                    );
                 }
         );
 
@@ -187,7 +195,6 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
 
         SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
 
-//        log.info("Explain output: {}", searchHits.getSearchHits().get(0).getExplanation());
         log.info("Explain output: {}", searchHits.getSearchHits());
         List<Movie> movieList = this.getMovieDocumentResult(searchHits);
 
