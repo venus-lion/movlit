@@ -90,6 +90,14 @@ operation::fetchMyMovieComment_withSession_success[snippets='http-request,http-r
 
 operation::deleteMovieComment_success[snippets='http-request,http-response']
 
+=== 코멘트 좋아요
+
+operation::movie_comment_like_increment_success[snippets='http-request,http-response']
+
+=== 코멘트 좋아요 취소
+
+operation::movie_comment_unlike_decrement_success[snippets='http-request,http-response']
+
 [[image]]
 
 == 이미지

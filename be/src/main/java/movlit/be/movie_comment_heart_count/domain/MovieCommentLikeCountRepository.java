@@ -1,6 +1,8 @@
 package movlit.be.movie_comment_heart_count.domain;
 
 import movlit.be.common.util.ids.MovieCommentId;
+import movlit.be.common.util.ids.MovieCommentLikeId;
+import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
 import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEntity;
 
 public interface MovieCommentLikeCountRepository {
@@ -11,6 +13,6 @@ public interface MovieCommentLikeCountRepository {
 
     void decrementMovieHeartCount(MovieCommentId movieCommentId);
 
-    Long fetchMovieCommentLikeCountByMovieCommentId(MovieCommentId movieCommentId);
+    MovieCommentLikeResponse fetchMovieCommentLikeResponse(MovieCommentLikeId movieCommentLikeId);
 
 }
