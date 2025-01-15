@@ -34,7 +34,7 @@ public class MovieCommentLikeCountRepositoryImpl implements MovieCommentLikeCoun
 
     @Override
     public MovieCommentLikeResponse fetchMovieCommentLikeResponse(MovieCommentLikeId movieCommentLikeId) {
-        return movieCommentLikeCountJpaRepository.findMovieCommentLikeResponse(movieCommentLikeId)
+        return movieCommentLikeCountJpaRepository.  findMovieCommentLikeResponse(movieCommentLikeId)
                 .orElseThrow(MovieCommentLikeNotFoundException::new);
     }
 

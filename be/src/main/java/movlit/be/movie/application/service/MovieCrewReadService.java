@@ -3,6 +3,7 @@ package movlit.be.movie.application.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.movie.domain.repository.MovieCrewRepository;
+import movlit.be.movie.presentation.dto.response.MovieCrewResponseDto;
 import movlit.be.movie.presentation.dto.response.MovieDetailCrewResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,10 @@ public class MovieCrewReadService {
 
     public List<MovieDetailCrewResponse> fetchMovieDetailCrews(Long movieId) {
         return movieCrewRepository.fetchMovieDetailCrewsByMovieId(movieId);
+    }
+
+    public List<MovieCrewResponseDto> fetchMovieCrewByMovieId(List<Long> movieIds) {
+        return movieCrewRepository.fetchMovieCrewByMovieIds(movieIds);
     }
 
 }
