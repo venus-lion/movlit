@@ -6,7 +6,7 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
-import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
+import movlit.be.movie_comment_heart.application.service.dto.response.MovieCommentLikeSavedData;
 import movlit.be.movie_comment_heart.domain.repository.MovieCommentLikeRepository;
 import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
 import movlit.be.movie_comment_heart_count.application.service.MovieCommentLikeCountReadService;
@@ -28,11 +28,11 @@ public class MovieCommentLikeWriteService {
     public MovieCommentLikeResponse like(MemberId memberId, MovieCommentId movieCommentId) {
         memberReadService.validateMemberIdExists(memberId);
         validateMovieCommentLikeExists(movieCommentId, memberId);
-        MovieCommentLikeEntity movieCommentLikeEntity = movieCommentLikeRepository.like(
+        MovieCommentLikeSavedData likedData = movieCommentLikeRepository.like(
                 MovieConvertor.makeMovieCommentLikeEntity(memberId, movieCommentId));
-        movieCommentLikeCountWriteService.incrementMovieCommentLikeCount(movieCommentLikeEntity.getMovieCommentId());
+        movieCommentLikeCountWriteService.incrementMovieCommentLikeCount(likedData.getMovieCommentId());
         return movieCommentLikeCountReadService.fetchMovieCommentLikeResponse(
-                movieCommentLikeEntity.getMovieCommentLikeId());
+                likedData.getMovieCommentLikeId());
     }
 
     public void unlike(MemberId memberId, MovieCommentId commentId) {
