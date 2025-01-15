@@ -51,16 +51,7 @@ public class MovieRepositoryImpl implements MovieRepository {
     @Override
     public List<Movie> findByVoteCountGreaterThan500OrderByPopularityDesc(Long minVoteCount, Pageable pageable) {
         Page<MovieEntity> movieEntityPage = movieJpaRepository.findByVoteCountGreaterThanEqualOrderByPopularityDesc(minVoteCount, pageable);
-//        log.info("movieEntity : {}", movieEntityPage.getContent().get(0));
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
-    }
-
-    @Override
-    public List<Movie> fetchMovieWithCrewInMovieIds(List<Long> movieIds) {
-        List<MovieEntity> movieEntity = movieJpaRepository.findInIdsWithCrew(movieIds);
-        if(movieEntity.isEmpty()) throw new MovieNotFoundException();
-
-        return movieEntity.stream().map(MovieConverter::toDomain).toList();
     }
 
     @Override
