@@ -39,7 +39,7 @@ public class MovieDetailWriteController {
                                               @AuthenticationPrincipal MyMemberDetails details,
                                               @RequestBody MovieCommentRequest request) {
         MemberId currentMemberId = details.getMemberId();
-        movieDetailWriteService.updateComment(movieCommentId, currentMemberId, request); // TODO: data로
+        movieDetailWriteService.updateComment(movieCommentId, currentMemberId, request);
         return ResponseEntity.ok().build();
     }
 

@@ -8,6 +8,7 @@ import movlit.be.movie.domain.entity.MovieCommentEntity;
 import movlit.be.movie.domain.repository.MovieCommentRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieCommentJpaRepository;
 import movlit.be.movie.presentation.dto.response.MovieCommentReadResponse;
+import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
 import movlit.be.movie.presentation.dto.response.MovieMyCommentReadResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,9 +21,9 @@ public class MovieCommentRepositoryImpl implements MovieCommentRepository {
     private final MovieCommentJpaRepository movieCommentJpaRepository;
 
     @Override
-    public MovieCommentId createComment(MovieCommentEntity movieCommentEntity) {
+    public MovieCommentResponse createComment(MovieCommentEntity movieCommentEntity) {
         MovieCommentEntity savedMovieCommentEntity = movieCommentJpaRepository.save(movieCommentEntity);
-        return savedMovieCommentEntity.getMovieCommentId();
+        return MovieCommentResponse.of(savedMovieCommentEntity.getMovieCommentId());
     }
 
     @Override

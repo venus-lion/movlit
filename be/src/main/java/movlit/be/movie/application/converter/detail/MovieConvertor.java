@@ -6,9 +6,7 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.movie.domain.entity.MovieCommentEntity;
 import movlit.be.movie.presentation.dto.request.MovieCommentDataForDelete;
-import movlit.be.movie.presentation.dto.response.MovieCommentResponse;
 import movlit.be.movie_comment_heart.domain.entity.MovieCommentLikeEntity;
-import movlit.be.movie_comment_heart.presentation.dto.response.MovieCommentLikeResponse;
 import movlit.be.movie_comment_heart_count.domain.entity.MovieCommentLikeCountEntity;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
 import movlit.be.movie_heart.presentation.dto.response.MovieHeartResponse;
@@ -21,7 +19,7 @@ public class MovieConvertor {
     }
 
     public static MovieCommentDataForDelete toMovieDetailCommentDataForDelete(MemberId memberId,
-                                                            MovieCommentId movieCommentId) {
+                                                                              MovieCommentId movieCommentId) {
         return new MovieCommentDataForDelete(memberId, movieCommentId);
     }
 
@@ -35,10 +33,6 @@ public class MovieConvertor {
                 .comment(comment)
                 .regDt(now)
                 .build();
-    }
-
-    public static MovieCommentResponse toMovieCommentResponse(MovieCommentId comment) {
-        return new MovieCommentResponse(comment);
     }
 
     public static MovieHeartResponse toMovieHeartResponse(MovieHeartEntity movieHeartEntity, Long movieHeartCount) {
@@ -78,11 +72,12 @@ public class MovieConvertor {
                 .build();
     }
 
-    public static MovieCommentLikeCountEntity toMovieCommentLikeCountEntity(MovieCommentId movieCommentId) {
+    public static MovieCommentLikeCountEntity makeMovieCommentLikeCountEntity(MovieCommentId movieCommentId) {
         return MovieCommentLikeCountEntity.builder()
                 .movieCommentLikeCountId(IdFactory.createMovieCommentLikeCountId())
                 .movieCommentId(movieCommentId)
                 .count(0L)
                 .build();
     }
+
 }

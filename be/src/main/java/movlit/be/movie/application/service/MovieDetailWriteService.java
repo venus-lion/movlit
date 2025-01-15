@@ -28,17 +28,21 @@ public class MovieDetailWriteService {
 
     public MovieCommentResponse createComment(Long movieId, MemberId memberId, MovieCommentRequest request) {
         validateMemberExistsInMovieComment(memberId, movieId);
+        MovieCommentEntity movieCommentEntity = makeMovieCommentEntity(movieId, memberId, request);
+        movieCommentLikeCountWriteService.save(
+                MovieConvertor.makeMovieCommentLikeCountEntity(movieCommentEntity.getMovieCommentId()));
+        return movieCommentRepository.createComment(movieCommentEntity);
+    }
 
+    private MovieCommentEntity makeMovieCommentEntity(Long movieId, MemberId memberId,
+                                                             MovieCommentRequest request) {
         MovieCommentId movieCommentId = IdFactory.createMovieCommentId();
         LocalDateTime now = LocalDateTime.now();
         String comment = request.getComment();
         Double score = request.getScore();
-
-        MovieCommentEntity movieCommentEntity = MovieConvertor.toMovieCommentEntity(
-                movieId, memberId, comment, score, movieCommentId, now);
-        movieCommentLikeCountWriteService.save(
-                MovieConvertor.toMovieCommentLikeCountEntity(movieCommentEntity.getMovieCommentId()));
-        return MovieConvertor.toMovieCommentResponse(movieCommentRepository.createComment(movieCommentEntity));
+        return MovieConvertor.toMovieCommentEntity(
+                movieId, memberId, comment, score, movieCommentId, now
+        );
     }
 
     private void validateMemberExistsInMovieComment(MemberId memberId, Long movieId) {
