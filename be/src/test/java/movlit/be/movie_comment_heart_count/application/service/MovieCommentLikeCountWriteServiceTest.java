@@ -39,7 +39,7 @@ class MovieCommentLikeCountWriteServiceTest {
         movieCommentLikeCountJpaRepository.deleteAll();
     }
 
-    @DisplayName("코멘트 좋아요 카운트를 100번 비동기로 증가시키면 100번 증가한다.")
+    @DisplayName("코멘트 좋아요 카운트를 1000번 비동기로 증가시키면 1000번 증가한다.")
     @Test
     void increment() {
         // given
@@ -47,10 +47,10 @@ class MovieCommentLikeCountWriteServiceTest {
         MovieCommentLikeCountId movieCommentLikeCountId = IdFactory.createMovieCommentLikeCountId();
         movieCommentLikeCountJpaRepository.save(
                 new MovieCommentLikeCountEntity(movieCommentLikeCountId, movieCommentId, 1L));
-        CountDownLatch latch = new CountDownLatch(100);
+        CountDownLatch latch = new CountDownLatch(1000);
 
         // when
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             threadPoolExecutor.execute(() -> {
                 movieCommentLikeCountWriteService.incrementMovieCommentLikeCount(movieCommentId);
                 latch.countDown();
@@ -66,21 +66,21 @@ class MovieCommentLikeCountWriteServiceTest {
         Optional<MovieCommentLikeCountEntity> response = movieCommentLikeCountJpaRepository.findByMovieCommentId(
                 movieCommentId);
         assertThat(response).isPresent();
-        assertThat(response.get()).hasFieldOrPropertyWithValue("count", 101L);
+        assertThat(response.get()).hasFieldOrPropertyWithValue("count", 1001L);
     }
 
-    @DisplayName("코멘트 좋아요 카운트를 100번 비동기로 증가시키면 100번 증가한다.")
+    @DisplayName("코멘트 좋아요 카운트를 1000번 비동기로 감소시키면 1000번 감소한다.")
     @Test
     void decrement() {
         // given
         MovieCommentId movieCommentId = new MovieCommentId("1");
         MovieCommentLikeCountId movieCommentLikeCountId = IdFactory.createMovieCommentLikeCountId();
         movieCommentLikeCountJpaRepository.save(
-                new MovieCommentLikeCountEntity(movieCommentLikeCountId, movieCommentId, 100L));
-        CountDownLatch latch = new CountDownLatch(100);
+                new MovieCommentLikeCountEntity(movieCommentLikeCountId, movieCommentId, 1000L));
+        CountDownLatch latch = new CountDownLatch(1000);
 
         // when
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             threadPoolExecutor.execute(() -> {
                 movieCommentLikeCountWriteService.decrementMovieCommentLikeCount(movieCommentId);
                 latch.countDown();
