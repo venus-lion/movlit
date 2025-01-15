@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MovieCrewReadService {
+public class MovieCrewReadServiceMyk {
     private final MovieCrewRepository movieCrewRepository;
 
     @Transactional(readOnly = true)

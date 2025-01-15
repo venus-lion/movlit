@@ -29,7 +29,7 @@ public class MovieSearchService {
     private final MemberGenreService memberGenreService;
     private final MovieHeartService movieHeartService;
     private final MovieReadService movieReadService;
-    private final MovieCrewReadService movieCrewReadService;
+    private final MovieCrewReadServiceMyk movieCrewReadServiceMyk;
     private final MovieSearchRepository movieSearchRepository;
 
     @Transactional(readOnly = true)
@@ -44,7 +44,6 @@ public class MovieSearchService {
         return new MovieListResponseDto(movieList);
     }
 
-    @Transactional(readOnly = true, noRollbackFor = NotExistMovieHeartByMember.class)
     public MovieListResponseDto fetchMovieByMemberRecentHeart(MemberId currentMemberId, int page, int pageSize) {
         List<Movie> movieList;
 
@@ -52,14 +51,14 @@ public class MovieSearchService {
             // 로그인 유저의 가장 최근 찜한 영화 가져오기
             List<MovieHeart> movieHeartList = movieHeartService.fetchMovieHeartRecentByMember(currentMemberId);
             List<Long> movieIds = movieHeartList.stream().map(MovieHeart::getMovieId).collect(Collectors.toList());
-            log.info("=== heartedMovieIds : {}", movieIds);
+
             // 멤버가 찜한 Movie와 MovieCrew 가져오기
             List<Movie> heartedMovieList = movieReadService.fetchMovieWithCrewInMovieIds(movieIds);
-            log.info("=== heartedMovies : {}", heartedMovieList);
-//            List<MovieCrewResponseDto> heartedMovieCrewList = movieCrewReadService.fetchMovieCrewByMovieId(movieIds);
+
+            List<MovieCrewResponseDto> heartedMovieCrewList = movieCrewReadServiceMyk.fetchMovieCrewByMovieId(movieIds);
             Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
-            movieList = movieSearchRepository.searchMovieAndCrewByMemberHeart(heartedMovieList, pageable);
+            movieList = movieSearchRepository.searchMovieByMemberHeartCrew(heartedMovieCrewList, pageable);
             return new MovieListResponseDto(movieList);
 
         } catch (NotExistMovieHeartByMember e) {
