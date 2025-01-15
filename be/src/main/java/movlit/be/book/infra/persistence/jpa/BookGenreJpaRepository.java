@@ -1,5 +1,6 @@
 package movlit.be.book.infra.persistence.jpa;
 
+import movlit.be.common.util.ids.BookId;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import movlit.be.book.domain.entity.BookEntity;
@@ -11,6 +12,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookGenreJpaRepository extends JpaRepository<BookGenreEntity, BookGenreIdEntity> {
     // genreIds 리스트에 해당하는 BookEntity list를 반환하는 쿼리
-    @Query("SELECT DISTINCT bg.bookEntity FROM BookGenreEntity bg WHERE bg.bookGenreIdEntity.genreId IN :genreIds")
-    List<BookEntity> findBooksByGenreIds(@Param("genreIds") List<Long> genreIds, Pageable pageable);
+    @Query("SELECT DISTINCT bg.bookEntity.bookId FROM BookGenreEntity bg WHERE bg.bookGenreIdEntity.genreId IN :genreIds")
+    List<BookId> findBooksByGenreIds(@Param("genreIds") List<Long> genreIds, Pageable pageable);
 }

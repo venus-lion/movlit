@@ -10,14 +10,14 @@ import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookCommentRepository;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
-import movlit.be.book.domain.Bookcrew;
+import movlit.be.book.domain.BookcrewVo;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.domain.repository.BookHeartRepository;
 import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.domain.repository.BookcrewRepository;
 import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESConvertor;
-import movlit.be.bookES.BookESDomain;
+import movlit.be.bookES.BookESVo;
 import movlit.be.bookES.BookESRepository;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.member.domain.Member;
@@ -53,7 +53,7 @@ public class BookDetailReadService {
         boolean isHearted = false;
         if(member != null)
             isHearted = isHeartedByBook(bookVo, member);
-        List<Bookcrew> bookcrewList = fetchBookcrewByBook(bookVo);
+        List<BookcrewVo> bookcrewVoList = fetchBookcrewByBook(bookVo);
         BookDetailResponseDto bookDetailResponse = BookDetailResponseDto.builder()
                 .bookId(bookVo.getBookId())
                 .isbn(bookVo.getIsbn())
@@ -68,7 +68,7 @@ public class BookDetailReadService {
                 .averageScore(BigDecimal.valueOf(averageScore))
                 .heartCount(heartCount)
                 .isHearted(isHearted)
-                .bookcrewList(bookcrewList)
+                .bookcrewVoList(bookcrewVoList)
                 .build();
 
         return bookDetailResponse;
@@ -79,7 +79,7 @@ public class BookDetailReadService {
     }
 
     // 해당 책의 크루
-    public List<Bookcrew> fetchBookcrewByBook(BookVo bookVo) {
+    public List<BookcrewVo> fetchBookcrewByBook(BookVo bookVo) {
         return bookcrewRepository.fetchByBook(bookVo);
     }
 
@@ -102,7 +102,7 @@ public class BookDetailReadService {
     }
 
     // 관련 도서 추천
-    public List<BookESDomain> fetchRecommendedBooks(BookId bookId) {
+    public List<BookESVo> fetchRecommendedBooks(BookId bookId) {
         Pageable pageable = PageRequest.of(0, 10);
         BookES bookES = bookESRepository.findById(bookId.getValue()).orElse(null);
         System.out.println("## bookId : " + bookId.getValue() + "\n## bookES : " + bookES);
@@ -171,11 +171,11 @@ public class BookDetailReadService {
 
             System.out.println("bookESListForReturn ::: " + bookESListForReturn);
 
-            List<BookESDomain> bookESDomainList = bookESListForReturn.stream()
+            List<BookESVo> bookESVoList = bookESListForReturn.stream()
                     .map(resultbookES -> BookESConvertor.documentToDomain(resultbookES))
                     .collect(Collectors.toList());
 
-            return bookESDomainList;
+            return bookESVoList;
 
         } else {
             return null;

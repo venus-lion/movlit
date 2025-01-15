@@ -1,6 +1,7 @@
 package movlit.be.book.infra.persistence;
 
 import movlit.be.book.domain.BookVo;
+import movlit.be.common.util.ids.BookId;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,16 +19,14 @@ public class BookGenreRepositoryImpl implements BookGenreRepository {
     private final BookGenreJpaRepository bookGenreJpaRepository;
 
     @Override
-    public List<BookVo> findBooksByGenreIds(List<Long> genreIds, Pageable pageable) {
-        List<BookEntity> booksByGenreIds = bookGenreJpaRepository.findBooksByGenreIds(genreIds, pageable);
+    public List<BookId> findBooksByGenreIds(List<Long> genreIds, Pageable pageable) {
+        List<BookId> bookIdsByGenreIds = bookGenreJpaRepository.findBooksByGenreIds(genreIds, pageable);
 
-        if (booksByGenreIds.isEmpty()){
+        if (bookIdsByGenreIds.isEmpty()){
             throw new BooksByGenreNotFoundException();
         }
 
-        return booksByGenreIds.stream()
-                .map(BookConverter::toDomain)
-                .collect(Collectors.toList());
+        return bookIdsByGenreIds;
     }
 
 }

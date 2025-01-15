@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookBestsellerConverter;
-import movlit.be.book.domain.BookBestseller;
+import movlit.be.book.domain.BookBestsellerVo;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
 import movlit.be.book.domain.repository.BookBestsellerRepository;
 import movlit.be.book.infra.persistence.jpa.BookBestsellerJpaRepository;
@@ -18,7 +18,7 @@ public class BookBestsellerRepositoryImpl implements BookBestsellerRepository {
     private final BookBestsellerJpaRepository bookBestsellerJpaRepository;
 
     @Override
-    public List<BookBestseller> findAllBestsellers(Pageable pageable) {
+    public List<BookBestsellerVo> findAllBestsellers(Pageable pageable) {
         List<BookBestsellerEntity> bestsellerEntities = bookBestsellerJpaRepository.findBestsellersByPaging(pageable);
 
         if (bestsellerEntities.isEmpty()){

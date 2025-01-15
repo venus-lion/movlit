@@ -1,14 +1,14 @@
 package movlit.be.book.application.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import movlit.be.book.presentation.dto.BookRecommendDto;
 import movlit.be.book.presentation.dto.BooksSearchResponseDto;
 import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESConvertor;
-import movlit.be.bookES.BookESDomain;
+import movlit.be.bookES.BookESVo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BookSearchService {
     private final ElasticsearchOperations elasticsearchOperations;
-    public BooksSearchResponseDto getSearchBook(String inputStr, int page, int pageSize){
+    public BooksSearchResponseDto fetchSearchBook(String inputStr, int page, int pageSize){
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
         System.out.println("검색 시작 :::: " + inputStr);
@@ -72,12 +72,12 @@ public class BookSearchService {
             totalPages++;
         }
 
-        List<BookESDomain> bookESDomainList = bookESList.stream()
+        List<BookESVo> bookESVos = bookESList.stream()
                 .map(bookES -> BookESConvertor.documentToDomain(bookES))
                 .collect(Collectors.toList());
 
         return BooksSearchResponseDto.builder()
-                .bookESDomainList(bookESDomainList)
+                .bookESVoList(bookESVos)
                 .totalPages(totalPages)
                 .build();
     }

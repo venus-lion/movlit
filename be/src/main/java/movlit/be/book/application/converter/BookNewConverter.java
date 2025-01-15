@@ -1,20 +1,20 @@
 package movlit.be.book.application.converter;
 
-import movlit.be.book.domain.BookNew;
+import movlit.be.book.domain.BookNewVo;
 import movlit.be.book.domain.entity.BookNewEntity;
 
 public class BookNewConverter {
     // Domain -> Entity
-    public static BookNewEntity toEntity(BookNew bookNew){
+    public static BookNewEntity toEntity(BookNewVo bookNewVo){
         return BookNewEntity.builder()
-                .bookNewId(bookNew.getBookNewId())
-                .bookEntity(BookConverter.toEntity(bookNew.getBookVo()))
+                .bookNewId(bookNewVo.getBookNewId())
+                .bookEntity(BookConverter.toEntity(bookNewVo.getBookVo()))
                 .build();
     }
 
     // Entity -> Domain
-    public static BookNew toDomain(BookNewEntity bookNewEntity){
-        return BookNew.builder()
+    public static BookNewVo toDomain(BookNewEntity bookNewEntity){
+        return BookNewVo.builder()
                 .bookNewId(bookNewEntity.getBookNewId())
                 .bookVo(BookConverter.toDomain(bookNewEntity.getBookEntity()))
                 .build();

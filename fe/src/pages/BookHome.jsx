@@ -17,14 +17,14 @@ function BookHome() {
         data: recommendedBooks,
         loading: loadingRecommended,
         error: errorRecommended
-    } = useApiData('/books/recommendations', isLoggedIn);
+    } = useApiData('/books/search/recommendations', isLoggedIn);
 
     // 사용자 관심 장르 도서 API 호출
     const {
         data: interestGenreBooks,
         loading: loadingInterestGenre,
         error: errorInterestGenre
-    } = useApiData('/books/interestGenre', isLoggedIn);
+    } = useApiData('/books/search/interestGenre', isLoggedIn);
 
     console.log('interestgenreBooks :: ' + interestGenreBooks);
 

@@ -1,4 +1,4 @@
-package movlit.be.bookES;
+package movlit.be.book.presentation.dto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class BookESDomain {
+public class BookRecommendDto {
     private String bookId; // isbn13
     private String isbn; // isbn
     private String title;
@@ -19,5 +19,4 @@ public class BookESDomain {
     private String bookImgUrl;
     private LocalDate regDt;
     private LocalDate updDt;
-
 }
