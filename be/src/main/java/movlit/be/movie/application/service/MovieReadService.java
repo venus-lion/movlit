@@ -49,9 +49,4 @@ public class MovieReadService {
         return responseDto;
     }
 
-    @Transactional(readOnly = true)
-    public List<Movie> fetchMovieWithCrewInMovieIds(List<Long> movieIds){
-        return movieRepository.fetchMovieWithCrewInMovieIds(movieIds);
-    }
-
 }

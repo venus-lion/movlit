@@ -52,9 +52,6 @@ public class MovieSearchService {
             List<MovieHeart> movieHeartList = movieHeartService.fetchMovieHeartRecentByMember(currentMemberId);
             List<Long> movieIds = movieHeartList.stream().map(MovieHeart::getMovieId).collect(Collectors.toList());
 
-            // 멤버가 찜한 Movie와 MovieCrew 가져오기
-            List<Movie> heartedMovieList = movieReadService.fetchMovieWithCrewInMovieIds(movieIds);
-
             List<MovieCrewResponseDto> heartedMovieCrewList = movieCrewReadServiceMyk.fetchMovieCrewByMovieId(movieIds);
             Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
