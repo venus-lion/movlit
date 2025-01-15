@@ -31,6 +31,10 @@ public class MemberGenreRepositoryImpl implements MemberGenreRepository {
     public List<Genre> findUserInterestGenreList(MemberId memberId) {
         List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findAllByMemberId(memberId);
 
+        if (memberGenreEntityList.isEmpty()){
+            throw new MemberGenreNotFoundException();
+        }
+
         return memberGenreEntityList.stream().map(x -> Genre.of(x.getGenreId())).toList();
     }
 

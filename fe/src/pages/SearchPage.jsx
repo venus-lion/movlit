@@ -62,7 +62,7 @@ function SearchPage() {
                     }
                 })
 
-                const bookData = await bookResponse.data.bookESDomainList;
+                const bookData = await bookResponse.data.bookESVoList;
                 setBooks(bookData || []);
 
                 console.log('도서 데이터 :: ' + bookData);

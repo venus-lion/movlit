@@ -10,11 +10,10 @@ import movlit.be.common.util.ids.BookBestsellerId;
 
 @NoArgsConstructor
 @Getter
-@Setter
 @ToString
 @Builder
 @AllArgsConstructor
-public class BookBestseller {
+public class BookBestsellerVo {
 
     private BookBestsellerId bookBestsellerId;
 

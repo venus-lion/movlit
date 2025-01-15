@@ -11,12 +11,11 @@ import movlit.be.common.util.ids.BookRCrewId;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
-public class BookRCrew {
+public class BookRCrewVo {
 
     private BookRCrewId bookRCrewId;
     private BookVo bookVo;
-    private Bookcrew bookcrew;
+    private BookcrewVo bookcrewVo;
 
 }

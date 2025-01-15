@@ -13,10 +13,9 @@ import movlit.be.common.util.ids.BookcrewId;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @ToString
 @Builder
-public class Bookcrew {
+public class BookcrewVo {
 
     private BookcrewId crewId;
     private String name;

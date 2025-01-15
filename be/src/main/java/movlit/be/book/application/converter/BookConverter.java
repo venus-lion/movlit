@@ -27,8 +27,8 @@ public class BookConverter {
                 .heartCount(bookVo.getHeartCount())
                 .regDt(bookVo.getRegDt())
                 .updDt(bookVo.getUpdDt())
-                .bookRCrewEntities(BookRCrewConverter.toEntityList(bookVo.getBookRCrews()))
-                .bookGenreEntities(BookGenreConverter.toEntityList(bookVo.getBookGenres()))
+                .bookRCrewEntities(BookRCrewConverter.toEntityList(bookVo.getBookRCrewVos()))
+                .bookGenreEntities(BookGenreConverter.toEntityList(bookVo.getBookGenreVos()))
                 .build();
     }
 
@@ -48,8 +48,8 @@ public class BookConverter {
                 .heartCount(bookEntity.getHeartCount())
                 .regDt(bookEntity.getRegDt())
                 .updDt(bookEntity.getUpdDt())
-                .bookRCrews(BookRCrewConverter.toDomainList(bookEntity.getBookRCrewEntities()))
-                .bookGenres(BookGenreConverter.toDomainList(bookEntity.getBookGenreEntities()))
+                .bookRCrewVos(BookRCrewConverter.toDomainList(bookEntity.getBookRCrewEntities()))
+                .bookGenreVos(BookGenreConverter.toDomainList(bookEntity.getBookGenreEntities()))
                 .build();
     }
 

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import movlit.be.common.util.ids.BookId;
 
@@ -14,7 +13,6 @@ import movlit.be.common.util.ids.BookId;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @ToString
 @Builder
 public class BookVo {
@@ -32,7 +30,7 @@ public class BookVo {
     private Long heartCount;
     private LocalDateTime regDt;
     private LocalDateTime updDt;
-    private List<BookRCrew> bookRCrews;
-    private List<BookGenre> bookGenres; // book이 가진 장르들
+    private List<BookRCrewVo> bookRCrewVos;
+    private List<BookGenreVo> bookGenreVos; // book이 가진 장르들
 
 }

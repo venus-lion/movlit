@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import movlit.be.book.domain.Bookcrew;
+import movlit.be.book.domain.BookcrewVo;
 import movlit.be.common.util.ids.BookId;
 
 @Getter
@@ -42,6 +42,6 @@ public class BookDetailResponseDto {
     @JsonProperty("is_hearted")
     private boolean isHearted;
     @JsonProperty("book_crew")
-    private List<Bookcrew> bookcrewList;
+    private List<BookcrewVo> bookcrewVoList;
 
 }

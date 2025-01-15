@@ -9,7 +9,7 @@ import movlit.be.book.application.service.BookDetailWriteService;
 import movlit.be.book.domain.BookHeartVo;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
-import movlit.be.bookES.BookESDomain;
+import movlit.be.bookES.BookESVo;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
@@ -93,9 +93,9 @@ public class BookDetailController {
     }
 
     @GetMapping("{bookId}/recommendedBooks")
-    public ResponseEntity<List<BookESDomain>> fetchRecommendedBooks(@PathVariable BookId bookId) {
-        List<BookESDomain> recommendedBookList = bookDetailReadService.fetchRecommendedBooks(bookId);
-        for (BookESDomain recBook : recommendedBookList) {
+    public ResponseEntity<List<BookESVo>> fetchRecommendedBooks(@PathVariable BookId bookId) {
+        List<BookESVo> recommendedBookList = bookDetailReadService.fetchRecommendedBooks(bookId);
+        for (BookESVo recBook : recommendedBookList) {
             // 각 BookCommentResponseDto의 내용 출력
             System.out.println("@@ 추천 책 제목 : " + recBook.getTitle());
             System.out.println("@@ 추천 책 카테고리: " + recBook.getCategoryName());
