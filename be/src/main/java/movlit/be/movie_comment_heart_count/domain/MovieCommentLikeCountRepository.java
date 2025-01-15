@@ -13,6 +13,6 @@ public interface MovieCommentLikeCountRepository {
 
     void decrementMovieHeartCount(MovieCommentId movieCommentId);
 
-    MovieCommentLikeResponse fetchMovieCommentLikeResponseByMovieCommentId(MovieCommentId movieCommentId);
+    MovieCommentLikeResponse fetchMovieCommentLikeResponse(MovieCommentLikeId movieCommentLikeId);
 
 }

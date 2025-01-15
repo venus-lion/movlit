@@ -31,8 +31,8 @@ public class MovieCommentLikeWriteService {
         MovieCommentLikeEntity movieCommentLikeEntity = movieCommentLikeRepository.like(
                 MovieConvertor.makeMovieCommentLikeEntity(memberId, movieCommentId));
         movieCommentLikeCountWriteService.incrementMovieCommentLikeCount(movieCommentLikeEntity.getMovieCommentId());
-        return movieCommentLikeCountReadService.fetchMovieCommentLikeResponseByMovieCommentId(
-                movieCommentLikeEntity.getMovieCommentId());
+        return movieCommentLikeCountReadService.fetchMovieCommentLikeResponse(
+                movieCommentLikeEntity.getMovieCommentLikeId());
     }
 
     public void unlike(MemberId memberId, MovieCommentId commentId) {
