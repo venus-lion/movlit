@@ -3,12 +3,13 @@ package movlit.be.book.application.service;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookCommentRepository;
+import movlit.be.book.presentation.dto.BookCrewResponseDto;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
 import movlit.be.book.domain.Bookcrew;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
@@ -19,7 +20,9 @@ import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESConvertor;
 import movlit.be.bookES.BookESDomain;
 import movlit.be.bookES.BookESRepository;
+import movlit.be.common.exception.BookNotFoundException;
 import movlit.be.common.util.ids.BookId;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.movie.domain.document.MovieDocument;
 import org.springframework.data.domain.PageRequest;
@@ -45,33 +48,53 @@ public class BookDetailReadService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     // 도서 상세 정보
-    public BookDetailResponseDto fetchBookDetail(BookId bookId, Member member) {
-        BookVo bookVo = fetchByBookId(bookId);
-        // 평점 - 소수 둘째자리까지
-        double averageScore = Math.round(fetchAverageScoreByBookId(bookId)*100)/100.0;
-        int heartCount = countHeartsByBookId(bookId);
-        boolean isHearted = false;
-        if(member != null)
-            isHearted = isHeartedByBook(bookVo, member);
-        List<Bookcrew> bookcrewList = fetchBookcrewByBook(bookVo);
-        BookDetailResponseDto bookDetailResponse = BookDetailResponseDto.builder()
-                .bookId(bookVo.getBookId())
-                .isbn(bookVo.getIsbn())
-                .title(bookVo.getTitle())
-                .publisher(bookVo.getPublisher())
-                .pubDate(bookVo.getPubDate())
-                .description(bookVo.getDescription())
-                .categoryName(bookVo.getCategoryName())
-                .bookImgUrl(bookVo.getBookImgUrl())
-                .stockStatus(bookVo.getStockStatus())
-                .mallUrl(bookVo.getMallUrl())
-                .averageScore(BigDecimal.valueOf(averageScore))
-                .heartCount(heartCount)
-                .isHearted(isHearted)
-                .bookcrewList(bookcrewList)
-                .build();
+//    public BookDetailResponseDto fetchBookDetail1(BookId bookId, Member member) {
+//        BookVo bookVo = fetchByBookId(bookId);
+//        // 평점 - 소수 둘째자리까지
+//        double averageScore = Math.round(fetchAverageScoreByBookId(bookId)*100)/100.0;
+//        int heartCount = countHeartsByBookId(bookId);
+//        boolean isHearted = false;
+//        if(member != null)
+//            isHearted = isHeartedByBook(bookVo, member);
+//        List<Bookcrew> bookcrewList = fetchBookcrewByBook(bookVo);
+//        BookDetailResponseDto bookDetailResponse = BookDetailResponseDto.builder()
+//                .bookId(bookVo.getBookId())
+//                .isbn(bookVo.getIsbn())
+//                .title(bookVo.getTitle())
+//                .publisher(bookVo.getPublisher())
+//                .pubDate(bookVo.getPubDate())
+//                .description(bookVo.getDescription())
+//                .categoryName(bookVo.getCategoryName())
+//                .bookImgUrl(bookVo.getBookImgUrl())
+//                .stockStatus(bookVo.getStockStatus())
+//                .mallUrl(bookVo.getMallUrl())
+//                .averageScore(BigDecimal.valueOf(averageScore))
+//                .heartCount(heartCount)
+//                .isHearted(isHearted)
+//                .bookcrewList(bookcrewList)
+//                .build();
+//
+//        return bookDetailResponse;
+//    }
 
-        return bookDetailResponse;
+    // 도서 상세 정보 (리팩토링 후)
+    public BookDetailResponseDto fetchBookDetail(BookId bookId, MemberId memberId){
+
+        // 1. 책 정보 조회
+        Optional<BookDetailResponseDto> bookDetailsOpt = Optional.ofNullable(
+                bookRepository.fetchBookDetailByBookId(bookId, memberId));
+
+        // 2. 크루 정보 조회
+        List<BookCrewResponseDto> crewList = bookRepository.fetchBookCrewByBookId(bookId);
+
+        // 3. 결과 조합
+        if (bookDetailsOpt.isPresent()) {
+            BookDetailResponseDto bookDetails = bookDetailsOpt.get();
+            bookDetails.setBookcrewList(crewList);
+            return bookDetails;
+        }
+
+        throw new BookNotFoundException();  // 또는 예외 처리
     }
 
     public BookVo fetchByBookId(BookId bookId) {
