@@ -1,11 +1,11 @@
-package movlit.be.pub_sub.message.presentation;
+package movlit.be.pub_sub.chatMessage.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.pub_sub.ChatService;
 import movlit.be.pub_sub.RedisMessagePublisher;
-import movlit.be.pub_sub.message.presentation.dto.response.ChatMessageDto;
+import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @RequiredArgsConstructor
-@EnableMongoRepositories(basePackages = "movlit.be.pub_sub.message.infra.persistence.mongo")
+@EnableMongoRepositories(basePackages = "movlit.be.pub_sub.chatMessage.infra.persistence.mongo")
 public class MongoConfig {
 
     private final MongoProperties mongoProperties;

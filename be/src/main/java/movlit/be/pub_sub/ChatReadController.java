@@ -1,9 +1,6 @@
 package movlit.be.pub_sub;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import movlit.be.pub_sub.message.presentation.dto.response.ChatMessageDto;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

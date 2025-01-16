@@ -1,11 +1,11 @@
-package movlit.be.pub_sub.chat.application.service;
+package movlit.be.pub_sub.chatRoom.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.chat.infra.persistence.jpa.ChatRoomJpaRepository;
-import movlit.be.pub_sub.entity.ChatRoom;
-import movlit.be.pub_sub.entity.ContentType;
+import movlit.be.pub_sub.chatRoom.infra.persistence.jpa.ChatRoomJpaRepository;
+import movlit.be.pub_sub.chatRoom.entity.ChatRoom;
+import movlit.be.pub_sub.chatRoom.entity.ContentType;
 import org.springframework.stereotype.Service;
 
 @Service

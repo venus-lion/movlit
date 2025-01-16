@@ -1,12 +1,7 @@
 package movlit.be.pub_sub;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.message.presentation.dto.response.ChatMessageDto;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
