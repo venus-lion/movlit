@@ -17,6 +17,7 @@ import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
 
 // OAuthCallback 컴포넌트 import
 import OAuthCallback from './OAuthCallback';
+import ChatPage from "./pages/ChatPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -71,6 +72,17 @@ const router = createBrowserRouter([
             {
                 path: 'oauth/callback',
                 element: <OAuthCallback />,
+            },
+            {
+                path: '/',
+                element: <App />,
+                children: [
+                    // ... (기존 라우트)
+                    {
+                        path: 'chat', // 채팅 페이지 라우트 추가
+                        element: <ChatPage />,
+                    },
+                ],
             },
         ],
     },
