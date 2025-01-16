@@ -14,11 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "chat_room")
+@Table(name = "group_chat_room")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom {
+public class GroupChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class ChatRoom {
     private String creatorId;
 
     @Builder
-    public ChatRoom(String roomName, ContentType roomContentType, String creatorId) {
+    public GroupChatRoom(String roomName, ContentType roomContentType, String creatorId) {
         this.roomName = roomName;
         this.roomContentType = roomContentType;
         this.creatorId = creatorId;
