@@ -1,21 +1,21 @@
-package movlit.be.pub_sub.dto.response;
+package movlit.be.pub_sub.message.presentation.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.Getter;
 import movlit.be.common.util.ids.MemberId;
 
 @Getter
-public class ChatMessage {
+public class ChatMessageDto {
 
-    private String roomId;
+    private Long roomId;
     private MemberId senderId;
-    private String content;
+    private String message;
     private LocalDateTime regDt;
 
-    public ChatMessage(String roomId, MemberId senderId, String content) {
+    public ChatMessageDto(Long roomId, MemberId senderId, MemberId recipientId, String message) {
         this.roomId = roomId;
         this.senderId = senderId;
-        this.content = content;
+        this.message = message;
         this.regDt = LocalDateTime.now();
     }
 
