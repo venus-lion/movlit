@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Client } from '@stomp/stompjs';
+import React, {useState, useEffect, useRef} from 'react';
+import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
 import './ChatPage.css'; // CSS 파일 import
@@ -18,7 +18,7 @@ function ChatPage() {
             setRoomId(roomIdFromParams);
         } else {
             // roomId가 없을 경우 기본값 또는 생성 로직 추가
-            const generatedRoomId = 'test'; // 임시로 test로 설정.
+            const generatedRoomId = 1; // 임시로 test로 설정.
             setRoomId(generatedRoomId);
         }
     }, []);
@@ -74,7 +74,7 @@ function ChatPage() {
             const chatMessage = {
                 roomId: roomId, // roomId 사용
                 senderId: 'currentUserId', // 현재 사용자 ID (실제로는 인증 정보에서 가져와야 함)
-                content: newMessage,
+                message: newMessage,
             };
 
             stompClient.publish({
@@ -97,7 +97,7 @@ function ChatPage() {
 
     // 새 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
     }, [messages]);
 
     return (
@@ -117,7 +117,8 @@ function ChatPage() {
                         <div className="message-content">{message.content}</div>
                     </div>
                 ))}
-                <div ref={messagesEndRef} /> {/* 스크롤을 위한 빈 div */}
+                <div ref={messagesEndRef}/>
+                {/* 스크롤을 위한 빈 div */}
             </div>
             <div className="chat-input">
                 <input
