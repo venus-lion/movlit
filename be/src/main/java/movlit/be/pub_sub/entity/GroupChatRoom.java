@@ -1,31 +1,24 @@
 package movlit.be.pub_sub.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.entity.MemberEntity;
 
 @Entity
-@Table(name = "chat_room")
+@Table(name = "group_chat_room")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom {
+public class GroupChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +30,7 @@ public class ChatRoom {
     private String creatorId;
 
     @Builder
-    public ChatRoom(String roomName, ContentType roomContentType, String creatorId) {
+    public GroupChatRoom(String roomName, ContentType roomContentType, String creatorId) {
         this.roomName = roomName;
         this.roomContentType = roomContentType;
         this.creatorId = creatorId;
