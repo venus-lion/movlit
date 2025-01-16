@@ -1,30 +1,30 @@
 package movlit.be.pub_sub.chat.application.service;
 
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.chat.infra.persistence.jpa.ChatRoomJpaRepository;
+import movlit.be.pub_sub.chatRoom.entity.ContentType;
 import movlit.be.pub_sub.entity.OneOnOneChatRoom;
-import movlit.be.pub_sub.entity.ContentType;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ChatRoomService {
+public class OneOnOneChatRoomService {
 
-    private final ChatRoomJpaRepository chatRoomJpaRepository;
+    private final movlit.be.pub_sub.chat.infra.persistence.jpa.OneOnOneChatRoomJpaRepository oneOnOneChatRoomJpaRepository;
 
     public OneOnOneChatRoom createChatRoom(String roomName, ContentType roomContentType, MemberId memberId) {
         OneOnOneChatRoom oneOnOneChatRoom = new OneOnOneChatRoom(memberId.getValue(), "memberB", roomName);
-        return chatRoomJpaRepository.save(oneOnOneChatRoom);
+        return oneOnOneChatRoomJpaRepository.save(oneOnOneChatRoom);
     }
 
     public List<OneOnOneChatRoom> fetchAllChatRooms() {
-        return chatRoomJpaRepository.findAll();
+        return oneOnOneChatRoomJpaRepository.findAll();
     }
 
     public OneOnOneChatRoom fetchChatRoomById(Long roomId) {
-        return chatRoomJpaRepository.findById(roomId)
+        return oneOnOneChatRoomJpaRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
     }
 

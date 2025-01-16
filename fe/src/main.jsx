@@ -75,7 +75,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/',
-                element: <App />,
+                // element: <App />,
                 children: [
                     // ... (기존 라우트)
                     {

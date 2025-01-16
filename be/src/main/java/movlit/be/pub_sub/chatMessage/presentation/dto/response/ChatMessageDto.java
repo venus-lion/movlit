@@ -1,4 +1,4 @@
-package movlit.be.pub_sub.message.presentation.dto.response;
+package movlit.be.pub_sub.chatMessage.presentation.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.Getter;

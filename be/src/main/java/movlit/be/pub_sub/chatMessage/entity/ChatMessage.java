@@ -1,4 +1,4 @@
-package movlit.be.pub_sub.message.entity;
+package movlit.be.pub_sub.chatMessage.entity;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
