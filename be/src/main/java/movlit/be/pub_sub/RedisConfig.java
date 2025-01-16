@@ -2,6 +2,8 @@ package movlit.be.pub_sub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -32,6 +34,7 @@ public class RedisConfig {
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
         lettuceConnectionFactory.setHostName(redisProperties.getHost());
         lettuceConnectionFactory.setPort(redisProperties.getPort());
+        lettuceConnectionFactory.setPassword(redisProperties.getPassword());
         return lettuceConnectionFactory;
     }
 
@@ -57,11 +60,10 @@ public class RedisConfig {
     }
 
     /** 실제 메시지 방을 처리하는 subscriber 설정 추가*/
-    @Bean
-    public MessageListenerAdapter listenerAdapterChatRoomList(RedisMessageSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "sendRoomList");
-    }
-
+//    @Bean
+//    public MessageListenerAdapter listenerAdapterChatRoomList(RedisMessageSubscriber subscriber) {
+//        return new MessageListenerAdapter(subscriber, "sendRoomList");
+//    }
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -72,7 +74,8 @@ public class RedisConfig {
         objectMapper.registerModule(new JavaTimeModule());
 
         // Jackson2JsonRedisSerializer 생성 시 ObjectMapper 설정
-        Jackson2JsonRedisSerializer<Object> jsonSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
+        Jackson2JsonRedisSerializer<Object> jsonSerializer = new Jackson2JsonRedisSerializer<>(objectMapper,
+                Object.class);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(jsonSerializer); // 수정된 부분
@@ -83,4 +86,5 @@ public class RedisConfig {
 
         return redisTemplate;
     }
+
 }
