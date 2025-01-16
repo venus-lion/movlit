@@ -15,7 +15,7 @@ public class ChatRoomService {
     private final ChatRoomJpaRepository chatRoomJpaRepository;
 
     public ChatRoom createChatRoom(String roomName, ContentType roomContentType, MemberId memberId) {
-        ChatRoom chatRoom = new ChatRoom(roomName, roomContentType, memberId);
+        ChatRoom chatRoom = new ChatRoom(roomName, roomContentType, memberId.getValue());
         return chatRoomJpaRepository.save(chatRoom);
     }
 
