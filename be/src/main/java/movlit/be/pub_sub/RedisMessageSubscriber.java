@@ -1,10 +1,10 @@
 package movlit.be.pub_sub;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import movlit.be.pub_sub.message.presentation.dto.response.ChatMessageDto;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,26 +13,30 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RedisMessageSubscriber implements MessageListener {
+public class RedisMessageSubscriber {
 
-    // WebSocket으로 메시지를 전달하기 위한 SimpMessagingTemplate
-    private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
+    private final SimpMessageSendingOperations messagingTemplate;
 
-    @Override
-    public void onMessage(Message message, byte[] pattern) {
-        String channel = new String(message.getChannel());
-        String body = new String(message.getBody());
-        log.info("Received message: {} from channel: {}", body, channel);
-        // 여기서 수신된 메시지 처리 로직을 구현
+    /**
+     * Redis에서 메시지가 발행(publish)되면
+     * 대기하고 있던 Redis Subscriber가 해당 메시지를 받아 처리한다.
+     */
+    public void sendMessage(String publishMessage) {
+        try {
 
-        // 수신된 메시지를 모든 구독자에게 전송 (/topic/chat 으로).
-        // ** 'ChatMessage' 같은 DTO로 파싱해서 보내는 것을 권장. **
+            ChatMessageDto chatMessageDto = objectMapper.readValue(publishMessage, ChatMessageDto.class);
 
-        // /topic/chat/{roomId} 로 브로드캐스트
-        // roomId를 어떻게 추출하느냐에 따라 다름(직렬화된 JSON에서 꺼낼 수도 있음)
-        // 여기서는 예시로 roomId="test"라고 가정.
-        String roomId = "test";
-        messagingTemplate.convertAndSend("/topic/chat/" + roomId, body);
+            log.info("Redis Subcriber - chatMSG : {}", chatMessageDto);
+
+            // 채팅방을 구독한 클라이언트에게 메시지 발송
+            messagingTemplate.convertAndSend(
+                    "/topic/chat/" + chatMessageDto.getRoomId(), chatMessageDto
+            );
+
+        } catch (Exception e) {
+            log.error("Exception {}", e);
+        }
     }
 
 }

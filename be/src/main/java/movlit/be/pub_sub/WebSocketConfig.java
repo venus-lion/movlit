@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // /topic (또는 /sub) 으로 시작하는 엔드포인트는 메모리 기반 브로커로 처리
         config.enableSimpleBroker("/topic");
         // 클라이언트가 메시지를 보낼 때 붙이는 prefix
-        config.setApplicationDestinationPrefixes("/api/app");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
