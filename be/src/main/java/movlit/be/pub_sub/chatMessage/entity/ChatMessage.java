@@ -1,13 +1,12 @@
 package movlit.be.pub_sub.chatMessage.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,20 +17,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ChatMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private ObjectId id;
 
     private Long roomId;
     private MemberId senderId;
     private String message;
-    private String timestamp;
+    private String timestamp;               // TODO : 타입형태 협의 필요
 
     @Builder
-    public ChatMessage(Long roomId, MemberId senderId, String message) {
+    public ChatMessage(Long roomId, MemberId senderId, String message, LocalDateTime regDt) {
         this.roomId = roomId;
         this.senderId = senderId;
         this.message = message;
-        this.timestamp = LocalDateTime.now().toString();
+        this.timestamp = regDt.toString();
     }
 
 }

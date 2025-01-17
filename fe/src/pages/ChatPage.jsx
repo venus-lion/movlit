@@ -46,7 +46,7 @@ function ChatPage() {
 
             // 과거 메시지 로드
             axiosInstance
-                .get(`/api/chat/history?roomId=${roomId}`)
+                .get(`/chat/history?roomId=${roomId}`)
                 .then((response) => {
                     setMessages(response.data);
                 })
@@ -75,6 +75,7 @@ function ChatPage() {
                 roomId: roomId, // roomId 사용
                 senderId: 'currentUserId', // 현재 사용자 ID (실제로는 인증 정보에서 가져와야 함)
                 message: newMessage,
+                regDt: new Date()
             };
 
             stompClient.publish({
