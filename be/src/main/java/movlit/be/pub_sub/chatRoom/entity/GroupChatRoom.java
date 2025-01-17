@@ -28,6 +28,7 @@ public class GroupChatRoom {
     private ContentType roomContentType;
     private LocalDateTime regDt;
     private String creatorId;
+    // TODO : 채팅방 이미지도 추가
 
     @Builder
     public GroupChatRoom(String roomName, ContentType roomContentType, String creatorId) {

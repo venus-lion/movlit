@@ -1,6 +1,6 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import App from './App';
 
 import MovieHome from './pages/MovieHome.jsx';
@@ -18,60 +18,61 @@ import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
 // OAuthCallback 컴포넌트 import
 import OAuthCallback from './OAuthCallback';
 import ChatPage from "./pages/ChatPage.jsx";
+import Chat from "./components/chat/Chat.jsx";
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />,
+        element: <App/>,
         children: [
             {
                 path: '/',
-                element: <MovieHome />,
+                element: <MovieHome/>,
             },
             {
                 path: 'book',
-                element: <BookHome />,
+                element: <BookHome/>,
             },
             {
                 path: 'member/register',
-                element: <MemberRegister />,
+                element: <MemberRegister/>,
             },
             {
                 path: 'member/login',
-                element: <MemberLogin />,
+                element: <MemberLogin/>,
             },
             {
                 path: 'movie/:movieId',
-                element: <MovieDetailPage />,
+                element: <MovieDetailPage/>,
             },
             {
                 path: 'book/:bookId',
-                element: <BookDetailPage />,
+                element: <BookDetailPage/>,
             },
             {
                 path: 'mypage',
-                element: <MyPage />,
+                element: <MyPage/>,
             },
             {
                 path: 'member/update', // 회원 수정 라우트 추가
-                element: <MemberUpdate />,
+                element: <MemberUpdate/>,
             },
             {
                 path: 'search/:inputStr', // 검색기능 라우트 추가
-                element: <SearchPage />,
+                element: <SearchPage/>,
             },
             {
                 path: 'movies/search/:inputStr',
-                element: <MovieSearchDetailPage />,
+                element: <MovieSearchDetailPage/>,
             },
             {
                 path: 'books/search/:inputStr', // 도서 더 보기 라우트 추가
-                element: <BookSearchDetailPage />,
+                element: <BookSearchDetailPage/>,
             },
             // OAuthCallback 라우트 추가
             {
                 path: 'oauth/callback',
-                element: <OAuthCallback />,
+                element: <OAuthCallback/>,
             },
             {
                 path: '/',
@@ -80,16 +81,20 @@ const router = createBrowserRouter([
                     // ... (기존 라우트)
                     {
                         path: 'chat', // 채팅 페이지 라우트 추가
-                        element: <ChatPage />,
+                        element: <ChatPage/>,
                     },
                 ],
             },
+            {
+                path: '/chatMain',
+                element: <Chat/>,
+            }
         ],
     },
 ]);
 
 createRoot(document.getElementById('root')).render(
     // <StrictMode>
-    <RouterProvider router={router} />,
+    <RouterProvider router={router}/>,
     // </StrictMode>
 );
