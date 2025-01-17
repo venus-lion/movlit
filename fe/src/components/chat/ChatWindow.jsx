@@ -55,6 +55,13 @@ const ChatWindow = ({ roomId }) => {
         }
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 기본 동작 방지 (예: 줄바꿈)
+            handleSend(); // 메시지 전송
+        }
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
@@ -73,6 +80,7 @@ const ChatWindow = ({ roomId }) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="메시지를 입력하세요"
                     onFocus={handleInputFocus} // 입력 필드 포커스 시 체크 (로그인, 참여 상태 체크)
+                    onKeyDown={handleKeyDown} // Enter 키 눌렀을 때 전송
                 />
                 <button
                     onClick={handleSend}
