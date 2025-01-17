@@ -6,8 +6,8 @@ const ChatWindow = ({ roomId }) => {
         {id: 2, sender: '나', text: '안녕하세요! 반갑습니다.', time: '오전 9:50'},
     ]);
     const [newMessage, setNewMessage] = useState('');
-
-    const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태
+    //const { isLoggedIn } = useOutletContext();// 로그인 상태
+    const [isLoggedIn, setIsLoggedIn] = useState(true); // 채팅방 참여 이력
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false); // 채팅방 참여 이력
     const [message, setMessage] = useState(''); // 공지 메시지 표시
     const focusDivRef = useRef(null); // 포커스를 주기 위한 ref
@@ -16,6 +16,7 @@ const ChatWindow = ({ roomId }) => {
     // 컴포넌트가 마운트될 때 로컬 스토리지에서 참여 이력 확인
     // (추후 DB에서 가져오는 것으로 수정)
     useEffect(() => {
+        console.log(">> 방 ID : " + roomId);
         const joined = localStorage.getItem(`hasJoinedRoom_${roomId}`); // roomId에 맞는 참여 이력 체크
         if (joined === 'true') {
             setHasJoinedRoom(true);

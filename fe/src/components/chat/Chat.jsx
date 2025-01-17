@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import ChatTabs from './ChatTabs';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
+import ChatPageNew from '../../pages/ChatPageNew.jsx';
 
 const Chat = () => {
     const [activeTab, setActiveTab] = useState('personal'); // 개인 채팅 또는 그룹 채팅
@@ -43,7 +44,7 @@ const Chat = () => {
             {/* 오른쪽: 채팅 화면 */}
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
-                    <ChatWindow roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */
+                    <ChatPageNew roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>
                         채팅방을 선택해주세요.
