@@ -36,14 +36,14 @@ const Chat = () => {
                 <ChatList
                     activeTab={activeTab}
                     searchTerm={searchTerm}
-                    onSelectChat={(chat) => setSelectedChat(chat)}
+                    onSelectChat={(chat) => setSelectedChat(chat)} // 선택된 채팅방 설정
                 />
             </div>
 
             {/* 오른쪽: 채팅 화면 */}
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
-                    <ChatWindow roomId={selectedChat.id}/>
+                    <ChatWindow roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>
                         채팅방을 선택해주세요.
