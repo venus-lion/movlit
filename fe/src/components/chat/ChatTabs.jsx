@@ -7,7 +7,7 @@ const ChatTabs = ({activeTab, setActiveTab}) => {
                 style={{
                     flex: 1,
                     padding: '10px',
-                    background: activeTab === 'personal' ? '#f0f0f0' : '#fff',
+                    background: activeTab === 'personal' ? 'green' : '#6f6b6b',
                     border: '1px solid #ddd',
                     borderBottom: activeTab === 'personal' ? '2px solid blue' : 'none',
                     cursor: 'pointer',
@@ -20,7 +20,7 @@ const ChatTabs = ({activeTab, setActiveTab}) => {
                 style={{
                     flex: 1,
                     padding: '10px',
-                    background: activeTab === 'group' ? '#f0f0f0' : '#fff',
+                    background: activeTab === 'group' ? 'green' : '#6f6b6b',
                     border: '1px solid #ddd',
                     borderBottom: activeTab === 'group' ? '2px solid blue' : 'none',
                     cursor: 'pointer',
