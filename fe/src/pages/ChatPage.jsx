@@ -34,8 +34,11 @@ function ChatPage() {
             },
             debug: (str) => {
                 console.log('STOMP Debug:', str);
+                console.log("메시지  : " + JSON.stringify(messages, null, 2));
             },
         });
+
+
 
         client.onConnect = () => {
             console.log('WebSocket Connected');
@@ -113,8 +116,9 @@ function ChatPage() {
                             message.senderId === 'currentUserId' ? 'own-message' : ''
                         }`}
                     >
+
                         <div className="message-sender">{message.senderId}</div>
-                        <div className="message-content">{message.content}</div>
+                        <div className="message-content">{message.message}</div>
                     </div>
                 ))}
                 <div ref={messagesEndRef}/>
