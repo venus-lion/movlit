@@ -1,4 +1,4 @@
-package movlit.be.pub_sub.entity;
+package movlit.be.pub_sub.chatRoom.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
