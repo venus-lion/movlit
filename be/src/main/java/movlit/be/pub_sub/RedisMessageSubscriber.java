@@ -3,7 +3,7 @@ package movlit.be.pub_sub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.pub_sub.message.presentation.dto.response.ChatMessageDto;
+import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,6 @@ public class RedisMessageSubscriber {
         try {
 
             ChatMessageDto chatMessageDto = objectMapper.readValue(publishMessage, ChatMessageDto.class);
-
             log.info("Redis Subcriber - chatMSG : {}", chatMessageDto);
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
