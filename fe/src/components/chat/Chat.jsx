@@ -43,7 +43,7 @@ const Chat = () => {
             {/* 오른쪽: 채팅 화면 */}
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
-                    <ChatWindow chat={selectedChat}/>
+                    <ChatWindow roomId={selectedChat.id}/>
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>
                         채팅방을 선택해주세요.
