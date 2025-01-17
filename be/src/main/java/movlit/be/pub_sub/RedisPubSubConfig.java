@@ -24,7 +24,7 @@ public class RedisPubSubConfig {
 //        return container;
 //    }
 //
-//    @Bean
+
 //    MessageListenerAdapter listenerAdapter(RedisMessageSubscriber subscriber) {
 //        // subscriber의 sendMessage 메소드를 호출하도록 설정
 //        return new MessageListenerAdapter(subscriber);
