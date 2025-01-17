@@ -26,7 +26,6 @@ public class RedisMessageSubscriber {
         try {
 
             ChatMessageDto chatMessageDto = objectMapper.readValue(publishMessage, ChatMessageDto.class);
-
             log.info("Redis Subcriber - chatMSG : {}", chatMessageDto);
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
