@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 public class BooksRecommendationService {
     private final BookSearchService bookSearchService;
     private final MemberGenreService memberGenreService;
-    private final BookHeartService bookHeartService;
+    private final BookHeartReadService bookHeartReadService;
     private final BookESService bookESService;
 
 
@@ -49,7 +49,7 @@ public class BooksRecommendationService {
 
     public List<BookRecommendDto> fetchRecommendedBooksByUserRecentHeart(MemberId memberId){
         // 1. 사용자가 최근에 찜한 도서id 4개 가져오기
-        List<String> bookIds = bookHeartService.fetchRecentLikedBookIdsByMemberId(memberId, 4);
+        List<String> bookIds = bookHeartReadService.fetchRecentLikedBookIdsByMemberId(memberId, 4);
 
         // 2. JPA를 사용해, 도서 정보 조회 -> BookES Repository 사용
         List<BookES> bookESList = bookESService.fetchAllBookESByBookIds(bookIds);

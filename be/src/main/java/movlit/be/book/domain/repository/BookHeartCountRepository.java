@@ -12,4 +12,5 @@ public interface BookHeartCountRepository {
     void decreaseHeartCount(BookVo bookVo);
     BookHeartCountVo save(BookHeartCountVo bookHeartCountVo);
 
+
 }

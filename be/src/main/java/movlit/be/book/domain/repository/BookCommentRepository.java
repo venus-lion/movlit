@@ -14,7 +14,7 @@ public interface BookCommentRepository {
 
     BookCommentVo fetchByBookCommentId(BookCommentId bookCommentId);
 
-    BookCommentVo fetchByMemberAndBook(Member member, BookVo bookVo);
+    BookCommentResponseDto fetchCommentByMemberAndBook(MemberId memberId, BookId bookId);
 
     BookCommentVo save(BookCommentVo bookCommentVo);
 
