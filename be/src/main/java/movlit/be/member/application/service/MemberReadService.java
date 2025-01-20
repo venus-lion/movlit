@@ -45,6 +45,10 @@ public class MemberReadService {
         return memberRepository.findById(memberId);
     }
 
+    public MemberEntity findEntityByMemberId(MemberId memberId) {
+        return memberRepository.findEntityById(memberId);
+    }
+
     public void validateMemberIdExists(MemberId memberId) {
         if (!memberRepository.existByMemberId(memberId)) {
             throw new MemberNotFoundException();

@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,11 +24,21 @@ public class MemberRChatroom {
     private MemberRChatroomId memberRChatroomId;
 
     @OneToMany(mappedBy = "memberRChatroom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberEntity> member;
+    private List<MemberEntity> member = new ArrayList<>();
 
     @OneToMany(mappedBy = "memberRChatroom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupChatroom> groupChatRoom;
+    private List<GroupChatroom> groupChatRoom = new ArrayList<>();
 
     private LocalDateTime regDt;
+
+    public MemberRChatroom(MemberRChatroomId memberRChatroomId, LocalDateTime regDt) {
+        this.memberRChatroomId = memberRChatroomId;
+        this.regDt = regDt;
+    }
+
+    public void addMember(MemberEntity member) {
+        this.member.add(member);
+        member.updateMemberRChatroom(this);
+    }
 
 }

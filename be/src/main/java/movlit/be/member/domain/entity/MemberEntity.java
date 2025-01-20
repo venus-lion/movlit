@@ -101,4 +101,8 @@ public class MemberEntity {
         return memberGenres.getNewUnmodifiedList();
     }
 
+    public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
+        this.memberRChatroom = memberRChatroom;
+    }
+
 }

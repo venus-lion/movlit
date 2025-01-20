@@ -26,13 +26,16 @@ public class GroupChatroom {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberRChatroom memberRChatroom;
 
-    public GroupChatroom(GroupChatroomId groupChatroomId, String roomName, String contentId, LocalDateTime regDt,
-                         MemberRChatroom memberRChatroom) {
+    public GroupChatroom(GroupChatroomId groupChatroomId, String roomName, String contentId, LocalDateTime regDt) {
         this.groupChatroomId = groupChatroomId;
         this.roomName = roomName;
         this.contentId = contentId;
         this.regDt = regDt;
+    }
+
+    public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
         this.memberRChatroom = memberRChatroom;
+        memberRChatroom.getGroupChatRoom().add(this);
     }
 
 }
