@@ -23,17 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class GroupChatroomService {
 
-    private final GroupChatroomJpaRepository groupChatroomJpaRepository;
+
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
     private final MemberRChatroomService memberRChatroomService;
 
-
     public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
         if (memberId != null) {
 
-            List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
-                    .orElseThrow(ChatroomNotFoundException::new);
+            List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
+            log.info("::GroupChatroomService_fetchMyGroupChatList::");
+            log.info(">> myGroupchatList : " + myGroupChatList.toString());
 
             return myGroupChatList;
         } else {
