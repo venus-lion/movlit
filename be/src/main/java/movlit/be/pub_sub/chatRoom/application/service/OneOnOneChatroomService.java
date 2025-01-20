@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.chatRoom.entity.OneOnOneChatRoom;
+import movlit.be.pub_sub.chatRoom.domain.OneOnOneChatRoom;
 import movlit.be.pub_sub.chatRoom.infra.persistence.jpa.OneOnOneChatroomJpaRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package movlit.be.pub_sub.chatRoom.entity;
+package movlit.be.pub_sub.chatRoom.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;

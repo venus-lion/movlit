@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 @EqualsAndHashCode(callSuper = true)
-public class ChatroomId extends BaseId {
+public class GroupChatroomId extends BaseId {
 
-    public ChatroomId(String value) {
+    public GroupChatroomId(String value) {
         super(value);
     }
 
