@@ -89,7 +89,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/movies/main/genre").permitAll()
                         .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
-                                "/error/**", "api/books/**")
+                                "/error/**", "api/books/**", "/ws-stomp/**")
                         .permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()

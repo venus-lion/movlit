@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
+import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
 
 @Entity
 @NoArgsConstructor
@@ -60,6 +63,10 @@ public class MemberEntity {
 
     @Getter
     private boolean delYn;
+
+    @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberRChatroom memberRChatroom;
 
     @Builder
     public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,

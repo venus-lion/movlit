@@ -6,18 +6,29 @@ export default defineConfig(({ mode }) => {
 
     const isDev = env.VITE_IS_DEV === 'true'; // VITE_IS_DEV 값이 'true'인지 확인
 
-    const proxyConfig = {
-        '/oauth2': {
-            target: `${env.VITE_BASE_URL_FOR_CONF}`, // 런타임에 env에서 VITE_BASE_URL_FOR_CONF를 가져옵니다.
-            changeOrigin: true,
-            secure: false,
-        },
-    };
+    const proxyConfig = {};
 
     // 개발 모드인 경우에만 '/api' 프록시를 추가
     if (isDev) {
         proxyConfig['/api'] = {
             target: `${env.VITE_BASE_URL_FOR_CONF}`,
+            changeOrigin: true,
+            secure: false,
+        };
+        proxyConfig['/oauth2'] = {
+            target: `${env.VITE_BASE_URL_FOR_CONF}`,
+            changeOrigin: true,
+            secure: false,
+        };
+        proxyConfig['/app'] = {
+            target: `${env.VITE_BASE_URL_FOR_CONF}`,
+            changeOrigin: true,
+            secure: false,
+        };
+        // WebSocket 프록시 설정 추가
+        proxyConfig['/ws-stomp'] = {
+            target: `${env.VITE_BASE_URL_FOR_CONF}`, // WebSocket endpoint
+            ws: true, // IMPORTANT: 웹소켓 프록시 활성화
             changeOrigin: true,
             secure: false,
         };
@@ -27,6 +38,8 @@ export default defineConfig(({ mode }) => {
         plugins: [react()],
         define: {
             'process.env': env,
+            // 'global'을 정의하여 sockjs-client 오류 해결
+            global: 'globalThis',
         },
         server: {
             port: 3000,
