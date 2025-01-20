@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import movlit.be.common.util.ids.GroupChatroomId;
 
 @Getter
@@ -13,6 +14,7 @@ import movlit.be.common.util.ids.GroupChatroomId;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class GroupChatroomResponseDto {
 
     private GroupChatroomId groupChatroomId;
