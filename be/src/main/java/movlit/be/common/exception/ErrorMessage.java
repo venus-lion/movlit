@@ -56,19 +56,14 @@ public enum ErrorMessage {
     BOOKNEWSPECIAL_NOT_FOUND("bookNewSpecial이 존재하지 않습니다", "b003"),
     UNKNOWN_BOOK_ENTITY_TYPE("알 수 없는 BookEntity 타입입니다.", "b004"),
     NOT_FOUND_BOOK_HEART_BY_MEMBER("해당 유저가 찜한 도서가 존재하지 않습니다.", "b005"),
-
-    // book
     BOOK_NOT_FOUND("해당 도서가 존재하지 않습니다.", "b010"),
-
     BOOK_CREW_NOT_FOUND("해당 도서의 작가 정보가 존재하지 않습니다", "b012"),
     BOOK_COMMENT_NOT_FOUND("해당 도서 리뷰가 존재하지 않습니다.", "b020"),
     BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b021"),
 
-    // chatroom
-    CHATROOM_NOT_FOUND("해당 채팅방이 존재하지 않습니다.", "c001");
-
-
-
+    // chat
+    CONTENT_TYPE_NOT_EXIST("movie와 book 중 그 어느 타입에도 해당하지 않습니다", "c001"),
+    CHATROOM_NOT_FOUND("해당 채팅방이 존재하지 않습니다.", "c010");
 
     private final String message;
     private final String code;
