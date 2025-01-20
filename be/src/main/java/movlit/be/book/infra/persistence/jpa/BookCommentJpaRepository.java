@@ -53,8 +53,24 @@ public interface BookCommentJpaRepository extends JpaRepository<BookCommentEntit
     Slice<BookCommentResponseDto> getCommentsByBookIdAndMemberId(@Param("bookId") BookId bookId, @Param("memberId") MemberId memberId,
                                                       @Param("pageable") Pageable pageable);
 
+    @Query("SELECT NEW movlit.be.book.presentation.dto.BookCommentResponseDto( "
+            + "bc.bookCommentId, "
+            + "bc.score,"
+            + "bc.comment, "
+            + "m.nickname, "
+            + "m.profileImgUrl, "
+            + "false AS isLiked, "
+            + "0 AS likeCount, "
+            + "bc.regDt, "
+            + "bc.updDt,"
+            + "0L AS allCommentsCount"
+            + " ) "
+            + "FROM BookCommentEntity bc "
+            + "LEFT JOIN MemberEntity m on m.memberId = bc.memberEntity.memberId "
+            + "WHERE bc.bookEntity.bookId = :bookId and m.memberId = :memberId")
+    Optional<BookCommentResponseDto> fetchCommentByMemberAndBook(@Param("memberId") MemberId memberId, @Param("bookId") BookId bookId);
 
-    Optional<BookCommentEntity> findByMemberEntityAndBookEntity(MemberEntity memberEntity, BookEntity bookEntity);
+
 
     void deleteById(BookCommentId bookCommentId);
 

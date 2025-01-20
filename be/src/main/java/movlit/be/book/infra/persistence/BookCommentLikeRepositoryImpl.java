@@ -8,6 +8,7 @@ import movlit.be.book.domain.BookCommentLikeVo;
 import movlit.be.book.domain.entity.BookCommentLikeEntity;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.book.infra.persistence.jpa.BookCommentLikeJpaRepository;
+import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Repository;
@@ -38,6 +39,10 @@ public class BookCommentLikeRepositoryImpl implements BookCommentLikeRepository 
        bookCommentLikeJpaRepository.delete(BookCommentLikeConverter.toEntity(bookCommentLikeVo));
     }
 
+    @Override
+    public void deleteAllByCommentId(BookCommentId bookCommentId) {
+        bookCommentLikeJpaRepository.deleteAllByCommentId(bookCommentId);
+    }
 
 
 }

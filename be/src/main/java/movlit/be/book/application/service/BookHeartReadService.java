@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BookHeartService {
+public class BookHeartReadService {
     private final BookHeartRecommendRepository bookHeartRecommendRepository;
 
     public List<String> fetchRecentLikedBookIdsByMemberId(MemberId memberId, int count){

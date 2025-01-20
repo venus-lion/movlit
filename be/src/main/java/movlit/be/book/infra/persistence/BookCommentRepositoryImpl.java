@@ -32,12 +32,11 @@ public class BookCommentRepositoryImpl implements BookCommentRepository {
     }
 
     @Override
-    public BookCommentVo fetchByMemberAndBook(Member member, BookVo bookVo) {
-        BookCommentEntity bookCommentEntity =
-                bookCommentJpaRepository.findByMemberEntityAndBookEntity(MemberConverter.toEntity(member),
-                                BookDetailConverter.toEntity(bookVo)).orElse(null);
+    public BookCommentResponseDto fetchCommentByMemberAndBook(MemberId memberId, BookId bookId) {
+        BookCommentResponseDto bookComment =
+                bookCommentJpaRepository.fetchCommentByMemberAndBook(memberId, bookId).orElse(null);
 
-        return BookCommentConverter.toDomain(bookCommentEntity);
+        return bookComment;
     }
 
 
