@@ -38,6 +38,7 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
 
     // 라디오 버튼 변경 핸들러
     const handleCategoryChange = (event) => {
+        setSearchResults([]);
         setSelectedCategory(event.target.value);
     };
 
@@ -47,24 +48,38 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
             alert("검색어를 입력하세요.");
             return;
         }
-
-        console.log(selectedCategory);
-        console.log(searchTerm);
+        setSearchResults([]);
 
         // TODO: 실제 API 호출로 검색 결과 가져오기
         try {
-            //  영화 데이터 가져오기
-            const response = await axiosInstance.get(`/movies/search/searchMovie`, {
-                params: {
-                    page: 1,
-                    pageSize: 20,
-                    inputStr: searchTerm
-                },
-            });
-            const movieData = await response.data.movieList;
-            console.log("검색 결과");
-            console.log(movieData);
-            setSearchResults(movieData); // 결과가 없으면 빈 배열로 설정
+            if (selectedCategory === "movie") {
+                //  영화 데이터 가져오기
+                const response = await axiosInstance.get(`/movies/search/searchMovie`, {
+                    params: {
+                        page: 1,
+                        pageSize: 20,
+                        inputStr: searchTerm
+                    },
+                });
+
+                const movieData = await response.data.movieList;
+                setSearchResults(movieData); // 결과가 없으면 빈 배열로 설정
+            } else if (selectedCategory === "book") {
+                // 도서 데이터 가져오기
+                const response = await axiosInstance.get(`/books/search/searchBook`, {
+                    params: {
+                        page: 1,
+                        pageSize: 20,
+                        inputStr: searchTerm
+                    }
+                });
+                const bookData = await response.data.bookESVoList;
+                setSearchResults(bookData);
+
+                console.log(bookData);
+            }
+
+
         } catch (error) {
             console.error("Error fetching search results:", error);
             setSearchResults([]); // 오류 발생 시 빈 배열
@@ -149,18 +164,33 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
                                 <div className="results-grid">
                                     {searchResults.map((result, index) => (
                                         <div key={index} className="result-card">
-                                            <img src={result.posterPath} alt={result.title} className="result-image"/>
-                                            <div className="result-title">{truncateTitle(result.title)}</div>
-                                            <div
-                                                className="result-rating">
-                                                {/*{renderStars(parseFloat(result.voteAverage))}*/}⭐
-                                                <span>({Math.round(parseFloat(result.voteAverage) * 10) / 10})</span>
-                                            </div>
-                                            <div>
-                                                <p className="result-genres">
-                                                    {result.movieGenre.map((g) => g.genreName).join(', ')}
-                                                </p>
-                                            </div>
+                                            {selectedCategory === "movie" ? (
+                                                <>
+                                                    <img src={result.posterPath} alt={result.title}
+                                                         className="result-image"/>
+                                                    <div className="result-title">{truncateTitle(result.title)}</div>
+                                                    <div
+                                                        className="result-rating">
+                                                        ⭐<span>({Math.round(parseFloat(result.voteAverage) * 10) / 10})</span>
+                                                    </div>
+                                                    <div>
+                                                        <p className="result-info">
+                                                            {result.movieGenre.map((g) => g.genreName).join(', ')}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <img src={result.bookImgUrl} alt={result.title}
+                                                         className="result-image"/>
+                                                    <div className="result-title">{truncateTitle(result.title)}</div>
+                                                    <div>
+                                                        <p className="result-info">
+                                                            {result.crew.join(', ')}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     ))}
                                 </div>

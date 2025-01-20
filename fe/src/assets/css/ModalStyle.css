@@ -106,7 +106,7 @@
 
 .result-image {
     width: 100%;
-    max-height: 230px;
+    height: 230px;
     border-radius: 4px;
     margin-bottom: 2px;
     object-fit: cover;
@@ -130,7 +130,7 @@
     gap: 5px;
 }
 
-.result-genres {
+.result-info {
     font-size: 12px; /* 장르 텍스트 크기 줄임 */
     color: #888;
     text-align: center;
