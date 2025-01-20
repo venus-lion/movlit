@@ -1,8 +1,10 @@
 package movlit.be.pub_sub.chatRoom.presentation.dto;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.GroupChatroomId;
 
+@Getter
 @NoArgsConstructor
 public class GroupChatroomResponse {
 
@@ -12,7 +14,7 @@ public class GroupChatroomResponse {
         this.groupChatroomId = groupChatroomId;
     }
 
-    public GroupChatroomResponse of(GroupChatroomId groupChatroomId) {
+    public static GroupChatroomResponse of(GroupChatroomId groupChatroomId) {
         return new GroupChatroomResponse(groupChatroomId);
     }
 
