@@ -87,6 +87,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/movies/main/latest").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/main/popular").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/main/genre").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/chat/create/group").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/chatrooms/myGroupChatrooms").authenticated()
                         .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**", "/ws-stomp/**")

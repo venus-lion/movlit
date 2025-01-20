@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
-import movlit.be.pub_sub.chatRoom.entity.MemberRChatroom;
+import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
 
 @Entity
 @NoArgsConstructor
@@ -99,6 +99,10 @@ public class MemberEntity {
 
     public List<MemberGenreEntity> getMemberGenreEntityList() {
         return memberGenres.getNewUnmodifiedList();
+    }
+
+    public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
+        this.memberRChatroom = memberRChatroom;
     }
 
 }

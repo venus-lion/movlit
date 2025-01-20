@@ -1,4 +1,4 @@
-package movlit.be.pub_sub.chatRoom.presentation;
+package movlit.be.pub_sub.chatRoom.presentation.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

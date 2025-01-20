@@ -2,18 +2,18 @@ package movlit.be.pub_sub.chatRoom.infra.persistence.jpa;
 
 import java.util.List;
 import java.util.Optional;
-import movlit.be.common.util.ids.ChatroomId;
+import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.chatRoom.entity.GroupChatroom;
+import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom, ChatroomId> {
+public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom, GroupChatroomId> {
 
     @Query("SELECT NEW movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto( "
-            + "gc.chatroomId, "
+            + "gc.groupChatroomId, "
             + "gc.contentId, "
             + "gc.roomName, "
             + "gc.regDt "
@@ -23,6 +23,6 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
             + "WHERE m.memberId = :memberId ")
     Optional<List<GroupChatroomResponseDto>> findAllByMemberId(@Param("memberId") MemberId memberId);
 
-
-
 }
+
+

@@ -1,4 +1,4 @@
-package movlit.be.pub_sub.chatRoom.entity;
+package movlit.be.pub_sub.chatRoom.domain;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import movlit.be.common.util.ids.ChatroomId;
+import movlit.be.common.util.ids.GroupChatroomId;
 
 @Entity
 @Table(name = "group_chat_room")
@@ -18,7 +18,7 @@ import movlit.be.common.util.ids.ChatroomId;
 public class GroupChatroom {
 
     @EmbeddedId
-    private ChatroomId chatroomId;
+    private GroupChatroomId groupChatroomId;
     private String roomName;
     private String contentId; // MV_uuid, BK_uuid
     private LocalDateTime regDt;
@@ -26,13 +26,16 @@ public class GroupChatroom {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberRChatroom memberRChatroom;
 
-    public GroupChatroom(ChatroomId chatroomId, String roomName, String contentId, LocalDateTime regDt,
-                         MemberRChatroom memberRChatroom) {
-        this.chatroomId = chatroomId;
+    public GroupChatroom(GroupChatroomId groupChatroomId, String roomName, String contentId, LocalDateTime regDt) {
+        this.groupChatroomId = groupChatroomId;
         this.roomName = roomName;
         this.contentId = contentId;
         this.regDt = regDt;
+    }
+
+    public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
         this.memberRChatroom = memberRChatroom;
+        memberRChatroom.getGroupChatRoom().add(this);
     }
 
 }
