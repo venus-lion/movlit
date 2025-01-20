@@ -62,9 +62,10 @@ public enum ErrorMessage {
 
     BOOK_CREW_NOT_FOUND("해당 도서의 작가 정보가 존재하지 않습니다", "b012"),
     BOOK_COMMENT_NOT_FOUND("해당 도서 리뷰가 존재하지 않습니다.", "b020"),
-    BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b021");
+    BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b021"),
 
-
+    // group chat
+    GROUPCHATROOM_NOT_FOUND("해당 그룹채팅이 존재하지 않습니다.", "gc01");
 
 
     private final String message;
