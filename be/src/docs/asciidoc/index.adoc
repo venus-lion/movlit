@@ -122,4 +122,12 @@ operation::movie_comment_unlike_decrement_success[snippets='http-request,http-re
 
 === 이미지 업로드
 
-operation::uploadMemberProfileImage_success[snippets='http-request,http-response']
+// operation::uploadMemberProfileImage_success[snippets='http-request,http-response']
+
+== 채팅
+
+=== 그룹 채팅
+
+==== 그룹 채팅 생성
+
+operation::createGroupChat_success[snippets='http-request,http-response']

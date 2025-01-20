@@ -12,23 +12,18 @@ public class ChatroomConvertor {
     private ChatroomConvertor() {
     }
 
-    public static GroupChatroom makeGroupChatroom(GroupChatroomRequest request, MemberEntity member) {
-        MemberRChatroom memberRChatroom = makeMemberRChatroom(member);
-        return makeGroupChatroom(request, memberRChatroom);
+    public static MemberRChatroom makeMemberRChatroom(MemberEntity member) {
+        MemberRChatroom memberRChatroom = new MemberRChatroom(IdFactory.createMemberRChatroom(), LocalDateTime.now());
+        memberRChatroom.addMember(member);
+        return memberRChatroom;
     }
 
-    private static GroupChatroom makeGroupChatroom(GroupChatroomRequest request, MemberRChatroom memberRChatroom) {
+    public static GroupChatroom makeGroupChatroom(GroupChatroomRequest request, MemberRChatroom memberRChatroom) {
         GroupChatroom groupChatroom = new GroupChatroom(IdFactory.createGroupChatroomId(), request.getRoomName(),
                 request.getContentType(),
                 LocalDateTime.now());
         groupChatroom.updateMemberRChatroom(memberRChatroom);
         return groupChatroom;
-    }
-
-    private static MemberRChatroom makeMemberRChatroom(MemberEntity member) {
-        MemberRChatroom memberRChatroom = new MemberRChatroom(IdFactory.createMemberRChatroom(), LocalDateTime.now());
-        memberRChatroom.addMember(member);
-        return memberRChatroom;
     }
 
 }
