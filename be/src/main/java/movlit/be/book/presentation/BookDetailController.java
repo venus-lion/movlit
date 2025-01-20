@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.book.application.service.BookDetailReadService;
 import movlit.be.book.application.service.BookDetailWriteService;
+import movlit.be.book.application.service.BookHeartWriteService;
 import movlit.be.book.domain.BookHeartVo;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
@@ -32,6 +33,8 @@ public class BookDetailController {
 
     private final BookDetailReadService bookDetailReadService;
     private final BookDetailWriteService bookDetailWriteService;
+    private final BookHeartWriteService bookHeartWriteService;
+
     private final MemberReadService memberReadService;
 
     // 해당 도서 상세 내역
@@ -46,8 +49,8 @@ public class BookDetailController {
         }
 
         BookDetailResponseDto detailResponse = bookDetailReadService.fetchBookDetail(bookId, memberId);
-
-        System.out.println("//책 상세 : \n" + detailResponse.toString());
+        log.info("::BookDetailController_fetchBookDetail::");
+        log.info(">> BookDetailResponse : " + detailResponse.toString());
         return detailResponse;
     }
 
@@ -56,12 +59,14 @@ public class BookDetailController {
     public ResponseEntity addHearts(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            System.out.println("##책 ID --> " + bookId.getValue());
-
             Member member = memberReadService.findByMemberId(memberId);
             BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            BookHeartVo savedHeart = bookDetailWriteService.addHeart(member, bookVo);
+            BookHeartVo savedHeart = bookHeartWriteService.addHeart(member, bookVo);
+
+            log.info("::BookDetailController_addHearts::");
+            log.info(">> BookHeartResponse : " + savedHeart.toString());
+
             return ResponseEntity.ok(savedHeart);
         } else {
             return ResponseEntity.badRequest().build();
@@ -74,12 +79,15 @@ public class BookDetailController {
     ) throws Exception {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-
             Member member = memberReadService.findByMemberId(memberId);
-
             BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            bookDetailWriteService.removeHeart(member, bookVo);
+            bookHeartWriteService.removeHeart(member, bookVo);
+
+            log.info("::BookDetailController_removeHearts::");
+            log.info(">> RemovedBookHeart : \nmember : " + member + "\nbook : " + bookVo.toString());
+
+
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -91,11 +99,12 @@ public class BookDetailController {
     @GetMapping("{bookId}/recommendedBooks")
     public ResponseEntity<List<BookESVo>> fetchRecommendedBooks(@PathVariable BookId bookId) {
         List<BookESVo> recommendedBookList = bookDetailReadService.fetchRecommendedBooks(bookId);
+        log.info("::BookDetailController_fetchRecommendedBooks::");
+
         for (BookESVo recBook : recommendedBookList) {
             // 각 BookCommentResponseDto의 내용 출력
-            System.out.println("@@ 추천 책 제목 : " + recBook.getTitle());
-            System.out.println("@@ 추천 책 카테고리: " + recBook.getCategoryName());
-            System.out.println("@@ 추천 책 설명 : " + recBook.getDescription());
+            log.info(">> 해당 도서 관련 추천 도서 : " + recBook.toString());
+
         }
         return ResponseEntity.ok(recommendedBookList);
     }
@@ -103,11 +112,11 @@ public class BookDetailController {
     @GetMapping("{bookId}/recommendedMovies")
     public ResponseEntity<List<MovieDocument>> fetchRecommendedMovies(@PathVariable BookId bookId) {
         List<MovieDocument> recommendedMovieList = bookDetailReadService.fetchRecommendedMovies(bookId);
+        log.info("::BookDetailController_fetchRecommendedBooks::");
+
         for (MovieDocument recMovie : recommendedMovieList) {
             // 각 MovieDocument의 내용 출력
-            System.out.println("@@ 추천 영화 제목 : " + recMovie.getTitle());
-            System.out.println("@@ 추천 영화 카테고리: " + recMovie.getMovieGenre().stream());
-            System.out.println("@@ 추천 영화 설명 : " + recMovie.getOverview());
+            log.info(">> 해당 도서 관련 추천 영화 : " + recommendedMovieList.toString());
         }
         return ResponseEntity.ok(recommendedMovieList);
     }

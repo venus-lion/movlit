@@ -13,4 +13,6 @@ public interface BookCommentLikeCountRepository {
     void decreaseHeartCount(BookCommentVo bookCommentVo);
     BookCommentLikeCountVo save(BookCommentLikeCountVo bookCommentLikeCountVo);
 
+    void deleteAllByCommentId(BookCommentId bookCommentId);
+
 }

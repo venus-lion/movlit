@@ -3,6 +3,7 @@ package movlit.be.book.presentation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.book.application.service.BookCommentLikeWriteService;
 import movlit.be.book.application.service.BookCommentReadService;
 import movlit.be.book.application.service.BookCommentWriteService;
 import movlit.be.book.application.service.BookDetailReadService;
@@ -42,6 +43,7 @@ public class BookCommentController {
     private final BookDetailWriteService bookDetailWriteService;
     private final BookCommentReadService bookCommentReadService;
     private final BookCommentWriteService bookCommentWriteService;
+    private final BookCommentLikeWriteService bookCommentLikeWriteService;
     private final MemberReadService memberReadService;
 
     // 리뷰 리스트
@@ -56,31 +58,25 @@ public class BookCommentController {
 
         Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.fetchPagedBookComments(bookId, memberId, pageable);
 
+        log.info("::BookCommentController_bookCommentReadService::");
+
         return ResponseEntity.ok(pagedResult);
     }
 
     // 해당 책 나의 리뷰
     @GetMapping("{bookId}/myComment")
-    public ResponseEntity myComment(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
+    public ResponseEntity fetchMyBookComment(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            Member member = memberReadService.findByMemberId(memberId);
-            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
 
-            BookCommentVo myComment = bookCommentReadService.fetchByMemberAndBook(member, bookVo);
-            if(myComment == null)
+            BookCommentResponseDto myBookComment = bookCommentReadService.fetchCommentByMemberAndBook(memberId, bookId);
+            if(myBookComment == null)
                 return ResponseEntity.badRequest().build();
-            BookCommentResponseDto myCommentRes = BookCommentResponseDto.builder()
-                    .bookCommentId(myComment.getBookCommentId())
-                    .score(myComment.getScore())
-                    .comment(myComment.getComment())
-                    .nickname(member.getNickname())
-                    .profileImgUrl(member.getProfileImgUrl())
-                    .regDt(myComment.getRegDt())
-                    .updDt(myComment.getUpdDt())
-                    .build();
 
-            return ResponseEntity.ok(myCommentRes);
+            log.info("::BookCommentController_fetchMyBookComment::");
+            log.info(">> MyBookComment : " + myBookComment);
+
+            return ResponseEntity.ok(myBookComment);
         } else {
             return ResponseEntity.badRequest().build();
         }
@@ -93,13 +89,11 @@ public class BookCommentController {
             throws BookCommentAccessDenied {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            Member member = memberReadService.findByMemberId(memberId);
+            BookCommentVo savedComment = bookCommentWriteService.registerBookComment(memberId, bookId, commentDto);
 
-            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
-            System.out.println("### 리뷰등록controller member " + member + " book " + bookVo);
-            System.out.println("### 리뷰등록controller dto " + commentDto);
+            log.info("::BookCommentController_registerComment::");
+            log.info(">> SavedComment : " + savedComment);
 
-            BookCommentVo savedComment = bookCommentWriteService.registerBookComment(member, bookVo, commentDto);
             return ResponseEntity.ok(savedComment);
         } else {
             return ResponseEntity.badRequest().build();
@@ -115,23 +109,14 @@ public class BookCommentController {
             throws BookCommentAccessDenied {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            Member member = memberReadService.findByMemberId(memberId);
-            System.out.println("$$$$$$$$$$$$ member " + member);
 
-            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
-
-            BookCommentVo updatedComment = bookCommentWriteService.updateBookComment(member, bookVo, bookCommentId,
+            BookCommentVo updatedComment = bookCommentWriteService.updateBookComment(memberId, bookId, bookCommentId,
                     commentDto);
-            BookCommentResponseDto updatedCommentRes = BookCommentResponseDto.builder()
-                    .bookCommentId(updatedComment.getBookCommentId())
-                    .score(updatedComment.getScore())
-                    .comment(updatedComment.getComment())
-                    .nickname(member.getNickname())
-                    .profileImgUrl(member.getProfileImgUrl())
-                    .regDt(updatedComment.getRegDt())
-                    .updDt(updatedComment.getUpdDt())
-                    .build();
-            return ResponseEntity.ok(updatedCommentRes);
+
+            log.info("::BookCommentController_updateComment::");
+            log.info(">> SavedComment : " + updatedComment);
+
+            return ResponseEntity.ok(updatedComment);
         } else {
             return ResponseEntity.badRequest().build();
         }
@@ -147,12 +132,10 @@ public class BookCommentController {
             throws BookCommentAccessDenied {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            Member member = memberReadService.findByMemberId(memberId);
-            System.out.println("$$$$$$$$$$$$ member " + member);
 
-            BookVo bookVo = bookDetailReadService.fetchByBookId(bookId);
+            log.info("::BookCommentController_deleteComment::");
 
-            bookCommentWriteService.deleteBookComment(member, bookVo, bookCommentId);
+            bookCommentWriteService.deleteBookComment(memberId, bookId, bookCommentId);
 
             return ResponseEntity.ok().build();
 
@@ -165,17 +148,15 @@ public class BookCommentController {
 
     // 해당 도서 리뷰 좋아요(like) 하기
     @PostMapping("comments/{bookCommentId}/likes")
-    public ResponseEntity addHearts(@PathVariable BookCommentId bookCommentId,
+    public ResponseEntity addLikes(@PathVariable BookCommentId bookCommentId,
                                     @AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            Member member = memberReadService.findByMemberId(memberId);
 
-            BookCommentVo comment = bookCommentReadService.fetchByBookCommentId(bookCommentId);
-            BookVo bookVo = bookDetailReadService.fetchByBookId(comment.getBookVo().getBookId());
-            System.out.println("&& bookComment : " + comment + " book : " + bookVo);
+            BookCommentLikeVo savedLike = bookCommentLikeWriteService.addLike(memberId, bookCommentId);
 
-            BookCommentLikeVo savedLike = bookCommentWriteService.addLike(member, bookVo, comment);
+            log.info("::BookCommentController_addLikess::");
+            log.info(">> savedLike : " + savedLike);
 
             return ResponseEntity.ok(savedLike);
         } else {
@@ -185,23 +166,20 @@ public class BookCommentController {
 
     // 해당 도서 리뷰 좋아요(like) 삭제
     @DeleteMapping("comments/{bookCommentId}/likes")
-    public ResponseEntity removeHearts(@PathVariable BookCommentId bookCommentId,
+    public ResponseEntity removeLikes(@PathVariable BookCommentId bookCommentId,
                                        @AuthenticationPrincipal MyMemberDetails details)
             throws Exception {
         if (details != null) {
             MemberId memberId = details.getMemberId();
-            Member member = memberReadService.findByMemberId(memberId);
 
-
-            BookCommentVo comment = bookCommentReadService.fetchByBookCommentId(bookCommentId);
-            BookVo bookVo = bookDetailReadService.fetchByBookId(comment.getBookVo().getBookId());
-
-            bookCommentWriteService.removeLike(member, bookVo, comment);
+            bookCommentLikeWriteService.removeLike(memberId, bookCommentId);
 
             return ResponseEntity.ok().build();
         }
         return
                 ResponseEntity.badRequest().build();
     }
+
+
 
 }

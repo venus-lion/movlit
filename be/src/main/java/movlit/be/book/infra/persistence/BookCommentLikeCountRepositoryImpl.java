@@ -1,5 +1,6 @@
 package movlit.be.book.infra.persistence;
 
+import java.awt.print.Book;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookCommentConverter;
 import movlit.be.book.application.converter.BookCommentLikeCountConverter;
@@ -48,5 +49,11 @@ public class BookCommentLikeCountRepositoryImpl implements BookCommentLikeCountR
                 bookCommentLikeCountVo));
         return BookCommentLikeCountConverter.toDomain(likeCountEntity);
     }
+
+    @Override
+    public void deleteAllByCommentId(BookCommentId bookCommentId) {
+        bookCommentLikeCountJpaRepository.deleteAllByCommentId(bookCommentId);
+    }
+
 
 }
