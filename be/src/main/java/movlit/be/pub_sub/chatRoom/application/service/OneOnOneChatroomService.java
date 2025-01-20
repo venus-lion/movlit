@@ -4,28 +4,27 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.chatRoom.entity.ContentType;
 import movlit.be.pub_sub.chatRoom.entity.OneOnOneChatRoom;
-import movlit.be.pub_sub.chatRoom.infra.persistence.jpa.OneOnOneChatRoomJpaRepository;
+import movlit.be.pub_sub.chatRoom.infra.persistence.jpa.OneOnOneChatroomJpaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class OneOnOneChatRoomService {
+public class OneOnOneChatroomService {
 
-    private final OneOnOneChatRoomJpaRepository oneOnOneChatRoomJpaRepository;
+    private final OneOnOneChatroomJpaRepository oneOnOneChatRoomJpaRepository;
 
-    public OneOnOneChatRoom createChatRoom(String roomName, ContentType roomContentType,
+    public OneOnOneChatRoom createChatroom(String roomName,
                                            MemberId memberId) {
         OneOnOneChatRoom oneOnOneChatRoom = new OneOnOneChatRoom(memberId.getValue(), "memberB", roomName);
         return oneOnOneChatRoomJpaRepository.save(oneOnOneChatRoom);
     }
 
-    public List<OneOnOneChatRoom> fetchAllChatRooms() {
+    public List<OneOnOneChatRoom> fetchAllChatrooms() {
         return oneOnOneChatRoomJpaRepository.findAll();
     }
 
-    public OneOnOneChatRoom fetchChatRoomById(Long roomId) {
+    public OneOnOneChatRoom fetchChatroomById(Long roomId) {
         return oneOnOneChatRoomJpaRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
     }
