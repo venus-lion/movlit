@@ -3,6 +3,8 @@ import ChatTabs from './ChatTabs';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
 import {useNavigate, useOutletContext} from "react-router-dom";
+import ChatPage from '../../pages/ChatPage.jsx';
+
 
 const Chat = () => {
     const [activeTab, setActiveTab] = useState('personal'); // 개인 채팅 또는 그룹 채팅
@@ -68,7 +70,7 @@ const Chat = () => {
                 <ChatList
                     activeTab={activeTab}
                     searchTerm={searchTerm}
-                    onSelectChat={(chat) => setSelectedChat(chat)}
+                    onSelectChat={(chat) => setSelectedChat(chat)} // 선택된 채팅방 설정
                 />
 
                 {/* 채팅방 생성 버튼 */}
@@ -101,7 +103,7 @@ const Chat = () => {
             {/* 오른쪽: 채팅 화면 */}
             <div style={{ flex: 1, padding: '10px' }}>
                 {selectedChat ? (
-                    <ChatWindow roomId={selectedChat.id} />
+                    <ChatPage roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */
                 ) : (
                     <div style={{ textAlign: 'center', marginTop: '20%' }}>
                         채팅방을 선택해주세요.
