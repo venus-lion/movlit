@@ -5,6 +5,7 @@ import ChatWindow from './ChatWindow';
 import {useNavigate, useOutletContext} from "react-router-dom";
 import ChatPage from '../../pages/ChatPage.jsx';
 import CreateGroupChatModal from "./CreateGroupChatModal.jsx";
+import ChatPageGroup from "../../pages/ChatPageGroup.jsx";
 
 
 const Chat = () => {
@@ -110,12 +111,26 @@ const Chat = () => {
             </div>
 
             {/* 오른쪽: 채팅 화면 */}
+            {/*<div style={{flex: 1, padding: '10px'}}>*/}
+            {/*    { selectedChat ? (*/}
+            {/*        <ChatPage roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */}
+            {/*    ) : (*/}
+            {/*        <div style={{textAlign: 'center', marginTop: '20%'}}>*/}
+            {/*            채팅방을 선택해주세요.*/}
+            {/*        </div>*/}
+            {/*    )}*/}
+            {/*</div>*/}
+
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
-                    <ChatPage roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */
+                    activeTab === 'personal' ? (
+                        <ChatPage roomId={selectedChat.id}/> /* 개인 채팅방 */
+                    ) : (
+                        <ChatPageGroup roomId={selectedChat.id}/> /* 그룹 채팅방 */
+                    )
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>
-                        채팅방을 선택해주세요.
+                        {activeTab === 'personal' ? '개인' : '그룹'} 채팅방을 선택해주세요.
                     </div>
                 )}
             </div>
