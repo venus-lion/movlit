@@ -151,9 +151,10 @@ const Chat = () => {
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
                     activeTab === 'personal' ? (
-                        <ChatPage roomId={selectedChat.groupChatroomId}/> /* 개인 채팅방 */
+                        // <ChatPage roomInfo={selectedChat}/> /* 개인 채팅방 */
+                         <ChatPage roomId={selectedChat.groupChatroomId} roomInfo={selectedChat}/> /* 개인 채팅방 */
                     ) : (
-                        <ChatPageGroup roomId={selectedChat.groupChatroomId}/> /* 그룹 채팅방 */
+                        <ChatPageGroup roomId={selectedChat.groupChatroomId} roomInfo={selectedChat}/> /* 그룹 채팅방 */
                     )
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>
