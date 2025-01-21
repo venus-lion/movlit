@@ -65,7 +65,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                     onClick={() => onSelectChat(chat)}
                 >
                     <div style={{fontWeight: 'bold'}}>{chat.roomName}</div>
-                    <div style={style.conTitle}>컨텐츠 : <strong>{chat.contentName}</strong></div>
+                    <div style={style.conTitle}>콘텐츠 : <strong>{chat.contentName}</strong></div>
                     <div style={{fontSize: '0.6em', color: '#aaa'}}>{chat.regDt}</div>
                 </div>
             ))}

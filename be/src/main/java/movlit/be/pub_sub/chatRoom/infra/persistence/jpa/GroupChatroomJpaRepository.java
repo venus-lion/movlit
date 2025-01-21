@@ -31,10 +31,19 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
             + "gc.groupChatroomId, "
             + "gc.contentId, "
             + "gc.roomName, "
+            + " ( "
+            + "   CASE "
+            + "    WHEN gc.contentId LIKE 'BK_%' THEN b.title  "
+            + "    WHEN gc.contentId LIKE 'MV_%' THEN m.title  "
+            + "    ELSE '알 수 없음'  "
+            + "   END "
+            + " ) AS contentName, "
             + "gc.regDt "
             + ") "
             + "FROM GroupChatroom gc "
             + "LEFT JOIN gc.memberRChatroom mr "
+            + "LEFT JOIN BookEntity b ON gc.contentId = CONCAT('BK_', b.bookId) AND gc.contentId LIKE 'BK_%'  "
+            + "LEFT JOIN MovieEntity m ON gc.contentId = CONCAT('MV_', m.movieId) AND gc.contentId LIKE 'MV_%' "
             + "WHERE mr.member.memberId = :memberId")
     Optional<List<GroupChatroomResponseDto>> findAllByMemberId(@Param("memberId") MemberId memberId);
 

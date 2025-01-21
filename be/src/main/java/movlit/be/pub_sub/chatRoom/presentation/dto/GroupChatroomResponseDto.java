@@ -19,7 +19,8 @@ public class GroupChatroomResponseDto {
 
     private GroupChatroomId groupChatroomId;
     private String contentId; // MV_movieId, BK_bookId
-    private String roomName;
+    private String roomName; // 채팅방 이름
+    private String contentName; // 콘텐츠(책, 영화)이름
     private LocalDateTime regDt;
 
 

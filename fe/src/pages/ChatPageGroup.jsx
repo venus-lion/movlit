@@ -156,7 +156,7 @@ import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
 import './ChatPage.css'; // CSS 파일 import
 
-function ChatPageGroup({ roomId }) {
+function ChatPageGroup({ roomId, roomInfo }) {
     console.log('그룹 채팅에서의 roomId :: ' + roomId);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
@@ -294,7 +294,7 @@ function ChatPageGroup({ roomId }) {
     return (
         <div className="chat-container" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div className="chat-header">
-                <h2>채팅방: {roomId}</h2>
+                <h2>채팅방: {roomInfo.roomName}</h2>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => (

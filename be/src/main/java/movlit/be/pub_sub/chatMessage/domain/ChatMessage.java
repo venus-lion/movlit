@@ -28,6 +28,7 @@ public class ChatMessage {
 
     @Builder
     public ChatMessage(String roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
+
         this.roomId = roomId;
         this.senderId = senderId;
         this.message = message;
