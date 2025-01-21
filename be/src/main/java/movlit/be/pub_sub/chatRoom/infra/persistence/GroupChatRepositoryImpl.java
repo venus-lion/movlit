@@ -47,11 +47,11 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
         return members;
     }
 
-    public List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId) {
-        List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
-                .orElseThrow(ChatroomNotFoundException::new);
-
-        return myGroupChatList;
-    }
+//    public List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId) {
+//        List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
+//                .orElseThrow(ChatroomNotFoundException::new);
+//
+//        return myGroupChatList;
+//    }
 
 }

@@ -1,13 +1,16 @@
 package movlit.be.member.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,8 +68,8 @@ public class MemberEntity {
     private boolean delYn;
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MemberRChatroom memberRChatroom;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberRChatroom> memberRChatroom = new ArrayList<>();
 
     @Builder
     public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,
@@ -102,7 +105,7 @@ public class MemberEntity {
     }
 
     public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
-        this.memberRChatroom = memberRChatroom;
+        this.memberRChatroom.add(memberRChatroom);
     }
 
 }

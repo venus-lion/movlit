@@ -1,11 +1,15 @@
 package movlit.be.pub_sub.chatRoom.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +27,8 @@ public class GroupChatroom {
     private String contentId; // MV_uuid, BK_uuid
     private LocalDateTime regDt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MemberRChatroom memberRChatroom;
+    @OneToMany(mappedBy = "groupChatroom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberRChatroom> memberRChatroom = new ArrayList<>();
 
     public GroupChatroom(GroupChatroomId groupChatroomId, String roomName, String contentId, LocalDateTime regDt) {
         this.groupChatroomId = groupChatroomId;
@@ -34,8 +38,7 @@ public class GroupChatroom {
     }
 
     public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
-        this.memberRChatroom = memberRChatroom;
-        memberRChatroom.getGroupChatRoom().add(this);
+        this.memberRChatroom.add(memberRChatroom);
     }
 
 }
