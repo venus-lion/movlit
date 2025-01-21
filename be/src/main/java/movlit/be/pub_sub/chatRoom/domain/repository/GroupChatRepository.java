@@ -13,7 +13,8 @@ public interface GroupChatRepository {
 
     GroupChatroomResponse create(GroupChatroom groupChatroom);
 
-//    List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId);
+    List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId);
+
 
     List<GroupChatroomMemberResponse> findMembersByChatroomId(@Param("chatroomId") GroupChatroomId chatroomId);
 

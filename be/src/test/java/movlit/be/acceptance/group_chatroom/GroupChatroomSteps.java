@@ -13,6 +13,7 @@ import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class GroupChatroomSteps {
 
@@ -58,6 +59,21 @@ public class GroupChatroomSteps {
                 .body(body)
                 .when()
                 .post("/api/chat/create/group")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_그룹채팅리스트를_조회한다(String accessToken,
+                                                               RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/chatrooms/myGroupChatrooms")
                 .then()
                 .log().all()
                 .extract();
