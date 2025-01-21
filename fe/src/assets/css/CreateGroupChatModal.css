@@ -104,6 +104,10 @@
     max-height: 320px;
 }
 
+.result-card.selected {
+    background-color: #d3d3d3; /* 선택된 카드 배경색 */
+}
+
 .result-image {
     width: 100%;
     height: 230px;

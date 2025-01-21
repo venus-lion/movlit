@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
-import "../../assets/css/ModalStyle.css";
+import "../../assets/css/CreateGroupChatModal.css";
 import axiosInstance from "../../axiosInstance.js";
 
 // 별을 표시하는 함수
@@ -31,16 +31,22 @@ const truncateTitle = (title, maxLength = 15) => {
     return title;
 };
 
-const CreateGroupChatModal = ({isOpen, onClose}) => {
+const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
     const [selectedCategory, setSelectedCategory] = useState("movie"); // 기본 선택 영화
     const [searchTerm, setSearchTerm] = useState(""); // 검색어
     const [searchResults, setSearchResults] = useState([]); // 검색 결과
+    const [selectedCard, setSelectedCard] = useState(null); // 선택된 카드 데이터
 
     // 라디오 버튼 변경 핸들러
     const handleCategoryChange = (event) => {
         setSearchResults([]);
+        setSelectedCard(null);
         setSelectedCategory(event.target.value);
     };
+    // 카테고리가 변경될 때 검색 결과 초기화
+    useEffect(() => {
+        setSearchResults([]); // 카테고리 변경 시 결과 초기화
+    }, [selectedCategory]);
 
     // 검색 버튼 클릭 핸들러
     const handleSearch = async () => {
@@ -49,15 +55,15 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
             return;
         }
         setSearchResults([]);
+        setSelectedCard(null);
 
-        // TODO: 실제 API 호출로 검색 결과 가져오기
         try {
             if (selectedCategory === "movie") {
                 //  영화 데이터 가져오기
                 const response = await axiosInstance.get(`/movies/search/searchMovie`, {
                     params: {
                         page: 1,
-                        pageSize: 20,
+                        pageSize: 50,
                         inputStr: searchTerm
                     },
                 });
@@ -69,14 +75,12 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
                 const response = await axiosInstance.get(`/books/search/searchBook`, {
                     params: {
                         page: 1,
-                        pageSize: 20,
+                        pageSize: 50,
                         inputStr: searchTerm
                     }
                 });
                 const bookData = await response.data.bookESVoList;
                 setSearchResults(bookData);
-
-                console.log(bookData);
             }
 
 
@@ -86,24 +90,40 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
         }
     };
 
+    const handleCardClick = (result) => {
+
+        setSelectedCard((prev) => (prev === result ? null : result)); // 토글 선택
+    };
+    useEffect(() => {
+        console.log(selectedCard);
+    }, [selectedCard]);
+
+    // 선택 버튼 클릭 핸들러
+    const handleConfirm = () => {
+        if (!selectedCard) {
+            alert("카드를 선택해주세요.");
+            return;
+        }
+        if (!selectedCategory) {
+            alert("카테고리를 선택해주세요.");
+            return;
+        }
+
+        onConfirm(selectedCard, selectedCategory); // 선택된 데이터를 부모로 전달
+    };
+
     // 취소 버튼 클릭 핸들러
     const handleCancel = () => {
         setSearchTerm(""); // 검색어 초기화
         setSearchResults([]); // 검색 결과 초기화
-        onClose(); // 모달 닫기
-    };
-
-    // 초기화 및 모달 닫기 핸들러
-    const handleClose = () => {
-        setSearchTerm(""); // 검색어 초기화
-        setSearchResults([]); // 검색 결과 초기화
+        setSearchTerm("");
         onClose(); // 모달 닫기
     };
 
     return (
         <Modal
             isOpen={isOpen}
-            onRequestClose={handleClose}
+            onRequestClose={handleCancel}
             className="custom-modal"
             overlayClassName="custom-overlay"
             ariaHideApp={false}
@@ -163,7 +183,10 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
                             {searchResults.length > 0 ? (
                                 <div className="results-grid">
                                     {searchResults.map((result, index) => (
-                                        <div key={index} className="result-card">
+                                        <div key={index}
+                                             className={`result-card ${selectedCard === result ? 'selected' : ''}`}
+                                             onClick={() => handleCardClick(result)}
+                                        >
                                             {selectedCategory === "movie" ? (
                                                 <>
                                                     <img src={result.posterPath} alt={result.title}
@@ -203,10 +226,8 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
 
                 {/* 모달 푸터 */}
                 <div className="modal-footer">
-                    <button className="modal-cancel" onClick={handleCancel}>
-                        취소
-                    </button>
-                    <button className="modal-confirm">선택</button>
+                    <button className="modal-cancel" onClick={handleCancel}>취소</button>
+                    <button className="modal-confirm" onClick={handleConfirm}>선택</button>
                 </div>
             </div>
         </Modal>
