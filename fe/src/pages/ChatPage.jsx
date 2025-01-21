@@ -52,7 +52,8 @@ function ChatPage({ roomId }) {
 
         client.onConnect = () => {
             console.log('WebSocket Connected');
-            client.subscribe(`/topic/chat/${roomId}`, (message) => {
+            // TODO: GroupChatPage에서는 group으로 처리
+            client.subscribe(`/topic/chat/message/one-on-one${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);
             });
@@ -89,10 +90,11 @@ function ChatPage({ roomId }) {
                 senderId: 'currentUserId', // 현재 사용자 ID (실제로는 인증 정보에서 가져와야 함)
                 message: newMessage,
                 regDt: new Date()
+                // TODO: type 여기서 보내주기
             };
 
             stompClient.publish({
-                destination: '/app/chat/message',
+                destination: '/app/chat/message/one-on-one',
                 body: JSON.stringify(chatMessage),
             });
 

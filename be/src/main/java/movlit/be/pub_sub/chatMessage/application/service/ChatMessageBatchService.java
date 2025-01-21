@@ -2,7 +2,7 @@ package movlit.be.pub_sub.chatMessage.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.pub_sub.chatMessage.entity.ChatMessage;
+import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.mongo.ChatMessageMongoRepository;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import org.springframework.data.redis.core.RedisTemplate;
