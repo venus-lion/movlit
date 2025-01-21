@@ -7,6 +7,7 @@ import movlit.be.common.exception.GroupChatroomNotFoundException;
 import movlit.be.common.util.ids.GroupChatroomId;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.ChatroomNotFoundException;
+import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.GroupChatRepository;
@@ -29,6 +30,15 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
     }
 
     @Override
+    public List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId) {
+        List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
+                .orElseThrow(ChatroomNotFoundException::new);
+
+        return myGroupChatList;
+
+    }
+
+    @Override
     public GroupChatroom findByChatroomId(GroupChatroomId chatroomId) {
         return groupChatroomJpaRepository.findByGroupChatroomId(chatroomId)
                 .orElseThrow(GroupChatroomNotFoundException::new);
@@ -47,11 +57,5 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
         return members;
     }
 
-//    public List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId) {
-//        List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
-//                .orElseThrow(ChatroomNotFoundException::new);
-//
-//        return myGroupChatList;
-//    }
 
 }

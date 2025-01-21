@@ -2,9 +2,9 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import movlit.be.common.util.ids.GroupChatroomId;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomNotFoundException;
+import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.entity.MemberEntity;
@@ -23,24 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class GroupChatroomService {
-
-
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
+    private final MemberRChatroomService memberRChatroomService;
 
-//    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
-//        if (memberId != null) {
-//
-//            List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
-//            log.info("::GroupChatroomService_fetchMyGroupChatList::");
-//            log.info(">> myGroupchatList : " + myGroupChatList.toString());
-//
-//            return myGroupChatList;
-//        } else {
-//            throw new ChatroomNotFoundException();
-//        }
-//    }
 
+    // 그룹채팅 생성
     @Transactional
     public GroupChatroomResponse createGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
         GroupChatroom groupChatroom = ChatroomConvertor.makeNonReGroupChatroom(request);
@@ -55,6 +43,22 @@ public class GroupChatroomService {
         return groupChatRepository.create(groupChatroom);
     }
 
+
+    // 내가 가입한 그룹채팅 리스트 가져오기
+    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
+        if (memberId != null) {
+
+            List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
+            log.info("::GroupChatroomService_fetchMyGroupChatList::");
+            log.info(">> myGroupchatList : " + myGroupChatList.toString());
+
+            return myGroupChatList;
+        } else {
+            throw new ChatroomNotFoundException();
+        }
+    }
+
+
     public List<GroupChatroomMemberResponse> fetchMembersInGroupChatroom(GroupChatroomId groupChatroomId){
         // 채팅방 존재 여부 확인
         groupChatRepository.findByChatroomId(groupChatroomId);
@@ -64,4 +68,5 @@ public class GroupChatroomService {
 
         return members;
     }
+
 }
