@@ -11,8 +11,8 @@ function ChatPageGroup({ roomId }) {
 
     // 그룹 채팅방 멤버 목록 불러오기
     useEffect(() => {
-        const roomId = 'GRP_HP';
-        // roomId는 props로 전달받고 있습니다.
+        const roomId = 'GRP_HP'; // 임시로 roomId 설정
+
         if (roomId) {
             axiosInstance
                 .get(`/chat/${roomId}/members`)
@@ -57,7 +57,7 @@ function ChatPageGroup({ roomId }) {
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => {
-                    const member = members.find((m) => m.memberId.value === message.senderId);
+                    const member = members.find((m) => m.memberId === message.senderId);
                     const isCurrentUser = message.senderId === currentUserId;
 
                     return (
@@ -80,7 +80,7 @@ function ChatPageGroup({ roomId }) {
                                     marginRight: '10px'
                                 }}>
                                     <img
-                                        src={member?.profileImgUrl || 'https://via.placeholder.com/50'}
+                                        src={member?.profileImgUrl}
                                         alt="Profile"
                                         style={{
                                             width: '40px',
@@ -88,6 +88,8 @@ function ChatPageGroup({ roomId }) {
                                             borderRadius: '50%',
                                         }}
                                     />
+                                    {/* member?.nickname 콘솔 출력 */}
+                                    {console.log("Rendering nickname:", member?.nickname)}
                                     <strong style={{ padding: '5px' }}>{member?.nickname}</strong>
                                 </div>
                             )}
@@ -124,7 +126,7 @@ function ChatPageGroup({ roomId }) {
                                     marginLeft: '10px'
                                 }}>
                                     <img
-                                        src={member?.profileImgUrl || 'https://via.placeholder.com/50'}
+                                        src={member?.profileImgUrl}
                                         alt="Profile"
                                         style={{
                                             width: '40px',
@@ -132,7 +134,8 @@ function ChatPageGroup({ roomId }) {
                                             borderRadius: '50%',
                                         }}
                                     />
-                                    <strong style={{ padding: '5px' }}>{member?.nickname}</strong>
+                                    {/*카카오톡처럼, 내 대화창에서는 닉네임 없음*/}
+                                    {/*<strong style={{ padding: '5px' }}>{member?.nickname}</strong>*/}
                                 </div>
                             )}
                         </div>
