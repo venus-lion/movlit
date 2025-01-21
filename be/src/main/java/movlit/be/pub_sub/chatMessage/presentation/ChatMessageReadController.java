@@ -21,7 +21,7 @@ public class ChatMessageReadController {
     private final ChatMessageService chatMessageService;
 
     @GetMapping("/history")
-    public ResponseEntity<List<ChatMessageDto>> fetchChatMessages(@RequestParam Long roomId) {
+    public ResponseEntity<List<ChatMessageDto>> fetchChatMessages(@RequestParam String roomId) {
         List<ChatMessageDto> response = chatMessageService.fetchChatMessages(roomId);
 
         return ResponseEntity.ok().body(response);
