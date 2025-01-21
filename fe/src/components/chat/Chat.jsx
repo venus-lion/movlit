@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import ChatTabs from './ChatTabs';
 import ChatList from './ChatList';
-import ChatWindow from './ChatWindow';
 import {useNavigate, useOutletContext} from "react-router-dom";
 import ChatPage from '../../pages/ChatPage.jsx';
 import CreateGroupChatModal from "./CreateGroupChatModal.jsx";
 import ChatPageGroup from "../../pages/ChatPageGroup.jsx";
+import CreateGroupChatNameModal from "./CreateGroupChatNameModal.jsx";
+
 
 
 const Chat = () => {
@@ -15,7 +16,33 @@ const Chat = () => {
     const {isLoggedIn} = useOutletContext();
     const navigate = useNavigate();
 
-    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
+    const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false); // 모달1 열림 상태
+    const [isCreateGroupChatNameModalOpen, setIsCreateGroupChatNameModalOpen] = useState(false); // 모달2 열림 상태
+    const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    const handleCreateGroupChatModal = () => {
+        setIsCreateGroupChatModalOpen(true);
+    };
+
+    const handleCloseGroupChatModal = () => {
+        setIsCreateGroupChatModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
+
+    const handleOpenGroupChatNameModal = (card, category) => {
+        setSelectedCard(card); // 선택된 카드 데이터 저장
+        setSelectedCategory(category); // 선택된 카테고리 저장
+        setIsCreateGroupChatModalOpen(false); // 첫 번째 모달 닫기
+        setIsCreateGroupChatNameModalOpen(true); // 두 번째 모달 열기
+    };
+
+    const handleCloseGroupChatNameModal = () => {
+        setIsCreateGroupChatNameModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
 
     // 검색 핸들러
     const handleSearch = (event) => {
@@ -29,7 +56,7 @@ const Chat = () => {
             navigate('/member/login');
             return;
         }
-        setIsModalOpen(true); // 모달 열기
+        setIsCreateGroupChatModalOpen(true); // 모달 열기
 
         // const roomName = prompt('생성할 채팅방 이름을 입력하세요 : ');
         // if (!roomName) return;
@@ -43,10 +70,6 @@ const Chat = () => {
         // -- 근데 일대일채팅방인지, 그룹채팅방인지에 따라 다른 생성 api를 호출해야 하고..
         // -- 그리고 일대일채팅이면,
 
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false); // 모달 닫기
     };
 
     return (
@@ -84,7 +107,7 @@ const Chat = () => {
                 {activeTab === "group" && (
 
                     <button
-                        onClick={handleCreateChat}
+                        onClick={handleCreateGroupChatModal}
                         style={{
                             backgroundColor: 'green',
                             color: 'white',
@@ -136,9 +159,20 @@ const Chat = () => {
             </div>
 
             {/* 모달 창 */}
-            <CreateGroupChatModal isOpen={isModalOpen} onClose={closeModal}/>
+            <CreateGroupChatModal
+                isOpen={isCreateGroupChatModalOpen}
+                onClose={handleCloseGroupChatModal}
+                onConfirm={(card, category) => handleOpenGroupChatNameModal(card, category)} // 선택된 데이터 전달
+            />
+            <CreateGroupChatNameModal
+                isOpen={isCreateGroupChatNameModalOpen}
+                onClose={handleCloseGroupChatNameModal}
+                selectedCard={selectedCard} // 선택된 데이터 전달
+                selectedCategory={selectedCategory} // 선택된 카테고리 전달
+            />
         </div>
     );
+
 };
 
 export default Chat;

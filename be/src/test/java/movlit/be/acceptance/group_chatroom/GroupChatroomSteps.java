@@ -13,26 +13,36 @@ import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class GroupChatroomSteps {
 
-    public static ExtractableResponse<Response> 그룹_채팅_생성을_요청한다(String accessToken,
-                                                               RequestSpecification spec) {
-        /**
-         *     @NotBlank(message = "채팅방 제목은 항상 존재해야 합니다.")
-         *     private String roomName;
-         *
-         *     @NotBlank(message = "(개발자 알림) 컨텐츠 유형이 비어 있습니다.")
-         *     private String contentType; // movie, book
-         *
-         *     @NotNull(message = "컨텐츠의 id가 없습니다.")
-         *     private Long contentId;
-         */
-
+    public static ExtractableResponse<Response> 그룹_채팅_생성을_요청한다_1(String accessToken,
+                                                                 RequestSpecification spec) {
         Map<String, Object> body = new HashMap<>();
         body.put("roomName", "해리포터 활동방");
         body.put("contentType", "movie");
         body.put("contentId", 767L);
+
+        return 그룹_채팅을_생성한다(accessToken, spec, body);
+    }
+
+    public static ExtractableResponse<Response> 그룹_채팅_생성을_요청한다_2(String accessToken,
+                                                                 RequestSpecification spec) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("roomName", "기타 활동방");
+        body.put("contentType", "movie");
+        body.put("contentId", 278L);
+
+        return 그룹_채팅을_생성한다(accessToken, spec, body);
+    }
+
+    public static ExtractableResponse<Response> 그룹_채팅_생성을_요청한다_3(String accessToken,
+                                                                 RequestSpecification spec) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("roomName", "안녕 활동방");
+        body.put("contentType", "movie");
+        body.put("contentId", 315162L);
 
         return 그룹_채팅을_생성한다(accessToken, spec, body);
     }
@@ -49,6 +59,21 @@ public class GroupChatroomSteps {
                 .body(body)
                 .when()
                 .post("/api/chat/create/group")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_그룹채팅리스트를_조회한다(String accessToken,
+                                                               RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/chatrooms/myGroupChatrooms")
                 .then()
                 .log().all()
                 .extract();

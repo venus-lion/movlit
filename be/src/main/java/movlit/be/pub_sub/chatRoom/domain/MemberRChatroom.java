@@ -3,6 +3,8 @@ package movlit.be.pub_sub.chatRoom.domain;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -23,11 +25,11 @@ public class MemberRChatroom {
     @EmbeddedId
     private MemberRChatroomId memberRChatroomId;
 
-    @OneToMany(mappedBy = "memberRChatroom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberEntity> member = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberEntity member;
 
-    @OneToMany(mappedBy = "memberRChatroom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupChatroom> groupChatRoom = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GroupChatroom groupChatroom;
 
     private LocalDateTime regDt;
 
@@ -36,9 +38,12 @@ public class MemberRChatroom {
         this.regDt = regDt;
     }
 
-    public void addMember(MemberEntity member) {
-        this.member.add(member);
-        member.updateMemberRChatroom(this);
+    public void updateMember(MemberEntity member) {
+        this.member = member;
+    }
+
+    public void updateGroupChatRoom(GroupChatroom groupChatroom) {
+        this.groupChatroom = groupChatroom;
     }
 
 }

@@ -25,15 +25,17 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
     )
     List<GroupChatroomMemberResponse> findMembersByChatroomId(@Param("chatroomId") GroupChatroomId chatroomId);
 
+
+    // 해당 사용자가 가입된 그룹 채팅방 리스트
     @Query("SELECT NEW movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto( "
             + "gc.groupChatroomId, "
             + "gc.contentId, "
             + "gc.roomName, "
             + "gc.regDt "
-            + " ) FROM GroupChatroom gc "
-            + "LEFT JOIN MemberRChatroom mrc on  mrc.memberRChatroomId = gc.memberRChatroom.memberRChatroomId "
-            + "LEFT JOIN MemberEntity m on m.memberRChatroom.memberRChatroomId = mrc.memberRChatroomId "
-            + "WHERE m.memberId = :memberId ")
+            + ") "
+            + "FROM GroupChatroom gc "
+            + "LEFT JOIN gc.memberRChatroom mr "
+            + "WHERE mr.member.memberId = :memberId")
     Optional<List<GroupChatroomResponseDto>> findAllByMemberId(@Param("memberId") MemberId memberId);
 
 }

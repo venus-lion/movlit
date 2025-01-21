@@ -1,17 +1,52 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
-import * as RadioGroup from "@radix-ui/react-radio-group";
-import "../../assets/css/ModalStyle.css";
+import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
+import "../../assets/css/CreateGroupChatModal.css";
+import axiosInstance from "../../axiosInstance.js";
 
-const CreateGroupChatModal = ({isOpen, onClose}) => {
+// 별을 표시하는 함수
+const renderStars = (rating) => {
+    // rating 값을 0 ~ 10으로 받을 경우
+    const validRating = Math.max(0, Math.min(10, rating || 0));  // 0 ~ 10 사이로 제한
+
+    // 2점마다 1개의 꽉 찬 별로 환산
+    const fullStars = Math.floor(validRating / 2);  // 꽉 찬 별 개수
+    const halfStar = validRating % 2 >= 1 ? 1 : 0;  // 반쪽 별 여부 (나머지가 1 이상이면 반쪽 별)
+    const emptyStars = 5 - fullStars - halfStar;  // 빈 별 개수 (총 5개 별이므로 나머지)
+
+    return (
+        <>
+            {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon"/>)}
+            {halfStar === 1 && <FaStarHalfAlt className="star-icon"/>}
+            {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon"/>)}
+        </>
+    );
+};
+
+// 제목 축약 함수
+const truncateTitle = (title, maxLength = 15) => {
+    if (title.length > maxLength) {
+        return `${title.slice(0, maxLength)}...`;
+    }
+    return title;
+};
+
+const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
     const [selectedCategory, setSelectedCategory] = useState("movie"); // 기본 선택 영화
     const [searchTerm, setSearchTerm] = useState(""); // 검색어
     const [searchResults, setSearchResults] = useState([]); // 검색 결과
+    const [selectedCard, setSelectedCard] = useState(null); // 선택된 카드 데이터
 
     // 라디오 버튼 변경 핸들러
     const handleCategoryChange = (event) => {
+        setSearchResults([]);
+        setSelectedCard(null);
         setSelectedCategory(event.target.value);
     };
+    // 카테고리가 변경될 때 검색 결과 초기화
+    useEffect(() => {
+        setSearchResults([]); // 카테고리 변경 시 결과 초기화
+    }, [selectedCategory]);
 
     // 검색 버튼 클릭 핸들러
     const handleSearch = async () => {
@@ -19,27 +54,76 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
             alert("검색어를 입력하세요.");
             return;
         }
+        setSearchResults([]);
+        setSelectedCard(null);
 
-        // TODO: 실제 API 호출로 검색 결과 가져오기
         try {
-            const response = await fetch(
-                `/api/search?category=${selectedCategory}&query=${encodeURIComponent(
-                    searchTerm
-                )}`
-            );
-            const data = await response.json();
+            if (selectedCategory === "movie") {
+                //  영화 데이터 가져오기
+                const response = await axiosInstance.get(`/movies/search/searchMovie`, {
+                    params: {
+                        page: 1,
+                        pageSize: 50,
+                        inputStr: searchTerm
+                    },
+                });
 
-            setSearchResults(data.results || []); // 결과가 없으면 빈 배열로 설정
+                const movieData = await response.data.movieList;
+                setSearchResults(movieData); // 결과가 없으면 빈 배열로 설정
+            } else if (selectedCategory === "book") {
+                // 도서 데이터 가져오기
+                const response = await axiosInstance.get(`/books/search/searchBook`, {
+                    params: {
+                        page: 1,
+                        pageSize: 50,
+                        inputStr: searchTerm
+                    }
+                });
+                const bookData = await response.data.bookESVoList;
+                setSearchResults(bookData);
+            }
+
+
         } catch (error) {
             console.error("Error fetching search results:", error);
             setSearchResults([]); // 오류 발생 시 빈 배열
         }
     };
 
+    const handleCardClick = (result) => {
+
+        setSelectedCard((prev) => (prev === result ? null : result)); // 토글 선택
+    };
+    useEffect(() => {
+        console.log(selectedCard);
+    }, [selectedCard]);
+
+    // 선택 버튼 클릭 핸들러
+    const handleConfirm = () => {
+        if (!selectedCard) {
+            alert("카드를 선택해주세요.");
+            return;
+        }
+        if (!selectedCategory) {
+            alert("카테고리를 선택해주세요.");
+            return;
+        }
+
+        onConfirm(selectedCard, selectedCategory); // 선택된 데이터를 부모로 전달
+    };
+
+    // 취소 버튼 클릭 핸들러
+    const handleCancel = () => {
+        setSearchTerm(""); // 검색어 초기화
+        setSearchResults([]); // 검색 결과 초기화
+        setSearchTerm("");
+        onClose(); // 모달 닫기
+    };
+
     return (
         <Modal
             isOpen={isOpen}
-            onRequestClose={onClose}
+            onRequestClose={handleCancel}
             className="custom-modal"
             overlayClassName="custom-overlay"
             ariaHideApp={false}
@@ -54,49 +138,25 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
                 <div className="modal-body">
                     {/* 카테고리 선택 */}
                     <div className="modal-tab-container">
-                        {/*<RadioGroup.Root*/}
-                        {/*    className="radio-group"*/}
-                        {/*    value={selectedCategory}*/}
-                        {/*    onValueChange={setSelectedCategory}*/}
-                        {/*>*/}
-                        {/*    <div className="radio-item">*/}
-                        {/*        <RadioGroup.Item*/}
-                        {/*            value="movie"*/}
-                        {/*            className="radio"*/}
-                        {/*            id="movie"*/}
-                        {/*        />*/}
-                        {/*        <label htmlFor="movie" className="radio-label">*/}
-                        {/*            영화*/}
-                        {/*        </label>*/}
-                        {/*    </div>*/}
-                        {/*    <div className="radio-item">*/}
-                        {/*        <RadioGroup.Item*/}
-                        {/*            value="book"*/}
-                        {/*            className="radio"*/}
-                        {/*            id="book"*/}
-                        {/*        />*/}
-                        {/*        <label htmlFor="book" className="radio-label">*/}
-                        {/*            책*/}
-                        {/*        </label>*/}
-                        {/*    </div>*/}
-                        {/*</RadioGroup.Root>*/}
-                        <label>
+                        <label className="radio-label">
                             <input
                                 type="radio"
                                 name="category"
                                 value="movie"
                                 checked={selectedCategory === "movie"}
                                 onChange={handleCategoryChange}
+                                className="radio radio-item"
                             />
                             영화
                         </label>
-                        <label>
+                        <label className="radio-label">
                             <input
                                 type="radio"
                                 name="category"
                                 value="book"
                                 checked={selectedCategory === "book"}
                                 onChange={handleCategoryChange}
+                                className="radio radio-item"
                             />
                             책
                         </label>
@@ -111,7 +171,7 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <button className="modal-search-button" onClick={handleSearch}>
+                        <button className="search-button" onClick={handleSearch}>
                             검색
                         </button>
                     </div>
@@ -119,24 +179,55 @@ const CreateGroupChatModal = ({isOpen, onClose}) => {
                     {/* 검색 결과 */}
                     <div className="result-container">
                         <h3>검색 결과</h3>
-                        {searchResults.length > 0 ? (
-                            <ul>
-                                {searchResults.map((result, index) => (
-                                    <li key={index}>{result}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>검색결과가 없습니다.</p>
-                        )}
+                        <div className="results-scroll">
+                            {searchResults.length > 0 ? (
+                                <div className="results-grid">
+                                    {searchResults.map((result, index) => (
+                                        <div key={index}
+                                             className={`result-card ${selectedCard === result ? 'selected' : ''}`}
+                                             onClick={() => handleCardClick(result)}
+                                        >
+                                            {selectedCategory === "movie" ? (
+                                                <>
+                                                    <img src={result.posterPath} alt={result.title}
+                                                         className="result-image"/>
+                                                    <div className="result-title">{truncateTitle(result.title)}</div>
+                                                    <div
+                                                        className="result-rating">
+                                                        ⭐<span>({Math.round(parseFloat(result.voteAverage) * 10) / 10})</span>
+                                                    </div>
+                                                    <div>
+                                                        <p className="result-info">
+                                                            {result.movieGenre.map((g) => g.genreName).join(', ')}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <img src={result.bookImgUrl} alt={result.title}
+                                                         className="result-image"/>
+                                                    <div className="result-title">{truncateTitle(result.title)}</div>
+                                                    <div>
+                                                        <p className="result-info">
+                                                            {result.crew.join(', ')}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>검색결과가 없습니다.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* 모달 푸터 */}
                 <div className="modal-footer">
-                    <button className="modal-cancel" onClick={onClose}>
-                        취소
-                    </button>
-                    <button className="modal-confirm">선택</button>
+                    <button className="modal-cancel" onClick={handleCancel}>취소</button>
+                    <button className="modal-confirm" onClick={handleConfirm}>선택</button>
                 </div>
             </div>
         </Modal>

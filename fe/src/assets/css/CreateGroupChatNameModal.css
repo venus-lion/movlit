@@ -1,0 +1,122 @@
+/* 모달 전체 스타일 */
+.custom-modal-2 {
+    width: 400px;
+    margin: auto;
+    background-color: #f0f8ff; /* 밝은 파란색 */
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    animation: fadeIn 0.3s ease-in-out;
+    text-align: center;
+}
+
+/* 모달 헤더 */
+.modal-2-header {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 모달 바디 */
+.modal-2-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 선택된 이미지 */
+.selected-image {
+    width: 150px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+/*!* 제목 텍스트 *!*/
+.modal-2-body div {
+    font-size: 18px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* 장르 정보 */
+.selected-info {
+    font-size: 16px;
+    color: #777;
+    margin-top: 5px;
+}
+
+/* 평점 */
+.selected-rating {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 입력 영역 */
+.modal-2-content .input-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 입력 필드 */
+.chatroom-name-input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* 모달 푸터 */
+.modal-2-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* 버튼 스타일 */
+.modal-2-footer button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-2-footer button:hover {
+    background-color: #0056b3;
+}
+
+.modal-2-footer .cancel-button {
+    background-color: #f44336;
+}
+
+.modal-2-footer .cancel-button:hover {
+    background-color: #d32f2f;
+}
+
+/* 모달 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
