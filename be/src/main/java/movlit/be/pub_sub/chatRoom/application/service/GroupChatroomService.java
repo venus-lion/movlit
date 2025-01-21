@@ -27,29 +27,32 @@ public class GroupChatroomService {
 
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
-    private final MemberRChatroomService memberRChatroomService;
 
-    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
-        if (memberId != null) {
-
-            List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
-            log.info("::GroupChatroomService_fetchMyGroupChatList::");
-            log.info(">> myGroupchatList : " + myGroupChatList.toString());
-
-            return myGroupChatList;
-        } else {
-            throw new ChatroomNotFoundException();
-        }
-    }
+//    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
+//        if (memberId != null) {
+//
+//            List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
+//            log.info("::GroupChatroomService_fetchMyGroupChatList::");
+//            log.info(">> myGroupchatList : " + myGroupChatList.toString());
+//
+//            return myGroupChatList;
+//        } else {
+//            throw new ChatroomNotFoundException();
+//        }
+//    }
 
     @Transactional
     public GroupChatroomResponse createGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
-        MemberEntity member = memberReadService.findEntityByMemberId(memberId);
-        MemberRChatroom memberRChatroom = ChatroomConvertor.makeMemberRChatroom(member);
-        memberRChatroomService.save(memberRChatroom);
-        GroupChatroom groupChatroom = ChatroomConvertor.makeGroupChatroom(request, memberRChatroom);
-        return groupChatRepository.create(groupChatroom);
+        GroupChatroom groupChatroom = ChatroomConvertor.makeNonReGroupChatroom(request);
+        MemberRChatroom memberRChatroom = ChatroomConvertor.makeNonReMemberRChatroom();
 
+        MemberEntity member = memberReadService.findEntityByMemberId(memberId);
+
+        memberRChatroom.updateGroupChatRoom(groupChatroom);
+        memberRChatroom.updateMember(member);
+        groupChatroom.updateMemberRChatroom(memberRChatroom); // 그룹 채팅방에 멤버를 참여시킨다
+
+        return groupChatRepository.create(groupChatroom);
     }
 
     public List<GroupChatroomMemberResponse> fetchMembersInGroupChatroom(GroupChatroomId groupChatroomId){
