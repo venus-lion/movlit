@@ -1,30 +1,27 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
-import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
+import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js";
 
-// 별을 표시하는 함수
+// 별을 표시하는 함수 (변경 없음)
 const renderStars = (rating) => {
-    // rating 값을 0 ~ 10으로 받을 경우
-    const validRating = Math.max(0, Math.min(10, rating || 0));  // 0 ~ 10 사이로 제한
-
-    // 2점마다 1개의 꽉 찬 별로 환산
-    const fullStars = Math.floor(validRating / 2);  // 꽉 찬 별 개수
-    const halfStar = validRating % 2 >= 1 ? 1 : 0;  // 반쪽 별 여부 (나머지가 1 이상이면 반쪽 별)
-    const emptyStars = 5 - fullStars - halfStar;  // 빈 별 개수 (총 5개 별이므로 나머지)
+    const validRating = Math.max(0, Math.min(10, rating || 0));
+    const fullStars = Math.floor(validRating / 2);
+    const halfStar = validRating % 2 >= 1 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
 
     return (
         <>
-            {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon"/>)}
-            {halfStar === 1 && <FaStarHalfAlt className="star-icon"/>}
-            {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon"/>)}
+            {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon" />)}
+            {halfStar === 1 && <FaStarHalfAlt className="star-icon" />}
+            {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon" />)}
         </>
     );
 };
 
-const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCategory}) => {
-    if (!selectedCard) return null; // 데이터가 없으면 렌더링하지 않음
+const CreateGroupChatNameModal = ({ isOpen, onClose, selectedCard, selectedCategory }) => {
+    if (!selectedCard) return null;
 
     const [chatroomName, setChatroomName] = useState("");
 
@@ -32,19 +29,27 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         setChatroomName(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!chatroomName.trim()) {
             alert("채팅방 제목은 필수입니다.");
             return;
         }
 
-        // TODO: 제출 로직 구현
+        // GroupChatroomRequest에 매핑되는 데이터
+        const requestData = {
+            roomName: chatroomName,
+            contentType: selectedCategory,
+            contentId: selectedCategory === "movie" ? selectedCard.movieId : selectedCard.bookId,
+        };
 
-
-        console.log("제출된 방 제목:", chatroomName);
-        console.log("선택된 카테고리:", selectedCategory);
-        console.log("선택된 카드:", selectedCard);
-        onClose();
+        try {
+            const response = await axiosInstance.post("/api/chat/create/group", requestData);
+            console.log("채팅방 생성 성공:", response.data);
+            onClose();
+        } catch (error) {
+            console.error("채팅방 생성 실패:", error);
+            alert("채팅방 생성에 실패했습니다.");
+        }
     };
 
     return (
@@ -57,11 +62,10 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
                 <div className="modal-2-body">
                     {selectedCategory === "movie" ? (
                         <>
-                            <img src={selectedCard.posterPath} alt={selectedCard.title} className="selected-image"/>
+                            <img src={selectedCard.posterPath} alt={selectedCard.title} className="selected-image" />
                             <div>{selectedCard.title}</div>
-                            <div
-                                className="selected-rating">
-                                ⭐<span>({Math.round(parseFloat(selectedCard.voteAverage) * 10) / 10})</span>
+                            <div className="selected-rating">
+                                {renderStars(selectedCard.voteAverage)}
                             </div>
                             <div>
                                 <p className="selected-info">
@@ -71,7 +75,7 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
                         </>
                     ) : (
                         <>
-                            <img src={selectedCard.bookImgUrl} alt={selectedCard.title} className="selected-image"/>
+                            <img src={selectedCard.bookImgUrl} alt={selectedCard.title} className="selected-image" />
                             <div>{selectedCard.title}</div>
                             <div>
                                 <p className="selected-info">
