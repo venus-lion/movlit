@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Modal from "react-modal";
-import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
+import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js";
 
@@ -13,14 +13,14 @@ const renderStars = (rating) => {
 
     return (
         <>
-            {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon" />)}
-            {halfStar === 1 && <FaStarHalfAlt className="star-icon" />}
-            {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon" />)}
+            {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon"/>)}
+            {halfStar === 1 && <FaStarHalfAlt className="star-icon"/>}
+            {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon"/>)}
         </>
     );
 };
 
-const CreateGroupChatNameModal = ({ isOpen, onClose, selectedCard, selectedCategory }) => {
+const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCategory}) => {
     if (!selectedCard) return null;
 
     const [chatroomName, setChatroomName] = useState("");
@@ -43,7 +43,7 @@ const CreateGroupChatNameModal = ({ isOpen, onClose, selectedCard, selectedCateg
         };
 
         try {
-            const response = await axiosInstance.post("/api/chat/create/group", requestData);
+            const response = await axiosInstance.post("/chat/create/group", requestData);
             console.log("채팅방 생성 성공:", response.data);
             onClose();
         } catch (error) {
@@ -62,7 +62,7 @@ const CreateGroupChatNameModal = ({ isOpen, onClose, selectedCard, selectedCateg
                 <div className="modal-2-body">
                     {selectedCategory === "movie" ? (
                         <>
-                            <img src={selectedCard.posterPath} alt={selectedCard.title} className="selected-image" />
+                            <img src={selectedCard.posterPath} alt={selectedCard.title} className="selected-image"/>
                             <div>{selectedCard.title}</div>
                             <div className="selected-rating">
                                 {renderStars(selectedCard.voteAverage)}
@@ -75,7 +75,7 @@ const CreateGroupChatNameModal = ({ isOpen, onClose, selectedCard, selectedCateg
                         </>
                     ) : (
                         <>
-                            <img src={selectedCard.bookImgUrl} alt={selectedCard.title} className="selected-image" />
+                            <img src={selectedCard.bookImgUrl} alt={selectedCard.title} className="selected-image"/>
                             <div>{selectedCard.title}</div>
                             <div>
                                 <p className="selected-info">

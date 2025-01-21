@@ -19,6 +19,7 @@ import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
+import movlit.be.pub_sub.chatRoom.domain.MemberROneOnOneChatroom;
 
 @Entity
 @NoArgsConstructor
@@ -71,6 +72,10 @@ public class MemberEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberRChatroom> memberRChatroom = new ArrayList<>();
 
+    @Getter
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberROneOnOneChatroom> memberROneOnOneChatrooms = new ArrayList<>();
+
     @Builder
     public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,
                         String profileImgId,
@@ -106,6 +111,12 @@ public class MemberEntity {
 
     public void updateMemberRChatroom(MemberRChatroom memberRChatroom) {
         this.memberRChatroom.add(memberRChatroom);
+    }
+
+    public void updateMemberROneOnOneChatroom(MemberROneOnOneChatroom oneOnOneChatroom) {
+        if (!memberROneOnOneChatrooms.contains(oneOnOneChatroom)) {
+            memberROneOnOneChatrooms.add(oneOnOneChatroom);
+        }
     }
 
 }
