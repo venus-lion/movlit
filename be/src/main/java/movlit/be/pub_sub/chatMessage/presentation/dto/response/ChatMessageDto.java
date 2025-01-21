@@ -21,7 +21,9 @@ public class ChatMessageDto {
     private LocalDateTime regDt;
     private MessageType messageType;
 
+
     public ChatMessageDto(String roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
+
         this.roomId = roomId;
         this.senderId = senderId;
         this.message = message;
