@@ -1,13 +1,10 @@
 package movlit.be.pub_sub.chatRoom.presentation.controller;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.application.service.OneononeChatroomService;
-import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomCreateResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import org.springframework.http.HttpStatus;
@@ -17,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class OneononeChatroomController {
     }
 
     @PostMapping("/api/chat/create/oneOnOne")
-    public ResponseEntity<OneononeChatroomCreateResponse> createOneOnOneChatroom(
+    public ResponseEntity<OneononeChatroomResponse> createOneOnOneChatroom(
             @RequestBody OneononeChatroomRequest request,
             @AuthenticationPrincipal MyMemberDetails details) {
 
@@ -48,7 +47,7 @@ public class OneononeChatroomController {
         }
 
         MemberId memberId = details.getMemberId();
-        OneononeChatroomCreateResponse response = oneononeChatroomService.createOneononeChatroom(memberId, request);
+        OneononeChatroomResponse response = oneononeChatroomService.createOneononeChatroom(memberId, request);
 
         return ResponseEntity.ok(response);
 

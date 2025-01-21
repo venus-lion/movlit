@@ -67,7 +67,10 @@ public enum ErrorMessage {
 
     // chat
     CONTENT_TYPE_NOT_EXIST("movie와 book 중 그 어느 타입에도 해당하지 않습니다", "c001"),
-    CHATROOM_NOT_FOUND("해당 채팅방이 존재하지 않습니다.", "c010");
+    CHATROOM_NOT_FOUND("해당 채팅방이 존재하지 않습니다.", "c010"),
+
+    // Redis
+    FAILED_DESERIALIZE_DATA("Redis 데이터를 역직렬화하는데 실패했습니다.", "r001");
 
     private final String message;
     private final String code;

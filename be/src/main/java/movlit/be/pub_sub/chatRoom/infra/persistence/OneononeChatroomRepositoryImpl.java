@@ -5,7 +5,6 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.domain.OneononeChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.OneononeChatroomRepository;
 import movlit.be.pub_sub.chatRoom.infra.persistence.jpa.OneononeChatroomJpaRepository;
-import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomCreateResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import org.springframework.stereotype.Repository;
 
@@ -18,10 +17,8 @@ public class OneononeChatroomRepositoryImpl implements OneononeChatroomRepositor
     private final OneononeChatroomJpaRepository oneononeChatroomJpaRepository;
 
     @Override
-    public OneononeChatroomCreateResponse create(OneononeChatroom oneononeChatroom) {
-        OneononeChatroom saved = oneononeChatroomJpaRepository.save(oneononeChatroom);
-
-        return OneononeChatroomCreateResponse.of(saved.getOneononeChatroomId());
+    public OneononeChatroom create(OneononeChatroom oneononeChatroom) {
+        return oneononeChatroomJpaRepository.save(oneononeChatroom);
     }
 
     @Override
