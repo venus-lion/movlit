@@ -4,7 +4,8 @@ import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
 import './ChatPage.css'; // CSS 파일 import
 
-function ChatPage({ roomId, roomInfo }) {
+function ChatPage({ roomId }) {
+    console.log('일대일 채팅에서의 roomId :: ' + roomId);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [stompClient, setStompClient] = useState(null);
@@ -12,12 +13,9 @@ function ChatPage({ roomId, roomInfo }) {
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false); // 채팅방 참여 이력
     const [message, setMessage] = useState(''); // 공지 메시지 표시
     const focusDivRef = useRef(null); // 포커스를 주기 위한 ref
-    
-
 
     // roomId가 변경될 경우 새로 고침
     useEffect(() => {
-        console.log('roomId:', roomId); // roomId의 값 확인
         if (roomId) {
             setHasJoinedRoom(false); // 새 방 입장 시 참여 상태 초기화 (추후 DB에서 참여 이력 조회)
         }
@@ -56,7 +54,7 @@ function ChatPage({ roomId, roomInfo }) {
         client.onConnect = () => {
             console.log('WebSocket Connected');
             // TODO: GroupChatPage에서는 group으로 처리
-            client.subscribe(`/topic/chat/message/one-on-one${roomId}`, (message) => {
+            client.subscribe(`/topic/chat/message/one-on-one/${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);
             });
@@ -65,7 +63,6 @@ function ChatPage({ roomId, roomInfo }) {
             axiosInstance
                 .get(`/chat/history?roomId=${roomId}`)
                 .then((response) => {
-                    console.log("roomId : " + roomId);
                     setMessages(response.data);
                 })
                 .catch((error) => {
@@ -145,7 +142,7 @@ function ChatPage({ roomId, roomInfo }) {
     return (
         <div className="chat-container" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div className="chat-header">
-                <h2>채팅방: {roomInfo.roomName}</h2>
+                <h2>채팅방: {roomId}</h2>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => (

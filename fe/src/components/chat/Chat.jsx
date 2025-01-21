@@ -154,7 +154,7 @@ const Chat = () => {
                         // <ChatPage roomInfo={selectedChat}/> /* 개인 채팅방 */
                          <ChatPage roomId={selectedChat.groupChatroomId} roomInfo={selectedChat}/> /* 개인 채팅방 */
                     ) : (
-                        <ChatPage roomId={selectedChat.groupChatroomId} roomInfo={selectedChat}/> /* 그룹 채팅방 */
+                        <ChatPageGroup roomId={selectedChat.groupChatroomId} roomInfo={selectedChat}/> /* 그룹 채팅방 */
                     )
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>

@@ -14,14 +14,14 @@ import org.springframework.data.annotation.CreatedDate;
 @NoArgsConstructor
 public class ChatMessageDto {
 
-    private Long roomId;
+    private String roomId;
     private MemberId senderId;
     private String message;
     @CreatedDate
     private LocalDateTime regDt;
     private MessageType messageType;
 
-    public ChatMessageDto(Long roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
+    public ChatMessageDto(String roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
         this.roomId = roomId;
         this.senderId = senderId;
         this.message = message;
@@ -29,7 +29,7 @@ public class ChatMessageDto {
         this.messageType = messageType;
     }
 
-    public ChatMessageDto(Long roomId, MemberId senderId, String message, String regDt) {
+    public ChatMessageDto(String roomId, MemberId senderId, String message, String regDt) {
         this.roomId = roomId;
         this.senderId = senderId;
         this.message = message;

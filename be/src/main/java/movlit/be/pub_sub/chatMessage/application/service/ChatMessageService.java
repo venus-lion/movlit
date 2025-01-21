@@ -45,7 +45,7 @@ public class ChatMessageService {
     /**
      * 채팅방의 채팅목록 가져오기
      */
-    public List<ChatMessageDto> fetchChatMessages(Long roomId) {
+    public List<ChatMessageDto> fetchChatMessages(String roomId) {
         List<ChatMessage> chatMessages = chatMessageMongoRepository.findByRoomId(roomId);
 
         log.info("=== chatMessages : {}", chatMessages);

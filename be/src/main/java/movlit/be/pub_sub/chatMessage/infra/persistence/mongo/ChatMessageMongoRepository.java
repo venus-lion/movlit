@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ChatMessageMongoRepository extends MongoRepository<ChatMessage, ObjectId> {
 
-    List<ChatMessage> findByRoomId(Long roomId);
+    List<ChatMessage> findByRoomId(String roomId);
 
 }

@@ -20,6 +20,7 @@ public class RedisMessagePublisher {
 
     public void sendMessage(ChatMessageDto chatMessageDto) {
         log.info("Publishing chat message {}", chatMessageDto);
+        log.info("sendMessage - getTopic :: " + topic.getTopic());
         redisTemplate.convertAndSend(topic.getTopic(), chatMessageDto);
     }
 
