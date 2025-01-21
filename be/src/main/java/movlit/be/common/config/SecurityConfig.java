@@ -40,7 +40,8 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource)
+            throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)       // CSRF 방어 기능 비활성화
@@ -89,7 +90,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/movies/main/genre").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/chat/create/group").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/chat/{chatroomId}/members").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/chatrooms/myGroupChatrooms").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/chatrooms/myGroupChatrooms").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/chat/create/group").authenticated()
                         .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**", "/ws-stomp/**")
