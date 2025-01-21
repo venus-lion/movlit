@@ -20,14 +20,14 @@ public class ChatMessage {
     @Id
     private ObjectId id;
 
-    private Long roomId;
+    private String roomId;
     private MemberId senderId;
     private String message;
     private String timestamp;               // TODO : 타입형태 협의 필요
     private MessageType messageType;
 
     @Builder
-    public ChatMessage(Long roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
+    public ChatMessage(String roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
         this.roomId = roomId;
         this.senderId = senderId;
         this.message = message;

@@ -5,6 +5,7 @@ import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
 import './ChatPage.css'; // CSS 파일 import
 
 function ChatPage({ roomId }) {
+    console.log('일대일 채팅에서의 roomId :: ' + roomId);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [stompClient, setStompClient] = useState(null);
