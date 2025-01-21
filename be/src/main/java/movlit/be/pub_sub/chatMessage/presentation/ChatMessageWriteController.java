@@ -38,10 +38,16 @@ public class ChatMessageWriteController {
 //        redisPublisher.publish(jsonString);
     }
 
-    @MessageMapping("/chat/message")
-    public void sendMessage(@RequestBody ChatMessageDto message) throws Exception {
-        log.info("Received chat message: {}", message);
-        chatMessageService.processAndSendMessage(message);
+    @MessageMapping("/chat/message/one-on-one")
+    public void sendOneOnOneMessage(@RequestBody ChatMessageDto message) {
+        log.info("Received one on one chat message: {}", message);
+        chatMessageService.sendMessageForOnOnOne(message);
+    }
+
+    @MessageMapping("/chat/message/group")
+    public void sendGroupMessage(@RequestBody ChatMessageDto message) {
+        log.info("Received group chat message: {}", message);
+        chatMessageService.sendMessageForGroup(message);
     }
 
 }
