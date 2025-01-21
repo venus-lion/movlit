@@ -1,0 +1,45 @@
+package movlit.be.acceptance.oneonone_chatroom;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import java.util.Map;
+import org.assertj.core.api.AbstractIntegerAssert;
+import org.junit.jupiter.api.Assertions;
+import org.springframework.http.HttpStatus;
+
+public class OneOnOneChatroomSteps {
+
+    public static ExtractableResponse<Response> 일대일_채팅을_생성한다(String accessToken,
+                                                             Map<String, Object> request,
+                                                             RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .body(request)
+                .when()
+                .post("/api/chat/create/oneOnOne")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> 상태코드를_검증한다(response, HttpStatus.OK));
+    }
+
+    public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,
+                                                      HttpStatus expectedHttpStatus) {
+        return assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());
+    }
+
+}

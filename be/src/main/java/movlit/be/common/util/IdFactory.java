@@ -9,12 +9,14 @@ import movlit.be.common.util.ids.ImageId;
 import movlit.be.common.util.ids.MemberGenreId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MemberRChatroomId;
+import movlit.be.common.util.ids.MemberROneOnOneChatroomId;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.common.util.ids.MovieCommentLikeCountId;
 import movlit.be.common.util.ids.MovieCommentLikeId;
 import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.common.util.ids.MovieHeartCountId;
 import movlit.be.common.util.ids.MovieHeartId;
+import movlit.be.common.util.ids.OneOnOneChatroomId;
 
 public class IdFactory {
 
@@ -116,6 +118,22 @@ public class IdFactory {
 
     public static MemberRChatroomId createMemberRChatroom() {
         return createId(MemberRChatroomId.class);
+    }
+
+    public static OneOnOneChatroomId createOneOnOneChatroomId(String id) {
+        return createId(OneOnOneChatroomId.class, id);
+    }
+
+    public static OneOnOneChatroomId createOneOnOneChatroomId() {
+        return createId(OneOnOneChatroomId.class);
+    }
+
+    public static MemberROneOnOneChatroomId createMemberROneOnOneChatroomId(String id) {
+        return createId(MemberROneOnOneChatroomId.class, id);
+    }
+
+    public static MemberROneOnOneChatroomId createMemberROneOnOneChatroomId() {
+        return createId(MemberROneOnOneChatroomId.class);
     }
 
     private static <T extends BaseId> T createId(Class<T> idClass, String id) {
