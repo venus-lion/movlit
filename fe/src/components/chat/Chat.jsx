@@ -6,6 +6,8 @@ import ChatPage from '../../pages/ChatPage.jsx';
 import CreateGroupChatModal from "./CreateGroupChatModal.jsx";
 import ChatPageGroup from "../../pages/ChatPageGroup.jsx";
 import CreateGroupChatNameModal from "./CreateGroupChatNameModal.jsx";
+import axiosInstance from "../../axiosInstance.js"; // axios 임포트
+
 
 
 
@@ -16,10 +18,23 @@ const Chat = () => {
     const {isLoggedIn} = useOutletContext();
     const navigate = useNavigate();
 
+
     const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false); // 모달1 열림 상태
     const [isCreateGroupChatNameModalOpen, setIsCreateGroupChatNameModalOpen] = useState(false); // 모달2 열림 상태
     const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
     const [selectedCategory, setSelectedCategory] = useState(null);
+
+    // 채팅방 리스트 업데이트 함수
+    const updateChatList = async () => {
+        try {
+            const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
+            setSelectedChat(response.data); // 상태 업데이트
+        } catch (error) {
+            console.error("채팅 리스트 업데이트 오류:", error);
+        }
+    };
+
+
 
     const handleCreateGroupChatModal = () => {
         setIsCreateGroupChatModalOpen(true);
@@ -133,23 +148,12 @@ const Chat = () => {
                 )}
             </div>
 
-            {/* 오른쪽: 채팅 화면 */}
-            {/*<div style={{flex: 1, padding: '10px'}}>*/}
-            {/*    { selectedChat ? (*/}
-            {/*        <ChatPage roomId={selectedChat.id}/> /* 선택된 채팅방 ID 전달 */}
-            {/*    ) : (*/}
-            {/*        <div style={{textAlign: 'center', marginTop: '20%'}}>*/}
-            {/*            채팅방을 선택해주세요.*/}
-            {/*        </div>*/}
-            {/*    )}*/}
-            {/*</div>*/}
-
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
                     activeTab === 'personal' ? (
-                        <ChatPage roomId={selectedChat.id}/> /* 개인 채팅방 */
+                        <ChatPage roomId={selectedChat.groupChatroomId}/> /* 개인 채팅방 */
                     ) : (
-                        <ChatPageGroup roomId={selectedChat.id}/> /* 그룹 채팅방 */
+                        <ChatPageGroup roomId={selectedChat.groupChatroomId}/> /* 그룹 채팅방 */
                     )
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>

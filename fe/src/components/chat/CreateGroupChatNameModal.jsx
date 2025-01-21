@@ -20,7 +20,7 @@ const renderStars = (rating) => {
     );
 };
 
-const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCategory}) => {
+const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCategory, onUpdateChatList }) => {
     if (!selectedCard) return null;
 
     const [chatroomName, setChatroomName] = useState("");
