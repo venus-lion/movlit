@@ -2,6 +2,7 @@ package movlit.be.common.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
 import movlit.be.common.util.ids.BaseId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.GroupChatroomId;
@@ -16,7 +17,7 @@ import movlit.be.common.util.ids.MovieCommentLikeId;
 import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.common.util.ids.MovieHeartCountId;
 import movlit.be.common.util.ids.MovieHeartId;
-import movlit.be.common.util.ids.OneOnOneChatroomId;
+import movlit.be.common.util.ids.OneononeChatroomId;
 
 public class IdFactory {
 
@@ -120,12 +121,12 @@ public class IdFactory {
         return createId(MemberRChatroomId.class);
     }
 
-    public static OneOnOneChatroomId createOneOnOneChatroomId(String id) {
-        return createId(OneOnOneChatroomId.class, id);
+    public static OneononeChatroomId createOneOnOneChatroomId(String id) {
+        return createId(OneononeChatroomId.class, id);
     }
 
-    public static OneOnOneChatroomId createOneOnOneChatroomId() {
-        return createId(OneOnOneChatroomId.class);
+    public static OneononeChatroomId createOneOnOneChatroomId() {
+        return createId(OneononeChatroomId.class);
     }
 
     public static MemberROneOnOneChatroomId createMemberROneOnOneChatroomId(String id) {

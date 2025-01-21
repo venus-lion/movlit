@@ -1,18 +1,18 @@
 package movlit.be.pub_sub.chatRoom.presentation.dto;
 
 import lombok.Getter;
-import movlit.be.common.util.ids.OneOnOneChatroomId;
+import movlit.be.common.util.ids.OneononeChatroomId;
 
 @Getter
 public class OneononeChatroomCreateResponse {
 
-    private OneOnOneChatroomId oneOnOneChatroomId;
+    private OneononeChatroomId oneOnOneChatroomId;
 
-    public OneononeChatroomCreateResponse(OneOnOneChatroomId oneOnOneChatroomId) {
+    public OneononeChatroomCreateResponse(OneononeChatroomId oneOnOneChatroomId) {
         this.oneOnOneChatroomId = oneOnOneChatroomId;
     }
 
-    public static OneononeChatroomCreateResponse of(OneOnOneChatroomId oneOnOneChatroomId) {
+    public static OneononeChatroomCreateResponse of(OneononeChatroomId oneOnOneChatroomId) {
         return new OneononeChatroomCreateResponse(oneOnOneChatroomId);
     }
 

@@ -7,7 +7,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+
 import java.util.Map;
+
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,30 @@ public class OneOnOneChatroomSteps {
                 .then()
                 .log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_유저의_일대일_채팅_목록을_가져온다(String accessToken,
+                                                                        RequestSpecification spec) {
+
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/chat/oneOnOne")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static void 응답결과를_검증한다(ExtractableResponse<Response> response, int size) {
+        Assertions.assertAll(
+                () -> assertThat(response.jsonPath().getInt("size()")).isEqualTo(size),
+                () -> 상태코드가_200이다(response)
+        );
     }
 
     public static void 상태코드가_200이다(ExtractableResponse<Response> response) {

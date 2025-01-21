@@ -14,7 +14,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import movlit.be.common.util.ids.OneOnOneChatroomId;
+import movlit.be.common.util.ids.OneononeChatroomId;
 
 @Entity
 @Table(name = "oneonone_chat_room")
@@ -23,15 +23,15 @@ import movlit.be.common.util.ids.OneOnOneChatroomId;
 public class OneononeChatroom {
 
     @EmbeddedId
-    private OneOnOneChatroomId oneOnOneChatroomId;
+    private OneononeChatroomId oneononeChatroomId;
 
     private LocalDateTime regDt;
 
     @OneToMany(mappedBy = "oneononeChatroom", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberROneononeChatroom> memberROneononeChatrooms = new ArrayList<>();
 
-    public OneononeChatroom(OneOnOneChatroomId oneOnOneChatroomId) {
-        this.oneOnOneChatroomId = oneOnOneChatroomId;
+    public OneononeChatroom(OneononeChatroomId oneononeChatroomId) {
+        this.oneononeChatroomId = oneononeChatroomId;
         this.regDt = LocalDateTime.now();
     }
 

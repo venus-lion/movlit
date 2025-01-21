@@ -137,3 +137,7 @@ operation::createGroupChat_success[snippets='http-request,http-response']
 ==== 일대일 채팅 생성
 
 operation::createOneononeChatroom_success[snippets='http-request,http-response']
+
+==== 일대일 채팅 목록 조회
+
+operation::getOneononeChatroom_success[snippets='http-response']

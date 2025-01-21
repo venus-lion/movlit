@@ -21,7 +21,7 @@ public class OneononeChatroomRepositoryImpl implements OneononeChatroomRepositor
     public OneononeChatroomCreateResponse create(OneononeChatroom oneononeChatroom) {
         OneononeChatroom saved = oneononeChatroomJpaRepository.save(oneononeChatroom);
 
-        return OneononeChatroomCreateResponse.of(saved.getOneOnOneChatroomId());
+        return OneononeChatroomCreateResponse.of(saved.getOneononeChatroomId());
     }
 
     @Override
