@@ -5,7 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "member_r_oneonone_chat_room")
-public class MemberROneOnOneChatroom {
+public class MemberROneononeChatroom {
 
     @EmbeddedId
     private MemberROneOnOneChatroomId memberROneOnOneChatroomId;
@@ -26,12 +28,12 @@ public class MemberROneOnOneChatroom {
     private MemberEntity member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private OneOnOneChatroom oneOnOneChatroom;
+    private OneononeChatroom oneononeChatroom;
 
     @CreatedDate
     private LocalDateTime regDt;
 
-    public MemberROneOnOneChatroom(MemberROneOnOneChatroomId memberROneOnOneChatroomId) {
+    public MemberROneononeChatroom(MemberROneOnOneChatroomId memberROneOnOneChatroomId) {
         this.memberROneOnOneChatroomId = memberROneOnOneChatroomId;
         this.regDt = LocalDateTime.now();
     }
@@ -40,8 +42,8 @@ public class MemberROneOnOneChatroom {
         this.member = member;
     }
 
-    public void updateOneOnOneChatroom(OneOnOneChatroom oneOnOneChatroom) {
-        this.oneOnOneChatroom = oneOnOneChatroom;
+    public void updateOneononeChatroom(OneononeChatroom oneononeChatroom) {
+        this.oneononeChatroom = oneononeChatroom;
     }
 
 }

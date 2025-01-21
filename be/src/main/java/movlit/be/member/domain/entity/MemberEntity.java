@@ -7,9 +7,11 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,7 @@ import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
-import movlit.be.pub_sub.chatRoom.domain.MemberROneOnOneChatroom;
+import movlit.be.pub_sub.chatRoom.domain.MemberROneononeChatroom;
 
 @Entity
 @NoArgsConstructor
@@ -72,7 +74,7 @@ public class MemberEntity {
 
     @Getter
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberROneOnOneChatroom> memberROneOnOneChatrooms = new ArrayList<>();
+    private List<MemberROneononeChatroom> memberROneononeChatrooms = new ArrayList<>();
 
     @Builder
     public MemberEntity(MemberId memberId, String email, String nickname, String password, String dob,
@@ -111,9 +113,9 @@ public class MemberEntity {
         this.memberRChatroom.add(memberRChatroom);
     }
 
-    public void updateMemberROneOnOneChatrooms(MemberROneOnOneChatroom memberROneOnOneChatroom) {
-        if (!this.memberROneOnOneChatrooms.contains(memberROneOnOneChatroom)) {
-            this.memberROneOnOneChatrooms.add(memberROneOnOneChatroom);
+    public void updateMemberROneOnOneChatrooms(MemberROneononeChatroom memberROneononeChatroom) {
+        if (!this.memberROneononeChatrooms.contains(memberROneononeChatroom)) {
+            this.memberROneononeChatrooms.add(memberROneononeChatroom);
         }
     }
 

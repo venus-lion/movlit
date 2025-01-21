@@ -6,15 +6,15 @@ import movlit.be.common.util.ids.MemberId;
 
 @Getter
 @NoArgsConstructor
-public class OneOnOneChatroomRequest {
+public class OneononeChatroomRequest {
 
     private MemberId receiverId;
 
-    public OneOnOneChatroomRequest(MemberId receiverId) {
+    public OneononeChatroomRequest(MemberId receiverId) {
         this.receiverId = receiverId;
     }
 
-    public OneOnOneChatroomRequest(String receiverId) {
+    public OneononeChatroomRequest(String receiverId) {
         this.receiverId = new MemberId(receiverId);
     }
 

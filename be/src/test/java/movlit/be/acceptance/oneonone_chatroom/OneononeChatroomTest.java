@@ -5,11 +5,11 @@ import static movlit.be.acceptance.oneonone_chatroom.OneOnOneChatroomSteps.ÏùºÎå
 
 import java.util.HashMap;
 import java.util.Map;
+
 import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.JwtTokenUtil;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
-import movlit.be.pub_sub.chatRoom.presentation.dto.OneOnOneChatroomRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
