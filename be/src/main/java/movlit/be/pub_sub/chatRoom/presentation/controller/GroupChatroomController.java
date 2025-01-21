@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
@@ -36,17 +37,20 @@ public class GroupChatroomController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 채팅방 존재 시 -> 채팅방 가입(들어가기)
-//    @PostMapping("/api/chatrooms/group/{groupChatroomId}")
-//    public ResponseEntity joinGroupChatroom(@PathVariable GroupChatroomId groupChatroomId, @AuthenticationPrincipal MyMemberDetails details){
-//        if(details != null){
-//            MemberId memberId = details.getMemberId();
-//            groupChatroomWriteService.joinGroupChatroom(groupChatroomId, memberId);
-//            ResponseEntity.ok().build();
-//        }
-//
-//        return ResponseEntity.badRequest().build();
-//    }
+    // 존재하는 그룹채팅방 가입(들어가기)
+    @PostMapping("/api/chat/group/{groupChatroomId}")
+    public ResponseEntity joinGroupChatroom(@PathVariable GroupChatroomId groupChatroomId, @AuthenticationPrincipal MyMemberDetails details)
+            throws ChatroomAccessDenied {
+        if(details != null){
+            MemberId memberId = details.getMemberId();
+            GroupChatroomResponse groupChatroomRes = groupChatroomService.joinGroupChatroom(groupChatroomId, memberId);
+
+            return ResponseEntity.ok(groupChatroomRes);
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
 
 
     /**

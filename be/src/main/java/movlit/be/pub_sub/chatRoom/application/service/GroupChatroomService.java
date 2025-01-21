@@ -3,6 +3,7 @@ package movlit.be.pub_sub.chatRoom.application.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
@@ -41,6 +42,41 @@ public class GroupChatroomService {
         groupChatroom.updateMemberRChatroom(memberRChatroom); // 그룹 채팅방에 멤버를 참여시킨다
 
         return groupChatRepository.create(groupChatroom);
+    }
+    
+    // 존재하는 그룹채팅방 가입
+    public GroupChatroomResponse joinGroupChatroom(GroupChatroomId groupChatroomId, MemberId memberId)
+            throws ChatroomAccessDenied {
+        GroupChatroom existingGroupChatroom = groupChatRepository.findByChatroomId(groupChatroomId);
+        MemberEntity member = memberReadService.findEntityByMemberId(memberId);
+
+        log.info("::GroupChatroomService_joinGroupChatroom::");
+        log.info(">> member : " + member.toString());
+        log.info(">> groupChat to join : " + existingGroupChatroom.toString());
+
+        if(existingGroupChatroom != null && member != null){
+            // 관계테이블 row 생성 (row id 및 regDt생성)
+            MemberRChatroom newMemberRChatroom = ChatroomConvertor.makeNonReMemberRChatroom();
+
+            // 만든 관계 row에 member 정보 update
+            newMemberRChatroom.updateMember(member);
+            // 만든 관계 row에 chatroom 정보 update
+            newMemberRChatroom.updateGroupChatRoom(existingGroupChatroom);
+            log.info(">> newMemberRChatroom : " + newMemberRChatroom.toString());
+
+            // 기존 채팅방에 새롭게 생성된 관계정보(memberRChatroom : 멤버-채팅방 관계) update
+            existingGroupChatroom.updateMemberRChatroom(newMemberRChatroom);
+            log.info(">> updated groupChat : " + existingGroupChatroom.toString());
+
+        }else if(existingGroupChatroom == null && member !=null){
+            throw new ChatroomNotFoundException();
+
+        }else{
+            throw new ChatroomAccessDenied();
+        }
+
+        // 바뀐 정보 업데이트
+        return groupChatRepository.create(existingGroupChatroom);
     }
 
 
