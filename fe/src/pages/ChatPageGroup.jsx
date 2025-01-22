@@ -122,10 +122,8 @@ function ChatPageGroup({ roomId, roomInfo }) {
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => {
-                    let member = null;
-                    if (members.length > 1) {
-                        member = members.find((m) => m.memberId !== currentUserId);
-                    }
+                    // 메시지를 보낸 멤버를 찾음
+                    const sender = members.find((m) => m.memberId === message.senderId);
                     const isCurrentUser = message.senderId === currentUserId;
 
                     return (
@@ -139,14 +137,14 @@ function ChatPageGroup({ roomId, roomInfo }) {
                             }}
                             className={`message ${isCurrentUser ? 'own-message' : ''}`}
                         >
-                            {!isCurrentUser && member && (
+                            {!isCurrentUser && sender && ( // 메시지 보낸 멤버가 현재 유저가 아니고, 해당 멤버 정보가 있을 때만 표시
                                 <div className="message-profile">
                                     <img
-                                        src={member?.profileImgUrl}
+                                        src={sender?.profileImgUrl || '/default-profile.png'}
                                         alt="Profile"
                                         className="profile-img"
                                     />
-                                    <strong>{member?.nickname}</strong>
+                                    <strong>{sender?.nickname}</strong>
                                 </div>
                             )}
                             <div className="message-content">
