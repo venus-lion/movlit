@@ -134,11 +134,15 @@ function ChatPageGroup({ roomId, roomInfo }) {
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => {
                     // 그룹채팅방에 속한 다른 멤버 뽑아오기
-                    const member = members.find((m) => m.memberId !== currentUserId);
+                    let member = null;
+                    if (members.length > 1) { // 단체채팅방에 2명 이상이라면...
+                        member = members.find((m) => m.memberId !== currentUserId);
+                    }
+                    //const member = members.find((m) => m.memberId !== currentUserId);
                     const isCurrentUser = message.senderId === currentUserId;
 
-                    console.log("다른 멤버 ::: " + member.nickname);
-                    console.log("현재 로그인한 멤버 ::: " + isCurrentUser);
+                    // console.log("다른 멤버 ::: " + member.nickname);
+                    // console.log("현재 로그인한 멤버 ::: " + isCurrentUser);
 
                     return (
                         <div
@@ -151,7 +155,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
                             }}
                             className={`message ${isCurrentUser ? 'own-message' : ''}`}
                         >
-                            {!isCurrentUser && (
+                            {!isCurrentUser && member && ( // 다른 멤버가 존재할 때만 프로필 표시
                                 <div className="message-profile">
                                     <img
                                         src={member?.profileImgUrl}
