@@ -50,6 +50,34 @@ public class GroupChatroomService {
 
         return groupChatRepository.create(groupChatroom);
     }
+
+    // 그룹채팅 존재 유무 확인
+    public GroupChatroomResponseDto fetchGroupChatroom(GroupChatroomRequest request){
+        String contentType = request.getContentType().trim();
+        GroupChatroomResponseDto groupChatroomRes = null;
+
+        log.info("::GroupChatroomService_fetchGroupChatroom::");
+        log.info(">> contentType : " + contentType);
+
+        if(contentType.equals("movie")){
+            Long movieId = request.getContentId();
+            String roomContentId = "MV_" + movieId;
+            log.info(">> contentId : " + roomContentId);
+            groupChatroomRes = groupChatRepository.fetchRoomByContentId(roomContentId);
+
+        }else if (contentType.equals("book")){
+            Long bookId = request.getContentId();
+            String roomContentId = "BK_" + bookId;
+            log.info(">> contentId : " + roomContentId);
+            groupChatroomRes = groupChatRepository.fetchRoomByContentId(roomContentId);
+        }
+        if(groupChatroomRes == null)
+            log.info(">> 해당 하는 그룹 채팅방이 존재하지 않습니다.");
+        else
+            log.info(">> GroupChatRoomRes : " + groupChatroomRes);
+
+        return groupChatroomRes;
+    }
     
     // 존재하는 그룹채팅방 가입
     public GroupChatroomResponse joinGroupChatroom(GroupChatroomId groupChatroomId, MemberId memberId)

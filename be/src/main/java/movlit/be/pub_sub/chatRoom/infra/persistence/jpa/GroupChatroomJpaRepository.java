@@ -15,6 +15,17 @@ import org.springframework.data.repository.query.Param;
 public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom, GroupChatroomId> {
     Optional<GroupChatroom> findByGroupChatroomId(GroupChatroomId chatroomId);
 
+    @Query("SELECT NEW movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto( "
+            + "gc.groupChatroomId, "
+            + "gc.contentId, "
+            + "gc.roomName, "
+            + " '' AS contentName, "
+            + " gc.regDt "
+            + " ) "
+            + "FROM GroupChatroom gc "
+            + "WHERE contentId = :contentId")
+    Optional<GroupChatroomResponseDto> findRoomByContentId(String contentId);
+
     // 특정 채팅방id의 member 정보 조회
     @Query("SELECT NEW movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse(" +
             "m.memberId, m.nickname, m.profileImgUrl)" +
