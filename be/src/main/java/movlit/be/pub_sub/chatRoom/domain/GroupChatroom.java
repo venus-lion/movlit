@@ -13,12 +13,14 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import movlit.be.common.util.ids.GroupChatroomId;
 
 @Entity
 @Table(name = "group_chat_room")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class GroupChatroom {
 
     @EmbeddedId

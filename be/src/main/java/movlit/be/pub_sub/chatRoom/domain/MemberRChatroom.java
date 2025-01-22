@@ -1,5 +1,6 @@
 package movlit.be.pub_sub.chatRoom.domain;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -13,13 +14,16 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import movlit.be.common.util.ids.MemberRChatroomId;
 import movlit.be.member.domain.entity.MemberEntity;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "member_r_chatroom")
+@ToString(exclude = {"member", "groupChatroom"})
 public class MemberRChatroom {
 
     @EmbeddedId

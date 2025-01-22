@@ -3,7 +3,9 @@ package movlit.be.pub_sub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.exception.ContentTypeNotExistException;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
+import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +26,27 @@ public class RedisMessageSubscriber {
      */
     public void sendMessage(String publishMessage) {
         try {
-
             ChatMessageDto chatMessageDto = objectMapper.readValue(publishMessage, ChatMessageDto.class);
-            log.info("Redis Subcriber - chatMSG : {}", chatMessageDto);
 
-            // 채팅방을 구독한 클라이언트에게 메시지 발송
-            messagingTemplate.convertAndSend(
-                    "/topic/chat/" + chatMessageDto.getRoomId(), chatMessageDto
-            );
+            // 1:1 채팅 메시지
+            if (chatMessageDto.getMessageType() == MessageType.ONE_ON_ONE) {
+                log.info("1:1 채팅 메시지");
+                messagingTemplate.convertAndSend(
+                        "/topic/chat/message/one-on-one/" + chatMessageDto.getRoomId(), chatMessageDto
+                );
+                return;
+            }
+
+            // 그룹 채팅 메시지
+            if (chatMessageDto.getMessageType() == MessageType.GROUP) {
+                log.info("일반 그룹 채팅 메시지");
+                messagingTemplate.convertAndSend(
+                        "/topic/chat/message/group/" + chatMessageDto.getRoomId(), chatMessageDto
+                );
+                return;
+            }
+
+            throw new ContentTypeNotExistException();
 
         } catch (Exception e) {
             log.error("Exception {}", e);
