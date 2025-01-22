@@ -1,6 +1,9 @@
 package movlit.be.pub_sub.chatMessage.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +29,9 @@ public class ChatMessage {
     private String timestamp;               // TODO : 타입형태 협의 필요
     private MessageType messageType;
 
+    // 읽지 않은 상태를 관리할 필드 (읽은 멤버들의 ID 리스트)
+    private List<MemberId> readMembers = new ArrayList<>();
+
     @Builder
     public ChatMessage(String roomId, MemberId senderId, String message, LocalDateTime regDt, MessageType messageType) {
 
@@ -36,4 +42,12 @@ public class ChatMessage {
         this.messageType = messageType;
     }
 
+    /**
+     * 메시지 읽음 처리
+     */
+    public void markAsRead(MemberId memberId) {
+        if (!this.readMembers.contains(memberId)) {
+            this.readMembers.add(memberId);
+        }
+    }
 }
