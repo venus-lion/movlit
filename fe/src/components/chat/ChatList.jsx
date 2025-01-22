@@ -84,7 +84,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
 
     if (loading) return <div>로딩 중...</div>;
     if (error) return <div>오류: {error}</div>;
-    
+
     return (
         <div style={style.chatListContainer}>
             {/* groups일 때 */}
@@ -116,7 +116,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
                 <div>
                     {filteredChats.map((chat) => (
                         <div
-                            key={chat.oneOnOneChatroomId}
+                            key={chat.roomId}
                             style={{
                                 padding: '15px',
                                 marginBottom: '10px',

@@ -53,4 +53,6 @@ public class OneononeChatroomController {
 
     }
 
+    // TODO : 채팅방 나가기
+
 }

@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from "react-modal";
 import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js"; // axios 임포트
-const GetGroupChatInfoModal = ({isOpen, onClose, onConfirm, onJoin, selectedCard, selectedCategory, onUpdateChatList }) => {
+const GetGroupChatInfoModal = ({
+                                   isOpen,
+                                   onClose,
+                                   onConfirm,
+                                   onJoin,
+                                   selectedCard,
+                                   selectedCategory,
+                                   onUpdateChatList
+                               }) => {
     if (!selectedCard) return null;
 
     const [chatroomName, setChatroomName] = useState("");
@@ -57,7 +65,6 @@ const GetGroupChatInfoModal = ({isOpen, onClose, onConfirm, onJoin, selectedCard
     };
 
 
-
     return (
         <Modal isOpen={isOpen} onRequestClose={onClose} className="custom-modal-2" overlayClassName="custom-overlay"
                ariaHideApp={false}>
@@ -70,9 +77,9 @@ const GetGroupChatInfoModal = ({isOpen, onClose, onConfirm, onJoin, selectedCard
                         <>
                             <img src={selectedCard.posterPath} alt={selectedCard.title} className="selected-image"/>
                             <div>{selectedCard.title}</div>
-                            <div className="selected-rating">
-                                {renderStars(selectedCard.voteAverage)}
-                            </div>
+                            {/*<div className="selected-rating">*/}
+                            {/*    {renderStars(selectedCard.voteAverage)}*/}
+                            {/*</div>*/}
                             <div>
                                 <p className="selected-info">
                                     {selectedCard.movieGenre.map((g) => g.genreName).join(', ')}

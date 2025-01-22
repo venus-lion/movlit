@@ -50,6 +50,7 @@ public class OneononeChatroomService {
         // receiver의 일대일 채팅방 관계 entity set
         MemberROneononeChatroom receiverROneononeChatroom =
                 new MemberROneononeChatroom(IdFactory.createMemberROneOnOneChatroomId());
+        receiverROneononeChatroom.updateOneononeChatroom(oneononeChatroom);
         receiverROneononeChatroom.updateMember(receiver);
         oneononeChatroom.updateMemberROneononeChatroom(receiverROneononeChatroom);
 
@@ -78,14 +79,15 @@ public class OneononeChatroomService {
         List<String> cachedData = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (cachedData != null && !cachedData.isEmpty()) {
-            log.info("=== fetchMyOneOnOneChatList : cash Hit");
-            return cachedData.stream()
+            List<OneononeChatroomResponse> list = cachedData.stream()
                     .map(this::deserializeChatroomResponse)
                     .toList();
+            log.info("=== cash Hit : {}", list);
+            return list;
         }
 
         // Redis에 데이터가 없으면 DB에서 조회 후 캐싱
-        List<OneononeChatroomResponse> response = oneOnOneChatroomRepository.fetchMyOneOnOneChatList(memberId);
+        List<OneononeChatroomResponse> response = oneOnOneChatroomRepository.fetchOneOnOneChatList(memberId);
 
         // Redis에 채팅방 목록 캐시
         response.forEach(chatroom -> {
