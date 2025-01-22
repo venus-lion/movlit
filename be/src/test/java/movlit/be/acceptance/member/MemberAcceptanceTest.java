@@ -16,6 +16,7 @@ import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이고_
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이고_오류코드가_m003인지_검증한다;
 import static movlit.be.acceptance.member.MemberSteps.상태코드가_404이다;
 import static movlit.be.acceptance.member.MemberSteps.원준_회원을_수정을_요청한다;
+import static movlit.be.acceptance.member.MemberSteps.회원_id를_가져온다;
 import static movlit.be.acceptance.member.MemberSteps.회원_마이페이지를_조회한다;
 import static movlit.be.acceptance.member.MemberSteps.회원_장르를_조회한다;
 import static movlit.be.acceptance.member.MemberSteps.회원탈퇴한다;
@@ -187,7 +188,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("마이 페이지 조회 인수 테스트")
+    @DisplayName("회원 조회 인수 테스트")
     class MyPageRead {
 
         private String accessToken;
@@ -212,6 +213,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
             // then
             상태코드가_200이다(response);
         }
+
+        @DisplayName("Header에서 accessToken을 뽑아와서 Member의 id를 성공적으로 반환한다.")
+        @Test
+        void when_get_accessToken_then_response_200_and_body_member_id() {
+            // docs
+            api_문서_타이틀("fetchMemberId_success", spec);
+
+            // when
+            var response = 회원_id를_가져온다(spec, accessToken);
+
+            // then
+            상태코드가_200이다(response);
+        }
+
+
 
     }
 

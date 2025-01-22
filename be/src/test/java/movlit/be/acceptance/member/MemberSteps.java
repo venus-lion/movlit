@@ -2,7 +2,6 @@ package movlit.be.acceptance.member;
 
 import static movlit.be.acceptance.util.MemberFixture.비회원;
 import static movlit.be.acceptance.util.MemberFixture.회원_원준;
-import static movlit.be.acceptance.util.MemberFixture.회원_지원;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -69,6 +68,18 @@ public class MemberSteps {
                 .auth().oauth2(accessToken)
                 .log().all()
                 .when().get("/api/members/myPage")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_id를_가져온다(RequestSpecification spec, String accessToken) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .auth().oauth2(accessToken)
+                .log().all()
+                .when().get("/api/members/id")
                 .then().log().all()
                 .extract();
     }
