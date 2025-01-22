@@ -3,16 +3,18 @@ import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
 import './ChatPage.css'; // CSS 파일 import
+import { useOutletContext } from 'react-router-dom';
 
-function ChatPage({ roomId }) {
+function ChatPage({ roomId, roomInfo  }) {
     console.log('일대일 채팅에서의 roomId :: ' + roomId);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [stompClient, setStompClient] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태
+    // const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false); // 채팅방 참여 이력
     const [message, setMessage] = useState(''); // 공지 메시지 표시
     const focusDivRef = useRef(null); // 포커스를 주기 위한 ref
+    const { isLoggedIn } = useOutletContext();  // 로그인 상태
 
     // roomId가 변경될 경우 새로 고침
     useEffect(() => {
@@ -142,7 +144,7 @@ function ChatPage({ roomId }) {
     return (
         <div className="chat-container" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div className="chat-header">
-                <h2>채팅방: {roomId}</h2>
+                <h2>채팅방: {roomInfo.roomName}</h2>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => (
