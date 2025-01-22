@@ -13,7 +13,11 @@ public interface GroupChatRepository {
 
     GroupChatroomResponse create(GroupChatroom groupChatroom);
 
+    GroupChatroomResponseDto fetchRoomByContentId(String contentId);
+
     List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId);
+
+
 
 
     List<GroupChatroomMemberResponse> findMembersByChatroomId(@Param("chatroomId") GroupChatroomId chatroomId);

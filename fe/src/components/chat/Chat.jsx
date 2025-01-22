@@ -6,7 +6,8 @@ import ChatPage from '../../pages/ChatPage.jsx';
 import CreateGroupChatModal from "./CreateGroupChatModal.jsx";
 import ChatPageGroup from "../../pages/ChatPageGroup.jsx";
 import CreateGroupChatNameModal from "./CreateGroupChatNameModal.jsx";
-import axiosInstance from "../../axiosInstance.js"; // axios 임포트
+import axiosInstance from "../../axiosInstance.js";
+import GetGroupChatInfoModal from "./GetGroupChatInfoModal.jsx"; // axios 임포트
 
 
 
@@ -17,9 +18,11 @@ const Chat = () => {
     const [selectedChat, setSelectedChat] = useState(null); // 현재 선택된 채팅방
     const {isLoggedIn} = useOutletContext();
     const navigate = useNavigate();
+    const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
 
 
     const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false); // 모달1 열림 상태
+    const [isGetGroupChatInfoModalOpen, setIsGetGroupChatInfoModalOpen] = useState(false); // 채팅방 존재여무 모달2 열림 상태
     const [isCreateGroupChatNameModalOpen, setIsCreateGroupChatNameModalOpen] = useState(false); // 모달2 열림 상태
     const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -51,12 +54,26 @@ const Chat = () => {
         setSelectedCategory(null);
     };
 
+    // 채팅방 존재여무 모달2
+    const handleOpenGroupChatInfoModal = (card, category) => {
+        setSelectedCard(card);
+        setSelectedCategory(category);
+        setIsCreateGroupChatModalOpen(false); // 첫 번째 모달 닫기
+        setIsGetGroupChatInfoModalOpen(true); // 두 번째 모달 열기
+    };
+    const handleCloseGroupChatInfoModal = () => {
+        setIsGetGroupChatInfoModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
+
     const handleOpenGroupChatNameModal = (card, category) => {
         setSelectedCard(card); // 선택된 카드 데이터 저장
         setSelectedCategory(category); // 선택된 카테고리 저장
-        setIsCreateGroupChatModalOpen(false); // 첫 번째 모달 닫기
-        setIsCreateGroupChatNameModalOpen(true); // 두 번째 모달 열기
+        setIsGetGroupChatInfoModalOpen(false); // 두 번째 모달 닫기
+        setIsCreateGroupChatNameModalOpen(true); // 세 번째 모달 열기
     };
+
 
     const handleCloseGroupChatNameModal = () => {
         setIsCreateGroupChatNameModalOpen(false);
@@ -92,6 +109,26 @@ const Chat = () => {
 
     };
 
+    const handleJoinRoom = async (existingRoomInfo) => {
+        // existingRoomInfo가 null이 아닌지 확인
+        if (!existingRoomInfo || !existingRoomInfo.groupChatroomId) {
+            alert("채팅방 정보가 유효하지 않습니다.");
+            return;
+        }
+
+        const groupChatroomId = existingRoomInfo.groupChatroomId; // 채팅방 ID 추출
+        try {
+            const response = await axiosInstance.post(`/chat/group/${groupChatroomId}`);
+            console.log("채팅방 가입 성공:", response.data);
+            alert("채팅방 가입에 성공하였습니다.");
+            setRefreshKey(prevKey => prevKey + 1); // 키를 업데이트하여 ChatList를 다시 렌더링함
+            handleCloseGroupChatInfoModal(); // 현재 두번째 모달창 닫기
+        } catch (error) {
+            console.error("채팅방 가입 실패:", error);
+            alert("채팅방 가입에 실패했습니다.");
+        }
+    };
+
     return (
         <div style={{display: 'flex', height: 'calc(100vh - 60px)'}}>
             {/* 왼쪽: 채팅 목록 */}
@@ -118,6 +155,7 @@ const Chat = () => {
                     }}
                 />
                 <ChatList
+                    key={refreshKey} // 새로고침 키 전달
                     activeTab={activeTab}
                     searchTerm={searchTerm}
                     onSelectChat={(chat) => setSelectedChat(chat)} // 선택된 채팅방 설정
@@ -153,6 +191,7 @@ const Chat = () => {
                 )}
             </div>
 
+            {/* 오른쪽: 채팅방 창 */}
             <div style={{flex: 1, padding: '10px'}}>
                 {selectedChat ? (
                     activeTab === 'personal' ? (
@@ -171,13 +210,24 @@ const Chat = () => {
             <CreateGroupChatModal
                 isOpen={isCreateGroupChatModalOpen}
                 onClose={handleCloseGroupChatModal}
+                onConfirm={(card, category) => handleOpenGroupChatInfoModal(card, category)} // 선택된 데이터 전달
+            />
+            <GetGroupChatInfoModal
+                isOpen={isGetGroupChatInfoModalOpen}
+                onClose={handleCloseGroupChatInfoModal}
+                selectedCard={selectedCard} // 선택된 데이터 전달
+                selectedCategory={selectedCategory} // 선택된 카테고리 전달
                 onConfirm={(card, category) => handleOpenGroupChatNameModal(card, category)} // 선택된 데이터 전달
+                onJoin={handleJoinRoom} // "가입하기" 버튼의 핸들러 추가
             />
             <CreateGroupChatNameModal
                 isOpen={isCreateGroupChatNameModalOpen}
                 onClose={handleCloseGroupChatNameModal}
                 selectedCard={selectedCard} // 선택된 데이터 전달
                 selectedCategory={selectedCategory} // 선택된 카테고리 전달
+                onUpdateChatList={() => {
+                setRefreshKey(prevKey => prevKey + 1); // 채팅방 리스트 새로고침 키 업데이트
+                }}
             />
         </div>
     );

@@ -2,6 +2,7 @@ import React, {useEffect, useState, useMemo} from 'react';
 import axios from 'axios';
 import axiosInstance from "../../axiosInstance.js"; // axios 임포트
 const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
+
     const [groupChats, setGroupChats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,14 +30,24 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
     //     chat.roomName && chat.roomName.toLowerCase().includes(searchTerm.toLowerCase()) // undefined 체크
     // );
 
+
+    // 채팅방 리스트 무한 스크롤 구현 전
+    // 프론트에서 임시로 전체 리스트 스크롤 구현
     const style = {
         conTitle: {
             fontSize: '0.7em',
             color: '#666',
             width: '70%',
-            overflow: 'hidden', // 추가: text-overflow를 적용하기 위해 overflow 속성 필요
-            textOverflow: 'ellipsis', // 'text-overflow' 대신 'textOverflow'
-            whiteSpace: 'nowrap' // 추가: 줄 바꿈을 방지하기 위해 white-space 속성 필요
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+        },
+        chatListContainer: {
+            maxHeight: '550px', // 리스트의 최대 높이를 설정
+            overflowY: 'auto', // 수직 스크롤 가능
+            border: '1px solid #ddd', // 경계선 추가
+            padding: '10px',
+            borderRadius: '4px', // 경계선 둥글게 처리
         }
     }
 
@@ -96,6 +107,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
                             <div style={{fontSize: '0.6em', color: '#aaa'}}>{chat.regDt}</div>
                         </div>
                     ))}
+
                 </div>
             )}
 
@@ -127,7 +139,8 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
         </div>
     );
 
+
 };
 
-
 export default ChatList;
+

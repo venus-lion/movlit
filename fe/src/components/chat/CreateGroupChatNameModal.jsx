@@ -45,6 +45,7 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         try {
             const response = await axiosInstance.post("/chat/create/group", requestData);
             console.log("채팅방 생성 성공:", response.data);
+            onUpdateChatList();
             onClose();
         } catch (error) {
             console.error("채팅방 생성 실패:", error);

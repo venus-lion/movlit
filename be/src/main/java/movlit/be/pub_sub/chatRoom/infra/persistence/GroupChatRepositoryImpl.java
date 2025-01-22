@@ -1,13 +1,10 @@
 package movlit.be.pub_sub.chatRoom.infra.persistence;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.GroupChatroomNotFoundException;
 import movlit.be.common.util.ids.GroupChatroomId;
-import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.ChatroomNotFoundException;
-import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.GroupChatRepository;
@@ -27,6 +24,13 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
     public GroupChatroomResponse create(GroupChatroom groupChatroom) {
         GroupChatroom savedEntity = groupChatroomJpaRepository.save(groupChatroom);
         return GroupChatroomResponse.of(savedEntity.getGroupChatroomId());
+    }
+
+    @Override
+    public GroupChatroomResponseDto fetchRoomByContentId(String contentId) {
+        GroupChatroomResponseDto groupChatRes =
+                groupChatroomJpaRepository.findRoomByContentId(contentId).orElse(null);
+        return groupChatRes;
     }
 
     @Override

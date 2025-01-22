@@ -37,6 +37,14 @@ public class GroupChatroomController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 그룹채팅 존재 유무 확인
+    @PostMapping("/api/chat/group")
+    public ResponseEntity fetchGroupChatroom(@RequestBody GroupChatroomRequest request){
+        GroupChatroomResponseDto groupChatroomRes = groupChatroomService.fetchGroupChatroom(request);
+
+        return ResponseEntity.ok(groupChatroomRes);
+    }
+
     // 존재하는 그룹채팅방 가입(들어가기)
     @PostMapping("/api/chat/group/{groupChatroomId}")
     public ResponseEntity joinGroupChatroom(@PathVariable GroupChatroomId groupChatroomId, @AuthenticationPrincipal MyMemberDetails details)
