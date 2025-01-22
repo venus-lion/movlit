@@ -55,7 +55,8 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
             + "LEFT JOIN gc.memberRChatroom mr "
             + "LEFT JOIN BookEntity b ON gc.contentId = CONCAT('BK_', b.bookId) AND gc.contentId LIKE 'BK_%'  "
             + "LEFT JOIN MovieEntity m ON gc.contentId = CONCAT('MV_', m.movieId) AND gc.contentId LIKE 'MV_%' "
-            + "WHERE mr.member.memberId = :memberId")
+            + "WHERE mr.member.memberId = :memberId "
+            + "ORDER BY mr.regDt DESC ")
     Optional<List<GroupChatroomResponseDto>> findAllByMemberId(@Param("memberId") MemberId memberId);
 
 }
