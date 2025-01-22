@@ -4,11 +4,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.util.Genre;
+import movlit.be.common.util.JwtTokenUtil;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberIdResponse;
 import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberReadService {
 
     private final MemberRepository memberRepository;
+    private final JwtTokenUtil jwtTokenUtil;
 
     public static final int CORRECT_LOGIN = 0;
     public static final int WRONG_PASSWORD = 1;
@@ -72,6 +75,12 @@ public class MemberReadService {
 
     public MemberReadMyPage fetchMyPage(MemberId memberId) {
         return memberRepository.fetchMyPageByMemberId(memberId);
+    }
+
+    public MemberIdResponse fetchMemberId(String accessToken) {
+        String email = jwtTokenUtil.extractEmail(accessToken);
+        MemberId memberId = memberRepository.findByEmail(email).getMemberId();
+        return MemberIdResponse.of(memberId);
     }
 
 }

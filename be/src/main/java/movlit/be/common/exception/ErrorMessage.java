@@ -32,7 +32,6 @@ public enum ErrorMessage {
     INVALID_OAUTH_RESPONSE("OAuth 클라이언트로부터의 응답이 유효하지 않습니다", "a007"),
     EXPIRED_TOKEN("세션이 만료되었습니다. 다시 로그인해 주세요.", "a008"),
 
-
     // movie
     MOVIE_NOT_FOUND("메시지", "m001"),
     MOVIE_CREW_NOT_FOUND("해당 movieId에 해당하는 crew를 찾을 수 없습니다.", "m102"),
@@ -44,7 +43,6 @@ public enum ErrorMessage {
     MOVIE_COMMENT_LIKE_ALREADY_EXISTS("현재의 아이디가 이미 좋아요 한 코멘트입니다.", "m108"),
     MOVIE_COMMENT_LIKE_NOT_FOUND("해당 코멘트의 좋아요를 찾을 수 없습니다.", "m109"),
     NOT_FOUND_MOVIE_HEART_BY_MEMBER("해당 유저가 찜한 영화가 존재하지 않습니다.", "m110"),
-
 
     // Genre
     INVALID_GENRE_ID("해당 장르 ID는 유효하지 않습니다.", "g001"),
@@ -64,11 +62,13 @@ public enum ErrorMessage {
     // group chat
     GROUPCHATROOM_NOT_FOUND("해당 그룹채팅이 존재하지 않습니다.", "gc01"),
 
-
     // chat
     CONTENT_TYPE_NOT_EXIST("movie와 book 중 그 어느 타입에도 해당하지 않습니다", "c001"),
     CHATROOM_NOT_FOUND("해당 채팅방이 존재하지 않습니다.", "c010"),
-    CHATROOM_ACCESS_DENIED("해당 채팅방 접근 권한이 없습니다.", "c011");
+    CHATROOM_ACCESS_DENIED("해당 채팅방 접근 권한이 없습니다.", "c011"),
+
+    // Redis
+    FAILED_DESERIALIZE_DATA("Redis 데이터를 역직렬화하는데 실패했습니다.", "r001");
 
     private final String message;
     private final String code;
