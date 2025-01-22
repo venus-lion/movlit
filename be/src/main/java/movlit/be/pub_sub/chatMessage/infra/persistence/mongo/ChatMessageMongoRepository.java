@@ -4,6 +4,7 @@ import java.util.List;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 public interface ChatMessageMongoRepository extends MongoRepository<ChatMessage, ObjectId> {
 
