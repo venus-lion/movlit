@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
-import './ChatPage.css'; // CSS 파일 import
+import axiosInstance from '../axiosInstance';
+import './ChatPage.css';
 
 function ChatPageGroup({ roomId, roomInfo }) {
     const [messages, setMessages] = useState([]);
@@ -10,6 +10,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
     const [stompClient, setStompClient] = useState(null);
     const [members, setMembers] = useState([]);
     const messagesEndRef = useRef(null);
+    const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태를 추적하는 상태 변수
 
     // 현재 로그인한 userId
     const [currentUserId, setCurrentUserId] = useState(null);
@@ -26,8 +27,6 @@ function ChatPageGroup({ roomId, roomInfo }) {
             });
     }, []);
 
-    //const currentUserId = '868f8146000000ed6e44cef9'; // 임시 현재 로그인 사용자 ID (test 유저)
-
     // 그룹 채팅방 멤버 목록 불러오기
     useEffect(() => {
         if (roomId) {
@@ -35,11 +34,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
                 .get(`/chat/${roomId}/members`)
                 .then((response) => {
                     setMembers(response.data);
-
-                    // 잘 불러오는지 확인
                     console.log('fetched members :: (response.data) : ', response.data);
-
-                    // 각 멤버 정보 콘솔 출력
                     response.data.forEach(member => {
                         console.log("Member ID:", member.memberId);
                         console.log("Nickname:", member.nickname);
@@ -88,10 +83,10 @@ function ChatPageGroup({ roomId, roomInfo }) {
     }, [roomId]);
 
     const sendMessage = () => {
-        if (stompClient && newMessage && currentUserId) { // currentUserId가 null이 아닐 때만 전송
+        if (stompClient && newMessage && currentUserId) {
             const chatMessage = {
                 roomId: roomId,
-                senderId: currentUserId, // 현재 로그인한 유저가 senderId가 됨
+                senderId: currentUserId,
                 message: newMessage,
                 regDt: new Date(),
             };
@@ -105,8 +100,15 @@ function ChatPageGroup({ roomId, roomInfo }) {
         }
     };
 
+    // Composition Event 핸들러
+    const handleCompositionStart = () => setIsComposing(true);
+    const handleCompositionEnd = () => setIsComposing(false);
+
+    // Enter 키 입력 핸들러
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter') sendMessage();
+        if (event.key === 'Enter' && !isComposing) { // isComposing이 false일 때만 sendMessage 호출
+            sendMessage();
+        }
     };
 
     useEffect(() => {
@@ -117,32 +119,14 @@ function ChatPageGroup({ roomId, roomInfo }) {
         <div className="chat-container" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div className="chat-header">
                 <h2>채팅방: {roomInfo.roomName}</h2>
-                {/*<div className="members-list">*/}
-                {/*    <h4>참여 멤버:</h4>*/}
-                {/*    {members.map((member) => (*/}
-                {/*        <div key={member.memberId} className="member">*/}
-                {/*            <img*/}
-                {/*                src={member.profileImgUrl}*/}
-                {/*                alt="Profile"*/}
-                {/*                className="profile-img"*/}
-                {/*            />*/}
-                {/*            <span>{member.nickname}</span>*/}
-                {/*        </div>*/}
-                {/*    ))}*/}
-                {/*</div>*/}
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => {
-                    // 그룹채팅방에 속한 다른 멤버 뽑아오기
                     let member = null;
-                    if (members.length > 1) { // 단체채팅방에 2명 이상이라면...
+                    if (members.length > 1) {
                         member = members.find((m) => m.memberId !== currentUserId);
                     }
-                    //const member = members.find((m) => m.memberId !== currentUserId);
                     const isCurrentUser = message.senderId === currentUserId;
-
-                    // console.log("다른 멤버 ::: " + member.nickname);
-                    // console.log("현재 로그인한 멤버 ::: " + isCurrentUser);
 
                     return (
                         <div
@@ -155,7 +139,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
                             }}
                             className={`message ${isCurrentUser ? 'own-message' : ''}`}
                         >
-                            {!isCurrentUser && member && ( // 다른 멤버가 존재할 때만 프로필 표시
+                            {!isCurrentUser && member && (
                                 <div className="message-profile">
                                     <img
                                         src={member?.profileImgUrl}
@@ -185,6 +169,8 @@ function ChatPageGroup({ roomId, roomInfo }) {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
+                    onCompositionStart={handleCompositionStart} // Composition Event 핸들러 등록
+                    onCompositionEnd={handleCompositionEnd} // Composition Event 핸들러 등록
                     placeholder="메시지를 입력하세요..."
                 />
                 <button onClick={sendMessage}>보내기</button>
