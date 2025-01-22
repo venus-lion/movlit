@@ -86,7 +86,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
     if (error) return <div>오류: {error}</div>;
     
     return (
-        <div>
+        <div style={style.chatListContainer}>
             {/* groups일 때 */}
             {activeTab === 'group' && (
                 <div>
