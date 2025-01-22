@@ -55,6 +55,7 @@ public class OneononeChatroomService {
 
         // DB 저장
         OneononeChatroom savedOneononeChatroom = oneOnOneChatroomRepository.create(oneononeChatroom);
+
         OneononeChatroomResponse response = new OneononeChatroomResponse(
                 savedOneononeChatroom.getOneononeChatroomId(),
                 receiver.getMemberId(),
@@ -77,6 +78,7 @@ public class OneononeChatroomService {
         List<String> cachedData = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (cachedData != null && !cachedData.isEmpty()) {
+            log.info("=== fetchMyOneOnOneChatList : cash Hit");
             return cachedData.stream()
                     .map(this::deserializeChatroomResponse)
                     .toList();
@@ -122,4 +124,5 @@ public class OneononeChatroomService {
             throw new FailedDeserializeException();
         }
     }
+
 }
