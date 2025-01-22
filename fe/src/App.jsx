@@ -94,19 +94,19 @@ function App() {
                     >
                         책
                     </NavLink>
-                    {isLoggedIn && (
-                        <NavLink
-                            to="/chat" // 채팅 페이지로 이동하는 링크 추가
-                            className={({isActive}) => (isActive ? 'active' : '')}
-                        >
-                            채팅
-                        </NavLink>
-                    )}
+                    {/*{isLoggedIn && (*/}
+                    {/*    <NavLink*/}
+                    {/*        to="/chat" // 채팅 페이지로 이동하는 링크 추가*/}
+                    {/*        className={({isActive}) => (isActive ? 'active' : '')}*/}
+                    {/*    >*/}
+                    {/*        채팅*/}
+                    {/*    </NavLink>*/}
+                    {/*)}*/}
                     <NavLink
                         to="/chatMain" // 채팅 페이지로 이동하는 링크 추가
                         className={({isActive}) => (isActive ? 'active' : '')}
                     >
-                        채팅2
+                        채팅
                     </NavLink>
                 </div>
                 <div className="nav-right">

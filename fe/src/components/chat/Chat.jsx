@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ChatTabs from './ChatTabs';
 import ChatList from './ChatList';
 import {useNavigate, useOutletContext} from "react-router-dom";
@@ -24,6 +24,13 @@ const Chat = () => {
     const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
     const [selectedCategory, setSelectedCategory] = useState(null);
 
+    // 로그인 상태 확인 및 리다이렉트 로직 추가
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/member/login', { replace: true }); // 리다이렉트 할 때, 브라우저 히스토리에 현재 경로를 남기지 않음
+        }
+    }, [isLoggedIn, navigate]);
+
     // 채팅방 리스트 업데이트 함수
     const updateChatList = async () => {
         try {
@@ -33,8 +40,6 @@ const Chat = () => {
             console.error("채팅 리스트 업데이트 오류:", error);
         }
     };
-
-
 
     const handleCreateGroupChatModal = () => {
         setIsCreateGroupChatModalOpen(true);
