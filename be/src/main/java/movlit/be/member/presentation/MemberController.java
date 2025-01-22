@@ -14,6 +14,7 @@ import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
+import movlit.be.member.presentation.dto.response.MemberIdResponse;
 import movlit.be.member.presentation.dto.response.MemberReadMyPage;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.springframework.http.HttpHeaders;
@@ -101,6 +102,13 @@ public class MemberController {
         String accessToken = HttpHeaderParser.parse(authHeader, HttpHeaderType.AUTH);
         memberWriteService.logout(accessToken);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/api/members/id")
+    public ResponseEntity<MemberIdResponse> fetchMemberId(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        String accessToken = HttpHeaderParser.parse(authHeader, HttpHeaderType.AUTH);
+        var response = memberReadService.fetchMemberId(accessToken);
+        return ResponseEntity.ok(response);
     }
 
 }
