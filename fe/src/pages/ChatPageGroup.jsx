@@ -3,6 +3,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance';
 import './ChatPage.css';
+import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 기본 프로필 이미지 아이콘을 가져옵니다.
 
 function ChatPageGroup({ roomId, roomInfo }) {
     const [messages, setMessages] = useState([]);
@@ -10,9 +11,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
     const [stompClient, setStompClient] = useState(null);
     const [members, setMembers] = useState([]);
     const messagesEndRef = useRef(null);
-    const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태를 추적하는 상태 변수
-
-    // 현재 로그인한 userId
+    const [isComposing, setIsComposing] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
@@ -27,7 +26,6 @@ function ChatPageGroup({ roomId, roomInfo }) {
             });
     }, []);
 
-    // 그룹 채팅방 멤버 목록 불러오기
     useEffect(() => {
         if (roomId) {
             axiosInstance
@@ -47,7 +45,6 @@ function ChatPageGroup({ roomId, roomInfo }) {
         }
     }, [roomId]);
 
-    // WebSocket 연결 설정 및 메시지 수신
     useEffect(() => {
         if (!roomId) return;
 
@@ -100,13 +97,11 @@ function ChatPageGroup({ roomId, roomInfo }) {
         }
     };
 
-    // Composition Event 핸들러
     const handleCompositionStart = () => setIsComposing(true);
     const handleCompositionEnd = () => setIsComposing(false);
 
-    // Enter 키 입력 핸들러
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter' && !isComposing) { // isComposing이 false일 때만 sendMessage 호출
+        if (event.key === 'Enter' && !isComposing) {
             sendMessage();
         }
     };
@@ -122,7 +117,6 @@ function ChatPageGroup({ roomId, roomInfo }) {
             </div>
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
                 {messages.map((message, index) => {
-                    // 메시지를 보낸 멤버를 찾음
                     const sender = members.find((m) => m.memberId === message.senderId);
                     const isCurrentUser = message.senderId === currentUserId;
 
@@ -137,14 +131,19 @@ function ChatPageGroup({ roomId, roomInfo }) {
                             }}
                             className={`message ${isCurrentUser ? 'own-message' : ''}`}
                         >
-                            {!isCurrentUser && sender && ( // 메시지 보낸 멤버가 현재 유저가 아니고, 해당 멤버 정보가 있을 때만 표시
+                            {!isCurrentUser && sender && (
                                 <div className="message-profile">
-                                    <img
-                                        src={sender?.profileImgUrl || '/default-profile.png'}
-                                        alt="Profile"
-                                        className="profile-img"
-                                    />
-                                    <strong>{sender?.nickname}</strong>
+                                    {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
+                                    {sender.profileImgUrl ? (
+                                        <img
+                                            src={sender.profileImgUrl}
+                                            alt="Profile"
+                                            className="profile-img"
+                                        />
+                                    ) : (
+                                        <FaUserCircle size={36} className="profile-img" />
+                                    )}
+                                    <strong>{sender.nickname}</strong>
                                 </div>
                             )}
                             <div className="message-content">
@@ -167,8 +166,8 @@ function ChatPageGroup({ roomId, roomInfo }) {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    onCompositionStart={handleCompositionStart} // Composition Event 핸들러 등록
-                    onCompositionEnd={handleCompositionEnd} // Composition Event 핸들러 등록
+                    onCompositionStart={handleCompositionStart}
+                    onCompositionEnd={handleCompositionEnd}
                     placeholder="메시지를 입력하세요..."
                 />
                 <button onClick={sendMessage}>보내기</button>
