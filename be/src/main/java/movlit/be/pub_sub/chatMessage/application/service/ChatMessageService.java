@@ -2,11 +2,13 @@ package movlit.be.pub_sub.chatMessage.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.pub_sub.RedisMessagePublisher;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
+import movlit.be.pub_sub.chatMessage.infra.persistence.ChatMessageRepository;
 import movlit.be.pub_sub.chatMessage.infra.persistence.mongo.ChatMessageMongoRepository;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ChatMessageService {
 
-    private final ChatMessageMongoRepository chatMessageMongoRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final RedisMessagePublisher messagePublisher;
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
@@ -61,14 +63,17 @@ public class ChatMessageService {
                 .regDt(chatMessageDto.getRegDt())
                 .messageType(chatMessageDto.getMessageType())
                 .build();
-        chatMessageMongoRepository.save(chatMessage);
+        chatMessageRepository.saveMessage(chatMessage);
     }
 
     /**
      * 채팅방의 채팅목록 가져오기
      */
     public List<ChatMessageDto> fetchChatMessages(String roomId) {
-        List<ChatMessage> chatMessages = chatMessageMongoRepository.findByRoomId(roomId);
+        List<ChatMessage> chatMessages = chatMessageRepository.findByRoomId(roomId);
+        if (chatMessages.isEmpty()) {
+            return new ArrayList<>();       // 빈 값 전달
+        }
 
         log.info("=== chatMessages : {}", chatMessages);
         // TODO : Converter 나중에 빼기
@@ -85,7 +90,8 @@ public class ChatMessageService {
     /**
      * Redis 큐 활용, 비동기 처리
      */
-    private void processQueue() {
+    // TODO : processQueue, convertToJson, convertFromJson 메서드는 ObjectMapper를 사용할 별개의 클래스를 둬서 관리하기
+    public void processQueue() {
         // 비동기적으로 Redis 큐에서 메시지 처리
         // 큐에서 하나씩 메시지를 꺼내서 MongoDB에 저장
         new Thread(() -> {
@@ -102,7 +108,7 @@ public class ChatMessageService {
     }
 
     // DTO를 JSON으로 변환하는 로직
-    private String convertToJson(ChatMessageDto chatMessageDto) {
+    public String convertToJson(ChatMessageDto chatMessageDto) {
         try {
             return objectMapper.writeValueAsString(chatMessageDto);
         } catch (JsonProcessingException e) {
@@ -111,7 +117,7 @@ public class ChatMessageService {
     }
 
     // JSON을 DTO로 변환하는 로직
-    private ChatMessageDto convertFromJson(String json) {
+    public ChatMessageDto convertFromJson(String json) {
         try {
             return objectMapper.readValue(json, ChatMessageDto.class);
         } catch (JsonProcessingException e) {
