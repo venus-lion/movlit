@@ -29,7 +29,9 @@ public class GroupChatroomController {
 
     private final GroupChatroomService groupChatroomService;
 
-    // 최초 사용자 -> 채팅방 생성 및 가입
+    /**
+     * 최초의 채팅방 (생성 후 가입)
+     */
     @PostMapping("/api/chat/create/group")
     public ResponseEntity<GroupChatroomResponse> createGroupChatroom(@RequestBody @Valid GroupChatroomRequest request,
                                                                      @AuthenticationPrincipal MyMemberDetails myMemberDetails) {

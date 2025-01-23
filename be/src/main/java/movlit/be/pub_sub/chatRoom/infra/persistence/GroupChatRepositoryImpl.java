@@ -34,6 +34,11 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
     }
 
     @Override
+    public boolean existsByContentId(String contentId) {
+        return groupChatroomJpaRepository.existsByContentId(contentId);
+    }
+
+    @Override
     public List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId) {
         List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
                 .orElseThrow(ChatroomNotFoundException::new);

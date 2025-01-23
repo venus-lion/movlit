@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.exception.ChatroomNotFoundException;
+import movlit.be.common.exception.GroupChatroomAlreadyExistsException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
@@ -46,31 +47,45 @@ public class GroupChatroomService {
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
 
     /**
-     * 비동기적으로 그룹 채팅 생성 로직을 요청한다.
+     * 비동기적으로 최초 그룹 채팅 생성 로직을 요청한다.
      */
     @Transactional
     public GroupChatroomResponse requestCreateGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
         String contentId = ChatroomConvertor.generateContentId(
                 request.getContentType(), request.getContentId()); // MV_LongContentId 형태
-        String queueKey = GROUP_CHATROOM_QUEUE_KEY_PREFIX + contentId;
+        validateExistByContentId(contentId);
 
         // Redis Queue에 memberId를 value로 저장 (LPUSH)
+        String queueKey = GROUP_CHATROOM_QUEUE_KEY_PREFIX + contentId;
         redisTemplate.opsForList().leftPush(queueKey, memberId.getValue());
 
         // Worker 스레드에게 작업 요청 및 결과 수신
+        // 만약, 늦게 요청한 멤버들이라면 response는 null 데이터를 담고 있게 되는 거임
         Map<String, String> response = worker.requestChatroomCreation(contentId);
+        validateWorkerResponseIsNull(response);
 
         // Worker 스레드로부터 받은 contentId와 memberId로 채팅방 생성
         String workerContentId = response.keySet().iterator().next();
         MemberId workerMemberId = IdFactory.createMemberId(response.get(workerContentId));
 
-        return createGroupChatroom(
-                RequestDataForCreationWorker.from(request.getRoomName(), workerContentId, workerMemberId)
-        );
+        return createGroupChatroom(RequestDataForCreationWorker.from(
+                request.getRoomName(), workerContentId, workerMemberId));
+    }
+
+    private void validateExistByContentId(String contentId) {
+        if (groupChatRepository.existsByContentId(contentId)) {
+            throw new GroupChatroomAlreadyExistsException();
+        }
+    }
+
+    private void validateWorkerResponseIsNull(Map<String, String> response) {
+        if (response == null) {
+            throw new GroupChatroomAlreadyExistsException();
+        }
     }
 
     /**
-     * 그룹 채팅 생성 후 참여한다
+     * 최초 그룹 채팅 생성 후 참여한다
      */
     @Transactional
     public GroupChatroomResponse createGroupChatroom(RequestDataForCreationWorker data) {

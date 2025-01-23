@@ -62,6 +62,7 @@ public enum ErrorMessage {
     // group chat
     GROUPCHATROOM_NOT_FOUND("해당 그룹 채팅이 존재하지 않습니다.", "gc01"),
     GROUPCHATROOM_ALREADY_EXISTS("해당 컨텐츠의 그룹 채팅이 이미 존재합니다.", "gc02"),
+    GROUPCHATROOM_ASYNC_ERROR("해당 컨텐츠의 그룹 채팅을 비동기적으로 생성하던 도중 오류가 발생하였습니다.", "gc03"),
 
     // chat
     CONTENT_TYPE_NOT_EXIST("movie와 book 중 그 어느 타입에도 해당하지 않습니다", "c001"),

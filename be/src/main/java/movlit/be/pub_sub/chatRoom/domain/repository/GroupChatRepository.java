@@ -15,10 +15,9 @@ public interface GroupChatRepository {
 
     GroupChatroomResponseDto fetchRoomByContentId(String contentId);
 
+    boolean existsByContentId(String contentId);
+
     List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId);
-
-
-
 
     List<GroupChatroomMemberResponse> findMembersByChatroomId(@Param("chatroomId") GroupChatroomId chatroomId);
 

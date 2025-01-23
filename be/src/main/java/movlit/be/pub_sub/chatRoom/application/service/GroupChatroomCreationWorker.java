@@ -7,8 +7,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.exception.GroupChatroomCreationWhenWorkingException;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -46,6 +46,7 @@ public class GroupChatroomCreationWorker {
                 resultMap.put(contentId, memberId);
                 return resultMap;
             }
+
             return null;
         });
 
@@ -54,8 +55,7 @@ public class GroupChatroomCreationWorker {
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
             log.error("Error while getting result from worker thread", e);
-            // 예외 처리 (예: null 반환 또는 예외 다시 던지기)
-            return null;
+            throw new GroupChatroomCreationWhenWorkingException();
         }
     }
 
