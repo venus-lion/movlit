@@ -59,6 +59,8 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
             + "ORDER BY mr.regDt DESC ")
     Optional<List<GroupChatroomResponseDto>> findAllByMemberId(@Param("memberId") MemberId memberId);
 
+    boolean existsByContentId(String contentId);
+
 }
 
 
