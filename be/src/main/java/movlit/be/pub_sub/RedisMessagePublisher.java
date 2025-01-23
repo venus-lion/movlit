@@ -1,15 +1,9 @@
 package movlit.be.pub_sub;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.exception.ContentTypeNotExistException;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
-import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
+import movlit.be.pub_sub.chatRoom.presentation.dto.UpdateRoomDto;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
@@ -23,25 +17,37 @@ import org.springframework.stereotype.Service;
 public class RedisMessagePublisher {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ChannelTopic topic;
-    private final ObjectMapper objectMapper;
+    private final ChannelTopic sendMessageTopic;
+    private final ChannelTopic updateRoomTopic;
 
+    /**
+     * 채팅 보내기(sendMessage) 토픽 발행하는 메서드
+     * @param chatMessageDto
+     */
     public void sendMessage(ChatMessageDto chatMessageDto) {
-        // 1:1 메시지
-        if (chatMessageDto.getMessageType() == MessageType.ONE_ON_ONE) {
-            log.info("Publishing 1:1 chat message {}", chatMessageDto);
-            redisTemplate.convertAndSend(topic.getTopic(), chatMessageDto);
-            return;
-        }
+//        // 1:1 메시지
+//        if (chatMessageDto.getMessageType() == MessageType.ONE_ON_ONE) {
+//            log.info("Publishing 1:1 chat message {}", chatMessageDto);
+//            redisTemplate.convertAndSend(sendMessageTopic.getTopic(), chatMessageDto);
+//            return;
+//        }
+//
+//        // 그룹 메시지
+//        if (chatMessageDto.getMessageType() == MessageType.GROUP) {
+//            log.info("Publishing group chat message {}", chatMessageDto);
+//            redisTemplate.convertAndSend(sendMessageTopic.getTopic(), chatMessageDto);
+//            return;
+//        }
 
-        // 그룹 메시지
-        if (chatMessageDto.getMessageType() == MessageType.GROUP) {
-            log.info("Publishing group chat message {}", chatMessageDto);
-            redisTemplate.convertAndSend(topic.getTopic(), chatMessageDto);
-            return;
-        }
+        log.info("Publishing send message {}", chatMessageDto);
+        redisTemplate.convertAndSend(sendMessageTopic.getTopic(), chatMessageDto);
 
-        throw new ContentTypeNotExistException();
+//        throw new ContentTypeNotExistException();
+    }
+
+    public void updateRoom(UpdateRoomDto updateRoomDto) {
+        log.info("Publishing update chatroom {}", updateRoomDto);
+        redisTemplate.convertAndSend(updateRoomTopic.getTopic(), updateRoomDto);
     }
 
 }

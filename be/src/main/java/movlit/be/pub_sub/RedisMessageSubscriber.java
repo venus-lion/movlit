@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ContentTypeNotExistException;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
+import movlit.be.pub_sub.chatRoom.presentation.dto.UpdateRoomDto;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,29 @@ public class RedisMessageSubscriber {
 
         } catch (Exception e) {
             log.error("Exception {}", e);
+        }
+    }
+
+    public void updateRoom(String publishMessage) {
+        try {
+            UpdateRoomDto updateRoomDto = objectMapper.readValue(publishMessage, UpdateRoomDto.class);
+
+            log.info("Received update room message: {}", publishMessage);
+            messagingTemplate.convertAndSend(
+                    "/topic/chat/message/group/" + updateRoomDto.getRoomId(), updateRoomDto
+            );
+            // 메시지를 필요에 따라 처리
+        } catch (Exception e) {
+            log.error("Exception in updateRoom {}", e);
+        }
+    }
+
+    public void readMessage(String publishMessage) {
+        try {
+            log.info("Received update room message: {}", publishMessage);
+            // 메시지를 필요에 따라 처리
+        } catch (Exception e) {
+            log.error("Exception in updateRoom {}", e);
         }
     }
 

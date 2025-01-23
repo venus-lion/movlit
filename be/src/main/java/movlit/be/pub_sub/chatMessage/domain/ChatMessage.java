@@ -26,7 +26,7 @@ public class ChatMessage {
     private String roomId;
     private MemberId senderId;
     private String message;
-    private String timestamp;               // TODO : 타입형태 협의 필요
+    private String timestamp;
     private MessageType messageType;
 
     // 읽지 않은 상태를 관리할 필드 (읽은 멤버들의 ID 리스트)
@@ -41,13 +41,12 @@ public class ChatMessage {
         this.timestamp = regDt.toString();
         this.messageType = messageType;
     }
-
-    /**
-     * 메시지 읽음 처리
-     */
+    
+    //메시지 읽음 처리
     public void markAsRead(MemberId memberId) {
         if (!this.readMembers.contains(memberId)) {
             this.readMembers.add(memberId);
         }
     }
+
 }
