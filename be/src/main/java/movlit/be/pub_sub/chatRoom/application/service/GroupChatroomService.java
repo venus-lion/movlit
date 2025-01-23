@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,8 +62,8 @@ public class GroupChatroomService {
 
         // Worker 스레드에게 작업 요청 및 결과 수신
         // 만약, 늦게 요청한 멤버들이라면 response는 null 데이터를 담고 있게 되는 거임
-        Map<String, String> response = worker.requestChatroomCreation(contentId);
-        validateWorkerResponseIsNull(response);
+        Optional<Map<String, String>> responseOpt = worker.requestChatroomCreation(contentId);
+        Map<String, String> response = getPureResponse(responseOpt);
 
         // Worker 스레드로부터 받은 contentId와 memberId로 채팅방 생성
         String workerContentId = response.keySet().iterator().next();
@@ -72,14 +73,16 @@ public class GroupChatroomService {
                 request.getRoomName(), workerContentId, workerMemberId));
     }
 
-    private void validateExistByContentId(String contentId) {
-        if (groupChatRepository.existsByContentId(contentId)) {
+    private Map<String, String> getPureResponse(Optional<Map<String, String>> responseOpt) {
+        if (responseOpt.isEmpty()) {
             throw new GroupChatroomAlreadyExistsException();
         }
+
+        return responseOpt.get();
     }
 
-    private void validateWorkerResponseIsNull(Map<String, String> response) {
-        if (response == null) {
+    private void validateExistByContentId(String contentId) {
+        if (groupChatRepository.existsByContentId(contentId)) {
             throw new GroupChatroomAlreadyExistsException();
         }
     }

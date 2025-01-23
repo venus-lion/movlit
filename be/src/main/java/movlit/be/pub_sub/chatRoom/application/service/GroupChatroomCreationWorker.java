@@ -2,6 +2,7 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,9 +22,9 @@ public class GroupChatroomCreationWorker {
 
     private static final String GROUP_CHATROOM_QUEUE_KEY_PREFIX = "groupChatroomQueue:";
 
-    public Map<String, String> requestChatroomCreation(String contentId) {
+    public Optional<Map<String, String>> requestChatroomCreation(String contentId) {
         // 스레드 풀을 사용하여 비동기 작업 실행
-        Future<Map<String, String>> future = threadPoolExecutor.submit(() -> {
+        Future<Optional<Map<String, String>>> future = threadPoolExecutor.submit(() -> {
             String queueKey = GROUP_CHATROOM_QUEUE_KEY_PREFIX + contentId;
 
             while (true) {
@@ -31,8 +32,8 @@ public class GroupChatroomCreationWorker {
                 Object memberIdObject = redisTemplate.opsForList().rightPop(queueKey);
 
                 if (memberIdObject == null) {
-                    // 큐가 비어있으면 종료
-                    break;
+                    // 큐가 비어있으면 빈 Optional 반환
+                    return Optional.empty();
                 }
 
                 if (!(memberIdObject instanceof String memberId)) {
@@ -41,22 +42,19 @@ public class GroupChatroomCreationWorker {
                     continue;
                 }
 
-                // contentId와 memberId를 Map에 담아서 반환
+                // contentId와 memberId를 Map에 담아서 Optional로 감싸서 반환
                 Map<String, String> resultMap = new HashMap<>();
                 resultMap.put(contentId, memberId);
-                return resultMap;
+                return Optional.of(resultMap);
             }
-
-            return null;
         });
 
         try {
-            // 비동기 작업 결과 가져오기 (Future.get()은 작업이 완료될 때까지 대기)
+            // 비동기 작업 결과 가져오기
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
             log.error("Error while getting result from worker thread", e);
             throw new GroupChatroomCreationWhenWorkingException();
         }
     }
-
 }
