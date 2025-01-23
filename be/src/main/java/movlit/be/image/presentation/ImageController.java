@@ -24,13 +24,12 @@ public class ImageController {
     private final ImageService imageService;
     private final MemberReadService memberReadService;
 
-
     @PostMapping("/api/images/profile")
     public ResponseEntity<ImageResponse> uploadProfileImage(@AuthenticationPrincipal MyMemberDetails details,
                                                             @RequestPart(value = "file", required = false) MultipartFile file) {
         MemberId memberId = details.getMemberId();
-        Member member = memberReadService.findByMemberId(memberId);
-        var response = imageService.uploadProfileImage(member, file);
+//        Member member = memberReadService.findByMemberId(memberId);
+        var response = imageService.uploadProfileImage(memberId, file);
         return ResponseEntity.ok(response);
     }
 

@@ -105,13 +105,13 @@ public class MemberConverter {
                 .build();
     }
 
-
     public static MovieCommentData toMovieDetailCommentData(Long movieId, MemberId memberId,
                                                             MovieCommentRequest request) {
         return new MovieCommentData(movieId, memberId, request);
     }
 
-    public static Member oAuth2RequestToMemberEntity(MemberRegisterOAuth2Request request, String nickname, List<MemberGenreEntity> memberGenreEntityList,
+    public static Member oAuth2RequestToMemberEntity(MemberRegisterOAuth2Request request, String nickname,
+                                                     List<MemberGenreEntity> memberGenreEntityList,
                                                      MemberId memberId) {
         return Member.builder()
                 .memberId(memberId)
@@ -127,8 +127,9 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberEntity toMemberEntity(MemberRegisterOAuth2Request request, String nickname, List<MemberGenreEntity> memberGenreEntityList,
-                                        MemberId memberId) {
+    public static MemberEntity toMemberEntity(MemberRegisterOAuth2Request request, String nickname,
+                                              List<MemberGenreEntity> memberGenreEntityList,
+                                              MemberId memberId) {
         return MemberEntity.builder()
                 .memberId(memberId)
                 .nickname(nickname)
@@ -141,6 +142,13 @@ public class MemberConverter {
                 .provider("oauth2")
                 .regDt(LocalDateTime.now())
                 .build();
+    }
+
+    // Entity 업데이트 (부분 업데이트)
+    public static void updateEntity(Member source, MemberEntity target) {
+        if (source.getProfileImgUrl() != null) {
+            target.updateProfileImgUrl(source.getNickname());
+        }
     }
 
 }

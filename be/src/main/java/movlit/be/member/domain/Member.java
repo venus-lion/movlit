@@ -31,6 +31,10 @@ public class Member {
 
     private List<MemberGenreEntity> memberGenreEntityList;
 
+    public void updateProfileImg(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
     @Builder
     public Member(MemberId memberId, String email, String nickname, String password, String dob, String profileImgId,
                   String profileImgUrl, String role, String provider, LocalDateTime regDt, LocalDateTime updDt,
