@@ -1,5 +1,4 @@
 package movlit.be.pub_sub.chatRoom.application.service;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -7,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
@@ -17,6 +17,9 @@ import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.entity.MemberEntity;
+import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
+import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
+import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
@@ -37,6 +40,7 @@ public class GroupChatroomService {
 
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
+    private final ChatMessageService chatMessageService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final GroupChatroomCreationWorker worker;
@@ -172,9 +176,21 @@ public class GroupChatroomService {
     public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
         if (memberId != null) {
 
+            // 내가 가입한 그룹 채팅 리스트
             List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
+
+
+            // 해당 그룹 채팅의 최신 메시지 불러오기
+            for (GroupChatroomResponseDto chatRoom : myGroupChatList) {
+                ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
+                        chatRoom.getGroupChatroomId().getValue());
+                if(recentMessage != null){
+                    chatRoom.setRecentMessage(recentMessage);
+                }
+            }
+
             log.info("::GroupChatroomService_fetchMyGroupChatList::");
-            log.info(">> myGroupchatList : " + myGroupChatList.toString());
+            log.info(">> myGroupchatList : " + myGroupChatList);
 
             return myGroupChatList;
         } else {

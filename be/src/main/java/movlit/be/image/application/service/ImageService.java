@@ -46,7 +46,8 @@ public class ImageService {
         updateMemberProfile(memberId, memberProfileUpdateDto);
         // 멤버 정보 update
 //        member.setProfileImgUrl(savedImageEntity.getUrl());
-   //     memberRepository.save(member);
+//        memberRepository.save(member);
+
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
 
     }
