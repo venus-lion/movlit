@@ -1,5 +1,4 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import axios from 'axios';
 import axiosInstance from "../../axiosInstance.js"; // axios 임포트
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
@@ -20,7 +19,8 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
         const fetchGroupChats = async () => {
             try {
                 const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
-                setGroupChats(response.data);
+                console.log('groupchats : ' + response.data);
+                setGroupChats(response.data);  // 그룹 채팅 목록 저장
             } catch (error) {
                 console.error('Error fetching group chats:', error);
             }
@@ -42,27 +42,31 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
 
         client.onConnect = () => {
             console.log('WebSocket Connected');
-            // 모든 채팅방의 메시지를 실시간으로 수신
-            client.subscribe('/topic/chat/message/group/${roomId}', (message) => {
-                const receivedMessage = JSON.parse(message.body);
-                // 새 메시지가 특정 그룹채팅에 해당하는 경우 해당 채팅 방의 메시지 업데이트
-                setGroupChats((prevChats) => {
-                    return prevChats.map(chat =>
-                        chat.groupChatroomId === receivedMessage.roomId
-                            ? { ...chat, recentMessage: receivedMessage }
-                            : chat
-                    );
+            // 각 그룹 채팅방에 대한 메시지 구독
+            groupChats.forEach(chat => {
+                client.subscribe(`/topic/chat/message/group/${chat.groupChatroomId}`, (message) => {
+                    const receivedMessage = JSON.parse(message.body);
+                    // 수신한 메시지로 그룹 채팅 목록 업데이트
+                    setGroupChats(prevChats => {
+                        return prevChats.map(chat =>
+                            chat.groupChatroomId === receivedMessage.roomId
+                                ? { ...chat, recentMessage: receivedMessage } // 최신 메시지 업데이트
+                                : chat
+                            );
+                    });
                 });
             });
         };
 
-        client.activate();
+
+        client.activate(); // WebSocket 활성화
         setStompClient(client);
 
         return () => {
-            if (client.connected) client.deactivate();
+            if (client.connected) client.deactivate(); // 언마운트 시 WebSocket 종료
         };
-    }, []);
+    }, [groupChats]); // 의존성 배열에 groupChats 추가하여 메시지 수신 구독이 동적으로 업데이트 되도록 함
+
 
 
 
