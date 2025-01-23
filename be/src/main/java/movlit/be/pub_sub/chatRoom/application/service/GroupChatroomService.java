@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.exception.ChatroomNotFoundException;
+import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
@@ -38,12 +39,15 @@ public class GroupChatroomService {
     private final ObjectMapper objectMapper;
     private final GroupChatroomCreationWorker worker;
 
+    // TODO: Const 분리
     private static final String CHATROOM_MEMBERS_KEY_PREFIX = "chatroom:";
     private static final String CHATROOM_MEMBERS_KEY_SUFFIX = ":members";
     private static final String GROUP_CHATROOM_QUEUE_KEY_PREFIX = "groupChatroomQueue:";
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
 
-    // 그룹채팅 생성 요청
+    /**
+     * 비동기적으로 그룹 채팅 생성 로직을 요청한다.
+     */
     @Transactional
     public GroupChatroomResponse requestCreateGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
         String contentId = ChatroomConvertor.generateContentId(
@@ -58,12 +62,16 @@ public class GroupChatroomService {
 
         // Worker 스레드로부터 받은 contentId와 memberId로 채팅방 생성
         String workerContentId = response.keySet().iterator().next();
-        MemberId workerMemberId = new MemberId(response.get(workerContentId));
+        MemberId workerMemberId = IdFactory.createMemberId(response.get(workerContentId));
 
-        return createGroupChatroom(RequestDataForCreationWorker.from(request.getRoomName(), workerContentId, workerMemberId));
+        return createGroupChatroom(
+                RequestDataForCreationWorker.from(request.getRoomName(), workerContentId, workerMemberId)
+        );
     }
 
-    // 그룹채팅 생성
+    /**
+     * 그룹 채팅 생성 후 참여한다
+     */
     @Transactional
     public GroupChatroomResponse createGroupChatroom(RequestDataForCreationWorker data) {
         GroupChatroom groupChatroom = ChatroomConvertor.makeNonReGroupChatroom(data);
