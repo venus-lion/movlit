@@ -1,12 +1,70 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import axios from 'axios';
 import axiosInstance from "../../axiosInstance.js"; // axios 임포트
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
 
     const [groupChats, setGroupChats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [personalChats, setPersonalChats] = useState([]);
+
+    /*
+     * websocket
+     */
+
+    const [stompClient, setStompClient] = useState(null);
+
+    useEffect(() => {
+        const fetchGroupChats = async () => {
+            try {
+                const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
+                setGroupChats(response.data);
+            } catch (error) {
+                console.error('Error fetching group chats:', error);
+            }
+        };
+
+        fetchGroupChats();
+
+        // WebSocket 클라이언트 설정
+        const client = new Client({
+            webSocketFactory: () => new SockJS(`${process.env.VITE_BASE_URL_FOR_CONF}/ws-stomp`),
+            connectHeaders: {
+                Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
+            },
+            debug: (str) => {
+                console.log('STOMP Debug:', str);
+                console.log("그룹채팅방  : " + JSON.stringify(groupChats, null, 2));
+            },
+        });
+
+        client.onConnect = () => {
+            console.log('WebSocket Connected');
+            // 모든 채팅방의 메시지를 실시간으로 수신
+            client.subscribe('/topic/chat/message/group/${roomId}', (message) => {
+                const receivedMessage = JSON.parse(message.body);
+                // 새 메시지가 특정 그룹채팅에 해당하는 경우 해당 채팅 방의 메시지 업데이트
+                setGroupChats((prevChats) => {
+                    return prevChats.map(chat =>
+                        chat.groupChatroomId === receivedMessage.roomId
+                            ? { ...chat, recentMessage: receivedMessage }
+                            : chat
+                    );
+                });
+            });
+        };
+
+        client.activate();
+        setStompClient(client);
+
+        return () => {
+            if (client.connected) client.deactivate();
+        };
+    }, []);
+
+
 
     // `filteredChats`를 메모이제이션
     const filteredChats = useMemo(() => {
@@ -27,13 +85,25 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
     // 프론트에서 임시로 전체 리스트 스크롤 구현
     const style = {
         conTitle: {
-            fontSize: '0.7em',
-            color: '#666',
+            fontSize: '0.9em',
+            color: 'black',
             width: '70%',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
         },
+        recentMsg: {
+            fontSize: '0.9em',
+            color: '#666',
+            backgroundColor : '#faf9d7',
+            padding: '5px',
+            width: '100%',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+        },
+
         chatListContainer: {
             maxHeight: '550px', // 리스트의 최대 높이를 설정
             overflowY: 'auto', // 수직 스크롤 가능
@@ -44,20 +114,20 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
     }
 
     // 나의 그룹채팅 리스트
-    useEffect(() => {
-        const fetchGroupChats = async () => {
-            try {
-                const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
-                console.log(response.data); // 데이터 출력
-                setGroupChats(response.data); // API에서 받은 데이터로 상태 업데이트
-            } catch (error) {
-                setError(error.message || '네트워크 오류가 발생했습니다.'); // 오류 처리
-            } finally {
-                setLoading(false); // 로딩 상태 종료
-            }
-        };
-        fetchGroupChats();
-    }, []); // 컴포넌트가 처음 마운트될 때만 호출
+    // useEffect(() => {
+    //     const fetchGroupChats = async () => {
+    //         try {
+    //             const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
+    //             console.log(response.data); // 데이터 출력
+    //             setGroupChats(response.data); // API에서 받은 데이터로 상태 업데이트
+    //         } catch (error) {
+    //             setError(error.message || '네트워크 오류가 발생했습니다.'); // 오류 처리
+    //         } finally {
+    //             setLoading(false); // 로딩 상태 종료
+    //         }
+    //     };
+    //     fetchGroupChats();
+    // }, []); // 컴포넌트가 처음 마운트될 때만 호출
 
     // 나의 일대일 채팅 리스트
     useEffect(() => {
@@ -89,15 +159,35 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
                             style={{
                                 padding: '10px',
                                 borderBottom: '1px solid #ddd',
-                                cursor: 'pointer',
+                                cursor: 'pointer'
                             }}
                             onClick={() => onSelectChat(chat)}
                         >
-                            <div style={{fontWeight: 'bold'}}>{chat.roomName}</div>
+                            <div style={{fontWeight: 'bold', color:'black'}}>{chat.roomName}</div>
                             <div style={style.conTitle}>
-                                콘텐츠 : <strong>{chat.contentName}</strong>
+                                [콘텐츠] <strong>{chat.contentName}</strong>
                             </div>
-                            <div style={{fontSize: '0.6em', color: '#aaa'}}>{chat.regDt}</div>
+                            <div>
+                                    {chat.recentMessage ? (
+                                        <div>
+                                            <div style={style.recentMsg}>
+                                                <strong>[New] </strong>{chat.recentMessage.message}<br />
+                                                {chat.recentMessage.regDt}
+                                            </div>
+
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {/* 여기에 다른 표시할 내용이나 기본 메시지를 추가할 수 있습니다 */}
+                                            <div style={style.recentMsg}>
+                                                메시지 없음
+                                            </div>
+                                        </div>
+                                    )}
+                                <div style={{ fontSize: '0.6em', color: '#aaa' }}>{chat.regDt}</div>
+
+                            </div>
+
                         </div>
                     ))}
 

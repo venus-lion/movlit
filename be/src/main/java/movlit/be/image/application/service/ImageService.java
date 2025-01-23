@@ -47,6 +47,7 @@ public class ImageService {
         MemberEntity member = memberRepository.findEntityById(memberId);
         member.updateProfileImgUrl(savedImageEntity.getUrl());
         memberRepository.saveEntity(member);
+
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
     }
 

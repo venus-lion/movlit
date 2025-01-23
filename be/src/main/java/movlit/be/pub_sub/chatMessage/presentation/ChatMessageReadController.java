@@ -7,6 +7,7 @@ import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,12 @@ public class ChatMessageReadController {
         List<ChatMessageDto> response = chatMessageService.fetchChatMessages(roomId);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/recent/{roomId}")
+    public ResponseEntity fetchRecentMessage(@PathVariable String roomId){
+        ChatMessageDto chatMessageRes = chatMessageService.fetchRecentMessage(roomId);
+        return ResponseEntity.ok(chatMessageRes);
     }
 
 }

@@ -1,6 +1,7 @@
 package movlit.be.pub_sub.chatMessage.infra.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
@@ -31,6 +32,12 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
     @Override
     public List<ChatMessage> findUnreadMessages(String roomId, MemberId memberId) {
         return chatMessageMongoRepository.findUnreadMessages(roomId, memberId);
+    }
+
+    public ChatMessage findTopByRoomIdOrderByTimestampDesc(String roomId) {
+        ChatMessage latestMessage = chatMessageMongoRepository.findTopByRoomIdOrderByTimestampDesc(roomId).orElse(null);
+
+        return latestMessage;
     }
 
 }

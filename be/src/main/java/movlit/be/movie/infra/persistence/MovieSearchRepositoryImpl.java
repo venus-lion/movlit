@@ -270,6 +270,9 @@ public class MovieSearchRepositoryImpl implements MovieSearchRepository {
                 .build();
         nativeQuery.setExplain(true);
 
+        log.info("Executing query: {}", query);
+        log.info("Executing nativeQuery: {}", nativeQuery);
+
         SearchHits<MovieDocument> searchHits = elasticsearchOperations.search(nativeQuery, MovieDocument.class);
 
         List<MovieDocument> result = searchHits.stream()
