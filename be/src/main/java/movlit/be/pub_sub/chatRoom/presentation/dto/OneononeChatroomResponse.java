@@ -11,16 +11,16 @@ import movlit.be.common.util.ids.OneononeChatroomId;
 @ToString
 public class OneononeChatroomResponse {
 
-    private OneononeChatroomId oneOnOneChatroomId;
+    private OneononeChatroomId roomId;
     private MemberId receiverId;
     private String receiverNickname;
     private String receiverProfileImgUrl;
 
     // 최근 채팅정보도 필요한지 검토
 
-    public OneononeChatroomResponse(OneononeChatroomId oneOnOneChatroomId, MemberId receiverId,
+    public OneononeChatroomResponse(OneononeChatroomId roomId, MemberId receiverId,
                                     String receiverNickname, String receiverProfileImgUrl) {
-        this.oneOnOneChatroomId = oneOnOneChatroomId;
+        this.roomId = roomId;
         this.receiverId = receiverId;
         this.receiverNickname = receiverNickname;
         this.receiverProfileImgUrl = receiverProfileImgUrl;

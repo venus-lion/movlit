@@ -10,6 +10,6 @@ public interface OneononeChatroomRepository {
 
     OneononeChatroom create(OneononeChatroom oneOnOneChatroom);
 
-    List<OneononeChatroomResponse> fetchMyOneOnOneChatList(MemberId memberId);
+    List<OneononeChatroomResponse> fetchOneOnOneChatList(MemberId memberId);
 
 }

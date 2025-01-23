@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from "react-modal";
 import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js"; // axios 임포트
+
 
 const renderStars = (rating) => {
     // rating 값을 0 ~ 10으로 받을 경우
@@ -21,7 +22,9 @@ const renderStars = (rating) => {
         </>
     );
 };
+
 const GetGroupChatInfoModal = ({isOpen, onClose, onConfirm, onJoin, selectedCard, selectedCategory, onUpdateChatList }) => {
+
     if (!selectedCard) return null;
 
     const [chatroomName, setChatroomName] = useState("");
@@ -75,7 +78,6 @@ const GetGroupChatInfoModal = ({isOpen, onClose, onConfirm, onJoin, selectedCard
             onJoin(existingRoomInfo); // 또는 필요한 정보를 전달
         }
     };
-
 
 
     return (

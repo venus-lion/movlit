@@ -22,15 +22,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
         }
 
     }, [activeTab, searchTerm, personalChats, groupChats]);
-
-    // const chats = activeTab === 'personal' ? personalChats : groupChats;
-    //
-    // // 검색어 필터링
-    // const filteredChats = chats.filter((chat) =>
-    //     chat.roomName && chat.roomName.toLowerCase().includes(searchTerm.toLowerCase()) // undefined 체크
-    // );
-
-
+    
     // 채팅방 리스트 무한 스크롤 구현 전
     // 프론트에서 임시로 전체 리스트 스크롤 구현
     const style = {
@@ -84,7 +76,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
 
     if (loading) return <div>로딩 중...</div>;
     if (error) return <div>오류: {error}</div>;
-    
+
     return (
         <div style={style.chatListContainer}>
             {/* groups일 때 */}
@@ -116,7 +108,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
                 <div>
                     {filteredChats.map((chat) => (
                         <div
-                            key={chat.oneOnOneChatroomId}
+                            key={chat.roomId}
                             style={{
                                 padding: '15px',
                                 marginBottom: '10px',
