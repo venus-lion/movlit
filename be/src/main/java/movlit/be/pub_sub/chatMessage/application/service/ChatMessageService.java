@@ -11,10 +11,10 @@ import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.pub_sub.RedisMessagePublisher;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.ChatMessageRepository;
-import movlit.be.pub_sub.chatMessage.infra.persistence.mongo.ChatMessageMongoRepository;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -65,6 +65,11 @@ public class ChatMessageService {
         return chatMessageRepository.findUnreadMessages(roomId.getValue(), memberId);
     }
 
+    // 채팅 읽음 처리
+    public void updateMessageAsRead(String roomId, MemberId memberId) {
+
+    }
+
     /**
      * ChatMessage MongoDB 저장
      */
@@ -105,20 +110,19 @@ public class ChatMessageService {
      * Redis 큐 활용, 비동기 처리
      */
     // TODO : processQueue, convertToJson, convertFromJson 메서드는 ObjectMapper를 사용할 별개의 클래스를 둬서 관리하기
+    @Async("taskExecutor")
     public void processQueue() {
         // 비동기적으로 Redis 큐에서 메시지 처리
         // 큐에서 하나씩 메시지를 꺼내서 MongoDB에 저장
-        new Thread(() -> {
-            while (true) {
-                String chatMessageJson = redisTemplate.opsForList().leftPop(MESSAGE_QUEUE);
-                if (chatMessageJson != null) {
-                    ChatMessageDto chatMessageDto = convertFromJson(chatMessageJson);
-                    saveMessageToMongoDB(chatMessageDto);
-                } else {
-                    break;
-                }
+        while (true) {
+            String chatMessageJson = redisTemplate.opsForList().leftPop(MESSAGE_QUEUE);
+            if (chatMessageJson != null) {
+                ChatMessageDto chatMessageDto = convertFromJson(chatMessageJson);
+                saveMessageToMongoDB(chatMessageDto);
+            } else {
+                break;
             }
-        }).start();
+        }
     }
 
     // DTO를 JSON으로 변환하는 로직

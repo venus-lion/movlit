@@ -25,24 +25,10 @@ public class RedisMessagePublisher {
      * @param chatMessageDto
      */
     public void sendMessage(ChatMessageDto chatMessageDto) {
-//        // 1:1 메시지
-//        if (chatMessageDto.getMessageType() == MessageType.ONE_ON_ONE) {
-//            log.info("Publishing 1:1 chat message {}", chatMessageDto);
-//            redisTemplate.convertAndSend(sendMessageTopic.getTopic(), chatMessageDto);
-//            return;
-//        }
-//
-//        // 그룹 메시지
-//        if (chatMessageDto.getMessageType() == MessageType.GROUP) {
-//            log.info("Publishing group chat message {}", chatMessageDto);
-//            redisTemplate.convertAndSend(sendMessageTopic.getTopic(), chatMessageDto);
-//            return;
-//        }
 
         log.info("Publishing send message {}", chatMessageDto);
         redisTemplate.convertAndSend(sendMessageTopic.getTopic(), chatMessageDto);
-
-//        throw new ContentTypeNotExistException();
+        
     }
 
     public void updateRoom(UpdateRoomDto updateRoomDto) {

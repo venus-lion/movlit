@@ -70,10 +70,14 @@ public class RedisMessageSubscriber {
 
     public void readMessage(String publishMessage) {
         try {
-            log.info("Received update room message: {}", publishMessage);
+            ChatMessageDto chatMessageDto = objectMapper.readValue(publishMessage, ChatMessageDto.class);
+            log.info("Received message to 'readMessage': {}", publishMessage);
+            messagingTemplate.convertAndSend(
+                    "/topic/chat/readMessage/", publishMessage
+            );
             // 메시지를 필요에 따라 처리
         } catch (Exception e) {
-            log.error("Exception in updateRoom {}", e);
+            log.error("Exception in updateRoom {}");
         }
     }
 

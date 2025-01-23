@@ -22,7 +22,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
         }
 
     }, [activeTab, searchTerm, personalChats, groupChats]);
-    
+
     // 채팅방 리스트 무한 스크롤 구현 전
     // 프론트에서 임시로 전체 리스트 스크롤 구현
     const style = {
@@ -65,6 +65,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
             try {
                 const response = await axiosInstance.get('/chat/oneOnOne');
                 setPersonalChats(response.data); // API에서 받은 데이터로 상태 업데이트
+                console.log(response.data);
             } catch (error) {
                 setError(error.message || '네트워크 오류가 발생했습니다.'); // 오류 처리
             } finally {
