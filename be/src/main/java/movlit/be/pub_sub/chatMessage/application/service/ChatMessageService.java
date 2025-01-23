@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.util.ids.MemberId;
+import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.pub_sub.RedisMessagePublisher;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.ChatMessageRepository;
@@ -27,6 +29,7 @@ public class ChatMessageService {
 
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
 
+    // 일대일 채팅방 sendMessage
     public void sendMessageForOnOnOne(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.ONE_ON_ONE);
 
@@ -39,6 +42,7 @@ public class ChatMessageService {
         messagePublisher.sendMessage(chatMessageDto);
     }
 
+    // 그룹 채팅방 sendMessage
     public void sendMessageForGroup(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.GROUP);
 
@@ -49,6 +53,16 @@ public class ChatMessageService {
         processQueue();
 
         messagePublisher.sendMessage(chatMessageDto);
+    }
+
+    // 해당 채팅방의 읽지 않은 메시지 갯수 return
+    public Long fetchCountUnreadMessages(OneononeChatroomId roomId, MemberId memberId) {
+        return chatMessageRepository.findCountUnreadMessages(roomId.getValue(), memberId);
+    }
+
+    // 해당 채팅방의 읽지 않은 메시지 return
+    public List<ChatMessage> fetchUnreadMessages(OneononeChatroomId roomId, MemberId memberId) {
+        return chatMessageRepository.findUnreadMessages(roomId.getValue(), memberId);
     }
 
     /**
