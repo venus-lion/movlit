@@ -83,4 +83,8 @@ public class MemberReadService {
         return MemberIdResponse.of(memberId);
     }
 
+    public MemberEntity findEntityById(MemberId memberId) {
+        return memberRepository.findEntityById(memberId);
+    }
+
 }
