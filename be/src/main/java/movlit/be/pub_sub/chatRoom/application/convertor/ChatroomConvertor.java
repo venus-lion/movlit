@@ -5,6 +5,7 @@ import java.util.Objects;
 import movlit.be.common.exception.ContentTypeNotExistException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.member.domain.entity.MemberEntity;
+import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
@@ -18,14 +19,14 @@ public class ChatroomConvertor {
         return new MemberRChatroom(IdFactory.createMemberRChatroom(), LocalDateTime.now());
     }
 
-    public static GroupChatroom makeNonReGroupChatroom(GroupChatroomRequest request) {
+    public static GroupChatroom makeNonReGroupChatroom(RequestDataForCreationWorker data) {
         return new GroupChatroom(IdFactory.createGroupChatroomId(),
-                request.getRoomName(),
-                generateContentId(request.getContentType(), request.getContentId()),
+                data.getRoomName(),
+                data.getWorkerContentId(),
                 LocalDateTime.now());
     }
 
-    private static String generateContentId(String contentType, Long contentId) {
+    public static String generateContentId(String contentType, Long contentId) {
         if (Objects.equals(contentType, "movie")) {
             return "MV_" + contentId;
         }

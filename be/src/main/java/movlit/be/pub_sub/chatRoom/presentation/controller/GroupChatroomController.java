@@ -33,7 +33,7 @@ public class GroupChatroomController {
     @PostMapping("/api/chat/create/group")
     public ResponseEntity<GroupChatroomResponse> createGroupChatroom(@RequestBody @Valid GroupChatroomRequest request,
                                                                      @AuthenticationPrincipal MyMemberDetails myMemberDetails) {
-        var response = groupChatroomService.createGroupChatroom(request, myMemberDetails.getMemberId());
+        var response = groupChatroomService.requestCreateGroupChatroom(request, myMemberDetails.getMemberId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

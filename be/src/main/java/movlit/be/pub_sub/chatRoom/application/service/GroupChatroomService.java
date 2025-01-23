@@ -2,6 +2,10 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
@@ -11,6 +15,7 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
+import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.GroupChatRepository;
@@ -22,11 +27,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -36,18 +36,40 @@ public class GroupChatroomService {
     private final MemberReadService memberReadService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
+    private final GroupChatroomCreationWorker worker;
 
     private static final String CHATROOM_MEMBERS_KEY_PREFIX = "chatroom:";
     private static final String CHATROOM_MEMBERS_KEY_SUFFIX = ":members";
+    private static final String GROUP_CHATROOM_QUEUE_KEY_PREFIX = "groupChatroomQueue:";
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
+
+    // 그룹채팅 생성 요청
+    @Transactional
+    public GroupChatroomResponse requestCreateGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
+        String contentId = ChatroomConvertor.generateContentId(
+                request.getContentType(), request.getContentId()); // MV_LongContentId 형태
+        String queueKey = GROUP_CHATROOM_QUEUE_KEY_PREFIX + contentId;
+
+        // Redis Queue에 memberId를 value로 저장 (LPUSH)
+        redisTemplate.opsForList().leftPush(queueKey, memberId.getValue());
+
+        // Worker 스레드에게 작업 요청 및 결과 수신
+        Map<String, String> response = worker.requestChatroomCreation(contentId);
+
+        // Worker 스레드로부터 받은 contentId와 memberId로 채팅방 생성
+        String workerContentId = response.keySet().iterator().next();
+        MemberId workerMemberId = new MemberId(response.get(workerContentId));
+
+        return createGroupChatroom(RequestDataForCreationWorker.from(request.getRoomName(), workerContentId, workerMemberId));
+    }
 
     // 그룹채팅 생성
     @Transactional
-    public GroupChatroomResponse createGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
-        GroupChatroom groupChatroom = ChatroomConvertor.makeNonReGroupChatroom(request);
+    public GroupChatroomResponse createGroupChatroom(RequestDataForCreationWorker data) {
+        GroupChatroom groupChatroom = ChatroomConvertor.makeNonReGroupChatroom(data);
         MemberRChatroom memberRChatroom = ChatroomConvertor.makeNonReMemberRChatroom();
 
-        MemberEntity member = memberReadService.findEntityByMemberId(memberId);
+        MemberEntity member = memberReadService.findEntityByMemberId(data.getWorkerMemberId());
 
         memberRChatroom.updateGroupChatRoom(groupChatroom);
         memberRChatroom.updateMember(member);
@@ -57,29 +79,30 @@ public class GroupChatroomService {
     }
 
     // 그룹채팅 존재 유무 확인
-    public GroupChatroomResponseDto fetchGroupChatroom(GroupChatroomRequest request){
+    public GroupChatroomResponseDto fetchGroupChatroom(GroupChatroomRequest request) {
         String contentType = request.getContentType().trim();
         GroupChatroomResponseDto groupChatroomRes = null;
 
         log.info("::GroupChatroomService_fetchGroupChatroom::");
         log.info(">> contentType : " + contentType);
 
-        if(contentType.equals("movie")){
+        if (contentType.equals("movie")) {
             Long movieId = request.getContentId();
             String roomContentId = "MV_" + movieId;
             log.info(">> contentId : " + roomContentId);
             groupChatroomRes = groupChatRepository.fetchRoomByContentId(roomContentId);
 
-        }else if (contentType.equals("book")){
+        } else if (contentType.equals("book")) {
             Long bookId = request.getContentId();
             String roomContentId = "BK_" + bookId;
             log.info(">> contentId : " + roomContentId);
             groupChatroomRes = groupChatRepository.fetchRoomByContentId(roomContentId);
         }
-        if(groupChatroomRes == null)
+        if (groupChatroomRes == null) {
             log.info(">> 해당 하는 그룹 채팅방이 존재하지 않습니다.");
-        else
+        } else {
             log.info(">> GroupChatRoomRes : " + groupChatroomRes);
+        }
 
         return groupChatroomRes;
     }
@@ -118,7 +141,6 @@ public class GroupChatroomService {
         // 바뀐 정보 업데이트
         return groupChatRepository.create(existingGroupChatroom);
     }
-  
 
     // 내가 가입한 그룹채팅 리스트 가져오기
     public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
@@ -145,7 +167,8 @@ public class GroupChatroomService {
             if (cachedJson != null) {
                 log.info("Cache hit for chatroom: {}", groupChatroomId);
                 // JSON 문자열을 List<GroupChatroomMemberResponse>로 역직렬화
-                response = objectMapper.readValue(cachedJson, new TypeReference<>() {});
+                response = objectMapper.readValue(cachedJson, new TypeReference<>() {
+                });
                 return response;
             }
 
@@ -169,4 +192,5 @@ public class GroupChatroomService {
             return new ArrayList<>();
         }
     }
+
 }

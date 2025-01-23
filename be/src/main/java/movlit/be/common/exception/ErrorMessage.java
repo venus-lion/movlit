@@ -60,7 +60,8 @@ public enum ErrorMessage {
     BOOK_COMMENT_AccessDenied("해당 도서 리뷰 접근 권한이 없습니다.", "b021"),
 
     // group chat
-    GROUPCHATROOM_NOT_FOUND("해당 그룹채팅이 존재하지 않습니다.", "gc01"),
+    GROUPCHATROOM_NOT_FOUND("해당 그룹 채팅이 존재하지 않습니다.", "gc01"),
+    GROUPCHATROOM_ALREADY_EXISTS("해당 컨텐츠의 그룹 채팅이 이미 존재합니다.", "gc02"),
 
     // chat
     CONTENT_TYPE_NOT_EXIST("movie와 book 중 그 어느 타입에도 해당하지 않습니다", "c001"),
