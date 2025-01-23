@@ -10,8 +10,10 @@ import movlit.be.image.application.convertor.ImageConvertor;
 import movlit.be.image.domain.entity.ImageEntity;
 import movlit.be.image.domain.repository.ImageRepository;
 import movlit.be.image.presentation.dto.response.ImageResponse;
-import movlit.be.image.presentation.dto.response.MemberProfileUpdateDto;
+import movlit.be.member.application.converter.MemberConverter;
+import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.Member;
+import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,36 +31,24 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final S3Service s3Service;
     private final MemberRepository memberRepository;
+    private final MemberReadService memberReadService;
 
     @Value("${aws.s3.bucket.folderName}")
     private String folderName;
 
-    public ImageResponse uploadProfileImage(Member member, MultipartFile file) {
-        MemberId memberId = member.getMemberId();
+    public ImageResponse uploadProfileImage(MemberId memberId, MultipartFile file) {
+//        MemberId memberId = member.getMemberId();
         ImageEntity imageEntity = ImageConvertor.toImageEntity(s3Service.uploadImage(file, folderName), memberId);
         validateMemberExistsInImage(memberId);
         ImageEntity savedImageEntity = imageRepository.upload(imageEntity);
-
-        // MemberProfileUpdateDto를 사용하여 프로필 이미지 URL update
-        MemberProfileUpdateDto memberProfileUpdateDto = new MemberProfileUpdateDto();
-        memberProfileUpdateDto.setProfileImgUrl(savedImageEntity.getUrl());
-
-        updateMemberProfile(memberId, memberProfileUpdateDto);
         // 멤버 정보 update
 //        member.setProfileImgUrl(savedImageEntity.getUrl());
 //        memberRepository.save(member);
+        MemberEntity member = memberRepository.findEntityById(memberId);
+        member.updateProfileImgUrl(savedImageEntity.getUrl());
+        memberRepository.saveEntity(member);
 
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
-
-    }
-
-    @Transactional
-    public void updateMemberProfile(MemberId memberId, MemberProfileUpdateDto updateDto){
-        Member member = memberRepository.findById(memberId);
-
-        // DTO의 정보로 MemberEntity update (profileImgURl만 업데이트)
-        member.setProfileImgUrl(updateDto.getProfileImgUrl());
-
     }
 
     private void validateMemberExistsInImage(MemberId memberId) {

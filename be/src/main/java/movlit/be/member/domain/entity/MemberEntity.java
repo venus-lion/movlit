@@ -119,4 +119,8 @@ public class MemberEntity {
         }
     }
 
+    public void updateProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
 }
