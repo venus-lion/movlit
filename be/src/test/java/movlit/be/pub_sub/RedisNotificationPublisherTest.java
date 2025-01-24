@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
+import movlit.be.common.util.IdFactory;
 import movlit.be.pub_sub.notification.NotificationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +29,7 @@ class RedisNotificationPublisherTest {
     @Test
     void publishNotificationTest() {
         // Given
-        NotificationDto notificationDto = new NotificationDto("dsajkdsaljk", "Test Notification");
+        NotificationDto notificationDto = new NotificationDto(IdFactory.createMemberId(), "Test Notification");
         when(notificationTopic.getTopic()).thenReturn("notification");
 
         // When

@@ -1,6 +1,7 @@
 package movlit.be.pub_sub.notification;
 
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.util.ids.MemberId;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,9 @@ public class NotificationController {
 
     private final SseEmitterService sseEmitterService;
 
-    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(@PathVariable String userId) {
-        SseEmitter emitter = sseEmitterService.addEmitter(userId);
+    @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> subscribe(@PathVariable MemberId memberId) {
+        SseEmitter emitter = sseEmitterService.addEmitter(memberId);
         return ResponseEntity.ok(emitter);
     }
 

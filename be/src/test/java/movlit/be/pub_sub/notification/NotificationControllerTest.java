@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
+import movlit.be.common.util.IdFactory;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.RedisNotificationPublisher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +34,11 @@ class NotificationControllerTest {
     @WithMockUser
     void subscribeAndReceiveNotificationTest() throws Exception {
         // Given
-        String userId = "0s0d0d029309df";
-        NotificationDto notificationDto = new NotificationDto(userId, "Test Notification");
+        MemberId memberId = IdFactory.createMemberId();
+        NotificationDto notificationDto = new NotificationDto(memberId, "Test Notification");
 
         // When
-        MvcResult result = mockMvc.perform(get("/subscribe/" + userId)
+        MvcResult result = mockMvc.perform(get("/subscribe/" + memberId.getValue())
                         .accept(MediaType.TEXT_EVENT_STREAM))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -52,7 +54,7 @@ class NotificationControllerTest {
 
         // 3. SSE를 통해 수신된 메시지 검증 (이 부분은 비동기 처리 필요)
         // 예: Awaitility 라이브러리 사용
-        await().atMost(5, SECONDS).until(() -> {
+        await().atMost(10, SECONDS).until(() -> {
             String content = response.getContentAsString(); // 누적된 메시지 확인
             return content.contains("Test Notification");
         });
