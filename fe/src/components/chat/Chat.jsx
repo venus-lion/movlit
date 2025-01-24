@@ -37,7 +37,7 @@ const Chat = () => {
     // 채팅방 리스트 업데이트 함수
     const updateChatList = async () => {
         try {
-            const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
+            const response = await axiosInstance.get('/chat/group/rooms/my');
             setSelectedChat(response.data); // 상태 업데이트
         } catch (error) {
             console.error("채팅 리스트 업데이트 오류:", error);

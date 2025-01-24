@@ -40,13 +40,13 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
         Optional<ChatMessage> messageOpt = chatMessageMongoRepository.findTopByRoomIdOrderByTimestampDesc(
                 roomId);
 
-        if (messageOpt.isPresent()) {
-            ChatMessage chatMessage = messageOpt.get();
-            return new ChatMessageDto(chatMessage.getRoomId(), chatMessage.getSenderId(), chatMessage.getMessage(),
-                    chatMessage.getTimestamp());
+        if (messageOpt.isEmpty()) {
+            return new ChatMessageDto();
         }
 
-        return new ChatMessageDto();
+        ChatMessage chatMessage = messageOpt.get();
+        return new ChatMessageDto(chatMessage.getRoomId(), chatMessage.getSenderId(), chatMessage.getMessage(),
+                chatMessage.getTimestamp());
     }
 
 }

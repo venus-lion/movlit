@@ -79,7 +79,7 @@ public class GroupChatroomController {
 
 
     // 내가 가입한 그룹채팅 리스트 가져오기
-    @GetMapping("/api/chat/group/myGroupChatrooms")
+    @GetMapping("/api/chat/group/rooms/my")
     public ResponseEntity<List<GroupChatroomResponseDto>> fetchMyGroupChats(@AuthenticationPrincipal MyMemberDetails details){
         MemberId memberId = details.getMemberId();
         List<GroupChatroomResponseDto> myGroupChatListRes = groupChatroomService.fetchMyGroupChatList(memberId);

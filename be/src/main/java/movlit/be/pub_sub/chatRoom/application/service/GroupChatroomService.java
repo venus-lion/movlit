@@ -177,6 +177,7 @@ public class GroupChatroomService {
     public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
         return groupChatRepository.fetchGroupChatroomByMemberId(memberId).stream()
                 .peek(chatRoom -> {
+                    // TODO: repository단에서 ChatMessageDto 정보와 join하여 가져오기 -> 이러면 list 돌면서 결합 안 해줘도 됨
                     ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
                             chatRoom.getGroupChatroomId().getValue());
                     if (Objects.nonNull(recentMessage)) {

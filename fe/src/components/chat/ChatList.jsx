@@ -13,7 +13,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
     // 그룹 채팅방 목록 가져오기 함수 (분리됨)
     const fetchGroupChats = async () => {
         try {
-            const response = await axiosInstance.get('/chat/group/myGroupChatrooms');
+            const response = await axiosInstance.get('/chat/group/rooms/my');
             console.log('groupchats : ' + response.data);
             setGroupChats(response.data);
         } catch (error) {
