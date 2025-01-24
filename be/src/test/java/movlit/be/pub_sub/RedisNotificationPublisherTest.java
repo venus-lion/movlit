@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import movlit.be.common.util.IdFactory;
 import movlit.be.pub_sub.notification.NotificationDto;
+import movlit.be.pub_sub.notification.NotificationType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +30,8 @@ class RedisNotificationPublisherTest {
     @Test
     void publishNotificationTest() {
         // Given
-        NotificationDto notificationDto = new NotificationDto(IdFactory.createMemberId(), "Test Notification");
+        NotificationDto notificationDto = new NotificationDto(IdFactory.createMemberId().getValue(),
+                "Test Notification", NotificationType.FOLLOW);
         when(notificationTopic.getTopic()).thenReturn("notification");
 
         // When
@@ -38,4 +40,5 @@ class RedisNotificationPublisherTest {
         // Then
         verify(redisTemplate, times(1)).convertAndSend("notification", notificationDto);
     }
+
 }

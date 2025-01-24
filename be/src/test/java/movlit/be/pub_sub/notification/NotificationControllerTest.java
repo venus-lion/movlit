@@ -35,7 +35,8 @@ class NotificationControllerTest {
     void subscribeAndReceiveNotificationTest() throws Exception {
         // Given
         MemberId memberId = IdFactory.createMemberId();
-        NotificationDto notificationDto = new NotificationDto(memberId, "Test Notification");
+        NotificationDto notificationDto = new NotificationDto(memberId.getValue(), "Test Notification",
+                NotificationType.FOLLOW);
 
         // When
         MvcResult result = mockMvc.perform(get("/subscribe/" + memberId.getValue())

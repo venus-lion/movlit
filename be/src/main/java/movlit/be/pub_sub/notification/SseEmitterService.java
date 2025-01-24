@@ -12,26 +12,26 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 public class SseEmitterService {
 
-    private final Map<MemberId, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public SseEmitter addEmitter(MemberId memberId) {
+    public SseEmitter addEmitter(String id) {
         SseEmitter emitter = new SseEmitter(); // 타임아웃 설정 가능
-        this.emitters.put(memberId, emitter);
+        this.emitters.put(id, emitter);
 
-        emitter.onCompletion(() -> this.emitters.remove(memberId));
-        emitter.onTimeout(() -> this.emitters.remove(memberId));
+        emitter.onCompletion(() -> this.emitters.remove(id));
+        emitter.onTimeout(() -> this.emitters.remove(id));
 
         return emitter;
     }
 
-    public void sendNotificationToUser(MemberId memberId, NotificationDto notification) {
-        SseEmitter emitter = this.emitters.get(memberId);
+    public void sendNotificationToUser(String id, NotificationDto notification) {
+        SseEmitter emitter = this.emitters.get(id);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(notification));
             } catch (IOException e) {
-                this.emitters.remove(memberId);
-                log.error("Error sending notification to user {}", memberId, e);
+                this.emitters.remove(id);
+                log.error("Error sending notification to user {}", id, e);
             }
         }
     }

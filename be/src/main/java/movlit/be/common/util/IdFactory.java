@@ -17,6 +17,7 @@ import movlit.be.common.util.ids.MovieCommentLikeId;
 import movlit.be.common.util.ids.MovieCrewId;
 import movlit.be.common.util.ids.MovieHeartCountId;
 import movlit.be.common.util.ids.MovieHeartId;
+import movlit.be.common.util.ids.NotificationId;
 import movlit.be.common.util.ids.OneononeChatroomId;
 
 public class IdFactory {
@@ -135,6 +136,14 @@ public class IdFactory {
 
     public static MemberROneOnOneChatroomId createMemberROneOnOneChatroomId() {
         return createId(MemberROneOnOneChatroomId.class);
+    }
+
+    public static NotificationId createNotificationId(String id) {
+        return createId(NotificationId.class, id);
+    }
+
+    public static NotificationId createNotificationId() {
+        return createId(NotificationId.class);
     }
 
     private static <T extends BaseId> T createId(Class<T> idClass, String id) {

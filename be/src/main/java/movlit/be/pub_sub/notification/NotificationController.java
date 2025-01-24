@@ -15,9 +15,9 @@ public class NotificationController {
 
     private final SseEmitterService sseEmitterService;
 
-    @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(@PathVariable MemberId memberId) {
-        SseEmitter emitter = sseEmitterService.addEmitter(memberId);
+    @GetMapping(value = "/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> subscribe(@PathVariable String id) {
+        SseEmitter emitter = sseEmitterService.addEmitter(id);
         return ResponseEntity.ok(emitter);
     }
 
