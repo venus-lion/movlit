@@ -3,9 +3,11 @@ package movlit.be.pub_sub.chatMessage.infra.persistence;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.mongo.ChatMessageMongoRepository;
+import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -34,10 +36,17 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
         return chatMessageMongoRepository.findUnreadMessages(roomId, memberId);
     }
 
-    public ChatMessage findTopByRoomIdOrderByTimestampDesc(String roomId) {
-        ChatMessage latestMessage = chatMessageMongoRepository.findTopByRoomIdOrderByTimestampDesc(roomId).orElse(null);
+    public ChatMessageDto findTopByRoomIdOrderByTimestampDesc(String roomId) {
+        Optional<ChatMessage> messageOpt = chatMessageMongoRepository.findTopByRoomIdOrderByTimestampDesc(
+                roomId);
 
-        return latestMessage;
+        if (messageOpt.isEmpty()) {
+            return new ChatMessageDto();
+        }
+
+        ChatMessage chatMessage = messageOpt.get();
+        return new ChatMessageDto(chatMessage.getRoomId(), chatMessage.getSenderId(), chatMessage.getMessage(),
+                chatMessage.getTimestamp());
     }
 
 }

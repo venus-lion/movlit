@@ -39,7 +39,7 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
     }
 
     @Override
-    public List<GroupChatroomResponseDto> findAllByMemberId(MemberId memberId) {
+    public List<GroupChatroomResponseDto> fetchGroupChatroomByMemberId(MemberId memberId) {
         List<GroupChatroomResponseDto> myGroupChatList = groupChatroomJpaRepository.findAllByMemberId(memberId)
                 .orElseThrow(ChatroomNotFoundException::new);
 
