@@ -27,26 +27,12 @@ public class ChatMessageService {
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
 
-
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
 
     // 가장 최근 채팅 메시지 가져오기 (채팅 리스트에서 화면 표시)
-    public ChatMessageDto fetchRecentMessage(String roomId){
-        ChatMessage recentMsg = chatMessageRepository.findTopByRoomIdOrderByTimestampDesc(roomId);
-        ChatMessageDto recentMessageRes;
-
-        if(recentMsg != null){
-            recentMessageRes = new ChatMessageDto(recentMsg.getRoomId(), recentMsg.getSenderId(), recentMsg.getMessage(), recentMsg.getTimestamp());
-        }else{
-            recentMessageRes = null;
-        }
-        log.info("::ChatMessageService_fetchRecentMessage::");
-        log.info(">> roomId : " + roomId);
-        log.info(">> recentMessage : " + recentMessageRes);
-
-        return recentMessageRes;
+    public ChatMessageDto fetchRecentMessage(String roomId) {
+        return chatMessageRepository.findTopByRoomIdOrderByTimestampDesc(roomId);
     }
-
 
     // 일대일 채팅방 sendMessage
     public void sendMessageForOnOnOne(ChatMessageDto chatMessageDto) {

@@ -1,12 +1,14 @@
 package movlit.be.pub_sub.chatRoom.application.service;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
@@ -18,7 +20,6 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
-import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
@@ -174,28 +175,15 @@ public class GroupChatroomService {
 
     // 내가 가입한 그룹채팅 리스트 가져오기
     public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
-        if (memberId != null) {
-
-            // 내가 가입한 그룹 채팅 리스트
-            List<GroupChatroomResponseDto> myGroupChatList = groupChatRepository.findAllByMemberId(memberId);
-
-
-            // 해당 그룹 채팅의 최신 메시지 불러오기
-            for (GroupChatroomResponseDto chatRoom : myGroupChatList) {
-                ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
-                        chatRoom.getGroupChatroomId().getValue());
-                if(recentMessage != null){
-                    chatRoom.setRecentMessage(recentMessage);
-                }
-            }
-
-            log.info("::GroupChatroomService_fetchMyGroupChatList::");
-            log.info(">> myGroupchatList : " + myGroupChatList);
-
-            return myGroupChatList;
-        } else {
-            throw new ChatroomNotFoundException();
-        }
+        return groupChatRepository.fetchGroupChatroomByMemberId(memberId).stream()
+                .peek(chatRoom -> {
+                    ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
+                            chatRoom.getGroupChatroomId().getValue());
+                    if (Objects.nonNull(recentMessage)) {
+                        chatRoom.setRecentMessage(recentMessage);
+                    }
+                })
+                .toList();
     }
 
     public List<GroupChatroomMemberResponse> fetchMembersInGroupChatroom(GroupChatroomId groupChatroomId) {
