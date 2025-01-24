@@ -91,6 +91,8 @@ dependencies {
 
     // websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 ext {

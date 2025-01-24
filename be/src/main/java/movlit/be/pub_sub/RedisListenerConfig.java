@@ -10,10 +10,19 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
 @RequiredArgsConstructor
-public class RedisListnerConfing {
+public class RedisListenerConfig { // 클래스명 변경
 
     private final RedisMessageSubscriber subscriber;
-    
+    private final RedisNotificationSubscriber notificationSubscriber; // 변경된 부분
+
+    /**
+     * Topic 사용을 위한 Bean 설정
+     */
+    @Bean
+    public ChannelTopic notificationTopic() { // 알림 토픽
+        return new ChannelTopic("notification");
+    }
+
     /**
      * Topic 사용을 위한 Bean 설정
      */
@@ -51,6 +60,12 @@ public class RedisListnerConfing {
         return new MessageListenerAdapter(subscriber, "readMessage");
     }
 
+    /** 알림 메시지를 처리하는 subscriber 설정 추가*/
+    @Bean
+    public MessageListenerAdapter listenerAdapterNotification(RedisNotificationSubscriber notificationSubscriber) {
+        return new MessageListenerAdapter(notificationSubscriber, "onNotification"); // 메서드명 변경
+    }
+
     /**
      * redis 에 발행(publish)된 메시지 처리를 위한 리스너 설정
      */
@@ -60,9 +75,11 @@ public class RedisListnerConfing {
             MessageListenerAdapter listenerAdapterSendMessage,
             MessageListenerAdapter listenerAdapterUpdateRoom,
             MessageListenerAdapter listenerAdapterReadMessage,
+            MessageListenerAdapter listenerAdapterNotification,
             ChannelTopic sendMessageTopic,
             ChannelTopic updateRoomTopic,
-            ChannelTopic readMessageTopic
+            ChannelTopic readMessageTopic,
+            ChannelTopic notificationTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
@@ -70,6 +87,7 @@ public class RedisListnerConfing {
         container.addMessageListener(listenerAdapterSendMessage, sendMessageTopic);
         container.addMessageListener(listenerAdapterUpdateRoom, updateRoomTopic);
         container.addMessageListener(listenerAdapterReadMessage, readMessageTopic);
+        container.addMessageListener(listenerAdapterNotification, notificationTopic);
         return container;
     }
 
