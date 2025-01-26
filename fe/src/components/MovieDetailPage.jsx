@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useRef, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import {
     FaComment,
@@ -10,17 +10,19 @@ import {
     FaRegStar,
     FaStarHalfAlt,
 } from 'react-icons/fa';
-import { toast, ToastContainer } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MovieCarousel from '../pages/MovieCarousel';
 import useAuthMovieList from '../hooks/useAuthMovieList';
 import useBookList from '../hooks/useBookList';
 import BookGenreCarousel from '../pages/BookGenreCarousel';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import {CircularProgressbar, buildStyles} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import GetGroupChatInfoModal from "./chat/GetGroupChatInfoModal.jsx";
+import CreateGroupChatNameModal from "./chat/CreateGroupChatNameModal.jsx";
 
 function MovieDetailPage() {
-    const { movieId } = useParams();
+    const {movieId} = useParams();
     const [movieData, setMovieData] = useState(null);
     const [myRating, setMyRating] = useState(0); // 0~10 사이의 값 (0.5 단위)
     const [hoverRating, setHoverRating] = useState(0); // 마우스 호버 시 별점 상태
@@ -41,6 +43,12 @@ function MovieDetailPage() {
     const [userComment, setUserComment] = useState(null);
     const [userCommentId, setUserCommentId] = useState(null);
     const loader = useRef(null);
+    // const [existingRoomInfo, setExistingRoomInfo] = useState(null);
+    const [isGetGroupChatInfoModalOpen, setIsGetGroupChatInfoModalOpen] = useState(false); // 채팅방 존재여무 모달 열림 상태
+    const [isCreateGroupChatNameModalOpen, setIsCreateGroupChatNameModalOpen] = useState(false); // 모달2 열림 상태
+    const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
 
     const initialVisibleCrews = 14;
 
@@ -51,7 +59,7 @@ function MovieDetailPage() {
         error: relatedMoviesError,
     } = useAuthMovieList({
         endpoint: `/movies/${movieId}/detail/related`,
-        params: { pageSize: 30 },
+        params: {pageSize: 30},
     });
     const [relatedMoviesStartIndex, setRelatedMoviesStartIndex] = useState(0);
 
@@ -76,7 +84,7 @@ function MovieDetailPage() {
         error: relatedBooksError,
     } = useBookList({
         endpoint: `/books/genres/movies/${movieId}/detail`,
-        params: { limit: 30 },
+        params: {limit: 30},
     });
     const [relatedBooksStartIndex, setRelatedBooksStartIndex] = useState(0);
 
@@ -175,7 +183,7 @@ function MovieDetailPage() {
         try {
             const response = await axiosInstance.get(`/movies/${movieId}/myComment`);
             if (response.data) {
-                const { movieCommentId, comment, score, nickname, profileImgUrl } =
+                const {movieCommentId, comment, score, nickname, profileImgUrl} =
                     response.data;
                 setUserComment({
                     nickname,
@@ -441,11 +449,11 @@ function MovieDetailPage() {
         return (
             <>
                 {[...Array(fullStars)].map((_, index) => (
-                    <FaStar key={`full-${index}`} style={styles.starFilled} />
+                    <FaStar key={`full-${index}`} style={styles.starFilled}/>
                 ))}
-                {halfStar && <FaStarHalfAlt style={styles.starFilled} />}
+                {halfStar && <FaStarHalfAlt style={styles.starFilled}/>}
                 {[...Array(emptyStars)].map((_, index) => (
-                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty} />
+                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty}/>
                 ))}
             </>
         );
@@ -466,6 +474,101 @@ function MovieDetailPage() {
     }
     const uniqueGenreList = Array.from(uniqueGenres);
 
+    const handleJoinGroupChatroom = (movieId) => {
+        try {
+            // const requestBody = {
+            //     roomName: "",
+            //     contentType: "movie",
+            //     contentId: movieId
+            // };
+            //
+            // // POST 요청
+            // const response = axiosInstance.post('/chat/group', requestBody);
+            //
+            // // 응답 값이 null인 경우 처리
+            // if (!response.data) {
+            //     console.log('Received response: 채팅방이 존재하지 않습니다.');
+            //
+            //     const selectedCard = {
+            //         movieId: movieId,
+            //         posterPath: movieData.posterUrl,
+            //         title: movieData.title,
+            //         voteAverage: movieData.voteAverage,
+            //         crew: visibleCrews.map(crew => crew.name),
+            //         movieGenre: genres.map(genre => ({
+            //             ...genre,
+            //             genreName: genre.name // 새로운 속성 추가
+            //         })),
+            //     };
+            //     console.log(selectedCard);
+            //     handleOpenGroupChatNameModal(selectedCard, "movie");
+            // } else {
+            //     console.log('Received response:', response.data);
+            //     alert("해당 채팅방이 이미 존재합니다. 참여하시겠습니까?");
+            //     return;
+            // }
+            const selectedCard = {
+                movieId: movieId,
+                posterPath: movieData.posterUrl,
+                title: movieData.title,
+                voteAverage: movieData.voteAverage,
+                crew: visibleCrews.map(crew => crew.name),
+                movieGenre: genres.map(genre => ({
+                    ...genre,
+                    genreName: genre.name // 새로운 속성 추가
+                })),
+            };
+            console.log(selectedCard);
+            handleOpenGroupChatInfoModal(selectedCard, "movie");
+
+        } catch (err) {
+            console.error('Error fetching room info:', err);
+        }
+    }
+
+    const handleJoinRoom = async (existingRoomInfo) => {
+        // existingRoomInfo가 null이 아닌지 확인
+        if (!existingRoomInfo || !existingRoomInfo.groupChatroomId) {
+            alert("채팅방 정보가 유효하지 않습니다.");
+            return;
+        }
+
+        const groupChatroomId = existingRoomInfo.groupChatroomId; // 채팅방 ID 추출
+        try {
+            const response = await axiosInstance.post(`/chat/group/${groupChatroomId}`);
+            console.log("채팅방 가입 성공:", response.data);
+            alert("채팅방 가입에 성공하였습니다.");
+            setRefreshKey(prevKey => prevKey + 1); // 키를 업데이트하여 ChatList를 다시 렌더링함
+            handleCloseGroupChatInfoModal(); // 현재 두번째 모달창 닫기
+        } catch (error) {
+            console.error("채팅방 가입 실패:", error);
+            alert("채팅방 가입에 실패했습니다.");
+        }
+    };
+
+    const handleOpenGroupChatInfoModal = (card, category) => {
+        setSelectedCard(card);
+        setSelectedCategory(category);
+        setIsGetGroupChatInfoModalOpen(true); // 두 번째 모달 열기
+    };
+    const handleCloseGroupChatInfoModal = () => {
+        setIsGetGroupChatInfoModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
+
+    const handleOpenGroupChatNameModal = (card, category) => {
+        setSelectedCard(card); // 선택된 카드 데이터 저장
+        setSelectedCategory(category); // 선택된 카테고리 저장
+        setIsCreateGroupChatNameModalOpen(true); // 모달 열기
+    };
+    
+    const handleCloseGroupChatNameModal = () => {
+        setIsCreateGroupChatNameModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
+
     return (
         <div style={styles.container}>
             <div
@@ -477,7 +580,7 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
-                <ToastContainer />
+                <ToastContainer/>
                 <div style={styles.breadcrumbs}>
                     홈 / 영화 / {movieData.title}
                 </div>
@@ -499,7 +602,18 @@ function MovieDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={movieData.posterUrl} alt={movieData.title} />
+                    <img src={movieData.posterUrl} alt={movieData.title}/>
+                    <button
+                        id="groupChatButton"
+                        style={{
+                            ...styles.button,
+                            backgroundColor: '#FF3366',
+                            marginTop: '20px', // 이미지와 버튼 사이 간격 조절
+                        }}
+                        onClick={() => handleJoinGroupChatroom(movieId)}
+                    >
+                        그룹채팅 입장
+                    </button>
                 </div>
 
                 <div style={styles.info}>
@@ -515,7 +629,7 @@ function MovieDetailPage() {
                                         <span
                                             key={index}
                                             onClick={(e) => handleRatingClick(starIndex * 2, e)}
-                                            style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
+                                            style={{cursor: 'pointer', position: 'relative', display: 'inline-block'}}
                                             onMouseMove={(e) => {
                                                 const rect = e.currentTarget.getBoundingClientRect();
                                                 const x = e.clientX - rect.left;
@@ -534,11 +648,11 @@ function MovieDetailPage() {
                                         >
                                             {/* 클릭된 별점이 없으면 마우스 호버 상태에 따라 별을 표시하고, 클릭된 별점이 있으면 클릭된 별점을 기준으로 별을 표시 */}
                                             {starIndex * 2 <= rating ? (
-                                                <FaStar style={styles.starFilled} />
+                                                <FaStar style={styles.starFilled}/>
                                             ) : starIndex * 2 === rating + 1 ? (
-                                                <FaStarHalfAlt style={styles.starFilled} />
+                                                <FaStarHalfAlt style={styles.starFilled}/>
                                             ) : (
-                                                <FaRegStar style={styles.starEmpty} />
+                                                <FaRegStar style={styles.starEmpty}/>
                                             )}
                                         </span>
                                     );
@@ -602,7 +716,7 @@ function MovieDetailPage() {
                                 <span style={styles.userNickname}>{userComment.nickname}</span>
                             </div>
                             <div style={styles.userCommentContent}>
-                                <FaComment style={styles.commentIcon} />
+                                <FaComment style={styles.commentIcon}/>
                                 <p style={styles.userCommentText}>{userComment.comment}</p>
                             </div>
                         </div>
@@ -642,7 +756,7 @@ function MovieDetailPage() {
                         </div>
                     )}
 
-                    <div style={{ marginTop: '20px' }} />
+                    <div style={{marginTop: '20px'}}/>
 
                     <div style={styles.details}>
                         <div style={styles.section}>
@@ -837,6 +951,24 @@ function MovieDetailPage() {
                         </div>
                     </div>
                 </div>
+
+                <GetGroupChatInfoModal
+                    isOpen={isGetGroupChatInfoModalOpen}
+                    onClose={handleCloseGroupChatInfoModal}
+                    selectedCard={selectedCard} // 선택된 데이터 전달
+                    selectedCategory={selectedCategory} // 선택된 카테고리 전달
+                    onConfirm={(card, category) => handleOpenGroupChatNameModal(card, category)} // 선택된 데이터 전달
+                    onJoin={handleJoinRoom} // "가입하기" 버튼의 핸들러 추가
+                />
+                <CreateGroupChatNameModal
+                    isOpen={isCreateGroupChatNameModalOpen}
+                    onClose={handleCloseGroupChatNameModal}
+                    selectedCard={selectedCard} // 선택된 데이터 전달
+                    selectedCategory={selectedCategory} // 선택된 카테고리 전달
+                    onUpdateChatList={() => {
+                        setRefreshKey(prevKey => prevKey + 1); // 채팅방 리스트 새로고침 키 업데이트
+                    }}
+                />
             </div>
         </div>
     );
@@ -876,6 +1008,10 @@ const styles = {
         width: '200px',
         marginRight: '30px',
         flexShrink: 0,
+
+        display: 'flex',             // Flexbox 사용 설정
+        flexDirection: 'column',     // 자식 요소들을 세로 방향으로 배치
+        alignItems: 'center',        // 자식 요소들을 가로 방향으로 중앙 정렬
     },
     info: {
         flex: 1,

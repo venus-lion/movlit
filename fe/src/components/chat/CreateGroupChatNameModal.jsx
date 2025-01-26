@@ -20,7 +20,7 @@ const renderStars = (rating) => {
     );
 };
 
-const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCategory, onUpdateChatList }) => {
+const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCategory, onUpdateChatList}) => {
     if (!selectedCard) return null;
 
     const [chatroomName, setChatroomName] = useState("");
@@ -29,7 +29,7 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         setChatroomName(event.target.value);
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if (!chatroomName.trim()) {
             alert("채팅방 제목은 필수입니다.");
             return;
@@ -43,8 +43,9 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         };
 
         try {
-            const response = await axiosInstance.post("/chat/create/group", requestData);
+            const response = axiosInstance.post("/chat/create/group", requestData);
             console.log("채팅방 생성 성공:", response.data);
+            alert("채팅방을 생성했습니다!");
             onUpdateChatList();
             onClose();
         } catch (error) {

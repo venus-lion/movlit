@@ -108,7 +108,8 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
             alert("카테고리를 선택해주세요.");
             return;
         }
-
+        console.dir("selectedCard : " + JSON.stringify(selectedCard, null, 5));
+        console.log("selectedCategory : " + selectedCategory);
         onConfirm(selectedCard, selectedCategory); // 선택된 데이터를 부모로 전달
     };
 

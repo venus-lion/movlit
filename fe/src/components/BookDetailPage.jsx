@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState, useRef} from 'react';
+import {useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import {
     FaComment,
@@ -14,9 +14,10 @@ import useBookList from "../hooks/useBookList.jsx";
 import BookCarousel from "../pages/BookCarousel.jsx";
 import axios from "axios";
 import BookCarouselRecommend from "../pages/BookCarouselRecommend.jsx";
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import {CircularProgressbar, buildStyles} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import MovieCarousel from "../pages/MovieCarousel.jsx";
+import CreateGroupChatNameModal from "./chat/CreateGroupChatNameModal.jsx";
 
 function BookDetailPage() {
     const {bookId} = useParams();
@@ -32,7 +33,7 @@ function BookDetailPage() {
     const [genres, setGenres] = useState([]);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [comment, setComment] = useState('');
-    const [comments, setComments] = useState([]);    
+    const [comments, setComments] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [showLessComments, setShowLessComments] = useState(false);
     const [totalComments, setTotalComments] = useState(0);
@@ -52,7 +53,10 @@ function BookDetailPage() {
     const [mStartIndex, setMStartIndex] = useState(0); // 화면에 보이는 영화 시작 인덱스
     const [mStartIndexRecommended, setMStartIndexRecommended] = useState(0);
 
-
+    const [isCreateGroupChatNameModalOpen, setIsCreateGroupChatNameModalOpen] = useState(false); // 모달2 열림 상태
+    const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
 
     useEffect(() => {
         axiosInstance
@@ -70,14 +74,13 @@ function BookDetailPage() {
                     categoryName: data.category_name,
                     stockStatus: data.stock_status,
                     mallUrl: data.mall_url,
-                    averageScore : data.average_score,
-                    isHearted : data.is_hearted,
+                    averageScore: data.average_score,
+                    isHearted: data.is_hearted,
                     heartCount: data.heart_count
                 });
                 setCrews(data.book_crew)
             })
             .catch((error) => console.error('Error fetching book data:', error));
-
 
 
         fetchUserComment();
@@ -107,14 +110,14 @@ function BookDetailPage() {
         const fetchBooks = async () => {
             try {
                 const response = await axiosInstance.get(`/books/${bookId}/recommendedBooks`);
-                 // const response = await axios.get('/api/books/popular', {
-                 //     params: {limit : 30},
-                 // });
+                // const response = await axios.get('/api/books/popular', {
+                //     params: {limit : 30},
+                // });
 
                 //const response = await axiosInstance.get(`/api/books/popular`);
-                console.log('#### 추천책 response 값 :'+ response.data);
+                console.log('#### 추천책 response 값 :' + response.data);
                 setRecommendedBooks(response.data);
-            } catch (err){
+            } catch (err) {
                 console.error(`Error fetching books : `, err);
             }
         }
@@ -132,9 +135,9 @@ function BookDetailPage() {
                 // });
 
                 //const response = await axiosInstance.get(`/api/books/popular`);
-                console.log('#### 추천영화 response 값 :'+ response.data);
+                console.log('#### 추천영화 response 값 :' + response.data);
                 setRecommendedMovies(response.data);
-            } catch (err){
+            } catch (err) {
                 console.error(`Error fetching books : `, err);
             }
         }
@@ -180,7 +183,7 @@ function BookDetailPage() {
         try {
             const response = await axiosInstance.get(`/books/${bookId}/myComment`);
             if (response.data) {
-                const { bookCommentId, comment, score, nickname, profileImgUrl, regDt, updDt } =
+                const {bookCommentId, comment, score, nickname, profileImgUrl, regDt, updDt} =
                     response.data;
                 setUserComment({
                     nickname,
@@ -294,7 +297,7 @@ function BookDetailPage() {
                     heartCount: updatedHeartCount,
                     isHearted: false,
                 }));
-                console.log('찜하기 완료' + updatedHeartCount) ;
+                console.log('찜하기 완료' + updatedHeartCount);
             } else {
                 // 찜하기 (POST 요청)
                 const bookIdJson = JSON.stringify(bookId);
@@ -305,7 +308,7 @@ function BookDetailPage() {
                     heartCount: updatedHeartCount,
                     isHearted: true,
                 }));
-                console.log('찜하기 완료' + updatedHeartCount) ;
+                console.log('찜하기 완료' + updatedHeartCount);
             }
 
             // 찜 상태에 따라 버튼 및 카운트 업데이트
@@ -319,7 +322,7 @@ function BookDetailPage() {
             }
 
             // if (heartCountSpan) {
-                heartCountSpan.textContent = updatedHeartCount;
+            heartCountSpan.textContent = updatedHeartCount;
             // }
         } catch (error) {
             console.error('Error updating wish status:', error);
@@ -396,7 +399,6 @@ function BookDetailPage() {
     };
 
 
-
     // 코멘트 더보기 처리
     const handleLoadMore = () => {
         setIsInitialLoad(false);
@@ -444,11 +446,11 @@ function BookDetailPage() {
         return (
             <>
                 {[...Array(fullStars)].map((_, index) => (
-                    <FaStar key={`full-${index}`} style={styles.starFilled} />
+                    <FaStar key={`full-${index}`} style={styles.starFilled}/>
                 ))}
-                {halfStar && <FaStarHalfAlt style={styles.starFilled} />}
+                {halfStar && <FaStarHalfAlt style={styles.starFilled}/>}
                 {[...Array(emptyStars)].map((_, index) => (
-                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty} />
+                    <FaRegStar key={`empty-${index}`} style={styles.starEmpty}/>
                 ))}
             </>
         );
@@ -466,6 +468,53 @@ function BookDetailPage() {
         return <div style={styles.loading}>Loading...</div>;
     }
 
+    const handleJoinGroupChatroom = (movieId) => {
+        try {
+            const requestBody = {
+                roomName: "",
+                contentType: "movie",
+                contentId: movieId
+            };
+
+            // POST 요청
+            const response = axiosInstance.post('/chat/group', requestBody);
+
+            // 응답 값이 null인 경우 처리
+            if (!response.data) {
+                console.log('Received response: 채팅방이 존재하지 않습니다.');
+
+                const selectedCard = {
+                    bookId: bookId,
+                    bookImgUrl: bookData.bookImgUrl,
+                    title: bookData.title,
+                    crew: crews.map(crew => crew.name),
+                };
+                console.log(selectedCard);
+                handleOpenGroupChatNameModal(selectedCard, "book");
+            } else {
+                console.log('Received response:', response.data);
+                alert("해당 채팅방이 이미 존재합니다. 참여하시겠습니까?");
+                return;
+            }
+
+        } catch (err) {
+            console.error('Error fetching room info:', err);
+        }
+    }
+
+    const handleOpenGroupChatNameModal = (card, category) => {
+        setSelectedCard(card); // 선택된 카드 데이터 저장
+        setSelectedCategory(category); // 선택된 카테고리 저장
+        setIsCreateGroupChatNameModalOpen(true); // 모달 열기
+    };
+
+
+    const handleCloseGroupChatNameModal = () => {
+        setIsCreateGroupChatNameModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
+
     return (
         <div style={styles.container}>
             <div
@@ -481,9 +530,9 @@ function BookDetailPage() {
                 <div style={styles.title}>{bookData.title}</div>
                 <div style={styles.subtitle}>
                     {bookData.pubDate ? bookData.pubDate.substring(0, 10).replaceAll('-', ' ・ ') : ''}
-                    <br /><br />
+                    <br/><br/>
                     {bookData.categoryName}
-                    <br /><br />
+                    <br/><br/>
                     {/* 장르 목록 출력 */}
                     {/*{genres.map((genre, index) => (*/}
                     {/*    <span key={index}>{genre.name}*/}
@@ -499,14 +548,14 @@ function BookDetailPage() {
 
             <div style={styles.mainContent}>
                 <div style={styles.poster}>
-                    <img src={bookData.bookImgUrl} alt={bookData.title} style={styles.image} />
-                    <br />
+                    <img src={bookData.bookImgUrl} alt={bookData.title} style={styles.image}/>
+                    <br/>
                     <div>
                         <br/>
-                        <p style={{ lineHeight: '1.8', margin: '0'}}>재고 상태 </p>
-                        <p style={{ lineHeight: '1.8', margin: '0'}}><strong>{bookData.stockStatus}</strong></p>
+                        <p style={{lineHeight: '1.8', margin: '0'}}>재고 상태 </p>
+                        <p style={{lineHeight: '1.8', margin: '0'}}><strong>{bookData.stockStatus}</strong></p>
                         <br/>
-                        <a href={bookData.mallUrl} target="_blank" rel="noopener noreferrer" >
+                        <a href={bookData.mallUrl} target="_blank" rel="noopener noreferrer">
                             <button>구매하기</button>
                         </a>
 
@@ -526,7 +575,7 @@ function BookDetailPage() {
                                         <span
                                             key={index}
                                             onClick={(e) => handleRatingClick(starIndex * 2, e)}
-                                            style={{ cursor: 'pointer', position: 'relative', display: 'inline-block' }}
+                                            style={{cursor: 'pointer', position: 'relative', display: 'inline-block'}}
                                             onMouseMove={(e) => {
                                                 const rect = e.currentTarget.getBoundingClientRect();
                                                 const x = e.clientX - rect.left;
@@ -537,7 +586,7 @@ function BookDetailPage() {
                                                     setHoverRating(starIndex * 2 - 1);
                                                 } else {
                                                     setHoverRating(starIndex * 2);
-                                            }
+                                                }
                                             }}
                                             onMouseLeave={() => {
                                                 setHoverRating(0);
@@ -545,11 +594,11 @@ function BookDetailPage() {
                                         >
                                             {/* 클릭된 별점이 없으면 마우스 호버 상태에 따라 별을 표시하고, 클릭된 별점이 있으면 클릭된 별점을 기준으로 별을 표시 */}
                                             {starIndex * 2 <= rating ? (
-                                                <FaStar style={styles.starFilled} />
+                                                <FaStar style={styles.starFilled}/>
                                             ) : starIndex * 2 === rating + 1 ? (
-                                                <FaStarHalfAlt style={styles.starFilled} />
+                                                <FaStarHalfAlt style={styles.starFilled}/>
                                             ) : (
-                                                <FaRegStar style={styles.starEmpty} />
+                                                <FaRegStar style={styles.starEmpty}/>
                                             )}
                     </span>
                                     );
@@ -565,7 +614,7 @@ function BookDetailPage() {
                                 {/* Circular Progress Bar 추가 */}
                                 <div style={styles.progressBarContainer}>
                                     <CircularProgressbar
-                                        value={bookData.averageScore * 10}s
+                                        value={bookData.averageScore * 10} s
                                         maxValue={100}
                                         text={`${Math.round(bookData.averageScore * 10) / 10}`}
                                         styles={buildStyles({
@@ -608,12 +657,12 @@ function BookDetailPage() {
                                         style={styles.profileImage}
                                     />
                                 ) : (
-                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                    <FaUserCircle style={styles.defaultProfileIcon}/>
                                 )}
                                 <span style={styles.userNickname}>{userComment.nickname}</span>
                             </div>
                             <div style={styles.userCommentContent}>
-                                <FaComment style={styles.commentIcon} />
+                                <FaComment style={styles.commentIcon}/>
                                 <p style={styles.userCommentText}>{userComment.comment}</p>
                             </div>
                             <div>
@@ -714,7 +763,7 @@ function BookDetailPage() {
                                                         style={styles.commentProfileImage}
                                                     />
                                                 ) : (
-                                                    <FaUserCircle style={styles.defaultProfileIcon} />
+                                                    <FaUserCircle style={styles.defaultProfileIcon}/>
                                                 )}
                                                 <span style={styles.commentUser}>{comment.nickname}</span>
                                             </div>
@@ -745,23 +794,25 @@ function BookDetailPage() {
                                                         style={styles.likeButton}
                                                         onClick={() => handleLikeClick(comment, comment.bookCommentId, comment.isLiked)}
                                                     >
-                                                        {comment.isLiked ? <FaHeart style={styles.likedIcon} /> : <FaRegHeart style={styles.likeIcon} />}
+                                                        {comment.isLiked ? <FaHeart style={styles.likedIcon}/> :
+                                                            <FaRegHeart style={styles.likeIcon}/>}
 
                                                     </button>
                                                     {/* 좋아요 카운트 */}
-                                                    <span style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
+                                                    <span
+                                                        style={styles.likeCountContainer}>{comment.commentLikeCount}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         {/* 코멘트 내용 */}
                                         <div style={styles.commentContent}>
-                                            <FaComment style={styles.commentIcon} />
+                                            <FaComment style={styles.commentIcon}/>
                                             <p style={styles.commentText}>{comment.comment}</p>
                                         </div>
                                     </div>
                                 ))}
                                 {/* 무한 스크롤 로딩 감지 Element */}
-                                <div ref={loader} />
+                                <div ref={loader}/>
                                 {/* 더보기 버튼 */}
                                 {hasMore && isInitialLoad && (
                                     <div style={styles.moreButtonContainer}>
@@ -804,6 +855,16 @@ function BookDetailPage() {
                         </div>
                     </div>
                 </div>
+
+                <CreateGroupChatInfoModal
+                    isOpen={isCreateGroupChatNameModalOpen}
+                    onClose={handleCloseGroupChatNameModal}
+                    selectedCard={selectedCard} // 선택된 데이터 전달
+                    selectedCategory={selectedCategory} // 선택된 카테고리 전달
+                    onUpdateChatList={() => {
+                        setRefreshKey(prevKey => prevKey + 1); // 채팅방 리스트 새로고침 키 업데이트
+                    }}
+                />
             </div>
         </div>
     );
