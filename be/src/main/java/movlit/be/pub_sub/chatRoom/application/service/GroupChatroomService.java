@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.exception.GroupChatroomAlreadyExistsException;
+import movlit.be.common.exception.GroupChatroomAlreadyJoinedException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
@@ -142,6 +143,7 @@ public class GroupChatroomService {
     public GroupChatroomResponse joinGroupChatroom(GroupChatroomId groupChatroomId, MemberId memberId)
             throws ChatroomAccessDenied {
         GroupChatroom existingGroupChatroom = groupChatRepository.findByChatroomId(groupChatroomId);
+        validateAlreadyJoined(memberId, existingGroupChatroom);
         MemberEntity member = memberReadService.findEntityByMemberId(memberId);
 
         log.info("::GroupChatroomService_joinGroupChatroom::");
@@ -171,6 +173,13 @@ public class GroupChatroomService {
 
         // 바뀐 정보 업데이트
         return groupChatRepository.create(existingGroupChatroom);
+    }
+
+    private void validateAlreadyJoined(MemberId memberId, GroupChatroom existingGroupChatroom) {
+        if (existingGroupChatroom.getMemberRChatroom().stream()
+                .anyMatch(rChatroom -> rChatroom.getMember().getMemberId().equals(memberId))) {
+            throw new GroupChatroomAlreadyJoinedException();
+        }
     }
 
     // 내가 가입한 그룹채팅 리스트 가져오기
