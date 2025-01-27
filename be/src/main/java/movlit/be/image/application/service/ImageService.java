@@ -1,27 +1,21 @@
 package movlit.be.image.application.service;
 
-import java.io.IOException;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import movlit.be.common.util.IdFactory;
-import movlit.be.common.util.ids.ImageId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.image.application.convertor.ImageConvertor;
 import movlit.be.image.domain.entity.ImageEntity;
 import movlit.be.image.domain.repository.ImageRepository;
 import movlit.be.image.presentation.dto.response.ImageResponse;
-import movlit.be.member.application.converter.MemberConverter;
-import movlit.be.member.application.service.MemberReadService;
-import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.repository.MemberRepository;
+import movlit.be.pub_sub.RedisMessagePublisher;
+import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
+import movlit.be.pub_sub.chatRoom.application.service.dto.ProfileImageUpdatedEvent;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -31,23 +25,25 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final S3Service s3Service;
     private final MemberRepository memberRepository;
-    private final MemberReadService memberReadService;
+    private final GroupChatroomService groupChatroomService;
+    private final RedisMessagePublisher redisMessagePublisher;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${aws.s3.bucket.folderName}")
     private String folderName;
 
     public ImageResponse uploadProfileImage(MemberId memberId, MultipartFile file) {
-//        MemberId memberId = member.getMemberId();
         ImageEntity imageEntity = ImageConvertor.toImageEntity(s3Service.uploadImage(file, folderName), memberId);
         validateMemberExistsInImage(memberId);
         ImageEntity savedImageEntity = imageRepository.upload(imageEntity);
         // 멤버 정보 update
-//        member.setProfileImgUrl(savedImageEntity.getUrl());
-//        memberRepository.save(member);
         MemberEntity member = memberRepository.findEntityById(memberId);
         member.updateProfileImgUrl(savedImageEntity.getUrl());
         memberRepository.saveEntity(member);
 
+        // 프로필 업데이트 이후, 업데이트 이벤트 발행
+        eventPublisher.publishEvent(new ProfileImageUpdatedEvent(memberId));
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
     }
 

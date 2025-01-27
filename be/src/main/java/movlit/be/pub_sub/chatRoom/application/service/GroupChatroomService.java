@@ -196,6 +196,7 @@ public class GroupChatroomService {
                 .toList();
     }
 
+    // 특정 그룹채팅 안 멤버 정보 update (멤버 정보 redis 1차 캐시)
     public List<GroupChatroomMemberResponse> fetchMembersInGroupChatroom(GroupChatroomId groupChatroomId) {
         String cacheKey = CHATROOM_MEMBERS_KEY_PREFIX + groupChatroomId + CHATROOM_MEMBERS_KEY_SUFFIX;
 

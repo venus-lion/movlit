@@ -59,7 +59,22 @@ function ChatPageGroup({ roomId, roomInfo }) {
             client.subscribe(`/topic/chat/message/group/${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+
+                // console.log('subscriber 이후 받은 roomId :: ' + roomId);
+                // console.log('subscriber 이후 받은 chatMessageDto :: ' + receivedMessage.senderId);
+                // console.log('subscriber 이후 받은 message :: ' + receivedMessage.message);
             });
+
+            client.subscribe(`/topic/chat/room/${roomId}`, (message => {
+                const updatedMembers = JSON.parse(message.body);
+
+                console.log('구독한 이후, 오는 메세지가 오긴 하니?');
+                console.log('Updated members :: ' + updatedMembers);
+                console.log('subscriber에서의 groupRoomId :: ' + roomId);
+
+               setMembers(updatedMembers);
+
+            }))
 
             axiosInstance
                 .get(`/chat/history?roomId=${roomId}`)
@@ -134,7 +149,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
                             {!isCurrentUser && sender && (
                                 <div className="message-profile">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
-                                    {sender.profileImgUrl ? (
+                                    {sender && sender.profileImgUrl ? (
                                         <img
                                             src={sender.profileImgUrl}
                                             alt="Profile"
