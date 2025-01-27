@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance';
-import './ChatPage.css';
+import './ChatPageGroup.css';
 import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 기본 프로필 이미지 아이콘을 가져옵니다.
 
 function ChatPageGroup({ roomId, roomInfo }) {
@@ -126,11 +126,11 @@ function ChatPageGroup({ roomId, roomInfo }) {
     }, [messages]);
 
     return (
-        <div className="chat-container" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div className="chat-header">
+        <div className="chat-container-group" style={{ display: 'flex', flexDirection: 'column', height: '90%' }}>
+            <div className="chat-header-group">
                 <h2>채팅방: {roomInfo.roomName}</h2>
             </div>
-            <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
+            <div className="chat-messages-group">
                 {messages.map((message, index) => {
                     const sender = members.find((m) => m.memberId === message.senderId);
                     const isCurrentUser = message.senderId === currentUserId;
@@ -138,34 +138,28 @@ function ChatPageGroup({ roomId, roomInfo }) {
                     return (
                         <div
                             key={index}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'flex-start',
-                                marginBottom: '10px',
-                                flexDirection: isCurrentUser ? 'row-reverse' : 'row',
-                            }}
-                            className={`message ${isCurrentUser ? 'own-message' : ''}`}
+                            className={`message-group ${isCurrentUser ? 'own-message-group' : ''}`}
                         >
                             {!isCurrentUser && sender && (
-                                <div className="message-profile">
+                                <div className="message-profile-group">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
                                     {sender && sender.profileImgUrl ? (
                                         <img
                                             src={sender.profileImgUrl}
                                             alt="Profile"
-                                            className="profile-img"
+                                            className="profile-img-group"
                                         />
                                     ) : (
-                                        <FaUserCircle size={36} className="profile-img" />
+                                        <FaUserCircle size={40} className="profile-img" />
                                     )}
                                     <strong>{sender.nickname}</strong>
                                 </div>
                             )}
-                            <div className="message-content">
-                                <div className={`message-bubble ${isCurrentUser ? 'own-bubble' : ''}`}>
+                            <div className="message-content-group">
+                                <div className={`message-bubble-group ${isCurrentUser ? 'own-bubble' : ''}`}>
                                     {message.message}
                                 </div>
-                                <div className="message-time">
+                                <div className="message-time-group">
                                     {new Date(message.regDt).toLocaleTimeString()}
                                 </div>
                             </div>
@@ -174,10 +168,10 @@ function ChatPageGroup({ roomId, roomInfo }) {
                 })}
                 <div ref={messagesEndRef} />
             </div>
-            <div className="chat-input-container">
+            <div className="chat-input-container-group">
                 <input
                     type="text"
-                    className="chat-input"
+                    className="chat-input-group"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={handleKeyDown}

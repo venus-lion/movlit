@@ -1,0 +1,163 @@
+.chat-container-group {
+    display: flex;
+    flex-direction: column;
+    height: 500px; /* 채팅창 높이 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 20px;
+    background-color: #e0f7fa; /* 전체 채팅창 배경색 */
+}
+
+.chat-header-group {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+}
+
+.chat-header-group h2 {
+    margin: 0;
+    font-size: 1.2rem; /* 헤더 텍스트 크기 조정 */
+}
+
+.chat-messages-group {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.message-group {
+    display: flex;
+    margin-bottom: 10px;
+    padding: 0 10px; /* 좌우 여백 추가 */
+    align-items: flex-start; /* 위쪽 정렬 */
+}
+
+.own-message-group {
+    justify-content: flex-end; /* 자신의 메시지를 오른쪽으로 정렬 */
+}
+
+.message-profile-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 5px; /* 프로필 이미지와 닉네임 간격 좁힘 */
+}
+
+.profile-img-group {
+    width: 40px; /* 프로필 이미지 크기 조정 */
+    height: 40px; /* 프로필 이미지 크기 조정 */
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.message-content-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    max-width: 70%; /* 최대 너비 설정 */
+}
+
+.own-message-group .message-content-group {
+    align-items: flex-end; /* 자신의 메시지 내용을 오른쪽 정렬 */
+}
+
+.message-bubble-group {
+    background-color: #f0f0f0; /* 상대방 메시지 배경색 */
+    color: #000; /* 상대방 메시지 텍스트 색상 */
+    padding: 8px 12px; /* 상하좌우 여백 조정 */
+    border-radius: 10px; /* 모서리 둥글기 조정 */
+    max-width: 85%; /* 메시지 버블의 최대 너비 */
+    word-break: break-word;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    margin-bottom: 2px; /* 닉네임과의 간격 조정 */
+    position: relative; /* 꼬리표 위치 설정 */
+    border-top-left-radius: 2px; /* 왼쪽 위 둥글기 수정 */
+}
+
+.own-message-group .message-bubble-group {
+    background-color: #ffd966; /* 자신의 메시지 버블 배경색 */
+    color: #000; /* 자신의 메시지 텍스트 색상 */
+    border-top-right-radius: 2px; /* 오른쪽 위 둥글기 수정 */
+    border-bottom-right-radius: 2px; /* 오른쪽 아래 모서리 둥글기 수정 */
+}
+
+.own-message-group .message-bubble-group::after {
+    /* 자신의 메시지 버블에 꼬리표 추가 */
+    content: '';
+    position: absolute;
+    right: -8px;
+    bottom: 0;
+    border-bottom: 8px solid #ffd966;
+    border-left: 8px solid transparent;
+}
+
+.message-bubble-group::before {
+    /* 상대방 메시지 버블에 꼬리표 추가 */
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 8px;
+    border-top: 8px solid #f0f0f0;
+    border-right: 8px solid transparent;
+}
+
+.message-time-group {
+    font-size: 10px; /* 시간 텍스트 크기 조정 */
+    color: #999;
+    margin-left: 5px; /* 메시지와의 간격 조정 */
+    align-self: flex-end; /* 시간 텍스트를 아래로 정렬 */
+    margin-bottom: 10px; /* 하단 여백 추가 */
+}
+
+.own-message-group .message-time-group {
+    margin-right: 5px; /* 자신의 메시지 시간 텍스트 오른쪽 여백 */
+    margin-left: 0;
+}
+
+.message-profile-group strong {
+    /* 닉네임 스타일 */
+    font-size: 15px; /* 닉네임 텍스트 크기 조정 */
+    margin-top: 2px; /* 프로필 이미지와의 간격 조정 */
+    color: #333; /* 닉네임 텍스트 색상 */
+    display: block; /* 닉네임 한 줄 차지하도록 */
+}
+
+.chat-input-container-group {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: #fff; /* 입력창 배경색 */
+}
+
+.chat-input-group {
+    flex: 1;
+    padding: 8px 10px; /* 상하좌우 여백 조정 */
+    border: 1px solid #ccc;
+    border-radius: 20px; /* 모서리 둥글기 조정 */
+    margin-right: 10px;
+    font-size: 1rem; /* 입력 텍스트 크기 조정 */
+}
+
+.chat-input-group:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.chat-input-group::placeholder {
+    color: #999;
+}
+
+/* 버튼 스타일 */
+.chat-input-container-group button {
+    background-color: #007bff; /* 버튼 배경색 */
+    color: #fff; /* 버튼 텍스트 색상 */
+    border: none;
+    padding: 8px 15px; /* 상하좌우 여백 조정 */
+    border-radius: 20px; /* 모서리 둥글기 조정 */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* 부드러운 색상 전환 효과 */
+}
+
+.chat-input-container-group button:hover {
+    background-color: #0056b3; /* 마우스 오버 시 버튼 배경색 */
+}
