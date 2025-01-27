@@ -119,7 +119,8 @@ public class RedisMessageSubscriber {
                 redisTemplate.opsForValue().set(cacheKey, updatedJson, CHATROOM_MEMBERS_CACHE_TTL, TimeUnit.SECONDS);
 
                 // WebSocket 클라이언트한테 업데이트된 멤버정보 전송
-                messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId, cachedMembers);
+                System.out.println("RedisMessageSubscriber >>>> roomId :: " + groupChatroomId);
+                messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId.getValue(), cachedMembers);
 
             }
 

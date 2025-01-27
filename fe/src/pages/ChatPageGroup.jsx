@@ -64,15 +64,15 @@ function ChatPageGroup({ roomId, roomInfo }) {
                 // console.log('subscriber 이후 받은 chatMessageDto :: ' + receivedMessage.senderId);
                 // console.log('subscriber 이후 받은 message :: ' + receivedMessage.message);
             });
-            //messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId, cachedMembers);
-            // 혹시 안되는 이유가 roomId가 GroupChatroomId가 아닌 String이라 그런걸까?
+
             client.subscribe(`/topic/chat/room/${roomId}`, (message => {
                 const updatedMembers = JSON.parse(message.body);
 
+                console.log('구독한 이후, 오는 메세지가 오긴 하니?');
                 console.log('Updated members :: ' + updatedMembers);
                 console.log('subscriber에서의 groupRoomId :: ' + roomId);
 
-                // setMembers(updatedMembers);
+               setMembers(updatedMembers);
 
             }))
 
@@ -149,7 +149,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
                             {!isCurrentUser && sender && (
                                 <div className="message-profile">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
-                                    {sender.profileImgUrl ? (
+                                    {sender && sender.profileImgUrl ? (
                                         <img
                                             src={sender.profileImgUrl}
                                             alt="Profile"

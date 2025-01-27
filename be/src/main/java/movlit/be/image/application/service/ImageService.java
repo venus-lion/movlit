@@ -44,31 +44,6 @@ public class ImageService {
 
         // 프로필 업데이트 이후, 업데이트 이벤트 발행
         eventPublisher.publishEvent(new ProfileImageUpdatedEvent(memberId));
-        // 프로필 이미지 업데이트 이후, redis publish -> 원래 이거 할려고 했는데 jpa 영속성 컨텍스트 문제로, 제대로 반영된 최신 멤버정보가 안 옴
-//        // 1. 해당 멤버가 속한 모든 그룹채팅방 ID를 조회
-//        List<GroupChatroomResponseDto> groupChatroomResponseDtoList = groupChatroomService.fetchMyGroupChatList(memberId);
-//
-//        for (GroupChatroomResponseDto groupChatroomResponseDto : groupChatroomResponseDtoList){
-//            System.out.println("해당 멤버가 속한 그룹채팅방 ID :: " + groupChatroomResponseDto.getGroupChatroomId());
-//            System.out.println("해당 멤버가 속한 그룹채팅방 NAME :: " + groupChatroomResponseDto.getRoomName());
-//        }
-//
-//        List<GroupChatroomId> groupChatroomIds = groupChatroomResponseDtoList.stream()
-//                .map(GroupChatroomResponseDto::getGroupChatroomId).toList();
-//
-//        // 2. 각 그룹채팅방 ID에 대해 updateRoomDto 생성 및 메세지 발행
-//        groupChatroomIds.forEach(groupChatroomId -> {
-//            UpdateRoomDto updateRoomDto = new UpdateRoomDto(
-//                    groupChatroomId,
-//                    MessageType.GROUP,
-//                    EventType.MEMBER_PROFILE_UPDATE,
-//                    memberId
-//            );
-//
-//            redisMessagePublisher.updateRoom(updateRoomDto);
-//
-//            System.out.println("ImageService >>> UpdateRoomDto 토픽 발행 :: " + updateRoomDto.toString());
-//        });
         return new ImageResponse(savedImageEntity.getImageId(), savedImageEntity.getUrl());
     }
 
