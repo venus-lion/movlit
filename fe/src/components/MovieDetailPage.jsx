@@ -476,37 +476,6 @@ function MovieDetailPage() {
 
     const handleJoinGroupChatroom = (movieId) => {
         try {
-            // const requestBody = {
-            //     roomName: "",
-            //     contentType: "movie",
-            //     contentId: movieId
-            // };
-            //
-            // // POST 요청
-            // const response = axiosInstance.post('/chat/group', requestBody);
-            //
-            // // 응답 값이 null인 경우 처리
-            // if (!response.data) {
-            //     console.log('Received response: 채팅방이 존재하지 않습니다.');
-            //
-            //     const selectedCard = {
-            //         movieId: movieId,
-            //         posterPath: movieData.posterUrl,
-            //         title: movieData.title,
-            //         voteAverage: movieData.voteAverage,
-            //         crew: visibleCrews.map(crew => crew.name),
-            //         movieGenre: genres.map(genre => ({
-            //             ...genre,
-            //             genreName: genre.name // 새로운 속성 추가
-            //         })),
-            //     };
-            //     console.log(selectedCard);
-            //     handleOpenGroupChatNameModal(selectedCard, "movie");
-            // } else {
-            //     console.log('Received response:', response.data);
-            //     alert("해당 채팅방이 이미 존재합니다. 참여하시겠습니까?");
-            //     return;
-            // }
             const selectedCard = {
                 movieId: movieId,
                 posterPath: movieData.posterUrl,
@@ -536,12 +505,10 @@ function MovieDetailPage() {
         const groupChatroomId = existingRoomInfo.groupChatroomId; // 채팅방 ID 추출
         try {
             const response = await axiosInstance.post(`/chat/group/${groupChatroomId}`);
-            console.log("채팅방 가입 성공:", response.data);
             alert("채팅방 가입에 성공하였습니다.");
             setRefreshKey(prevKey => prevKey + 1); // 키를 업데이트하여 ChatList를 다시 렌더링함
             handleCloseGroupChatInfoModal(); // 현재 두번째 모달창 닫기
-        } catch (error) {
-            console.error("채팅방 가입 실패:", error);
+        } catch (err) {
             alert("채팅방 가입에 실패했습니다.");
         }
     };
@@ -562,7 +529,7 @@ function MovieDetailPage() {
         setSelectedCategory(category); // 선택된 카테고리 저장
         setIsCreateGroupChatNameModalOpen(true); // 모달 열기
     };
-    
+
     const handleCloseGroupChatNameModal = () => {
         setIsCreateGroupChatNameModalOpen(false);
         setSelectedCard(null);

@@ -18,6 +18,7 @@ import {CircularProgressbar, buildStyles} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import MovieCarousel from "../pages/MovieCarousel.jsx";
 import CreateGroupChatNameModal from "./chat/CreateGroupChatNameModal.jsx";
+import GetGroupChatInfoModal from "./chat/GetGroupChatInfoModal.jsx";
 
 function BookDetailPage() {
     const {bookId} = useParams();
@@ -53,6 +54,7 @@ function BookDetailPage() {
     const [mStartIndex, setMStartIndex] = useState(0); // 화면에 보이는 영화 시작 인덱스
     const [mStartIndexRecommended, setMStartIndexRecommended] = useState(0);
 
+    const [isGetGroupChatInfoModalOpen, setIsGetGroupChatInfoModalOpen] = useState(false); // 채팅방 존재여무 모달 열림 상태
     const [isCreateGroupChatNameModalOpen, setIsCreateGroupChatNameModalOpen] = useState(false); // 모달2 열림 상태
     const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -470,37 +472,48 @@ function BookDetailPage() {
 
     const handleJoinGroupChatroom = (movieId) => {
         try {
-            const requestBody = {
-                roomName: "",
-                contentType: "movie",
-                contentId: movieId
+            const selectedCard = {
+                bookId: bookId,
+                bookImgUrl: bookData.bookImgUrl,
+                title: bookData.title,
+                crew: crews.map(crew => crew.name),
             };
-
-            // POST 요청
-            const response = axiosInstance.post('/chat/group', requestBody);
-
-            // 응답 값이 null인 경우 처리
-            if (!response.data) {
-                console.log('Received response: 채팅방이 존재하지 않습니다.');
-
-                const selectedCard = {
-                    bookId: bookId,
-                    bookImgUrl: bookData.bookImgUrl,
-                    title: bookData.title,
-                    crew: crews.map(crew => crew.name),
-                };
-                console.log(selectedCard);
-                handleOpenGroupChatNameModal(selectedCard, "book");
-            } else {
-                console.log('Received response:', response.data);
-                alert("해당 채팅방이 이미 존재합니다. 참여하시겠습니까?");
-                return;
-            }
+            console.log(selectedCard);
+            handleOpenGroupChatInfoModal(selectedCard, "book");
 
         } catch (err) {
             console.error('Error fetching room info:', err);
         }
     }
+
+    const handleJoinRoom = async (existingRoomInfo) => {
+        // existingRoomInfo가 null이 아닌지 확인
+        if (!existingRoomInfo || !existingRoomInfo.groupChatroomId) {
+            alert("채팅방 정보가 유효하지 않습니다.");
+            return;
+        }
+
+        const groupChatroomId = existingRoomInfo.groupChatroomId; // 채팅방 ID 추출
+        try {
+            const response = await axiosInstance.post(`/chat/group/${groupChatroomId}`);
+            alert("채팅방 가입에 성공하였습니다.");
+            setRefreshKey(prevKey => prevKey + 1); // 키를 업데이트하여 ChatList를 다시 렌더링함
+            handleCloseGroupChatInfoModal(); // 현재 두번째 모달창 닫기
+        } catch (error) {
+            alert("채팅방 가입에 실패했습니다.");
+        }
+    };
+
+    const handleOpenGroupChatInfoModal = (card, category) => {
+        setSelectedCard(card);
+        setSelectedCategory(category);
+        setIsGetGroupChatInfoModalOpen(true); // 두 번째 모달 열기
+    };
+    const handleCloseGroupChatInfoModal = () => {
+        setIsGetGroupChatInfoModalOpen(false);
+        setSelectedCard(null);
+        setSelectedCategory(null);
+    };
 
     const handleOpenGroupChatNameModal = (card, category) => {
         setSelectedCard(card); // 선택된 카드 데이터 저장
@@ -560,6 +573,17 @@ function BookDetailPage() {
                         </a>
 
                     </div>
+                    <button
+                        id="groupChatButton"
+                        style={{
+                            ...styles.button,
+                            backgroundColor: '#FF3366',
+                            marginTop: '20px', // 이미지와 버튼 사이 간격 조절
+                        }}
+                        onClick={() => handleJoinGroupChatroom(bookId)}
+                    >
+                        그룹채팅 입장
+                    </button>
                 </div>
 
                 <div style={styles.info}>
@@ -856,7 +880,15 @@ function BookDetailPage() {
                     </div>
                 </div>
 
-                <CreateGroupChatInfoModal
+                <GetGroupChatInfoModal
+                    isOpen={isGetGroupChatInfoModalOpen}
+                    onClose={handleCloseGroupChatInfoModal}
+                    selectedCard={selectedCard} // 선택된 데이터 전달
+                    selectedCategory={selectedCategory} // 선택된 카테고리 전달
+                    onConfirm={(card, category) => handleOpenGroupChatNameModal(card, category)} // 선택된 데이터 전달
+                    onJoin={handleJoinRoom} // "가입하기" 버튼의 핸들러 추가
+                />
+                <CreateGroupChatNameModal
                     isOpen={isCreateGroupChatNameModalOpen}
                     onClose={handleCloseGroupChatNameModal}
                     selectedCard={selectedCard} // 선택된 데이터 전달
