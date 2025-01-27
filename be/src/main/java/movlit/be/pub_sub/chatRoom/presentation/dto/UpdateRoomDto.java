@@ -1,6 +1,8 @@
 package movlit.be.pub_sub.chatRoom.presentation.dto;
 
 import lombok.Getter;
+import movlit.be.common.util.ids.GroupChatroomId;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 
 /**
@@ -10,14 +12,31 @@ import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 @Getter
 public class UpdateRoomDto {
 
-    private String roomId;      // OneononeChatroomId, GroupChatroomId : getValue()로 넣어주기
+    //private String roomId;      // OneononeChatroomId, GroupChatroomId : getValue()로 넣어주기
+    private GroupChatroomId groupChatroomId;
     private MessageType messageType;
 
-    // TODO : updateRoom 메서드 호출 시 필요한 정보들 정의
+    private EventType eventType; // ex) MEMBER_PROFILE_UPDATE
+    private MemberId memberId; // "업데이트된" memberId
 
-    public UpdateRoomDto(String roomId, MessageType messageType) {
-        this.roomId = roomId;
+    public enum EventType {
+        MEMBER_PROFILE_UPDATE; // 멤버 프로필 정보 업데이트
+    }
+
+    public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType, MemberId memberId) {
+        this.groupChatroomId = groupChatroomId;
         this.messageType = messageType;
+        this.eventType = eventType;
+        this.memberId = memberId;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateRoomDto{" +
+                "groupChatroomId='" + groupChatroomId + '\'' +
+                ", messageType=" + messageType +
+                ", eventType=" + eventType +
+                ", memberId=" + memberId.getValue();
     }
 
 }

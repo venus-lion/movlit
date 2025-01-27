@@ -123,4 +123,18 @@ public class MemberEntity {
         this.profileImgUrl = profileImgUrl;
     }
 
+    public String toStringExceptLazyLoading() {
+        return "MemberEntity{" +
+                "memberId=" + memberId +
+                ", email='" + email + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", password='" + password + '\'' +
+                ", dob='" + dob + '\'' +
+                ", profileImgId='" + profileImgId + '\'' +
+                ", profileImgUrl='" + profileImgUrl + '\'' +
+                ", role='" + role + '\'' +
+                ", provider='" + provider + '\'' +
+                '}';
+    }
+
 }

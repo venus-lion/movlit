@@ -59,7 +59,22 @@ function ChatPageGroup({ roomId, roomInfo }) {
             client.subscribe(`/topic/chat/message/group/${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+
+                // console.log('subscriber 이후 받은 roomId :: ' + roomId);
+                // console.log('subscriber 이후 받은 chatMessageDto :: ' + receivedMessage.senderId);
+                // console.log('subscriber 이후 받은 message :: ' + receivedMessage.message);
             });
+            //messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId, cachedMembers);
+            // 혹시 안되는 이유가 roomId가 GroupChatroomId가 아닌 String이라 그런걸까?
+            client.subscribe(`/topic/chat/room/${roomId}`, (message => {
+                const updatedMembers = JSON.parse(message.body);
+
+                console.log('Updated members :: ' + updatedMembers);
+                console.log('subscriber에서의 groupRoomId :: ' + roomId);
+
+                // setMembers(updatedMembers);
+
+            }))
 
             axiosInstance
                 .get(`/chat/history?roomId=${roomId}`)
