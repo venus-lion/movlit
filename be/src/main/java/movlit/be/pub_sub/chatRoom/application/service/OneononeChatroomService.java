@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.FailedDeserializeException;
+import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
+import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.chatRoom.domain.MemberROneononeChatroom;
@@ -69,6 +71,21 @@ public class OneononeChatroomService {
         this.addOneononeChatroomToRedis(receiver, response);
 
         return response;
+    }
+
+    public OneononeChatroomResponse fetchChatroomInfo(OneononeChatroomId roomId, MemberId currentMemberId) {
+        MemberEntity otherMember = oneOnOneChatroomRepository.findWithMembersById(roomId)
+                .stream()
+                .filter(mro -> !mro.getMember().getMemberId().equals(currentMemberId))
+                .findFirst()
+                .orElseThrow(MemberNotFoundException::new)
+                .getMember();
+        return new OneononeChatroomResponse(
+                roomId,
+                otherMember.getMemberId(),
+                otherMember.getNickname(),
+                otherMember.getProfileImgUrl()
+        );
     }
 
     public List<OneononeChatroomResponse> fetchMyOneOnOneChatList(MemberId memberId) {

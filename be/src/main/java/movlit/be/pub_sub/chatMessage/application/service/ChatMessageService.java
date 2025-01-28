@@ -8,11 +8,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
+import movlit.be.member.application.service.MemberReadService;
 import movlit.be.pub_sub.RedisMessagePublisher;
+import movlit.be.pub_sub.RedisNotificationPublisher;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.ChatMessageRepository;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
+import movlit.be.pub_sub.chatRoom.application.service.OneononeChatroomService;
+import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
+import movlit.be.pub_sub.notification.NotificationDto;
+import movlit.be.pub_sub.notification.NotificationMessage;
+import movlit.be.pub_sub.notification.NotificationType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,8 +33,11 @@ public class ChatMessageService {
     private final RedisMessagePublisher messagePublisher;
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
+    private final RedisNotificationPublisher redisNotificationPublisher;
 
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
+    private final MemberReadService memberReadService;
+    private final OneononeChatroomService oneononeChatroomService;
 
     // 가장 최근 채팅 메시지 가져오기 (채팅 리스트에서 화면 표시)
     public ChatMessageDto fetchRecentMessage(String roomId) {
@@ -36,6 +46,7 @@ public class ChatMessageService {
 
     // 일대일 채팅방 sendMessage
     public void sendMessageForOnOnOne(ChatMessageDto chatMessageDto) {
+        // TODO: 여기부터 하면 됨
         chatMessageDto.setMessageType(MessageType.ONE_ON_ONE);
 
         String chatMessageJson = convertToJson(chatMessageDto);
@@ -45,6 +56,20 @@ public class ChatMessageService {
         processQueue();
 
         messagePublisher.sendMessage(chatMessageDto);
+
+        // 알림 발행 로직
+        OneononeChatroomId roomId = new OneononeChatroomId(chatMessageDto.getRoomId());
+        OneononeChatroomResponse roomInfo = oneononeChatroomService.fetchChatroomInfo(roomId, chatMessageDto.getSenderId());
+
+        String senderNickname = memberReadService.findByMemberId(chatMessageDto.getSenderId()).getNickname();
+
+        NotificationDto notification = new NotificationDto(
+                roomInfo.getReceiverId().getValue(),
+                NotificationMessage.generateChatMessage(senderNickname, roomInfo.getReceiverNickname()), // TODO: 메시지 내용 추가
+                NotificationType.ONE_ON_ONE_CHAT
+        );
+
+        redisNotificationPublisher.publishNotification(notification);
     }
 
     // 그룹 채팅방 sendMessage
