@@ -70,8 +70,8 @@ public enum ErrorMessage {
     CHATROOM_ACCESS_DENIED("해당 채팅방 접근 권한이 없습니다.", "c011"),
 
     // Redis
-    FAILED_DESERIALIZE_DATA("Redis 데이터를 역직렬화하는데 실패했습니다.", "r001");
-
+    FAILED_DESERIALIZE_DATA("Redis 데이터를 역직렬화하는데 실패했습니다.", "r001"),
+    REDIS_STREAM_OPERATION_RETURN_NULL("Redis Stream 연산 중 NULL 발생했습니다. Redis 연결 및 스트림 상태를 확인해주세요.", "r002");
     private final String message;
     private final String code;
 

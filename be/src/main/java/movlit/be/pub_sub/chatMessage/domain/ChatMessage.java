@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import org.bson.types.ObjectId;
@@ -41,7 +38,7 @@ public class ChatMessage {
         this.timestamp = regDt.toString();
         this.messageType = messageType;
     }
-    
+
     //메시지 읽음 처리
     public void markAsRead(MemberId memberId) {
         if (!this.readMembers.contains(memberId)) {
