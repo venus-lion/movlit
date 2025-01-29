@@ -45,8 +45,7 @@ public class ChatMessageService {
     }
 
     // 일대일 채팅방 sendMessage
-    public void sendMessageForOnOnOne(ChatMessageDto chatMessageDto) {
-        // TODO: 여기부터 하면 됨
+    public void sendMessageForOneOnOne(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.ONE_ON_ONE);
 
         String chatMessageJson = convertToJson(chatMessageDto);
@@ -58,14 +57,18 @@ public class ChatMessageService {
         messagePublisher.sendMessage(chatMessageDto);
 
         // 알림 발행 로직
-        OneononeChatroomId roomId = new OneononeChatroomId(chatMessageDto.getRoomId());
-        OneononeChatroomResponse roomInfo = oneononeChatroomService.fetchChatroomInfo(roomId, chatMessageDto.getSenderId());
+        publishOneOnOneNotification(chatMessageDto);
+    }
 
+    private void publishOneOnOneNotification(ChatMessageDto chatMessageDto) {
+        OneononeChatroomId roomId = new OneononeChatroomId(chatMessageDto.getRoomId());
+        OneononeChatroomResponse roomInfo = oneononeChatroomService.fetchChatroomInfo(roomId,
+                chatMessageDto.getSenderId());
         String senderNickname = memberReadService.findByMemberId(chatMessageDto.getSenderId()).getNickname();
 
         NotificationDto notification = new NotificationDto(
                 roomInfo.getReceiverId().getValue(),
-                NotificationMessage.generateChatMessage(senderNickname, roomInfo.getReceiverNickname()), // TODO: 메시지 내용 추가
+                NotificationMessage.generateChatMessage(senderNickname, chatMessageDto.getMessage()),
                 NotificationType.ONE_ON_ONE_CHAT
         );
 
