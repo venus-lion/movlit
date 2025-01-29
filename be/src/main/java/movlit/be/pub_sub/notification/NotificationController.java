@@ -15,10 +15,10 @@ public class NotificationController {
 
     private final SseEmitterService sseEmitterService;
 
-    @GetMapping(value = "/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/api/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribe(@PathVariable String id) {
         SseEmitter emitter = sseEmitterService.addEmitter(id);
-        return ResponseEntity.ok(emitter);
+        return ResponseEntity.ok().body(emitter);
     }
 
 }
