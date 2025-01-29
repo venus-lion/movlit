@@ -20,21 +20,20 @@ public class SseEmitterService {
     private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
     private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>(); // emitter 완료 상태 추적
 
-    public SseEmitter addEmitter(String id) {
-        SseEmitter emitter = new SseEmitter(180_000L); // 3분 타임아웃
+    public void sendNotificationToReceiver(String id, NotificationDto notification) {
+        SseEmitter emitter = this.emitters.get(id);
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("notification").data(notification));
+            } catch (IOException e) {
+                this.emitters.remove(id);
+                log.error("Error sending notification to user {}", id, e);
+            }
+        }
+    }
 
-        emitter.onCompletion(() -> {
-            log.info("Emitter completed: {}", id);
-            completeEmitter(id, null);
-        });
-        emitter.onTimeout(() -> {
-            log.info("Emitter timed out: {}", id);
-            completeEmitter(id, new RuntimeException("Emitter timed out")); // 또는 적절한 예외 객체 사용
-        });
-        emitter.onError(throwable -> {
-            log.error("Emitter error: {}", id, throwable);
-            completeEmitter(id, throwable);
-        });
+    public SseEmitter addEmitter(String id) {
+        SseEmitter emitter = getSseEmitter(id);
 
         try {
             // 초기 연결 시에 reconnectTime 설정
@@ -48,7 +47,17 @@ public class SseEmitterService {
             completeEmitter(id, e);
         }
 
+        ScheduledFuture<?> heartbeat = getScheduledFuture(id, emitter);
+
+        heartbeatTasks.put(id, heartbeat);
+        emitters.put(id, emitter);
+        emitterCompletionStatus.put(id, false); // 초기 상태는 false
+        return emitter;
+    }
+
+    private ScheduledFuture<?> getScheduledFuture(String id, SseEmitter emitter) {
         ScheduledFuture<?> heartbeat = SCHEDULER.scheduleAtFixedRate(() -> {
+
             if (!emitters.containsKey(id) || emitterCompletionStatus.getOrDefault(id, false)) {
                 log.debug("Emitter not found or already completed, cancelling heartbeat: {}", id);
                 cancelHeartbeat(id);
@@ -65,9 +74,25 @@ public class SseEmitterService {
             }
         }, 0, 30, TimeUnit.SECONDS); // 30초 간격
 
-        heartbeatTasks.put(id, heartbeat);
-        emitters.put(id, emitter);
-        emitterCompletionStatus.put(id, false); // 초기 상태는 false
+        return heartbeat;
+    }
+
+    private SseEmitter getSseEmitter(String id) {
+        SseEmitter emitter = new SseEmitter(180_000L); // 3분 타임아웃
+
+        emitter.onCompletion(() -> {
+            log.info("Emitter completed: {}", id);
+            completeEmitter(id, null);
+        });
+        emitter.onTimeout(() -> {
+            log.info("Emitter timed out: {}", id);
+            completeEmitter(id, new RuntimeException("Emitter timed out")); // 또는 적절한 예외 객체 사용
+        });
+        emitter.onError(throwable -> {
+            log.error("Emitter error: {}", id, throwable);
+            completeEmitter(id, throwable);
+        });
+
         return emitter;
     }
 
