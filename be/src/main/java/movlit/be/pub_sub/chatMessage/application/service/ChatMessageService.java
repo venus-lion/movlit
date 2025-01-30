@@ -23,6 +23,7 @@ import movlit.be.pub_sub.notification.NotificationType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +46,7 @@ public class ChatMessageService {
     }
 
     // 일대일 채팅방 sendMessage
+    @Transactional
     public void sendMessageForOneOnOne(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.ONE_ON_ONE);
 
@@ -76,6 +78,7 @@ public class ChatMessageService {
     }
 
     // 그룹 채팅방 sendMessage
+    @Transactional
     public void sendMessageForGroup(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.GROUP);
 

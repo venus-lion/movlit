@@ -73,6 +73,7 @@ public class OneononeChatroomService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     public OneononeChatroomResponse fetchChatroomInfo(OneononeChatroomId roomId, MemberId currentMemberId) {
         MemberEntity otherMember = oneOnOneChatroomRepository.findWithMembersById(roomId)
                 .stream()
