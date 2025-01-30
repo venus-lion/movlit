@@ -1,12 +1,9 @@
 package movlit.be.pub_sub.chatMessage.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.pub_sub.RedisMessagePublisher;
 import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +18,7 @@ public class ChatMessageWriteController {
     @MessageMapping("/chat/message/one-on-one")
     public void sendOneOnOneMessage(@RequestBody ChatMessageDto message) {
         log.info("Received one on one chat message: {}", message);
-        chatMessageService.sendMessageForOnOnOne(message);
+        chatMessageService.sendMessageForOneOnOne(message);
     }
 
     @MessageMapping("/chat/message/group")

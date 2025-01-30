@@ -2,8 +2,10 @@ package movlit.be.pub_sub.chatRoom.infra.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.pub_sub.chatRoom.domain.MemberROneononeChatroom;
@@ -52,6 +54,13 @@ public class OneononeChatroomRepositoryImpl implements OneononeChatroomRepositor
         String profileImgUrl = memberROneononeChatroomRoom.getMember().getProfileImgUrl();
 
         return new OneononeChatroomResponse(chatroomId, memberId, nickname, profileImgUrl);
+    }
+
+    @Override
+    public List<MemberROneononeChatroom> findWithMembersById(OneononeChatroomId roomId) {
+        OneononeChatroom oneononeChatroom = oneononeChatroomJpaRepository.findWithMembersById(roomId)
+                .orElseThrow(ChatroomNotFoundException::new);
+        return oneononeChatroom.getMemberROneononeChatrooms();
     }
 
 }
