@@ -56,6 +56,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
         });
 
         client.onConnect = () => {
+            // 1. /topic/chat/message/group/{roomId} 구독 (그룹채팅메세지 수신)
             client.subscribe(`/topic/chat/message/group/${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);
@@ -65,14 +66,38 @@ function ChatPageGroup({ roomId, roomInfo }) {
                 // console.log('subscriber 이후 받은 message :: ' + receivedMessage.message);
             });
 
+            // 2. /topic/chat/room/{roomId} 구독 (업데이트된 멤버 목록 수신)
             client.subscribe(`/topic/chat/room/${roomId}`, (message => {
-                const updatedMembers = JSON.parse(message.body);
+                const receivedData = JSON.parse(message.body);
 
-                console.log('구독한 이후, 오는 메세지가 오긴 하니?');
-                console.log('Updated members :: ' + updatedMembers);
-                console.log('subscriber에서의 groupRoomId :: ' + roomId);
+                // 1. receivedData가 배열(멤버 목록)인지, 객체(UpdateRoomDto)인지 체크
+                if (Array.isArray(receivedData)){
+                    // 1-1. 멤버 프로필 업데이트 이벤트
+                    console.log('멤버 프로필 업데이트 이벤트 발행 후, 프론트 적용 !!');
+                    setMembers(receivedData);
+                }
+                else if (receivedData.hasOwnProperty('updateRoomDto')){
+                    // 1-2. receivedData에 updateRoomDto 속성이 있으면, MEMBER_JOIN 이벤트로 간주
+                    const updateRoomDto = receivedData.updateRoomDto;
+                    const cachedMembers = receivedData.cachedMembers;
 
-               setMembers(updatedMembers);
+                    // 1-3. cachedMembers로 멤버 목록 업데이트 - (멤버 프로필 이벤트랑 동일하게 처리)
+                    setMembers(cachedMembers);
+
+                    // 1-4. joinMessage 처리
+                    const joinMessage = updateRoomDto.joinMessage;
+                    console.log('updatedMembers의 joinMessage :: ' + joinMessage);
+
+                    // 1-5. joinMessage를 채팅 메시지와 구분하여 화면에 표시
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
+                        {
+                            type: 'join', // 메시지 유형을 'join'으로 설정
+                            message: joinMessage,
+                            regDt: new Date(),
+                        },
+                    ]);
+                }
 
             }))
 
@@ -134,13 +159,16 @@ function ChatPageGroup({ roomId, roomInfo }) {
                 {messages.map((message, index) => {
                     const sender = members.find((m) => m.memberId === message.senderId);
                     const isCurrentUser = message.senderId === currentUserId;
+                    const isJoinMessage = message.type === 'join'; // join 메세지 여부 확인
 
                     return (
                         <div
                             key={index}
-                            className={`message-group ${isCurrentUser ? 'own-message-group' : ''}`}
+                            className={`message-group ${isCurrentUser ? 'own-message-group' : ''} ${
+                                isJoinMessage ? 'join-message-group' : '' // join 메시지에 대한 CSS 클래스 추가
+                            }`}
                         >
-                            {!isCurrentUser && sender && (
+                            {!isCurrentUser && sender && !isJoinMessage && (
                                 <div className="message-profile-group">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
                                     {sender && sender.profileImgUrl ? (
@@ -150,13 +178,18 @@ function ChatPageGroup({ roomId, roomInfo }) {
                                             className="profile-img-group"
                                         />
                                     ) : (
-                                        <FaUserCircle size={40} className="profile-img" />
+                                        <FaUserCircle size={40} className="profile-img"/>
                                     )}
                                     <strong>{sender.nickname}</strong>
                                 </div>
                             )}
                             <div className="message-content-group">
-                                <div className={`message-bubble-group ${isCurrentUser ? 'own-bubble' : ''}`}>
+                                <div
+                                    className={`message-bubble-group ${isCurrentUser ? 'own-bubble' : ''} ${
+                                        isJoinMessage ? 'join-bubble' : ''
+                                    }`}
+                                    style={isJoinMessage ? {whiteSpace: 'nowrap'} : {}} // joinMessage인 경우 한 줄로 표시
+                                >
                                     {message.message}
                                 </div>
                                 <div className="message-time-group">
@@ -166,7 +199,7 @@ function ChatPageGroup({ roomId, roomInfo }) {
                         </div>
                     );
                 })}
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef}/>
             </div>
             <div className="chat-input-container-group">
                 <input

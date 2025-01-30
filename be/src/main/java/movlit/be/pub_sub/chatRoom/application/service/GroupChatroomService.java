@@ -143,6 +143,7 @@ public class GroupChatroomService {
     }
 
     // 존재하는 그룹채팅방 가입
+    @Transactional
     public GroupChatroomResponse joinGroupChatroom(GroupChatroomId groupChatroomId, MemberId memberId)
             throws ChatroomAccessDenied {
         GroupChatroom existingGroupChatroom = groupChatRepository.findByChatroomId(groupChatroomId);
@@ -178,6 +179,7 @@ public class GroupChatroomService {
         GroupChatroomResponse response = groupChatRepository.create(existingGroupChatroom);
 
         // 그룹채팅방 가입 이벤트 발행
+        log.info("GroupChatroomService :: GroupChatroomJoinedEvent 발행...");
         eventPublisher.publishEvent(new GroupChatroomJoinedEvent(groupChatroomId, memberId));
 
         return response;
