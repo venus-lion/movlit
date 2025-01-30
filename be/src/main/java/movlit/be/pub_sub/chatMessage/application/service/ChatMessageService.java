@@ -2,10 +2,9 @@ package movlit.be.pub_sub.chatMessage.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.exception.RedisStreamOperationReturnNull;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.member.application.service.MemberReadService;
@@ -20,10 +19,15 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
 import movlit.be.pub_sub.notification.NotificationType;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class ChatMessageService {
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
     private final RedisNotificationPublisher redisNotificationPublisher;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
     private final MemberReadService memberReadService;
@@ -50,11 +55,8 @@ public class ChatMessageService {
     public void sendMessageForOneOnOne(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.ONE_ON_ONE);
 
-        String chatMessageJson = convertToJson(chatMessageDto);
-        redisTemplate.opsForList().rightPush(MESSAGE_QUEUE, chatMessageJson);
-
-        // 비동기적으로 큐에서 메시지를 처리하는 작업을 시작
-        processQueue();
+        // Producer : 메시지를 Redis Stream 에 추가
+        produceChatMessage(chatMessageDto);
 
         messagePublisher.sendMessage(chatMessageDto);
 
@@ -82,11 +84,8 @@ public class ChatMessageService {
     public void sendMessageForGroup(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.GROUP);
 
-        String chatMessageJson = convertToJson(chatMessageDto);
-        redisTemplate.opsForList().rightPush(MESSAGE_QUEUE, chatMessageJson);
-
-        // 비동기적으로 큐에서 메시지를 처리하는 작업을 시작
-        processQueue();
+        // Producer : 메시지를 Redis Stream 에 추가
+        produceChatMessage(chatMessageDto);
 
         messagePublisher.sendMessage(chatMessageDto);
     }
@@ -101,24 +100,9 @@ public class ChatMessageService {
         return chatMessageRepository.findUnreadMessages(roomId.getValue(), memberId);
     }
 
-    // 채팅 읽음 처리
+    // TODO : 채팅 읽음 처리
     public void updateMessageAsRead(String roomId, MemberId memberId) {
 
-    }
-
-    /**
-     * ChatMessage MongoDB 저장
-     */
-    private void saveMessageToMongoDB(ChatMessageDto chatMessageDto) {
-        // TODO : Converter 나중에 빼기
-        ChatMessage chatMessage = ChatMessage.builder()
-                .roomId(chatMessageDto.getRoomId())
-                .senderId(chatMessageDto.getSenderId())
-                .message(chatMessageDto.getMessage())
-                .regDt(chatMessageDto.getRegDt())
-                .messageType(chatMessageDto.getMessageType())
-                .build();
-        chatMessageRepository.saveMessage(chatMessage);
     }
 
     /**
@@ -142,41 +126,24 @@ public class ChatMessageService {
         ).toList();
     }
 
-    /**
-     * Redis 큐 활용, 비동기 처리
-     */
-    // TODO : processQueue, convertToJson, convertFromJson 메서드는 ObjectMapper를 사용할 별개의 클래스를 둬서 관리하기
-    @Async("taskExecutor")
-    public void processQueue() {
-        // 비동기적으로 Redis 큐에서 메시지 처리
-        // 큐에서 하나씩 메시지를 꺼내서 MongoDB에 저장
-        while (true) {
-            String chatMessageJson = redisTemplate.opsForList().leftPop(MESSAGE_QUEUE);
-            if (chatMessageJson != null) {
-                ChatMessageDto chatMessageDto = convertFromJson(chatMessageJson);
-                saveMessageToMongoDB(chatMessageDto);
-            } else {
-                break;
-            }
-        }
+    private void produceChatMessage(ChatMessageDto chatMessageDto) {
+        // Produce : 메시지를 Redis Stream 에 추가
+        RecordId recordId = Optional.ofNullable(redisTemplate.opsForStream().add(
+                MESSAGE_QUEUE, convertToMap(chatMessageDto)
+        )).orElseThrow(RedisStreamOperationReturnNull::new);
+
+        String messageId = recordId.toString();
     }
 
-    // DTO를 JSON으로 변환하는 로직
-    public String convertToJson(ChatMessageDto chatMessageDto) {
-        try {
-            return objectMapper.writeValueAsString(chatMessageDto);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to convert message to JSON", e);
-        }
-    }
-
-    // JSON을 DTO로 변환하는 로직
-    public ChatMessageDto convertFromJson(String json) {
-        try {
-            return objectMapper.readValue(json, ChatMessageDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to convert JSON to message DTO", e);
-        }
+    // DTO -> Map 변환
+    private Map<String, String> convertToMap(ChatMessageDto chatMessageDto) {
+        return Map.of(
+                "roomId", chatMessageDto.getRoomId(),
+                "senderId", chatMessageDto.getSenderId().getValue(),
+                "message", chatMessageDto.getMessage(),
+                "regDt", chatMessageDto.getRegDt().toString(),
+                "messageType", chatMessageDto.getMessageType().toString()
+        );
     }
 
 }
