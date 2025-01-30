@@ -18,27 +18,25 @@ public class SseEmitterService {
     private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
-    private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>(); // emitter 완료 상태 추적
+    private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>();
 
     public void sendNotificationToReceiver(String id, NotificationDto notification) {
-        SseEmitter emitter = this.emitters.get(id);
+        SseEmitter emitter = emitters.get(id);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(notification));
             } catch (IOException e) {
-                this.emitters.remove(id);
-                log.error("Error sending notification to user {}", id, e);
+                handleEmitterError(id, e, "Error sending notification to user {}");
             }
         }
     }
 
     public SseEmitter addEmitter(String id) {
-        SseEmitter emitter = getSseEmitter(id);
+        SseEmitter emitter = createSseEmitter(id);
 
         try {
-            // 초기 연결 시에 reconnectTime 설정
             emitter.send(SseEmitter.event()
-                    .id(String.valueOf(System.currentTimeMillis())) // 예시로 현재 시간을 사용, 고유한 ID 생성 필요
+                    .id(String.valueOf(System.currentTimeMillis()))
                     .name("connect")
                     .data("connected!")
                     .reconnectTime(45_000));
@@ -47,76 +45,73 @@ public class SseEmitterService {
             completeEmitter(id, e);
         }
 
-        ScheduledFuture<?> heartbeat = getScheduledFuture(id, emitter);
-
-        heartbeatTasks.put(id, heartbeat);
+        scheduleHeartbeat(id, emitter);
         emitters.put(id, emitter);
-        emitterCompletionStatus.put(id, false); // 초기 상태는 false
+        emitterCompletionStatus.put(id, false);
         return emitter;
     }
 
-    private ScheduledFuture<?> getScheduledFuture(String id, SseEmitter emitter) {
-        ScheduledFuture<?> heartbeat = SCHEDULER.scheduleAtFixedRate(() -> {
+    private SseEmitter createSseEmitter(String id) {
+        SseEmitter emitter = new SseEmitter(180_000L);
+        emitter.onCompletion(() -> completeEmitter(id, null));
+        emitter.onTimeout(() -> completeEmitter(id, new RuntimeException("Emitter timed out")));
+        emitter.onError(e -> completeEmitter(id, e));
+        return emitter;
+    }
 
-            if (!emitters.containsKey(id) || emitterCompletionStatus.getOrDefault(id, false)) {
-                log.debug("Emitter not found or already completed, cancelling heartbeat: {}", id);
+    private void scheduleHeartbeat(String id, SseEmitter emitter) {
+        ScheduledFuture<?> heartbeat = SCHEDULER.scheduleAtFixedRate(() -> {
+            SseEmitter currentEmitter = emitters.get(id);
+            if (currentEmitter == null || emitterCompletionStatus.getOrDefault(id, false)) {
+                log.debug("Emitter not found or completed, cancelling heartbeat: {}", id);
                 cancelHeartbeat(id);
                 return;
             }
             try {
-                emitter.send(SseEmitter.event()
-                        .id(String.valueOf(System.currentTimeMillis())) // 예시로 현재 시간을 사용, 고유한 ID 생성 필요
+                currentEmitter.send(SseEmitter.event()
+                        .id(String.valueOf(System.currentTimeMillis()))
                         .name("heartbeat")
                         .data("keep-alive"));
             } catch (IOException e) {
                 log.warn("하트비트 전송 실패: {}", e.getMessage());
-                completeEmitter(id, e);
+                handleEmitterError(id, e, "Heartbeat failed for user {}");
             }
-        }, 0, 30, TimeUnit.SECONDS); // 30초 간격
+        }, 0, 30, TimeUnit.SECONDS);
 
-        return heartbeat;
+        heartbeatTasks.put(id, heartbeat);
     }
 
-    private SseEmitter getSseEmitter(String id) {
-        SseEmitter emitter = new SseEmitter(180_000L); // 3분 타임아웃
-
-        emitter.onCompletion(() -> {
-            log.info("Emitter completed: {}", id);
-            completeEmitter(id, null);
-        });
-        emitter.onTimeout(() -> {
-            log.info("Emitter timed out: {}", id);
-            completeEmitter(id, new RuntimeException("Emitter timed out")); // 또는 적절한 예외 객체 사용
-        });
-        emitter.onError(throwable -> {
-            log.error("Emitter error: {}", id, throwable);
-            completeEmitter(id, throwable);
-        });
-
-        return emitter;
+    private void handleEmitterError(String id, IOException e, String logMessage) {
+        log.error(logMessage, id, e);
+        completeEmitter(id, e);
     }
 
-    // emitter 완료 시 처리
-    private void completeEmitter(String id, Throwable throwable) {
+    private synchronized void completeEmitter(String id, Throwable throwable) {
+        if (emitterCompletionStatus.getOrDefault(id, false)) {
+            return; // 이미 완료된 경우 중복 처리 방지
+        }
+
         SseEmitter emitter = emitters.get(id);
         if (emitter != null) {
-            if (throwable != null) {
-                emitter.completeWithError(throwable);
-            } else {
-                emitter.complete();
+            try {
+                if (throwable != null) {
+                    emitter.completeWithError(throwable);
+                } else {
+                    emitter.complete();
+                }
+            } finally {
+                emitters.remove(id);
+                emitterCompletionStatus.put(id, true);
+                cancelHeartbeat(id);
             }
-            emitters.remove(id);
-            emitterCompletionStatus.put(id, true);
-            cancelHeartbeat(id);
         }
     }
 
-    private void cancelHeartbeat(String id) {
-        ScheduledFuture<?> task = heartbeatTasks.get(id);
+    private synchronized void cancelHeartbeat(String id) {
+        ScheduledFuture<?> task = heartbeatTasks.remove(id);
         if (task != null) {
             task.cancel(true);
-            heartbeatTasks.remove(id);
+            log.debug("Cancelled heartbeat task for {}", id);
         }
     }
-
 }
