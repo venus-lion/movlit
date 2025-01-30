@@ -31,6 +31,10 @@ public class RedisMessagePublisher {
         
     }
 
+    /*
+        채팅방 정보 업데이트 토픽 발행하는 메서드
+     */
+
     public void updateRoom(UpdateRoomDto updateRoomDto) {
         log.info("Publishing update chatroom {}", updateRoomDto);
         redisTemplate.convertAndSend(updateRoomTopic.getTopic(), updateRoomDto);

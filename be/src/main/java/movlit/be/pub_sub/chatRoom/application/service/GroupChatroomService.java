@@ -23,6 +23,7 @@ import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
+import movlit.be.pub_sub.chatRoom.application.service.dto.GroupChatroomJoinedEvent;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
@@ -31,6 +32,7 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +48,7 @@ public class GroupChatroomService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final GroupChatroomCreationWorker worker;
+    private final ApplicationEventPublisher eventPublisher;
 
     // TODO: Const 분리
     private static final String CHATROOM_MEMBERS_KEY_PREFIX = "chatroom:";
@@ -140,6 +143,7 @@ public class GroupChatroomService {
     }
 
     // 존재하는 그룹채팅방 가입
+    @Transactional
     public GroupChatroomResponse joinGroupChatroom(GroupChatroomId groupChatroomId, MemberId memberId)
             throws ChatroomAccessDenied {
         GroupChatroom existingGroupChatroom = groupChatRepository.findByChatroomId(groupChatroomId);
@@ -172,7 +176,13 @@ public class GroupChatroomService {
         }
 
         // 바뀐 정보 업데이트
-        return groupChatRepository.create(existingGroupChatroom);
+        GroupChatroomResponse response = groupChatRepository.create(existingGroupChatroom);
+
+        // 그룹채팅방 가입 이벤트 발행
+        log.info("GroupChatroomService :: GroupChatroomJoinedEvent 발행...");
+        eventPublisher.publishEvent(new GroupChatroomJoinedEvent(groupChatroomId, memberId));
+
+        return response;
     }
 
     private void validateAlreadyJoined(MemberId memberId, GroupChatroom existingGroupChatroom) {
