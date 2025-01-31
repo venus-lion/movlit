@@ -99,6 +99,7 @@ public class SecurityConfig {
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**", "/ws-stomp/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/follows/*/follow").authenticated()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
