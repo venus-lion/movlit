@@ -11,7 +11,7 @@ export const AppContext = createContext();
 function App() {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(
-        !!sessionStorage.getItem('accessToken')
+        !!localStorage.getItem('accessToken') // 세션 스토리지 -> 로컬 스토리지
     );
     const [profileImage, setProfileImage] = useState(null);
     console.log('profileImage = {}', profileImage);
@@ -23,7 +23,7 @@ function App() {
     const handleLogout = async () => {
         try {
             await axiosInstance.post('/members/logout');
-            sessionStorage.removeItem('accessToken');
+            localStorage.removeItem('accessToken'); // 세션 스토리지 -> 로컬 스토리지
             document.cookie =
                 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             updateLoginStatus(false);
@@ -92,7 +92,7 @@ function App() {
                     `${import.meta.env.VITE_BASE_URL}/subscribe/${userId}`,
                     {
                         headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
+                            Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // 세션 스토리지 -> 로컬 스토리지
                             'Last-Event-ID': Date.now().toString()
                         },
                         withCredentials: true,
