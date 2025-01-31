@@ -1,5 +1,6 @@
 package movlit.be.follow.infra.persistence;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.FollowAlreadyMemberException;
 import movlit.be.common.exception.FollowNotFoundException;
@@ -38,6 +39,12 @@ public class FollowRepositoryImpl implements FollowRepository {
     @Override
     public void delete(Follow follow) {
         followJpaRepository.delete(follow);
+    }
+
+    // '나를 팔로우하는 사람들 목록'을 조회하는 쿼리
+    @Override
+    public List<Follow> findAllByFollowee_id(MemberId loginId) {
+        return followJpaRepository.findAllByFollowee_Id(loginId);
     }
 
 }
