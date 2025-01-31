@@ -1,5 +1,6 @@
 package movlit.be.follow.infra.persistence.jpa;
 
+import java.util.Optional;
 import movlit.be.common.util.ids.FollowId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.follow.domain.Follow;
@@ -13,4 +14,9 @@ public interface FollowJpaRepository extends JpaRepository<Follow, FollowId> {
             "WHERE f.follower.memberId = :followerId AND f.followee.memberId = :followeeId")
     boolean existsByFollowerIdAndFolloweeId(@Param("followerId")MemberId followerId,
                                             @Param("followeeId")MemberId followeeId);
+
+    @Query("SELECT f FROM Follow f " +
+            "WHERE f.follower.memberId = :followerId AND f.followee.memberId = :followeeId")
+    Optional<Follow> findByFollowerIdAndFolloweeId(@Param("followerId")MemberId followerId,
+                                                   @Param("followeeId")MemberId followeeId);
 }

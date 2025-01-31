@@ -2,6 +2,7 @@ package movlit.be.follow.infra.persistence;
 
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.FollowAlreadyMemberException;
+import movlit.be.common.exception.FollowNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.follow.domain.Follow;
 import movlit.be.follow.infra.persistence.jpa.FollowJpaRepository;
@@ -24,6 +25,19 @@ public class FollowRepositoryImpl implements FollowRepository {
     @Override
     public Follow save(Follow follow) {
         return followJpaRepository.save(follow);
+    }
+
+    @Override
+    public Follow findByFollowerIdAndFolloweeId(MemberId followerId, MemberId followeeId) {
+        Follow follow = followJpaRepository.findByFollowerIdAndFolloweeId(followerId, followeeId)
+                .orElseThrow(() -> new FollowNotFoundException());
+
+        return follow;
+    }
+
+    @Override
+    public void delete(Follow follow) {
+        followJpaRepository.delete(follow);
     }
 
 }

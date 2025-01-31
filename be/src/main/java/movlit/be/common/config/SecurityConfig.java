@@ -100,6 +100,7 @@ public class SecurityConfig {
                                 "/error/**", "api/books/**", "/ws-stomp/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/follows/*/follow").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/follows/*/follow").authenticated()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

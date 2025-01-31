@@ -32,6 +32,17 @@ public class FollowService {
         return register(followerId, followeeId);
     }
 
+    @Transactional
+    public void memberUnFollow(
+            MemberId followerId,
+            MemberId followeeId
+    ){
+        // 언팔로우를 시도했는데, 팔로우 관계가 존재하지 않는다면 예외 처리
+        Follow follow = followRepository.findByFollowerIdAndFolloweeId(followerId, followeeId);
+
+        followRepository.delete(follow);
+    }
+
     public Follow register(
             MemberId followerId,
             MemberId followeeId

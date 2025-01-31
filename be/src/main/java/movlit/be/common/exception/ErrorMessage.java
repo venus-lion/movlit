@@ -76,7 +76,9 @@ public enum ErrorMessage {
 
     // Follow
     FOLLOW_SELF_NOT_ALLOWED("자기 자신을 팔로우할 수 없습니다.", "f001"),
-    FOLLOW_ALREADY_MEMBER("이미 팔로우한 사용자입니다.", "f002");
+    FOLLOW_ALREADY_MEMBER("이미 팔로우한 사용자입니다.", "f002"),
+
+    FOLLOW_NOT_FOUND("팔로우 관계가 존재하지 않습니다.", "f003");
 
     private final String message;
     private final String code;
