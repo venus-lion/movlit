@@ -52,4 +52,14 @@ public class FollowRepositoryImpl implements FollowRepository {
         return followJpaRepository.findAllByFollower_id(loginId);
     }
 
+    @Override
+    public long countFollowersByLoginId(MemberId loginId) {
+        return followJpaRepository.countFollowersByLoginId(loginId);
+    }
+
+    @Override
+    public long countFollowsByLoginId(MemberId loginId) {
+        return followJpaRepository.countFollowsByLoginId(loginId);
+    }
+
 }

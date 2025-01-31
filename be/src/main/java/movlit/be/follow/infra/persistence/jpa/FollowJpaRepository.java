@@ -33,4 +33,14 @@ public interface FollowJpaRepository extends JpaRepository<Follow, FollowId> {
             "JOIN FETCH f.followee " +
             "WHERE f.follower.memberId = :loginId")
     List<Follow> findAllByFollower_id(MemberId loginId);
+
+    // 나를 팔로우하는 사람들(내 팔로워) 개수 조회
+    @Query("SELECT COUNT(f) FROM Follow f " +
+            "WHERE f.followee.memberId = :loginId")
+    long countFollowersByLoginId(MemberId loginId);
+
+    // 내가 팔로우하는 사람들(내 팔로우) 개수 조회
+    @Query("SELECT COUNT(f) FROM Follow f " +
+            "WHERE f.follower.memberId = :loginId")
+    long countFollowsByLoginId(MemberId loginId);
 }

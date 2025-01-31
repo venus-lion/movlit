@@ -57,6 +57,30 @@ public class FollowReadService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public int getFollowerCount(
+            MemberId loginId
+    ){
+        // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
+        MemberEntity loginMember = memberReadService.findEntityById(loginId);
+        log.info("FollwerReadService >>> loginMember : {}", loginMember);
+
+        // 나를 팔로우하는 사람들(팔로워) 개수 조회
+        int followerCount = (int) followRepository.countFollowersByLoginId(loginId);
+        log.info("followerCount 개수 >>> {}", followerCount);
+        return followerCount;
+    }
+
+    @Transactional(readOnly = true)
+    public int getFollowCount(
+            MemberId loginId
+    ){
+        // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
+        memberReadService.findEntityById(loginId);
+
+        // 내가 팔로우하는 사람들(팔로우) 개수 조회
+        return (int) followRepository.countFollowsByLoginId(loginId);
+    }
     private FollowResponse toFollowResponse(Follow follow){
         MemberEntity follower = follow.getFollower(); // 나를 팔로우하는 사람(팔로워) 정보 가져오기
 
