@@ -47,4 +47,9 @@ public class FollowRepositoryImpl implements FollowRepository {
         return followJpaRepository.findAllByFollowee_Id(loginId);
     }
 
+    @Override
+    public List<Follow> findAllByFollower_id(MemberId loginId) {
+        return followJpaRepository.findAllByFollower_id(loginId);
+    }
+
 }

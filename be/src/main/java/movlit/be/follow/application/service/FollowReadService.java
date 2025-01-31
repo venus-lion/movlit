@@ -41,6 +41,22 @@ public class FollowReadService {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<FollowResponse> getMyFollowingDetail(
+            MemberId loginId
+    ){
+        // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
+        MemberEntity loginMember = memberReadService.findEntityById(loginId);
+        log.info("FollwerReadService >>> loginMember : {}", loginMember);
+
+        // 내가 팔로우하는(팔로잉) 사람들 조회
+        List<Follow> followingList = followRepository.findAllByFollower_id(loginId);
+
+        return followingList.stream()
+                .map(this::toFollowingResponse)
+                .toList();
+    }
+
     private FollowResponse toFollowResponse(Follow follow){
         MemberEntity follower = follow.getFollower(); // 나를 팔로우하는 사람(팔로워) 정보 가져오기
 
@@ -48,6 +64,16 @@ public class FollowReadService {
                 .memberId(follower.getMemberId())
                 .nickname(follower.getNickname())
                 .profileImgUrl(follower.getProfileImgUrl())
+                .build();
+    }
+
+    private FollowResponse toFollowingResponse(Follow follow){
+        MemberEntity followee = follow.getFollowee(); // 내가 팔로우하는 사람 정보 가져오기
+
+        return FollowResponse.builder()
+                .memberId(followee.getMemberId())
+                .nickname(followee.getNickname())
+                .profileImgUrl(followee.getProfileImgUrl())
                 .build();
     }
 

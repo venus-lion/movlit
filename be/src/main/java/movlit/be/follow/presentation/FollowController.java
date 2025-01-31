@@ -71,4 +71,18 @@ public class FollowController {
 
         return ResponseEntity.status(HttpStatus.OK).body(followResponseList);
     }
+
+    // 내가 팔로우하는 사람들, 내 팔로우 목록 조회
+    @GetMapping("/my/following/details")
+    public ResponseEntity<List<FollowResponse>> getMyFollowingDetail(
+            @AuthenticationPrincipal MyMemberDetails details // 현재 로그인한 사용자 정보
+    ){
+        MemberId loginId = null;
+        if (details != null){
+            loginId = details.getMemberId();
+        }
+        List<FollowResponse> followResponseList = followReadService.getMyFollowingDetail(loginId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(followResponseList);
+    }
 }

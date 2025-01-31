@@ -27,4 +27,10 @@ public interface FollowJpaRepository extends JpaRepository<Follow, FollowId> {
             "JOIN FETCH f.follower " +
             "WHERE f.followee.memberId = :loginId")
     List<Follow> findAllByFollowee_Id(MemberId loginId);
+
+    // 내가 팔로우하는 사람들(내 팔로우) 조회
+    @Query("SELECT f FROM Follow f " +
+            "JOIN FETCH f.followee " +
+            "WHERE f.follower.memberId = :loginId")
+    List<Follow> findAllByFollower_id(MemberId loginId);
 }

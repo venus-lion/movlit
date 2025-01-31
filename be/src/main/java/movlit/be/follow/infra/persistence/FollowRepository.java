@@ -14,4 +14,6 @@ public interface FollowRepository {
     void delete(Follow follow);
 
     List<Follow> findAllByFollowee_id(MemberId loginId);
+
+    List<Follow> findAllByFollower_id(MemberId loginId);
 }
