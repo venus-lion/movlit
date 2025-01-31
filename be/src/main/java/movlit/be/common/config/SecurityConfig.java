@@ -99,6 +99,11 @@ public class SecurityConfig {
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**", "/ws-stomp/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/follows/*/follow").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/follows/*/follow").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/follows/my/follow/details").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/follows/my/following/details").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/follows/my/*/count").authenticated()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
