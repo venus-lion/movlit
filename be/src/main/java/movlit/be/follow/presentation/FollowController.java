@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.follow.application.service.FollowService;
-import movlit.be.member.application.service.MemberReadService;
-import movlit.be.member.domain.Member;
+import movlit.be.follow.application.service.FollowWriteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/follows")
 @RequiredArgsConstructor
 @Slf4j
-public class FollowWriteController {
-    private final FollowService followService;
+public class FollowController {
+    private final FollowWriteService followWriteService;
 
     // 팔로우 기능
     // 로그인한 유저(@AuthenticationPrincipal)가, URL에 있던 memberId를 팔로우한다.
@@ -35,7 +33,7 @@ public class FollowWriteController {
         if(details != null) {
             followerId = details.getMemberId();
         }
-        followService.memberFollow(followerId, followeeId);
+        followWriteService.memberFollow(followerId, followeeId);
 
         return ResponseEntity.status(HttpStatus.OK).body("팔로우가 완료되었습니다.");
     }
@@ -50,7 +48,7 @@ public class FollowWriteController {
         if (details != null){
             followerId = details.getMemberId();
         }
-        followService.memberUnFollow(followerId, followeeId);
+        followWriteService.memberUnFollow(followerId, followeeId);
 
         return ResponseEntity.status(HttpStatus.OK).body("언팔로우가 완료되었습니다.");
     }

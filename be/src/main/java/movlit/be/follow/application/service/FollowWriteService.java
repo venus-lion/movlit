@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class FollowService {
+public class FollowWriteService {
     private final FollowRepository followRepository;
     private final MemberReadService memberReadService;
 
