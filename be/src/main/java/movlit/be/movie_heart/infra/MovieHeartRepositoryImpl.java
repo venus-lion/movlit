@@ -2,7 +2,9 @@ package movlit.be.movie_heart.infra;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.exception.NotExistMovieHeartByMember;
+import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie_heart.application.converter.MovieHeartConverter;
 import movlit.be.movie_heart.domain.MovieHeart;
@@ -44,5 +46,16 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
                 .map(MovieHeartConverter::toDomain)
                 .toList();
     }
+
+    // 해당 영화를 찜한 멤버 리스트
+    @Override
+    public List<MemberId> fetchHeartingMembersByMovieId(Long bookId) {
+        List<MemberId> HeartingMemberList = movieHeartJpaRepository.findMemberByMovieId(bookId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return HeartingMemberList;
+    }
+
+
 
 }

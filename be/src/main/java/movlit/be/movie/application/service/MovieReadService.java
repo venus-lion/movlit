@@ -3,7 +3,9 @@ package movlit.be.movie.application.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.book.domain.BookVo;
 import movlit.be.common.util.Genre;
+import movlit.be.common.util.ids.BookId;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.repository.MovieRepository;
 import movlit.be.movie.presentation.dto.response.MovieListByGenreResponseDto;
@@ -47,6 +49,10 @@ public class MovieReadService {
 
         MovieListByGenreResponseDto responseDto = new MovieListByGenreResponseDto(genreId, genre.getName(), movieList);
         return responseDto;
+    }
+
+    public Movie fetchByMovieId(Long movieId) {
+        return movieRepository.findById(movieId);
     }
 
 }

@@ -93,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/chatrooms/myGroupChatrooms").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/chat/create/group").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/chat/group/rooms/my").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/noti/newGroupChat/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/id").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/subscribe/*").authenticated()
                         .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
