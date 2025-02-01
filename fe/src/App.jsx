@@ -118,12 +118,15 @@ function App() {
                 // 알림 이벤트 처리
                 eventSource.addEventListener('notification', (e) => {
                     try {
+                        console.log('알림 eventListener');
                         const notification = JSON.parse(e.data);
                         if (Notification.permission === 'granted') {
                             const noti = new Notification('Movlit 알림', {
                                 body: notification.message,
                                 icon: '/notification-icon.png'
                             });
+                            // 테스트 위한 임시 alert
+                            alert(notification.message);
                             noti.onclick = () => window.focus();
                         }
                     } catch (error) {
