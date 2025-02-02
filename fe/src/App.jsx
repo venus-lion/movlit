@@ -4,6 +4,7 @@ import axiosInstance from './axiosInstance';
 import './App.css';
 import {ToastContainer} from 'react-toastify';
 import {FaUserCircle} from 'react-icons/fa';
+import {EventSourcePolyfill} from 'event-source-polyfill';
 
 export const AppContext = createContext();
 
@@ -70,6 +71,96 @@ function App() {
         if (isLoggedIn) {
             fetchProfileImage();
         }
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        let eventSource = null;
+        let reconnectTimer = null;
+
+        const setupSSE = async () => {
+            try {
+                // 사용자의 ID를 가져오는 API 호출
+                const profileRes = await axiosInstance.get('/members/id');
+                const userId = profileRes.data.memberId;
+
+                if (Notification.permission !== 'granted') {
+                    await Notification.requestPermission();
+                }
+
+                // SSE 연결 설정
+                eventSource = new EventSourcePolyfill(
+                    `${import.meta.env.VITE_BASE_URL}/subscribe/${userId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
+                            'Last-Event-ID': Date.now().toString()
+                        },
+                        withCredentials: true,
+                        heartbeatTimeout: 45000,
+                        connectionTimeout: 5000
+                    }
+                );
+
+                // 연결 상태 관리
+                eventSource.onopen = () => {
+                    console.log('SSE 연결 성공');
+                    if (reconnectTimer) {
+                        clearTimeout(reconnectTimer);
+                        reconnectTimer = null;
+                    }
+                };
+
+                // 하트비트 이벤트 처리
+                eventSource.addEventListener('heartbeat', () => {
+                    console.debug('SSE 연결 활성 상태 유지');
+                });
+
+                // 알림 이벤트 처리
+                eventSource.addEventListener('notification', (e) => {
+                    try {
+                        console.log('알림 : ' + e.data);
+                        const notification = JSON.parse(e.data);
+                        if (Notification.permission === 'granted') {
+                            const noti = new Notification('Movlit 알림', {
+                                body: notification.message,
+                                icon: '/notification-icon.png'
+                            });
+                            noti.onclick = () => window.focus();
+                        }
+                    } catch (error) {
+                        console.error('알림 처리 오류:', error);
+                    }
+                });
+
+                // 오류 처리
+                eventSource.onerror = (e) => {
+                    console.error('SSE 연결 오류:', e);
+                    if (eventSource) {
+                        eventSource.close();
+                        eventSource = null;
+                    }
+                    if (!reconnectTimer) {
+                        reconnectTimer = setTimeout(setupSSE, 5000);
+                    }
+                };
+
+            } catch (error) {
+                console.error('SSE 초기화 실패:', error);
+                if (!reconnectTimer) {
+                    reconnectTimer = setTimeout(setupSSE, 10000);
+                }
+            }
+        };
+
+        if (isLoggedIn) setupSSE();
+
+        return () => {
+            if (eventSource) {
+                eventSource.close();
+                console.log('SSE 연결 종료');
+            }
+            if (reconnectTimer) clearTimeout(reconnectTimer);
+        };
     }, [isLoggedIn]);
 
     return (
