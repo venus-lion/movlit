@@ -24,6 +24,7 @@ public class SseEmitterService {
         SseEmitter emitter = emitters.get(id);
         if (emitter != null) {
             try {
+                log.info("SSeEmitterService : notification send 이벤트 발행 !! ");
                 emitter.send(SseEmitter.event().name("notification").data(notification));
             } catch (IOException e) {
                 handleEmitterError(id, e, "Error sending notification to user {}");
@@ -45,7 +46,7 @@ public class SseEmitterService {
             completeEmitter(id, e);
         }
 
-        scheduleHeartbeat(id, emitter);
+       // scheduleHeartbeat(id, emitter);
         emitters.put(id, emitter);
         emitterCompletionStatus.put(id, false);
         return emitter;

@@ -87,7 +87,8 @@ function App() {
                     await Notification.requestPermission();
                 }
 
-                // SSE 연결 설정
+                console.log('SSE 연결 설정, userId : ' + userId);
+                //SSE 연결 설정
                 eventSource = new EventSourcePolyfill(
                     `${import.meta.env.VITE_BASE_URL}/subscribe/${userId}`,
                     {
@@ -103,7 +104,7 @@ function App() {
 
                 // 연결 상태 관리
                 eventSource.onopen = () => {
-                    console.log('SSE 연결 성공');
+                    console.log('로그인 이후 -- SSE 연결 성공');
                     if (reconnectTimer) {
                         clearTimeout(reconnectTimer);
                         reconnectTimer = null;
@@ -115,13 +116,20 @@ function App() {
                     console.debug('SSE 연결 활성 상태 유지');
                 });
 
-                // 알림 이벤트 처리
+                // 알림 이벤트 처리 - 'notification' 이벤트 수신 시..
                 eventSource.addEventListener('notification', (e) => {
                     try {
+                        console.log('notification 이벤트를 받았다!!');
+                        console.log('e.data : ', e.data); // e.data 값 확인
+
                         const notification = JSON.parse(e.data);
+                        console.log('받은 notification :: ' + notification);
+
                         if (Notification.permission === 'granted') {
+                            console.log('Notifcation.permission이 granted이다 !');
+                            console.log(notification.message);
                             const noti = new Notification('Movlit 알림', {
-                                body: notification.message,
+                                body: notification.message, // 알림 메세지 표시
                                 icon: '/notification-icon.png'
                             });
                             noti.onclick = () => window.focus();

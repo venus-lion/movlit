@@ -8,6 +8,10 @@ import movlit.be.follow.domain.Follow;
 import movlit.be.follow.infra.persistence.FollowRepository;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.entity.MemberEntity;
+import movlit.be.pub_sub.RedisNotificationPublisher;
+import movlit.be.pub_sub.notification.NotificationDto;
+import movlit.be.pub_sub.notification.NotificationMessage;
+import movlit.be.pub_sub.notification.NotificationType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowWriteService {
     private final FollowRepository followRepository;
     private final MemberReadService memberReadService;
+    private final RedisNotificationPublisher redisNotificationPublisher;
 
     @Transactional
     public Follow memberFollow(
@@ -29,7 +34,12 @@ public class FollowWriteService {
         // 이미 팔로우한 경우 예외처리
         followRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId);
 
-        return register(followerId, followeeId);
+        Follow savedFollow = register(followerId, followeeId);
+
+        // 팔로우 알림 발행
+        publishFollowNotification(savedFollow.getFollower(), savedFollow.getFollowee());
+
+        return savedFollow;
     }
 
     @Transactional
@@ -57,5 +67,21 @@ public class FollowWriteService {
                 .build();
 
         return followRepository.save(follow);
+    }
+
+    // 팔로우 알림 생성 및 발행
+    public void publishFollowNotification(MemberEntity follower, MemberEntity followee){
+        // 알림 메세지 생성 : 'A'님이 'B'님을 팔로우합니다.
+        String message = NotificationMessage.generateFollowingMessage(follower.getNickname(), followee.getNickname());
+
+        // 알림 DTO 생성
+        NotificationDto notificationDto = new NotificationDto(
+          followee.getMemberId().getValue(), // 알림을 받는 대상은, 팔로잉을 당한 사람 ('B')
+          message,
+          NotificationType.FOLLOW
+        );
+
+        // Redis를 통해 알림 발행
+        redisNotificationPublisher.publishNotification(notificationDto);
     }
 }
