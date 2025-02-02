@@ -1,54 +1,52 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
+import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatModal.css";
 import axiosInstance from "../../axiosInstance.js";
 
-// 별을 표시하는 함수
 const renderStars = (rating) => {
-    // rating 값을 0 ~ 10으로 받을 경우
-    const validRating = Math.max(0, Math.min(10, rating || 0));  // 0 ~ 10 사이로 제한
-
-    // 2점마다 1개의 꽉 찬 별로 환산
-    const fullStars = Math.floor(validRating / 2);  // 꽉 찬 별 개수
-    const halfStar = validRating % 2 >= 1 ? 1 : 0;  // 반쪽 별 여부 (나머지가 1 이상이면 반쪽 별)
-    const emptyStars = 5 - fullStars - halfStar;  // 빈 별 개수 (총 5개 별이므로 나머지)
+    const validRating = Math.max(0, Math.min(10, rating || 0));
+    const fullStars = Math.floor(validRating / 2);
+    const halfStar = validRating % 2 >= 1 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
 
     return (
         <>
-            {[...Array(fullStars)].map((_, index) => <FaStar key={`full-${index}`} className="star-icon"/>)}
-            {halfStar === 1 && <FaStarHalfAlt className="star-icon"/>}
-            {[...Array(emptyStars)].map((_, index) => <FaRegStar key={`empty-${index}`} className="star-icon"/>)}
+            {[...Array(fullStars)].map((_, index) => (
+                <FaStar key={`full-${index}`} className="star-icon" />
+            ))}
+            {halfStar === 1 && <FaStarHalfAlt className="star-icon" />}
+            {[...Array(emptyStars)].map((_, index) => (
+                <FaRegStar key={`empty-${index}`} className="star-icon" />
+            ))}
         </>
     );
 };
 
-// 제목 축약 함수
 const truncateTitle = (title, maxLength = 15) => {
     if (title.length > maxLength) {
         return `${title.slice(0, maxLength)}...`;
     }
     return title;
 };
+const CreateGroupChatModal = ({ isOpen, onClose, onConfirm }) => {
+    const [selectedCategory, setSelectedCategory] = useState("movie");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [selectedCard, setSelectedCard] = useState(null);
+    const [hasSearched, setHasSearched] = useState(false); // 추가된 상태
 
-const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
-    const [selectedCategory, setSelectedCategory] = useState("movie"); // 기본 선택 영화
-    const [searchTerm, setSearchTerm] = useState(""); // 검색어
-    const [searchResults, setSearchResults] = useState([]); // 검색 결과
-    const [selectedCard, setSelectedCard] = useState(null); // 선택된 카드 데이터
-
-    // 라디오 버튼 변경 핸들러
     const handleCategoryChange = (event) => {
         setSearchResults([]);
         setSelectedCard(null);
         setSelectedCategory(event.target.value);
+        setHasSearched(false); // 카테고리 변경 시 검색 상태 초기화
     };
-    // 카테고리가 변경될 때 검색 결과 초기화
+
     useEffect(() => {
-        setSearchResults([]); // 카테고리 변경 시 결과 초기화
+        setSearchResults([]);
     }, [selectedCategory]);
 
-    // 검색 버튼 클릭 핸들러
     const handleSearch = async () => {
         if (!searchTerm.trim()) {
             alert("검색어를 입력하세요.");
@@ -56,69 +54,50 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
         }
         setSearchResults([]);
         setSelectedCard(null);
+        setHasSearched(true); // 검색 상태 설정
 
         try {
-            if (selectedCategory === "movie") {
-                //  영화 데이터 가져오기
-                const response = await axiosInstance.get(`/movies/search/searchMovie`, {
+            const response = await axiosInstance.get(
+                selectedCategory === "movie"
+                    ? `/movies/search/searchMovie`
+                    : `/books/search/searchBook`,
+                {
                     params: {
                         page: 1,
                         pageSize: 50,
-                        inputStr: searchTerm
+                        inputStr: searchTerm,
                     },
-                });
+                }
+            );
 
-                const movieData = await response.data.movieList;
-                setSearchResults(movieData); // 결과가 없으면 빈 배열로 설정
-            } else if (selectedCategory === "book") {
-                // 도서 데이터 가져오기
-                const response = await axiosInstance.get(`/books/search/searchBook`, {
-                    params: {
-                        page: 1,
-                        pageSize: 50,
-                        inputStr: searchTerm
-                    }
-                });
-                const bookData = await response.data.bookESVoList;
-                setSearchResults(bookData);
-            }
+            const data = selectedCategory === "movie"
+                ? response.data.movieList
+                : response.data.bookESVoList;
 
-
+            setSearchResults(data);
         } catch (error) {
             console.error("Error fetching search results:", error);
-            setSearchResults([]); // 오류 발생 시 빈 배열
+            setSearchResults([]);
         }
     };
 
     const handleCardClick = (result) => {
-
-        setSelectedCard((prev) => (prev === result ? null : result)); // 토글 선택
+        setSelectedCard((prev) => (prev === result ? null : result));
     };
-    useEffect(() => {
-        console.log(selectedCard);
-    }, [selectedCard]);
 
-    // 선택 버튼 클릭 핸들러
     const handleConfirm = () => {
         if (!selectedCard) {
             alert("카드를 선택해주세요.");
             return;
         }
-        if (!selectedCategory) {
-            alert("카테고리를 선택해주세요.");
-            return;
-        }
-        console.dir("selectedCard : " + JSON.stringify(selectedCard, null, 5));
-        console.log("selectedCategory : " + selectedCategory);
-        onConfirm(selectedCard, selectedCategory); // 선택된 데이터를 부모로 전달
+        onConfirm(selectedCard, selectedCategory);
     };
 
-    // 취소 버튼 클릭 핸들러
     const handleCancel = () => {
-        setSearchTerm(""); // 검색어 초기화
-        setSearchResults([]); // 검색 결과 초기화
         setSearchTerm("");
-        onClose(); // 모달 닫기
+        setSearchResults([]);
+        setHasSearched(false); // 검색 상태 초기화
+        onClose();
     };
 
     return (
@@ -130,14 +109,11 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
             ariaHideApp={false}
         >
             <div className="modal-content">
-                {/* 모달 헤더 */}
                 <div className="modal-header">
                     <h2>채팅방 생성</h2>
                 </div>
 
-                {/* 모달 본문 */}
                 <div className="modal-body">
-                    {/* 카테고리 선택 */}
                     <div className="modal-tab-container">
                         <label className="radio-label">
                             <input
@@ -163,7 +139,6 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
                         </label>
                     </div>
 
-                    {/* 검색 영역 */}
                     <div className="search-container">
                         <input
                             type="text"
@@ -179,53 +154,54 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
 
                     {/* 검색 결과 */}
                     <div className="result-container">
-                        <h3>검색 결과</h3>
-                        <div className="results-scroll">
-                            {searchResults.length > 0 ? (
-                                <div className="results-grid">
-                                    {searchResults.map((result, index) => (
-                                        <div key={index}
-                                             className={`result-card ${selectedCard === result ? 'selected' : ''}`}
-                                             onClick={() => handleCardClick(result)}
-                                        >
-                                            {selectedCategory === "movie" ? (
-                                                <>
-                                                    <img src={result.posterPath} alt={result.title}
-                                                         className="result-image"/>
-                                                    <div className="result-title">{truncateTitle(result.title)}</div>
-                                                    <div
-                                                        className="result-rating">
-                                                        ⭐<span>({Math.round(parseFloat(result.voteAverage) * 10) / 10})</span>
-                                                    </div>
-                                                    <div>
-                                                        <p className="result-info">
-                                                            {result.movieGenre.map((g) => g.genreName).join(', ')}
-                                                        </p>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <img src={result.bookImgUrl} alt={result.title}
-                                                         className="result-image"/>
-                                                    <div className="result-title">{truncateTitle(result.title)}</div>
-                                                    <div>
-                                                        <p className="result-info">
-                                                            {result.crew.join(', ')}
-                                                        </p>
-                                                    </div>
-                                                </>
-                                            )}
+                        {hasSearched && ( // 검색이 이루어진 경우에만 결과 보여줌
+                            <>
+                                <h3>검색 결과</h3>
+                                <div className="results-scroll">
+                                    {searchResults.length > 0 ? (
+                                        <div className="results-grid">
+                                            {searchResults.map((result, index) => (
+                                                <div key={index}
+                                                     className={`result-card ${selectedCard === result ? 'selected' : ''}`}
+                                                     onClick={() => handleCardClick(result)}
+                                                >
+                                                    {selectedCategory === "movie" ? (
+                                                        <>
+                                                            <img src={result.posterPath} alt={result.title}
+                                                                 className="result-image" />
+                                                            <div className="result-title">{truncateTitle(result.title)}</div>
+                                                            <div className="result-rating">
+                                                                ⭐<span>({Math.round(parseFloat(result.voteAverage) * 10) / 10})</span>
+                                                            </div>
+                                                            <div>
+                                                                <p className="result-info">
+                                                                    {result.movieGenre.map((g) => g.genreName).join(', ')}
+                                                                </p>
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <img src={result.bookImgUrl} alt={result.title}
+                                                                 className="result-image" />
+                                                            <div className="result-title">{truncateTitle(result.title)}</div>
+                                                            <div>
+                                                                <p className="result-info">
+                                                                    {result.crew.join(', ')}
+                                                                </p>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    ) : (
+                                        hasSearched && <p>검색결과가 없습니다.</p> // 결과가 없을 경우에만
+                                    )}
                                 </div>
-                            ) : (
-                                <p>검색결과가 없습니다.</p>
-                            )}
-                        </div>
+                            </>
+                        )}
                     </div>
                 </div>
-
-                {/* 모달 푸터 */}
                 <div className="modal-footer">
                     <button className="modal-cancel" onClick={handleCancel}>취소</button>
                     <button className="modal-confirm" onClick={handleConfirm}>선택</button>
@@ -236,3 +212,4 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
 };
 
 export default CreateGroupChatModal;
+

@@ -24,7 +24,9 @@ public class SseEmitterService {
         SseEmitter emitter = emitters.get(id);
         if (emitter != null) {
             try {
+
                 log.info("SSeEmitterService : notification send 이벤트 발행 !! ");
+
                 emitter.send(SseEmitter.event().name("notification").data(notification));
             } catch (IOException e) {
                 handleEmitterError(id, e, "Error sending notification to user {}");
@@ -36,6 +38,7 @@ public class SseEmitterService {
         SseEmitter emitter = createSseEmitter(id);
 
         try {
+            log.info("::SseEmitterService_addEmitter::");
             emitter.send(SseEmitter.event()
                     .id(String.valueOf(System.currentTimeMillis()))
                     .name("connect")

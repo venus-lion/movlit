@@ -119,6 +119,7 @@ function App() {
                 // 알림 이벤트 처리 - 'notification' 이벤트 수신 시..
                 eventSource.addEventListener('notification', (e) => {
                     try {
+
                         console.log('notification 이벤트를 받았다!!');
                         console.log('e.data : ', e.data); // e.data 값 확인
 
@@ -132,6 +133,8 @@ function App() {
                                 body: notification.message, // 알림 메세지 표시
                                 icon: '/notification-icon.png'
                             });
+                            // 테스트 위한 임시 alert
+                            alert(notification.message);
                             noti.onclick = () => window.focus();
                         }
                     } catch (error) {

@@ -1,6 +1,7 @@
 package movlit.be.movie_heart.domain.repository;
 
 import java.util.List;
+import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie_heart.domain.MovieHeart;
 import movlit.be.movie_heart.domain.entity.MovieHeartEntity;
@@ -14,5 +15,8 @@ public interface MovieHeartRepository {
     void deleteByMovieIdAndMemberId(Long movieId, MemberId memberId);
 
     List<MovieHeart> fetchMovieHeartRecentByMember(MemberId memberId);
+
+    // 도서 찜한 멤버 리스트
+    List<MemberId> fetchHeartingMembersByMovieId(Long movieId);
 
 }
