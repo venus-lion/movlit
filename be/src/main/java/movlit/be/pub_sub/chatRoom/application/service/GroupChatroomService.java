@@ -2,6 +2,7 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomAccessDenied;
@@ -42,7 +44,6 @@ public class GroupChatroomService {
 
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
-    private final ChatMessageService chatMessageService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final GroupChatroomCreationWorker worker;
@@ -183,17 +184,22 @@ public class GroupChatroomService {
     }
 
     // 내가 가입한 그룹채팅 리스트 가져오기
-    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
-        return groupChatRepository.fetchGroupChatroomByMemberId(memberId).stream()
-                .peek(chatRoom -> {
-                    // TODO: repository단에서 ChatMessageDto 정보와 join하여 가져오기 -> 이러면 list 돌면서 결합 안 해줘도 됨
-                    ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
-                            chatRoom.getGroupChatroomId().getValue());
-                    if (Objects.nonNull(recentMessage)) {
-                        chatRoom.setRecentMessage(recentMessage);
-                    }
-                })
-                .toList();
+//    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
+//        return groupChatRepository.fetchGroupChatroomByMemberId(memberId).stream()
+//                .peek(chatRoom -> {
+//                    // TODO: repository단에서 ChatMessageDto 정보와 join하여 가져오기 -> 이러면 list 돌면서 결합 안 해줘도 됨
+//                    ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
+//                            chatRoom.getGroupChatroomId().getValue());
+//                    if (Objects.nonNull(recentMessage)) {
+//                        chatRoom.setRecentMessage(recentMessage);
+//                    }
+//                })
+//                .toList();
+//    }
+
+    // 내가 가입한 그룹채팅 리스트만 가져오기
+    public List<GroupChatroomResponseDto> fetchMyGroupChatroomList(MemberId memberId) {
+        return groupChatRepository.fetchGroupChatroomByMemberId(memberId);
     }
 
     // 특정 그룹채팅 안 멤버 정보 update (멤버 정보 redis 1차 캐시)
@@ -234,4 +240,7 @@ public class GroupChatroomService {
         }
     }
 
+    public GroupChatroom fetchGroupChatroomById(GroupChatroomId groupChatroomId) {
+        return groupChatRepository.findByChatroomId(groupChatroomId);
+    }
 }

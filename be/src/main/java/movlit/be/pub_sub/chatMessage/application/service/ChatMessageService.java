@@ -1,5 +1,6 @@
 package movlit.be.pub_sub.chatMessage.application.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.RedisStreamOperationReturnNull;
@@ -10,6 +11,7 @@ import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.ChatMessageRepository;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
+import movlit.be.pub_sub.notification.NotificationService;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RedisMessagePublisher messagePublisher;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final NotificationService notificationService;
 
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
 
@@ -36,6 +39,7 @@ public class ChatMessageService {
     }
 
     // 일대일 채팅방 sendMessage
+    @Transactional
     public void sendMessageForOnOnOne(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.ONE_ON_ONE);
 
@@ -46,6 +50,7 @@ public class ChatMessageService {
     }
 
     // 그룹 채팅방 sendMessage
+    @Transactional
     public void sendMessageForGroup(ChatMessageDto chatMessageDto) {
         chatMessageDto.setMessageType(MessageType.GROUP);
 
@@ -53,6 +58,8 @@ public class ChatMessageService {
         produceChatMessage(chatMessageDto);
 
         messagePublisher.sendMessage(chatMessageDto);
+
+        notificationService.groupChatroomMessageNotification(chatMessageDto);   // 그룹 채팅방 메시지 전송 알림
     }
 
     // 해당 채팅방의 읽지 않은 메시지 갯수 return
