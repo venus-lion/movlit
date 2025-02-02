@@ -10,7 +10,8 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
 @RequiredArgsConstructor
-public class RedisListenerConfig { // 클래스명 변경
+public class
+RedisListenerConfig { // 클래스명 변경
 
     private final RedisMessageSubscriber subscriber;
     private final RedisNotificationSubscriber notificationSubscriber; // 변경된 부분
