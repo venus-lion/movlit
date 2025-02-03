@@ -42,8 +42,6 @@ public class NotificationService {
                 ))
                 .toList();
 
-        notificationDtoList.forEach(notificationDto -> {
-            redisNotificationPublisher.publishNotification(notificationDto);
-        });
+        notificationDtoList.forEach(redisNotificationPublisher::publishNotification);
     }
 }
