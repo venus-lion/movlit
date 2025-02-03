@@ -3,8 +3,10 @@ package movlit.be.pub_sub.chatRoom.application.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.ids.GroupChatroomId;
@@ -26,8 +28,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileImageUpdatedEventListener {
-    private final GroupChatroomService groupChatroomService;
     private final RedisMessagePublisher redisMessagePublisher;
+    private final FetchGroupChatroomUseCase fetchGroupChatroomUseCase;
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final MemberReadService memberReadService;
@@ -36,12 +38,13 @@ public class ProfileImageUpdatedEventListener {
     private static final String CHATROOM_MEMBERS_KEY_PREFIX = "chatroom:";
     private static final String CHATROOM_MEMBERS_KEY_SUFFIX = ":members";
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
+
     @TransactionalEventListener
     public void handleProfileImageUpdatedEvent(ProfileImageUpdatedEvent event) throws JsonProcessingException {
         MemberId memberId = event.getMemberId();
 
         // 해당 멤버가 속한 모든 그룹채팅방 ID를 조회
-        List<GroupChatroomResponseDto> groupChatroomResponseDtoList = groupChatroomService.fetchMyGroupChatList(memberId);
+        List<GroupChatroomResponseDto> groupChatroomResponseDtoList = fetchGroupChatroomUseCase.execute(memberId);
 
         // 업데이트된 멤버정보 조회
         MemberEntity updatedMember = memberReadService.findEntityById(memberId);
@@ -49,7 +52,7 @@ public class ProfileImageUpdatedEventListener {
 
 
         // 각 그룹채팅방 ID에 대해 updatedRoomDto 생성 및 메세지 발행
-        for (GroupChatroomResponseDto groupChatroomResponseDto : groupChatroomResponseDtoList){
+        for (GroupChatroomResponseDto groupChatroomResponseDto : groupChatroomResponseDtoList) {
             GroupChatroomId groupChatroomId = groupChatroomResponseDto.getGroupChatroomId();
 
             // 캐시 키 생성
@@ -59,7 +62,7 @@ public class ProfileImageUpdatedEventListener {
             String cachedJson = (String) redisTemplate.opsForValue().get(cacheKey);
 
             List<GroupChatroomMemberResponse> cachedMembers;
-            if (cachedJson != null){
+            if (cachedJson != null) {
                 // 캐시된 데이터(Json 문자열)를 List<GroupChatroomMemberResponse>로 역직렬화
                 cachedMembers = objectMapper.readValue(cachedJson, new TypeReference<>() {
                 });
@@ -72,8 +75,8 @@ public class ProfileImageUpdatedEventListener {
                 );
 
                 // 기존에 캐시된 멤버리스트에서, 업데이트된 멤버정보만 수정
-                for (int i = 0; i < cachedMembers.size(); i++){
-                    if (cachedMembers.get(i).getMemberId().equals(memberId)){
+                for (int i = 0; i < cachedMembers.size(); i++) {
+                    if (cachedMembers.get(i).getMemberId().equals(memberId)) {
                         cachedMembers.set(i, updatedMemberResponse);
                         break;
                     }
@@ -85,10 +88,10 @@ public class ProfileImageUpdatedEventListener {
 
                 // UpdateRoomDto 생성 및 발행
                 UpdateRoomDto updateRoomDto = new UpdateRoomDto(
-                  groupChatroomId,
-                  MessageType.GROUP,
-                  EventType.MEMBER_PROFILE_UPDATE,
-                  memberId
+                        groupChatroomId,
+                        MessageType.GROUP,
+                        EventType.MEMBER_PROFILE_UPDATE,
+                        memberId
                 );
 
                 redisMessagePublisher.updateRoom(updateRoomDto);

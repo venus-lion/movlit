@@ -24,6 +24,11 @@ public class FollowRepositoryImpl implements FollowRepository {
     }
 
     @Override
+    public boolean existsByFollowerIdAndFolloweeIdWithoutException(MemberId followerId, MemberId followeeId) {
+        return followJpaRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId);
+    }
+
+    @Override
     public Follow save(Follow follow) {
         return followJpaRepository.save(follow);
     }

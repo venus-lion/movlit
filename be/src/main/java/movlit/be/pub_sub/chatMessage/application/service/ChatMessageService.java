@@ -1,10 +1,12 @@
 package movlit.be.pub_sub.chatMessage.application.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.RedisStreamOperationReturnNull;
@@ -23,6 +25,7 @@ import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
 import movlit.be.pub_sub.notification.NotificationType;
 import org.springframework.beans.factory.annotation.Value;
+import movlit.be.pub_sub.notification.NotificationService;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -36,8 +39,8 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RedisMessagePublisher messagePublisher;
     private final RedisTemplate<String, String> redisTemplate;
-    private final ObjectMapper objectMapper;
     private final RedisNotificationPublisher redisNotificationPublisher;
+    private final NotificationService notificationService;
 
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
     private final MemberReadService memberReadService;
@@ -94,6 +97,8 @@ public class ChatMessageService {
         produceChatMessage(chatMessageDto);
 
         messagePublisher.sendMessage(chatMessageDto);
+
+        notificationService.groupChatroomMessageNotification(chatMessageDto);   // 그룹 채팅방 메시지 전송 알림
     }
 
     // 해당 채팅방의 읽지 않은 메시지 갯수 return
