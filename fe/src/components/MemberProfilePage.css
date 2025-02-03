@@ -146,3 +146,19 @@
     margin-right: 10px; /* 간격 추가 */
     margin-left: 10px; /* 간격 추가 */
 }
+
+.dm-button {
+    margin-top: 10px;
+    margin-left: 10px; /* 팔로우 버튼과의 간격 */
+    padding: 8px 16px;
+    background-color: #ff4040; /* DM 버튼 기본 색상 (빨간색) */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dm-button:hover {
+    background-color: #ff6969; /* DM 버튼 호버 색상 */
+}

@@ -128,6 +128,22 @@ function MemberProfilePage() {
         }
     };
 
+    const handleCreateOneononeChatroom = async () => {
+        try {
+            const response = await axiosInstance.post(`chat/create/oneOnOne`, {
+                receiverId: memberId,
+            });
+
+            // 성공적으로 채팅방이 생성되었을 때의 처리
+            toast.success('개인 채팅방이 생성되었습니다.');
+            console.log('개인 채팅방 생성 응답 : ', response.data);
+
+        } catch (error) {
+            console.error('Error creating one-on-one chatroom:', error);
+            toast.error('DM 채팅방 생성에 실패했습니다.');
+        }
+    };
+
     return (
         <div className="memberpage-container">
             <ToastContainer />
@@ -143,11 +159,17 @@ function MemberProfilePage() {
                     <h2>{userData.nickname}</h2>
                     <p>{userData.email}</p>
                     {/*loginMemberId와 memberId가 동일하지 않을 때만 팔로우 버튼 렌더링*/}
-                    { loginMemberId !== memberId &&
-                        (<button onClick={handleFollowToggle} className="follow-button">
-                        {isFollowing ? '언팔로우' : '팔로우'}
-                    </button>)
-                    }
+                    {loginMemberId !== memberId && (
+                        <>
+                            <button onClick={handleFollowToggle} className="follow-button">
+                                {isFollowing ? '언팔로우' : '팔로우'}
+                            </button>
+                            {/* DM 버튼 추가 */}
+                            <button onClick={handleCreateOneononeChatroom} className="dm-button">
+                                DM
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
             <div className="memberpage-stats">
