@@ -8,6 +8,7 @@ import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.auth.application.service.dto.AuthTokenIssueResponse;
 import movlit.be.common.util.HttpHeaderParser;
 import movlit.be.common.util.HttpHeaderType;
+import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.presentation.dto.request.MemberLoginRequest;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,7 +68,6 @@ public class MemberController {
 
     /**
      * 회원 마이 페이지 조회 API
-     * TODO: Book 정보도 Response Dto와 Query에 추가
      */
     @GetMapping("/api/members/myPage")
     public ResponseEntity<MemberReadMyPage> fetchMyPage(
@@ -76,12 +77,30 @@ public class MemberController {
     }
 
     /**
-     * 회원 장르 조회 API
+     * 회원 프로필 조회 API
+     */
+    @GetMapping("/api/members/{memberId}/profile")
+    public ResponseEntity<MemberReadMyPage> fetchMemberProfile(@PathVariable MemberId memberId) {
+        var response = memberReadService.fetchMyPage(memberId);
+        return ResponseEntity.ok().body(response);
+    }
+
+    /**
+     * 회원 마이 장르 조회 API
      */
     @GetMapping("/api/members/genreList")
     public ResponseEntity<List<GenreListReadResponse>> fetchGenreList(
             @AuthenticationPrincipal MyMemberDetails details) {
         var response = memberReadService.fetchGenreListById(details.getMemberId());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 회원 장르 조회 API
+     */
+    @GetMapping("/api/members/{memberId}/genres")
+    public ResponseEntity<List<GenreListReadResponse>> fetchMemberGenres(@PathVariable MemberId memberId) {
+        var response = memberReadService.fetchGenreListById(memberId);
         return ResponseEntity.ok(response);
     }
 

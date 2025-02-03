@@ -35,7 +35,6 @@ public interface MemberJpaRepository extends JpaRepository<MemberEntity, MemberI
     )
     boolean existsByEmail(@Param("email") String email);
 
-    // TODO: Book 정보 추가
     @Query("SELECT NEW movlit.be.member.presentation.dto.response.MemberReadMyPage(i.url, mb.nickname, mb.email, "
             + "(SELECT COUNT(mh) FROM MovieHeartEntity mh WHERE mh.memberId = mb.memberId), "
             + "(SELECT COUNT(mc) FROM MovieCommentEntity mc WHERE mc.memberId = mb.memberId), "

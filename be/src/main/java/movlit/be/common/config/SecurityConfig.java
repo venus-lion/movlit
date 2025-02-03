@@ -105,6 +105,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/follows/my/follow/details").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/follows/my/following/details").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/follows/my/*/count").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/members/*/profile").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/members/*/genres").permitAll()
                         .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

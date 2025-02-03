@@ -60,12 +60,12 @@ public class MovieDetailReadController {
             Pageable pageable
     ) {
         if (details == null) {
-            var response = movieDetailReadService.fetchMovieComments(movieId, pageable); // TODO: data 사용
+            var response = movieDetailReadService.fetchMovieComments(movieId, pageable);
             return ResponseEntity.ok(response);
         }
 
         MemberId currentMemberId = details.getMemberId();
-        var response = movieDetailReadService.fetchMovieComments(movieId, currentMemberId, pageable); // TODO: data 사용
+        var response = movieDetailReadService.fetchMovieComments(movieId, currentMemberId, pageable);
         return ResponseEntity.ok(response);
     }
 
