@@ -31,7 +31,7 @@ class RedisNotificationPublisherTest {
     void publishNotificationTest() {
         // Given
         NotificationDto notificationDto = new NotificationDto(IdFactory.createMemberId().getValue(),
-                "Test Notification", NotificationType.FOLLOW);
+                "Test Notification", NotificationType.FOLLOW, "/");
         when(notificationTopic.getTopic()).thenReturn("notification");
 
         // When

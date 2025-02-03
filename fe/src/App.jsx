@@ -5,6 +5,7 @@ import './App.css';
 import { ToastContainer } from 'react-toastify';
 import { FaUserCircle } from 'react-icons/fa';
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import notificationIcon from './images/notification.jpg';
 
 
 export const AppContext = createContext();
@@ -130,7 +131,6 @@ function App() {
                 // 알림 이벤트 처리 - 'notification' 이벤트 수신 시..
                 eventSource.addEventListener('notification', (e) => {
                     try {
-
                         console.log('notification 이벤트를 받았다!!');
                         console.log('e.data : ', e.data); // e.data 값 확인
 
@@ -138,18 +138,26 @@ function App() {
                         console.log('받은 notification :: ' + notification);
 
                         if (Notification.permission === 'granted') {
-                            console.log('Notifcation.permission이 granted이다 !');
+                            console.log('Notifcation.permission이 granted 됨');
                             console.log(notification.message);
-                            const noti = new Notification('Movlit 알림', {
+                            console.log(notification.url)
+                            const noti = new Notification('Movlit', {
                                 body: notification.message, // 알림 메세지 표시
-                                icon: '/notification-icon.png'
+                                url: notification.url,
+                                icon: notificationIcon,
                             });
+
                             // 테스트 위한 임시 alert
                             alert(notification.message);
-                            noti.onclick = () => window.focus();
                             // 알림 종
                             setNotifications((prev) => [...prev, notification]);
                             setNewNotification(true); // 새로운 알림 발생
+
+                            noti.onclick = () => {
+                                // window.focus(); // 브라우저 창에 포커스
+                                window.location.href = notification.url; // notification.url로 페이지 이동
+                            };
+
                         }
                     } catch (error) {
                         console.error('알림 처리 오류:', error);

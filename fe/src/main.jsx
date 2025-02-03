@@ -20,6 +20,8 @@ import OAuthCallback from './OAuthCallback';
 import ChatPage from "./pages/ChatPage.jsx";
 import Chat from "./components/chat/Chat.jsx";
 import Notification from "./pages/Notification.jsx";
+import MemberProfilePage from "./components/MemberProfilePage.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 
 
@@ -58,11 +60,11 @@ const router = createBrowserRouter([
             },
             {
                 path: 'mypage',
-                element: <MyPage/>,
+                element: <PrivateRoute><MyPage/></PrivateRoute>,
             },
             {
                 path: 'member/update', // 회원 수정 라우트 추가
-                element: <MemberUpdate/>,
+                element: <PrivateRoute><MemberUpdate/></PrivateRoute>,
             },
             {
                 path: 'search/:inputStr', // 검색기능 라우트 추가
@@ -95,6 +97,16 @@ const router = createBrowserRouter([
             {
                 path: '/chatMain',
                 element: <Chat/>,
+                children: [
+                    {
+                        path: ':type/:chatId', // 동적 세그먼트 사용
+                        element: null, // Chat 컴포넌트 내에서 렌더링
+                    },
+                ],
+            },
+            {
+                path: 'members/:memberId', // 회원 페이지 라우트 추가
+                element: <MemberProfilePage />,
             }
         ],
     },

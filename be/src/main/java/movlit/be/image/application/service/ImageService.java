@@ -25,8 +25,6 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final S3Service s3Service;
     private final MemberRepository memberRepository;
-    private final GroupChatroomService groupChatroomService;
-    private final RedisMessagePublisher redisMessagePublisher;
 
     private final ApplicationEventPublisher eventPublisher;
 

@@ -2,11 +2,14 @@ package movlit.be.pub_sub.chatRoom.presentation.controller;
 
 
 import jakarta.validation.Valid;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.util.ids.GroupChatroomId;
+import movlit.be.pub_sub.chatRoom.application.service.FetchGroupChatroomUseCase;
 import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.common.util.ids.MemberId;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupChatroomController {
 
     private final GroupChatroomService groupChatroomService;
+    private final FetchGroupChatroomUseCase fetchGroupChatroomUseCase;
 
     /**
      * 최초의 채팅방 (생성 후 가입)
@@ -41,7 +45,7 @@ public class GroupChatroomController {
 
     // 그룹채팅 존재 유무 확인
     @PostMapping("/api/chat/group")
-    public ResponseEntity fetchGroupChatroom(@RequestBody GroupChatroomRequest request){
+    public ResponseEntity fetchGroupChatroom(@RequestBody GroupChatroomRequest request) {
         GroupChatroomResponseDto groupChatroomRes = groupChatroomService.fetchGroupChatroom(request);
 
         return ResponseEntity.ok(groupChatroomRes);
@@ -51,12 +55,12 @@ public class GroupChatroomController {
     @PostMapping("/api/chat/group/{groupChatroomId}")
     public ResponseEntity joinGroupChatroom(@PathVariable GroupChatroomId groupChatroomId, @AuthenticationPrincipal MyMemberDetails details)
             throws ChatroomAccessDenied {
-        if(details != null){
+        if (details != null) {
             MemberId memberId = details.getMemberId();
             GroupChatroomResponse groupChatroomRes = groupChatroomService.joinGroupChatroom(groupChatroomId, memberId);
 
             return ResponseEntity.ok(groupChatroomRes);
-        }else{
+        } else {
             return ResponseEntity.badRequest().build();
         }
 
@@ -70,7 +74,7 @@ public class GroupChatroomController {
      * @return ChatroomDto 채팅방 정보 및 멤버 리스트
      */
     @GetMapping("/api/chat/{chatroomId}/members")
-    public ResponseEntity<List<GroupChatroomMemberResponse>> fetchMembersInGroupChatroom(@PathVariable GroupChatroomId chatroomId){
+    public ResponseEntity<List<GroupChatroomMemberResponse>> fetchMembersInGroupChatroom(@PathVariable GroupChatroomId chatroomId) {
         var response = groupChatroomService.fetchMembersInGroupChatroom(
                 chatroomId);
 
@@ -80,9 +84,10 @@ public class GroupChatroomController {
 
     // 내가 가입한 그룹채팅 리스트 가져오기
     @GetMapping("/api/chat/group/rooms/my")
-    public ResponseEntity<List<GroupChatroomResponseDto>> fetchMyGroupChats(@AuthenticationPrincipal MyMemberDetails details){
+    public ResponseEntity<List<GroupChatroomResponseDto>> fetchMyGroupChats(@AuthenticationPrincipal MyMemberDetails details) {
         MemberId memberId = details.getMemberId();
-        List<GroupChatroomResponseDto> myGroupChatListRes = groupChatroomService.fetchMyGroupChatList(memberId);
+//        List<GroupChatroomResponseDto> myGroupChatListRes = groupChatroomService.fetchMyGroupChatList(memberId);
+        List<GroupChatroomResponseDto> myGroupChatListRes = fetchGroupChatroomUseCase.execute(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(myGroupChatListRes);
     }
 

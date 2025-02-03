@@ -1,21 +1,18 @@
 package movlit.be.book.presentation.dto;
 
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import movlit.be.common.util.ids.BookCommentId;
+import movlit.be.common.util.ids.MemberId;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class BookCommentResponseDto {
+
     private BookCommentId bookCommentId;
     private BigDecimal score;
     private String comment;
@@ -26,10 +23,22 @@ public class BookCommentResponseDto {
     private LocalDateTime regDt;
     private LocalDateTime updDt;
     private Long allCommentsCount;
+    private MemberId memberId;
 
-
-
-
-
+    public BookCommentResponseDto(BookCommentId bookCommentId, BigDecimal score, String comment, String nickname,
+                                  String profileImgUrl, boolean isLiked, int likeCount, LocalDateTime regDt,
+                                  LocalDateTime updDt, Long allCommentsCount, MemberId memberId) {
+        this.bookCommentId = bookCommentId;
+        this.score = score;
+        this.comment = comment;
+        this.nickname = nickname;
+        this.profileImgUrl = profileImgUrl;
+        this.isLiked = isLiked;
+        this.likeCount = likeCount;
+        this.regDt = regDt;
+        this.updDt = updDt;
+        this.allCommentsCount = allCommentsCount;
+        this.memberId = memberId;
+    }
 
 }

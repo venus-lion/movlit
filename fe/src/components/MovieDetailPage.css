@@ -1,0 +1,16 @@
+.comment-user-link {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #282c34; /* 닉네임 색상 */
+    font-size: 15px; /* 닉네임 폰트 크기 */
+    transition: color 0.2s ease-in-out; /* 부드러운 색상 변화 효과 */
+}
+
+.comment-user-link:hover {
+    color: #61dafb; /* 호버 시 색상 변경 */
+    text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
+
+.comment-user-link .commentUser {
+    font-weight: bold;
+    margin-right: 5px;
+}

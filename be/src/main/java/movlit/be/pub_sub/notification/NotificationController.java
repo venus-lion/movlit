@@ -1,5 +1,6 @@
 package movlit.be.pub_sub.notification;
 
+
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class NotificationController {
         return ResponseEntity.ok().body(emitter);
     }
 
+
     // 알림 목록 가져오기
     @GetMapping("/api/notification")
     public ResponseEntity<List<Notification>> fetchNotification(@AuthenticationPrincipal MyMemberDetails details){
@@ -59,6 +61,7 @@ public class NotificationController {
         }else
             return ResponseEntity.badRequest().build();
     }
+
 
 
 }

@@ -1,6 +1,8 @@
 package movlit.be.follow.presentation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
@@ -87,30 +89,41 @@ public class FollowController {
     }
     
     // 나를 팔로우하는 사람들(팔로워) 개수 조회 - 내 팔로워 개수
-    @GetMapping("/my/followers/count")
+    @GetMapping("/{memberId}/followers/count")
     public ResponseEntity<Integer> getMyFollowerCount(
-            @AuthenticationPrincipal MyMemberDetails details
+           @PathVariable MemberId memberId
     ){
-        MemberId loginId = null;
-        if (details != null){
-            loginId = details.getMemberId();
-        }
-        Integer followerCount = followReadService.getFollowerCount(loginId);
+        Integer followerCount = followReadService.getFollowerCount(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(followerCount);
     }
     
     // 내가 팔로우하는 사람들(팔로우) 개수 조회 - 내 팔로우 개수
-    @GetMapping("/my/follows/count")
+    @GetMapping("/{memberId}/follows/count")
     public ResponseEntity<Integer> getMyFollowCount(
-            @AuthenticationPrincipal MyMemberDetails details
+            @PathVariable MemberId memberId
+    ){
+        int followCount = followReadService.getFollowCount(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(followCount);
+    }
+
+    // 특정 사용자를 팔로우하고 있는지 여부 확인
+    // 로그인한 유저(MyMemberDetails)가, 특정 사용자(pathvariable)를 팔로우하는지 여부 체크 api
+    @GetMapping("/check/{otherMemberId}")
+    public ResponseEntity<Map<String, Boolean>> checkFollowing(
+            @AuthenticationPrincipal MyMemberDetails details,
+            @PathVariable MemberId otherMemberId
     ){
         MemberId loginId = null;
         if (details != null){
             loginId = details.getMemberId();
         }
-        int followCount = followReadService.getFollowCount(loginId);
+        boolean isFollowing = followReadService.isFollowing(loginId, otherMemberId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(followCount);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("following", isFollowing);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

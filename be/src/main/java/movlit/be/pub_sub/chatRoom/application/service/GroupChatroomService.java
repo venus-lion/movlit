@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.application.service.BookDetailReadService;
@@ -26,8 +24,6 @@ import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.movie.application.service.MovieReadService;
 import movlit.be.movie_heart.application.service.MovieHeartService;
 import movlit.be.pub_sub.RedisNotificationPublisher;
-import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
-import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
 import movlit.be.pub_sub.chatRoom.application.service.dto.GroupChatroomJoinedEvent;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
@@ -41,8 +37,8 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
 import movlit.be.pub_sub.notification.NotificationType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import movlit.be.pub_sub.notification.NotificationController;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,17 +50,14 @@ public class GroupChatroomService {
 
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
-    private final ChatMessageService chatMessageService;
-
-    private final BookHeartReadService bookHeartReadService;
-    private final BookDetailReadService bookDetailReadService;
-    private final MovieReadService movieReadService;
-    private final MovieHeartService movieHeartService;
-
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final GroupChatroomCreationWorker worker;
     private final ApplicationEventPublisher eventPublisher;
+    private final MovieReadService movieReadService;
+    private final MovieHeartService movieHeartService;
+    private final BookDetailReadService bookDetailReadService;
+    private final BookHeartReadService bookHeartReadService;
 
     private final RedisNotificationPublisher redisNotificationPublisher;
 
@@ -74,13 +67,16 @@ public class GroupChatroomService {
     private static final String GROUP_CHATROOM_QUEUE_KEY_PREFIX = "groupChatroomQueue:";
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
 
+    @Value("${share.url}")
+    private String basicUrl;
+
     /**
      * 비동기적으로 최초 그룹 채팅 생성 로직을 요청한다.
      */
     @Transactional
     public GroupChatroomResponse requestCreateGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
-        String contentId = ChatroomConvertor.generateContentId(
-                request.getContentType(), request.getContentId()); // MV_LongContentId 형태
+        String contentId = ChatroomConvertor.generateContentId(request.getContentType(),
+                request.getContentId()); // MV_LongContentId 형태
         validateExistByContentId(contentId);
 
         // Redis Queue에 memberId를 value로 저장 (LPUSH)
@@ -97,11 +93,10 @@ public class GroupChatroomService {
         MemberId workerMemberId = IdFactory.createMemberId(response.get(workerContentId));
 
         // 그룹 채팅방 생성
-        GroupChatroomResponse createdChatroom = createGroupChatroom(RequestDataForCreationWorker.from(
-                request.getRoomName(), workerContentId, workerMemberId));
+        GroupChatroomResponse createdChatroom = createGroupChatroom(
+                RequestDataForCreationWorker.from(request.getRoomName(), workerContentId, workerMemberId));
 
         log.info("::GroupChatroomService_requestCreateGroupChatroom::");
-
 
 //        // 트랜잭션 완료 후 알림 발송
 //        TransactionSynchronizationManager.registerSynchronization(new CustomTransactionSynchronization() {
@@ -113,19 +108,18 @@ public class GroupChatroomService {
 
         publishNewGroupChatroomNoti(contentId, request.getRoomName(), createdChatroom);
 
-         return createdChatroom;
+        return createdChatroom;
     }
-
 
     /**
      * 찜한 콘텐츠에 대해 새로운 채팅방 생성됨을 알림
      */
     private void publishNewGroupChatroomNoti(String contentId, String roomName,
-                                             GroupChatroomResponse createdChatroom){
+                                             GroupChatroomResponse createdChatroom) {
         log.info("::GroupChatroomService_publishNewGroupChatroomNoti::");
 
         // ContentId : MV_pureContentId 또는 BK_pureContentId -> 책과 영화 구분 필요
-        String contentType = contentId.substring(0,2);
+        String contentType = contentId.substring(0, 2);
         String pureContentId = contentId.substring(3);
 
         // 찜한 멤버 리스트
@@ -133,11 +127,11 @@ public class GroupChatroomService {
         // 콘텐츠명 (영화 이름, 책 이름)
         String contentName = "";
 
-        if(contentType.equals("MV")){
+        if (contentType.equals("MV")) {
             Long movieId = Long.parseLong(pureContentId);
             contentName = movieReadService.fetchByMovieId(movieId).getTitle();
             heartingMemberIds = movieHeartService.fetchHeartingMemberIdsByMovieId(movieId);
-        }else if(contentType.equals("BK")){
+        } else if (contentType.equals("BK")) {
             BookId bookId = new BookId(pureContentId);
             String bookName = bookDetailReadService.fetchByBookId(bookId).getTitle();
             contentName = bookName.substring(0, bookName.indexOf(" -"));
@@ -146,20 +140,19 @@ public class GroupChatroomService {
         }
 
         // 멤버들에게 알림 발송
-        if(!heartingMemberIds.isEmpty()){
+        if (!heartingMemberIds.isEmpty()) {
             for (MemberId heartigMemberId : heartingMemberIds) {
-                log.info(">> 알림발송할 멤버 " +heartigMemberId.getValue());
+                log.info(">> 알림발송할 멤버 " + heartigMemberId.getValue());
+                String url = basicUrl + "/chatMain/" + createdChatroom.getGroupChatroomId() + "/group";
                 NotificationDto notification = new NotificationDto(
                         heartigMemberId.getValue(),
                         NotificationMessage.generateNewGroupChatroomNotiMessage(contentType, contentName, roomName),
-                        NotificationType.CONTENT_HEART_CHATROOM
-                );
+                        NotificationType.CONTENT_HEART_CHATROOM,
+                        url);
                 redisNotificationPublisher.publishNotification(notification);
             }
         }
     }
-
-
 
     private Map<String, String> getPureResponse(Optional<Map<String, String>> responseOpt) {
         if (responseOpt.isEmpty()) {
@@ -272,17 +265,22 @@ public class GroupChatroomService {
     }
 
     // 내가 가입한 그룹채팅 리스트 가져오기
-    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
-        return groupChatRepository.fetchGroupChatroomByMemberId(memberId).stream()
-                .peek(chatRoom -> {
-                    // TODO: repository단에서 ChatMessageDto 정보와 join하여 가져오기 -> 이러면 list 돌면서 결합 안 해줘도 됨
-                    ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
-                            chatRoom.getGroupChatroomId().getValue());
-                    if (Objects.nonNull(recentMessage)) {
-                        chatRoom.setRecentMessage(recentMessage);
-                    }
-                })
-                .toList();
+//    public List<GroupChatroomResponseDto> fetchMyGroupChatList(MemberId memberId) {
+//        return groupChatRepository.fetchGroupChatroomByMemberId(memberId).stream()
+//                .peek(chatRoom -> {
+//                    // TODO: repository단에서 ChatMessageDto 정보와 join하여 가져오기 -> 이러면 list 돌면서 결합 안 해줘도 됨
+//                    ChatMessageDto recentMessage = chatMessageService.fetchRecentMessage(
+//                            chatRoom.getGroupChatroomId().getValue());
+//                    if (Objects.nonNull(recentMessage)) {
+//                        chatRoom.setRecentMessage(recentMessage);
+//                    }
+//                })
+//                .toList();
+//    }
+
+    // 내가 가입한 그룹채팅 리스트만 가져오기
+    public List<GroupChatroomResponseDto> fetchMyGroupChatroomList(MemberId memberId) {
+        return groupChatRepository.fetchGroupChatroomByMemberId(memberId);
     }
 
     // 특정 그룹채팅 안 멤버 정보 update (멤버 정보 redis 1차 캐시)
@@ -321,6 +319,10 @@ public class GroupChatroomService {
             // 예외 처리 로직 추가 (예: 빈 리스트 반환 또는 예외 다시 던지기)
             return new ArrayList<>();
         }
+    }
+
+    public GroupChatroom fetchGroupChatroomById(GroupChatroomId groupChatroomId) {
+        return groupChatRepository.findByChatroomId(groupChatroomId);
     }
 
 }
