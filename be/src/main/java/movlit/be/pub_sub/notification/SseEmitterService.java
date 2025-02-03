@@ -49,7 +49,7 @@ public class SseEmitterService {
             completeEmitter(id, e);
         }
 
-       // scheduleHeartbeat(id, emitter);
+        scheduleHeartbeat(id, emitter);
         emitters.put(id, emitter);
         emitterCompletionStatus.put(id, false);
         return emitter;

@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.application.service.BookDetailReadService;
@@ -26,8 +24,6 @@ import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.movie.application.service.MovieReadService;
 import movlit.be.movie_heart.application.service.MovieHeartService;
 import movlit.be.pub_sub.RedisNotificationPublisher;
-import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
-import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
 import movlit.be.pub_sub.chatRoom.application.service.dto.GroupChatroomJoinedEvent;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
@@ -41,8 +37,8 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
 import movlit.be.pub_sub.notification.NotificationType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import movlit.be.pub_sub.notification.NotificationController;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,6 +66,9 @@ public class GroupChatroomService {
     private static final String CHATROOM_MEMBERS_KEY_SUFFIX = ":members";
     private static final String GROUP_CHATROOM_QUEUE_KEY_PREFIX = "groupChatroomQueue:";
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
+
+    @Value("${share.url}")
+    private String basicUrl;
 
     /**
      * 비동기적으로 최초 그룹 채팅 생성 로직을 요청한다.
@@ -144,17 +143,16 @@ public class GroupChatroomService {
         if (!heartingMemberIds.isEmpty()) {
             for (MemberId heartigMemberId : heartingMemberIds) {
                 log.info(">> 알림발송할 멤버 " + heartigMemberId.getValue());
+                String url = basicUrl + "/chatMain/" + createdChatroom.getGroupChatroomId() + "/group";
                 NotificationDto notification = new NotificationDto(
                         heartigMemberId.getValue(),
                         NotificationMessage.generateNewGroupChatroomNotiMessage(contentType, contentName, roomName),
                         NotificationType.CONTENT_HEART_CHATROOM,
-                        null); // TODO
+                        url);
                 redisNotificationPublisher.publishNotification(notification);
             }
         }
     }
-
-
 
     private Map<String, String> getPureResponse(Optional<Map<String, String>> responseOpt) {
         if (responseOpt.isEmpty()) {
@@ -326,4 +324,5 @@ public class GroupChatroomService {
     public GroupChatroom fetchGroupChatroomById(GroupChatroomId groupChatroomId) {
         return groupChatRepository.findByChatroomId(groupChatroomId);
     }
+
 }
