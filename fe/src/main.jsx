@@ -19,6 +19,7 @@ import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
 import OAuthCallback from './OAuthCallback';
 import ChatPage from "./pages/ChatPage.jsx";
 import Chat from "./components/chat/Chat.jsx";
+import MemberProfilePage from "./components/MemberProfilePage.jsx";
 
 
 
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
             {
                 path: '/chatMain',
                 element: <Chat/>,
+            },
+            {
+                path: 'members/:memberId', // 회원 페이지 라우트 추가
+                element: <MemberProfilePage />,
             }
         ],
     },
