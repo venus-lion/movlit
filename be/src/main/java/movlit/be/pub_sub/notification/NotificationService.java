@@ -38,7 +38,8 @@ public class NotificationService {
                 .map(response -> new NotificationDto(
                         response.getMemberId().getValue(),
                         message,
-                        NotificationType.GROUP_CHAT
+                        NotificationType.GROUP_CHAT,
+                        null
                 ))
                 .toList();
 
