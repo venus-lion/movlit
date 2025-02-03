@@ -7,18 +7,27 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.common.util.ids.MemberId;
+import movlit.be.pub_sub.notification.domain.Notification;
+import movlit.be.pub_sub.notification.infra.persistence.NotificationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SseEmitterService {
 
     private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
     private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>();
+
+    private final NotificationService notificationService;
+
+
 
     public void sendNotificationToReceiver(String id, NotificationDto notification) {
         SseEmitter emitter = emitters.get(id);
@@ -28,6 +37,10 @@ public class SseEmitterService {
                 log.info("SSeEmitterService : notification send 이벤트 발행 !! ");
 
                 emitter.send(SseEmitter.event().name("notification").data(notification));
+
+                // Notification MongoDB에 저장
+                notificationService.saveNotification(notification);
+
             } catch (IOException e) {
                 handleEmitterError(id, e, "Error sending notification to user {}");
             }
@@ -49,7 +62,7 @@ public class SseEmitterService {
             completeEmitter(id, e);
         }
 
-       // scheduleHeartbeat(id, emitter);
+        scheduleHeartbeat(id, emitter);
         emitters.put(id, emitter);
         emitterCompletionStatus.put(id, false);
         return emitter;

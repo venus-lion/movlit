@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import axiosInstance from '../../axiosInstance.js';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
     const [groupChats, setGroupChats] = useState([]);
@@ -10,11 +11,14 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
     const [personalChats, setPersonalChats] = useState([]);
     const [stompClient, setStompClient] = useState(null);
 
+
+
+
     // 그룹 채팅방 목록 가져오기 함수 (분리됨)
     const fetchGroupChats = async () => {
         try {
             const response = await axiosInstance.get('/chat/group/rooms/my');
-            console.log('groupchats : ' + response.data);
+            //console.log('groupchats : ' + response.data);
             setGroupChats(response.data);
         } catch (error) {
             console.error('Error fetching group chats:', error);
@@ -26,7 +30,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
         try {
             const response = await axiosInstance.get('/chat/oneOnOne');
             setPersonalChats(response.data);
-            console.log(response.data);
+            //console.log(response.data);
         } catch (error) {
             setError(error.message || '네트워크 오류가 발생했습니다.');
         } finally {
@@ -34,12 +38,14 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
         }
     };
 
+
     useEffect(() => {
         // 그룹 채팅방 목록 가져오기
         fetchGroupChats();
 
         // 일대일 채팅방 목록 가져오기
         fetchPersonalChats();
+
 
         // WebSocket 클라이언트 설정
         const client = new Client({
@@ -94,7 +100,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                 if (stompClient.connected) stompClient.deactivate();
             }
         };
-    }, []); // 의존성 배열 비움
+    }, [groupChats]); // 의존성 배열 비움
 
     // 필터링된 채팅 목록 (메모이제이션)
     const filteredChats = useMemo(() => {
@@ -149,6 +155,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
         <div style={style.chatListContainer}>
             {/* 그룹 채팅 목록 */}
             {activeTab === 'group' && (
+
                 <div>
                     {filteredChats.map((chat) => (
                         <div

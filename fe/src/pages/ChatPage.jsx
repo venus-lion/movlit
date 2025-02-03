@@ -40,7 +40,7 @@ function ChatPage({roomId, roomInfo}) {
                 Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
             },
             debug: (str) => {
-                console.log('STOMP Debug:', str);
+                //console.log('STOMP Debug:', str);
                 console.log("메시지  : " + JSON.stringify(messages, null, 2));
             },
         });
