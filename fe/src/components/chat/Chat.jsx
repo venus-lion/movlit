@@ -9,9 +9,6 @@ import CreateGroupChatNameModal from "./CreateGroupChatNameModal.jsx";
 import axiosInstance from "../../axiosInstance.js";
 import GetGroupChatInfoModal from "./GetGroupChatInfoModal.jsx"; // axios 임포트
 
-
-
-
 const Chat = () => {
     const [activeTab, setActiveTab] = useState('personal'); // 개인 채팅 또는 그룹 채팅
     const [searchTerm, setSearchTerm] = useState(''); // 검색어
@@ -19,7 +16,6 @@ const Chat = () => {
     const {isLoggedIn} = useOutletContext();
     const navigate = useNavigate();
     const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
-
 
     const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false); // 모달1 열림 상태
     const [isGetGroupChatInfoModalOpen, setIsGetGroupChatInfoModalOpen] = useState(false); // 채팅방 존재여무 모달2 열림 상태
@@ -74,7 +70,6 @@ const Chat = () => {
         setIsCreateGroupChatNameModalOpen(true); // 세 번째 모달 열기
     };
 
-
     const handleCloseGroupChatNameModal = () => {
         setIsCreateGroupChatNameModalOpen(false);
         setSelectedCard(null);
@@ -128,6 +123,14 @@ const Chat = () => {
             alert("채팅방 가입에 실패했습니다.");
         }
     };
+
+    // 선택된 채팅방에 따라 URL 변경
+    useEffect(() => {
+        if (selectedChat) {
+            const chatId = activeTab === 'personal' ? selectedChat.roomId : selectedChat.groupChatroomId;
+            navigate(`/chatMain/${chatId}/${activeTab}`);
+        }
+    }, [selectedChat, activeTab, navigate]);
 
     return (
         <div style={{display: 'flex', height: 'calc(100vh - 60px)'}}>
@@ -226,7 +229,7 @@ const Chat = () => {
                 selectedCard={selectedCard} // 선택된 데이터 전달
                 selectedCategory={selectedCategory} // 선택된 카테고리 전달
                 onUpdateChatList={() => {
-                setRefreshKey(prevKey => prevKey + 1); // 채팅방 리스트 새로고침 키 업데이트
+                    setRefreshKey(prevKey => prevKey + 1); // 채팅방 리스트 새로고침 키 업데이트
                 }}
             />
         </div>
