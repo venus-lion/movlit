@@ -22,6 +22,7 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
 import movlit.be.pub_sub.notification.NotificationType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,9 @@ public class ChatMessageService {
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
     private final MemberReadService memberReadService;
     private final OneononeChatroomService oneononeChatroomService;
+
+    @Value("${share.url}")
+    private String basicUrl;
 
     // 가장 최근 채팅 메시지 가져오기 (채팅 리스트에서 화면 표시)
     public ChatMessageDto fetchRecentMessage(String roomId) {
@@ -65,12 +69,17 @@ public class ChatMessageService {
         OneononeChatroomId roomId = new OneononeChatroomId(chatMessageDto.getRoomId());
         OneononeChatroomResponse roomInfo = oneononeChatroomService.fetchChatroomInfo(roomId,
                 chatMessageDto.getSenderId());
+
         String senderNickname = memberReadService.findByMemberId(chatMessageDto.getSenderId()).getNickname();
+        String roomIdStr = roomInfo.getReceiverId().getValue();
+        log.info("====== basic url =======, {}", basicUrl);
+        String url = basicUrl + "/chatMain/" + roomIdStr + "/personal";
 
         NotificationDto notification = new NotificationDto(
-                roomInfo.getReceiverId().getValue(),
+                roomIdStr,
                 NotificationMessage.generateChatMessage(senderNickname, chatMessageDto.getMessage()),
-                NotificationType.ONE_ON_ONE_CHAT
+                NotificationType.ONE_ON_ONE_CHAT,
+                url
         );
 
         redisNotificationPublisher.publishNotification(notification);

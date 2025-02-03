@@ -120,7 +120,6 @@ function App() {
                 // 알림 이벤트 처리 - 'notification' 이벤트 수신 시..
                 eventSource.addEventListener('notification', (e) => {
                     try {
-
                         console.log('notification 이벤트를 받았다!!');
                         console.log('e.data : ', e.data); // e.data 값 확인
 
@@ -130,11 +129,16 @@ function App() {
                         if (Notification.permission === 'granted') {
                             console.log('Notifcation.permission이 granted 됨');
                             console.log(notification.message);
+                            console.log(notification.url)
                             const noti = new Notification('Movlit', {
                                 body: notification.message, // 알림 메세지 표시
-                                icon: notificationIcon
+                                url: notification.url,
+                                icon: notificationIcon,
                             });
-                            noti.onclick = () => window.focus();
+                            noti.onclick = () => {
+                                // window.focus(); // 브라우저 창에 포커스
+                                window.location.href = notification.url; // notification.url로 페이지 이동
+                            };
                         }
                     } catch (error) {
                         console.error('알림 처리 오류:', error);
