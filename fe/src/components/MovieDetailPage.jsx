@@ -42,6 +42,7 @@ function MovieDetailPage() {
     const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
+    const [currentMemberId, setCurrentMemberId] = useState(null); // 현재 로그인된 memberId 상태 추가
 
     const initialVisibleCrews = 14;
 
@@ -151,6 +152,13 @@ function MovieDetailPage() {
 
         fetchUserComment();
         fetchComments(0);
+
+        axiosInstance
+            .get(`/members/id`)
+            .then((response) => {
+                setCurrentMemberId(response.data.memberId);
+            })
+            .catch((error) => console.error('Error fetching member id:', error));
     }, [movieId]);
 
     // Intersection Observer 설정 (코멘트 무한 스크롤)
@@ -792,8 +800,12 @@ function MovieDetailPage() {
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
                                             <Link
-                                                to={`/members/${comment.memberId}`}
-                                                className="comment-user-link" // 새로운 className 추가
+                                                to={
+                                                    comment.memberId === currentMemberId
+                                                        ? `/mypage`
+                                                        : `/members/${comment.memberId}`
+                                                }
+                                                className="comment-user-link"
                                                 style={styles.commentUserInfo}
                                             >
                                                 {comment.profileImgUrl ? (
