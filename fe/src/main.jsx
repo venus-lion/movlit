@@ -92,6 +92,12 @@ const router = createBrowserRouter([
             {
                 path: '/chatMain',
                 element: <Chat/>,
+                children: [
+                    {
+                        path: ':type/:chatId', // 동적 세그먼트 사용
+                        element: null, // Chat 컴포넌트 내에서 렌더링
+                    },
+                ],
             },
             {
                 path: 'members/:memberId', // 회원 페이지 라우트 추가

@@ -18,12 +18,14 @@ public class NotificationDto {
     // 알림 타입, 생성 시간 등 추가 필드 정의 가능
     private NotificationType type;  // 찜, 팔로잉, 일대일알림, 그룹채팅알림
     private String timestamp;
+    private String url;
 
-    public NotificationDto(String id, String message, NotificationType type) {
+    public NotificationDto(String id, String message, NotificationType type, String url) {
         this.id = id;
         this.message = message;
         this.type = type;
         this.timestamp = LocalDateTime.now().toString();
+        this.url = url;
     }
 
 }

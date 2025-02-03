@@ -2,7 +2,6 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.application.service.BookDetailReadService;
@@ -78,8 +76,8 @@ public class GroupChatroomService {
      */
     @Transactional
     public GroupChatroomResponse requestCreateGroupChatroom(GroupChatroomRequest request, MemberId memberId) {
-        String contentId = ChatroomConvertor.generateContentId(
-                request.getContentType(), request.getContentId()); // MV_LongContentId 형태
+        String contentId = ChatroomConvertor.generateContentId(request.getContentType(),
+                request.getContentId()); // MV_LongContentId 형태
         validateExistByContentId(contentId);
 
         // Redis Queue에 memberId를 value로 저장 (LPUSH)
@@ -96,11 +94,10 @@ public class GroupChatroomService {
         MemberId workerMemberId = IdFactory.createMemberId(response.get(workerContentId));
 
         // 그룹 채팅방 생성
-        GroupChatroomResponse createdChatroom = createGroupChatroom(RequestDataForCreationWorker.from(
-                request.getRoomName(), workerContentId, workerMemberId));
+        GroupChatroomResponse createdChatroom = createGroupChatroom(
+                RequestDataForCreationWorker.from(request.getRoomName(), workerContentId, workerMemberId));
 
         log.info("::GroupChatroomService_requestCreateGroupChatroom::");
-
 
 //        // 트랜잭션 완료 후 알림 발송
 //        TransactionSynchronizationManager.registerSynchronization(new CustomTransactionSynchronization() {
@@ -114,7 +111,6 @@ public class GroupChatroomService {
 
         return createdChatroom;
     }
-
 
     /**
      * 찜한 콘텐츠에 대해 새로운 채팅방 생성됨을 알림
@@ -151,12 +147,13 @@ public class GroupChatroomService {
                 NotificationDto notification = new NotificationDto(
                         heartigMemberId.getValue(),
                         NotificationMessage.generateNewGroupChatroomNotiMessage(contentType, contentName, roomName),
-                        NotificationType.CONTENT_HEART_CHATROOM
-                );
+                        NotificationType.CONTENT_HEART_CHATROOM,
+                        null); // TODO
                 redisNotificationPublisher.publishNotification(notification);
             }
         }
     }
+
 
 
     private Map<String, String> getPureResponse(Optional<Map<String, String>> responseOpt) {
