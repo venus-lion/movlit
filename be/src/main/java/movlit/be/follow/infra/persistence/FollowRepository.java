@@ -7,6 +7,8 @@ import movlit.be.follow.domain.Follow;
 public interface FollowRepository {
     boolean existsByFollowerIdAndFolloweeId(MemberId followerId, MemberId followeeId);
 
+    boolean existsByFollowerIdAndFolloweeIdWithoutException(MemberId followerId, MemberId followeeId);
+
     Follow save(Follow follow);
 
     Follow findByFollowerIdAndFolloweeId(MemberId followerId, MemberId followeeId);
