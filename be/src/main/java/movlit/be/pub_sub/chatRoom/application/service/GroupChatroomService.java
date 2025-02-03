@@ -2,6 +2,7 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.application.service.BookDetailReadService;
@@ -54,11 +56,14 @@ public class GroupChatroomService {
 
     private final GroupChatRepository groupChatRepository;
     private final MemberReadService memberReadService;
-    private final ChatMessageService chatMessageService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final GroupChatroomCreationWorker worker;
     private final ApplicationEventPublisher eventPublisher;
+    private final MovieReadService movieReadService;
+    private final MovieHeartService movieHeartService;
+    private final BookDetailReadService bookDetailReadService;
+    private final BookHeartReadService bookHeartReadService;
 
     private final RedisNotificationPublisher redisNotificationPublisher;
 
@@ -107,7 +112,7 @@ public class GroupChatroomService {
 
         publishNewGroupChatroomNoti(contentId, request.getRoomName(), createdChatroom);
 
-         return createdChatroom;
+        return createdChatroom;
     }
 
 
@@ -115,11 +120,11 @@ public class GroupChatroomService {
      * 찜한 콘텐츠에 대해 새로운 채팅방 생성됨을 알림
      */
     private void publishNewGroupChatroomNoti(String contentId, String roomName,
-                                             GroupChatroomResponse createdChatroom){
+                                             GroupChatroomResponse createdChatroom) {
         log.info("::GroupChatroomService_publishNewGroupChatroomNoti::");
 
         // ContentId : MV_pureContentId 또는 BK_pureContentId -> 책과 영화 구분 필요
-        String contentType = contentId.substring(0,2);
+        String contentType = contentId.substring(0, 2);
         String pureContentId = contentId.substring(3);
 
         // 찜한 멤버 리스트
@@ -127,11 +132,11 @@ public class GroupChatroomService {
         // 콘텐츠명 (영화 이름, 책 이름)
         String contentName = "";
 
-        if(contentType.equals("MV")){
+        if (contentType.equals("MV")) {
             Long movieId = Long.parseLong(pureContentId);
             contentName = movieReadService.fetchByMovieId(movieId).getTitle();
             heartingMemberIds = movieHeartService.fetchHeartingMemberIdsByMovieId(movieId);
-        }else if(contentType.equals("BK")){
+        } else if (contentType.equals("BK")) {
             BookId bookId = new BookId(pureContentId);
             String bookName = bookDetailReadService.fetchByBookId(bookId).getTitle();
             contentName = bookName.substring(0, bookName.indexOf(" -"));
@@ -140,9 +145,9 @@ public class GroupChatroomService {
         }
 
         // 멤버들에게 알림 발송
-        if(!heartingMemberIds.isEmpty()){
+        if (!heartingMemberIds.isEmpty()) {
             for (MemberId heartigMemberId : heartingMemberIds) {
-                log.info(">> 알림발송할 멤버 " +heartigMemberId.getValue());
+                log.info(">> 알림발송할 멤버 " + heartigMemberId.getValue());
                 NotificationDto notification = new NotificationDto(
                         heartigMemberId.getValue(),
                         NotificationMessage.generateNewGroupChatroomNotiMessage(contentType, contentName, roomName),
@@ -152,7 +157,6 @@ public class GroupChatroomService {
             }
         }
     }
-
 
 
     private Map<String, String> getPureResponse(Optional<Map<String, String>> responseOpt) {

@@ -1,10 +1,12 @@
 package movlit.be.pub_sub.chatMessage.application.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.RedisStreamOperationReturnNull;
@@ -36,7 +38,6 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RedisMessagePublisher messagePublisher;
     private final RedisTemplate<String, String> redisTemplate;
-    private final ObjectMapper objectMapper;
     private final RedisNotificationPublisher redisNotificationPublisher;
     private final NotificationService notificationService;
 
