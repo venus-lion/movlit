@@ -81,6 +81,11 @@ public class FollowReadService {
         // 내가 팔로우하는 사람들(팔로우) 개수 조회
         return (int) followRepository.countFollowsByLoginId(loginId);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isFollowing(MemberId loginId, MemberId otherMemberId){
+        return followRepository.existsByFollowerIdAndFolloweeIdWithoutException(loginId, otherMemberId);
+    }
     private FollowResponse toFollowResponse(Follow follow){
         MemberEntity follower = follow.getFollower(); // 나를 팔로우하는 사람(팔로워) 정보 가져오기
 

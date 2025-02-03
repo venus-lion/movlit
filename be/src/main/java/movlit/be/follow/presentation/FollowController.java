@@ -1,6 +1,8 @@
 package movlit.be.follow.presentation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
@@ -112,5 +114,24 @@ public class FollowController {
         int followCount = followReadService.getFollowCount(loginId);
 
         return ResponseEntity.status(HttpStatus.OK).body(followCount);
+    }
+
+    // 특정 사용자를 팔로우하고 있는지 여부 확인
+    // 로그인한 유저(MyMemberDetails)가, 특정 사용자(pathvariable)를 팔로우하는지 여부 체크 api
+    @GetMapping("/check/{otherMemberId}")
+    public ResponseEntity<Map<String, Boolean>> checkFollowing(
+            @AuthenticationPrincipal MyMemberDetails details,
+            @PathVariable MemberId otherMemberId
+    ){
+        MemberId loginId = null;
+        if (details != null){
+            loginId = details.getMemberId();
+        }
+        boolean isFollowing = followReadService.isFollowing(loginId, otherMemberId);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("following", isFollowing);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
