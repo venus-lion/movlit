@@ -36,10 +36,10 @@ class NotificationControllerTest {
         // Given
         MemberId memberId = IdFactory.createMemberId();
         NotificationDto notificationDto = new NotificationDto(memberId.getValue(), "Test Notification",
-                NotificationType.FOLLOW);
+                NotificationType.FOLLOW, "/");
 
         // When
-        MvcResult result = mockMvc.perform(get("/subscribe/" + memberId.getValue())
+        MvcResult result = mockMvc.perform(get("/api/subscribe/" + memberId.getValue())
                         .accept(MediaType.TEXT_EVENT_STREAM))
                 .andExpect(status().isOk())
                 .andReturn();
