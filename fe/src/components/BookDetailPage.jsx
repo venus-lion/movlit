@@ -1,24 +1,14 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {useParams} from 'react-router-dom';
+import React, {useEffect, useRef, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import {
-    FaComment,
-    FaHeart,
-    FaRegHeart,
-    FaUserCircle,
-    FaStar,
-    FaRegStar,
-    FaStarHalfAlt,
-} from 'react-icons/fa';
-import useBookList from "../hooks/useBookList.jsx";
-import BookCarousel from "../pages/BookCarousel.jsx";
-import axios from "axios";
+import {FaComment, FaHeart, FaRegHeart, FaRegStar, FaStar, FaStarHalfAlt, FaUserCircle,} from 'react-icons/fa';
 import BookCarouselRecommend from "../pages/BookCarouselRecommend.jsx";
-import {CircularProgressbar, buildStyles} from 'react-circular-progressbar';
+import {buildStyles, CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import MovieCarousel from "../pages/MovieCarousel.jsx";
 import CreateGroupChatNameModal from "./chat/CreateGroupChatNameModal.jsx";
 import GetGroupChatInfoModal from "./chat/GetGroupChatInfoModal.jsx";
+import './BookDetailPage.css'; // CSS 파일 import
 
 function BookDetailPage() {
     const {bookId} = useParams();
@@ -778,8 +768,8 @@ function BookDetailPage() {
                                 {comments.map((comment) => (
                                     <div key={comment.bookCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                                            <div style={styles.commentUserInfo}>
-                                                {/* 프로필 이미지/아이콘 표시 */}
+                                            <Link to={`/members/${comment.memberId}`} className="comment-user-link"
+                                                  style={styles.commentUserInfo}>
                                                 {comment.profileImgUrl ? (
                                                     <img
                                                         src={comment.profileImgUrl}
@@ -790,7 +780,7 @@ function BookDetailPage() {
                                                     <FaUserCircle style={styles.defaultProfileIcon}/>
                                                 )}
                                                 <span style={styles.commentUser}>{comment.nickname}</span>
-                                            </div>
+                                            </Link>
                                             {/* 별점 및 좋아요 컨테이너 */}
                                             <div style={styles.commentActions}>
                                                 {/* 코멘트 별점 표시 */}
