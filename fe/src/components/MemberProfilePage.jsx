@@ -124,7 +124,7 @@ function MemberProfilePage() {
                     <h2>{userData.nickname}</h2>
                     <p>{userData.email}</p>
                     <button onClick={handleFollowToggle} className="follow-button">
-                        {isFollowing ? '팔로잉' : '팔로우'}
+                        {isFollowing ? '언팔로우' : '팔로우'}
                     </button>
                 </div>
             </div>
