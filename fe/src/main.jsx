@@ -19,6 +19,7 @@ import MovieSearchDetailPage from "./pages/MovieSearchDetailPage.jsx";
 import OAuthCallback from './OAuthCallback';
 import ChatPage from "./pages/ChatPage.jsx";
 import Chat from "./components/chat/Chat.jsx";
+import Notification from "./pages/Notification.jsx";
 import MemberProfilePage from "./components/MemberProfilePage.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: 'member/login',
                 element: <MemberLogin/>,
+            },
+            {
+                path: '/notifications',
+                element: <Notification/>,
             },
             {
                 path: 'movie/:movieId',

@@ -7,7 +7,9 @@ import { FaUserCircle } from 'react-icons/fa';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import notificationIcon from './images/notification.jpg';
 
+
 export const AppContext = createContext();
+
 
 function App() {
     const navigate = useNavigate();
@@ -20,6 +22,9 @@ function App() {
     const updateLoginStatus = useCallback((status) => {
         setIsLoggedIn(status);
     }, []);
+    // 알림 관련
+    const [notifications, setNotifications] = useState([]);
+    const [newNotification, setNewNotification] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -56,6 +61,12 @@ function App() {
         }
 
         navigate(`/search/${encodeURIComponent(inputStr)}`);
+    };
+
+    // 알림 클릭 시
+    const handleBellClick = () => {
+        setNewNotification(false); // 종모양 클릭 시 새로운 알림 플래그 초기화
+        navigate('/notifications'); // 알림 페이지로 이동
     };
 
     useEffect(() => {
@@ -135,10 +146,18 @@ function App() {
                                 url: notification.url,
                                 icon: notificationIcon,
                             });
+
+                            // 테스트 위한 임시 alert
+                            alert(notification.message);
+                            // 알림 종
+                            setNotifications((prev) => [...prev, notification]);
+                            setNewNotification(true); // 새로운 알림 발생
+
                             noti.onclick = () => {
                                 // window.focus(); // 브라우저 창에 포커스
                                 window.location.href = notification.url; // notification.url로 페이지 이동
                             };
+
                         }
                     } catch (error) {
                         console.error('알림 처리 오류:', error);
@@ -175,6 +194,8 @@ function App() {
             if (reconnectTimer) clearTimeout(reconnectTimer);
         };
     }, [isLoggedIn]);
+
+
 
     return (
         <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
@@ -243,6 +264,11 @@ function App() {
                     )}
                     {isLoggedIn && (
                         <div className="nav-right-logged-in">
+                            <div onClick={handleBellClick} style={{ position: 'relative' }}>
+                                <img src="/images/notification-bell-icon.png" alt="알림" className="noti-img"/>
+                                {newNotification && <span className="badge">N</span>} {/* 빨간 점 표시 */}
+                            </div>
+
                             <NavLink
                                 to="/mypage"
                                 className={({ isActive }) =>
@@ -259,6 +285,7 @@ function App() {
                                     <FaUserCircle className="nav-mypage-icon" />
                                 )}
                             </NavLink>
+
                             <button onClick={handleLogout} className="logout-button">
                                 로그아웃
                             </button>

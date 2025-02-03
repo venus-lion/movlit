@@ -33,7 +33,7 @@ public class OneononeChatroomController {
 
         MemberId memberId = details.getMemberId();
         List<OneononeChatroomResponse> response = oneononeChatroomService.fetchMyOneOnOneChatList(memberId);
-        log.info("fetchMyOneOnOneChatList: {}", response);
+        //log.info("fetchMyOneOnOneChatList: {}", response);
         return ResponseEntity.ok(response);
     }
 

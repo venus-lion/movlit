@@ -33,12 +33,12 @@ function ChatPage_org() {
                 Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
             },
             debug: (str) => {
-                console.log('STOMP Debug:', str);
+                //console.log('STOMP Debug:', str);
             },
         });
 
         client.onConnect = () => {
-            console.log('WebSocket Connected');
+            //console.log('WebSocket Connected');
             client.subscribe(`/topic/chat/${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);

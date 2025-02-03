@@ -93,3 +93,92 @@
     object-fit: cover; /* 이미지 비율 유지하면서 채우기 */
     margin-right: 5px;
 }
+
+/* 알림 notification 관련 스타일 */
+.noti-img {
+    position : relative;
+    width: 30px;
+    height: 30px;
+    /*object-fit: cover; !* 이미지 비율 유지하면서 채우기 *!*/
+    margin-left: 5px;
+    /*padding: 2px;*/
+
+}
+.badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.notification-list {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+
+
+.notification-container {
+    margin-left: 30px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    width: 70%;
+
+}
+
+
+.delete-all-btn {
+
+    marginBottom: 20px;
+    margin-left: 20px;
+    padding: 10px 20px;
+    backgroundColor: #FF6B6B;
+    color: white;
+    border: none;
+    borderRadius: 5px;
+    cursor: pointer;
+    fontSize: 16px;
+}
+
+
+.notification-item {
+    display: flex;
+    align-items: center; /* 수직 정렬 */
+    justify-content: space-between; /* 요소 간 공간 균등 분배 */
+    border: 1px solid #eee;
+    padding: 5px;
+    margin-bottom: 15px;
+    height: 40px;
+}
+
+.noti-icon {
+    max-width: 30px; /* 최대 너비 조정 */
+    max-height: 30px; /* 최대 높이 조정 */
+    margin-right: 15px; /* 이미지와 텍스트 간격을 5px로 설정 */
+}
+
+.noti-message {
+    margin: 0; /* 텍스트 마진을 0으로 설정 */
+    font-size: 15px; /* 텍스트 크기 */
+    flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
+}
+
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    color: #da2232;
+    cursor: pointer;
+    height: 35px; /* 버튼 높이 */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 버튼 오른쪽 정렬 */
+}

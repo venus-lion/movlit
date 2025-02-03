@@ -4,12 +4,13 @@ import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js";
 
-// 별을 표시하는 함수 (변경 없음)
+// 별을 표시하는 함수
 const renderStars = (rating) => {
-    const validRating = Math.max(0, Math.min(10, rating || 0));
-    const fullStars = Math.floor(validRating / 2);
-    const halfStar = validRating % 2 >= 1 ? 1 : 0;
-    const emptyStars = 5 - fullStars - halfStar;
+    // rating 값을 0 ~ 10으로 받을 경우
+    const validRating = Math.max(0, Math.min(10, rating || 0)); // 0 ~ 10 사이로 제한
+    const fullStars = Math.floor(validRating / 2); // 꽉 찬 별 개수
+    const halfStar = validRating % 2 >= 1 ? 1 : 0; // 반쪽 별 여부 (나머지가 1 이상이면 반쪽 별)
+    const emptyStars = 5 - fullStars - halfStar; // 반쪽 별 여부 (나머지가 1 이상이면 반쪽 별)
 
     return (
         <>
