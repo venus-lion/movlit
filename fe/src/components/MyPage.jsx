@@ -27,6 +27,41 @@ function MyPage() {
     const fileInputRef = useRef(null);
     const [isHovering, setIsHovering] = useState(false);
 
+    // 팔로우, 팔로잉 관련 변수
+    const [followerCount, setFollowerCount] = useState(0); // 팔로워 개수
+    const [followingCount, setFollowingCount] = useState(0); // 팔로잉 개수
+    const [memberId, setMemberId] = useState(null); // 멤버ID 상태변수 추가
+
+    //현재 로그인한 사용자의 memberId 가져오기
+    const fetchMemberId = async () => {
+      try {
+            const response = await axiosInstance.get('/members/id');
+            console.log('로그인한 memberId 가져오기 !!! ');
+            console.log(response.data.memberId);
+            console.log(response.data.memberId.value);
+            setMemberId(response.data.memberId);
+      }  catch (error) {
+          console.error('Error fetching member ID:', error);
+      }
+    };
+
+    // 팔로워 / 팔로잉 개수 가져오기
+    const fetchFollowCounts = async (currentMemberId) =>  {
+        const followerCountResponse =
+            await axiosInstance.get(`/follows/${memberId}/followers/count`);
+        console.log('프론트, 나를 팔로우하는, 팔로워 개수 가져오기 !! ');
+        console.log(followerCountResponse.data);
+        setFollowerCount(followerCountResponse.data);
+
+        const followeeCountResponse =
+            await axiosInstance.get(`/follows/${memberId}/follows/count`);
+        console.log('프론트, 내가 팔로우하는, 팔로우 개수 가져오기 !! ');
+        console.log(followeeCountResponse.data);
+
+        setFollowingCount(followeeCountResponse.data);
+
+    };
+
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
@@ -95,9 +130,18 @@ function MyPage() {
             }
         };
 
+        fetchMemberId(); // 로그인한 사용자 memberId 가져오기
         fetchMyPageData();
         fetchGenreList();
+      //  fetchFollowCounts();
     }, []);
+
+    useEffect(() => {
+        if (memberId) {
+            fetchFollowCounts(memberId); // memberId 설정된 후, 팔로워/팔로잉 개수 가져오기
+        }
+
+    }, [memberId]);
 
     const handleProfileImageClick = () => {
         fileInputRef.current.click();
@@ -246,6 +290,14 @@ function MyPage() {
                 </div>
             </div>
             <div className="mypage-stats">
+                <div className="stat-item">
+                    <span>{followerCount}</span>
+                    <span>팔로워</span>
+                </div>
+                <div className="stat-item">
+                    <span>{followingCount}</span>
+                    <span>팔로잉</span>
+                </div>
                 <div className="stat-item">
                     <span>{userData.movieHeartCount}</span>
                     <span>영화 찜</span>
