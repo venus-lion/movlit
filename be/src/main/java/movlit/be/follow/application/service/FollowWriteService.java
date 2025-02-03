@@ -25,7 +25,7 @@ public class FollowWriteService {
     private final RedisNotificationPublisher redisNotificationPublisher;
 
     @Value("${share.url}")
-    private static String basicUrl;
+    private String basicUrl;
 
     @Transactional
     public Follow memberFollow(
