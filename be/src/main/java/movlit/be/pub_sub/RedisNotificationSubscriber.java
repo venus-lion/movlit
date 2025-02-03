@@ -25,10 +25,10 @@ public class RedisNotificationSubscriber {
     public void onNotification(String publishMessage) {
         try {
             NotificationDto notificationDto = objectMapper.readValue(publishMessage, NotificationDto.class);
-            log.info("Received notification: {}", publishMessage);
+            log.info("Received notificationDto: {}", notificationDto);
 
             // SSE Emitter를 통해 클라이언트에게 알림 전송
-            sseEmitterService.sendNotificationToUser(notificationDto.getId(), notificationDto);
+            sseEmitterService.sendNotificationToReceiver(notificationDto.getId(), notificationDto);
 
         } catch (Exception e) {
             log.error("Exception in onNotification {}", e);

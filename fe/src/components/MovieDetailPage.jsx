@@ -1,25 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
-import {
-    FaComment,
-    FaHeart,
-    FaRegHeart,
-    FaUserCircle,
-    FaStar,
-    FaRegStar,
-    FaStarHalfAlt,
-} from 'react-icons/fa';
+import {FaComment, FaHeart, FaRegHeart, FaRegStar, FaStar, FaStarHalfAlt, FaUserCircle,} from 'react-icons/fa';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MovieCarousel from '../pages/MovieCarousel';
 import useAuthMovieList from '../hooks/useAuthMovieList';
 import useBookList from '../hooks/useBookList';
 import BookGenreCarousel from '../pages/BookGenreCarousel';
-import {CircularProgressbar, buildStyles} from 'react-circular-progressbar';
+import {buildStyles, CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import GetGroupChatInfoModal from "./chat/GetGroupChatInfoModal.jsx";
 import CreateGroupChatNameModal from "./chat/CreateGroupChatNameModal.jsx";
+import './MovieDetailPage.css'; // CSS 파일 import
 
 function MovieDetailPage() {
     const {movieId} = useParams();
@@ -49,6 +42,7 @@ function MovieDetailPage() {
     const [selectedCard, setSelectedCard] = useState(null); // 선택된 데이터
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
+    const [currentMemberId, setCurrentMemberId] = useState(null); // 현재 로그인된 memberId 상태 추가
 
     const initialVisibleCrews = 14;
 
@@ -158,6 +152,13 @@ function MovieDetailPage() {
 
         fetchUserComment();
         fetchComments(0);
+
+        axiosInstance
+            .get(`/members/id`)
+            .then((response) => {
+                setCurrentMemberId(response.data.memberId);
+            })
+            .catch((error) => console.error('Error fetching member id:', error));
     }, [movieId]);
 
     // Intersection Observer 설정 (코멘트 무한 스크롤)
@@ -798,8 +799,15 @@ function MovieDetailPage() {
                                 {comments.map((comment) => (
                                     <div key={comment.movieCommentId} style={styles.commentItem}>
                                         <div style={styles.commentHeader}>
-                                            <div style={styles.commentUserInfo}>
-                                                {/* 프로필 이미지/아이콘 표시 */}
+                                            <Link
+                                                to={
+                                                    comment.memberId === currentMemberId
+                                                        ? `/mypage`
+                                                        : `/members/${comment.memberId}`
+                                                }
+                                                className="comment-user-link"
+                                                style={styles.commentUserInfo}
+                                            >
                                                 {comment.profileImgUrl ? (
                                                     <img
                                                         src={comment.profileImgUrl}
@@ -810,7 +818,7 @@ function MovieDetailPage() {
                                                     <FaUserCircle style={styles.defaultProfileIcon}/>
                                                 )}
                                                 <span style={styles.commentUser}>{comment.nickname}</span>
-                                            </div>
+                                            </Link>
                                             {/* 별점 및 좋아요 컨테이너 */}
                                             <div style={styles.commentActions}>
                                                 {/* 코멘트 별점 표시 */}
@@ -1123,11 +1131,6 @@ const styles = {
         marginBottom: '5px',
         justifyContent: 'space-between'
     },
-    commentUser: {
-        fontWeight: 'bold',
-        marginRight: '5px',
-        color: '#000000',
-    },
     commentStarFilled: {
         color: '#f8d90f',
         marginLeft: '5px',
@@ -1258,6 +1261,14 @@ const styles = {
     commentUserInfo: {
         display: 'flex',
         alignItems: 'center',
+        // textDecoration과 color는 commentUserLink 클래스로 이동
+    },
+    commentUser: {
+        fontWeight: 'bold',
+        marginRight: '5px',
+        // color와 fontSize는 여기서 제거 (comment-user-link 클래스에서 관리)
+        // transition은 여기서 제거 (comment-user-link 클래스에서 관리)
+        // :hover 제거
     },
     commentProfileImage: {
         width: '30px',

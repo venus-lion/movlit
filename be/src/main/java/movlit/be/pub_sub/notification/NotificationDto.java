@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 
 @Getter
 @Setter
+@ToString
 public class NotificationDto {
 
     private String id;

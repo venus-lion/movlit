@@ -1,26 +1,44 @@
 package movlit.be.pub_sub.notification;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.*;
 
 @Service
 @Slf4j
 public class SseEmitterService {
 
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
     private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>();
+
+    public void sendNotificationToReceiver(String id, NotificationDto notification) {
+        SseEmitter emitter = emitters.get(id);
+        if (emitter != null) {
+            try {
+
+                log.info("SSeEmitterService : notification send 이벤트 발행 !! ");
+
+                emitter.send(SseEmitter.event().name("notification").data(notification));
+            } catch (IOException e) {
+                handleEmitterError(id, e, "Error sending notification to user {}");
+            }
+        }
+    }
 
     public SseEmitter addEmitter(String id) {
         SseEmitter emitter = createSseEmitter(id);
 
         try {
+            log.info("::SseEmitterService_addEmitter::");
             emitter.send(SseEmitter.event()
                     .id(String.valueOf(System.currentTimeMillis()))
                     .name("connect")
@@ -31,25 +49,10 @@ public class SseEmitterService {
             completeEmitter(id, e);
         }
 
-        scheduleHeartbeat(id, emitter);
+       // scheduleHeartbeat(id, emitter);
         emitters.put(id, emitter);
         emitterCompletionStatus.put(id, false);
-        log.info("SSE emitter 추가 성공");
         return emitter;
-    }
-
-    public void sendNotificationToUser(String id, NotificationDto notification) {
-        SseEmitter emitter = this.emitters.get(id);
-        if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event().name("notification").data(notification));
-                log.info("==== sendNotificationToUser: {}", notification);
-            } catch (IOException e) {
-                handleEmitterError(id, e, "Error sending notification to user {}");
-            }
-        } else {
-            log.info("SSE emitter not found: {}", id);
-        }
     }
 
     private SseEmitter createSseEmitter(String id) {
@@ -82,14 +85,6 @@ public class SseEmitterService {
         heartbeatTasks.put(id, heartbeat);
     }
 
-    private synchronized void cancelHeartbeat(String id) {
-        ScheduledFuture<?> task = heartbeatTasks.remove(id);
-        if (task != null) {
-            task.cancel(true);
-            log.debug("Cancelled heartbeat task for {}", id);
-        }
-    }
-
     private void handleEmitterError(String id, IOException e, String logMessage) {
         log.error(logMessage, id, e);
         completeEmitter(id, e);
@@ -116,4 +111,11 @@ public class SseEmitterService {
         }
     }
 
+    private synchronized void cancelHeartbeat(String id) {
+        ScheduledFuture<?> task = heartbeatTasks.remove(id);
+        if (task != null) {
+            task.cancel(true);
+            log.debug("Cancelled heartbeat task for {}", id);
+        }
+    }
 }

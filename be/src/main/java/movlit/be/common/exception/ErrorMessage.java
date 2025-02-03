@@ -72,7 +72,14 @@ public enum ErrorMessage {
 
     // Redis
     FAILED_DESERIALIZE_DATA("Redis 데이터를 역직렬화하는데 실패했습니다.", "r001"),
-    REDIS_STREAM_OPERATION_RETURN_NULL("Redis Stream 연산 중 NULL 발생했습니다. Redis 연결 및 스트림 상태를 확인해주세요.", "r002");
+    REDIS_STREAM_OPERATION_RETURN_NULL("Redis Stream 연산 중 NULL 발생했습니다. Redis 연결 및 스트림 상태를 확인해주세요.", "r002"),
+
+    // Follow
+    FOLLOW_SELF_NOT_ALLOWED("자기 자신을 팔로우할 수 없습니다.", "f001"),
+    FOLLOW_ALREADY_MEMBER("이미 팔로우한 사용자입니다.", "f002"),
+
+    FOLLOW_NOT_FOUND("팔로우 관계가 존재하지 않습니다.", "f003");
+
     private final String message;
     private final String code;
 

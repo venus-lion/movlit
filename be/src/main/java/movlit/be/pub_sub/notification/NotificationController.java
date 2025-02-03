@@ -2,8 +2,13 @@ package movlit.be.pub_sub.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import movlit.be.auth.application.service.MyMemberDetails;
+import movlit.be.common.exception.MemberNotFoundException;
+import movlit.be.common.util.ids.GroupChatroomId;
+import movlit.be.common.util.ids.MemberId;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +23,6 @@ public class NotificationController {
 
     @GetMapping(value = "/api/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribe(@PathVariable String id) {
-        log.info("notification controller request id : {}", id);
         SseEmitter emitter = sseEmitterService.addEmitter(id);
         return ResponseEntity.ok().body(emitter);
     }

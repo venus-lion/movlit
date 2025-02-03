@@ -1,17 +1,18 @@
-import React, {useCallback, useState, createContext, useEffect} from 'react';
-import {NavLink, Outlet, useNavigate} from 'react-router-dom';
+import React, { useCallback, useState, createContext, useEffect } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import {ToastContainer} from 'react-toastify';
-import {FaUserCircle} from 'react-icons/fa';
-import {EventSourcePolyfill} from 'event-source-polyfill';
+import { ToastContainer } from 'react-toastify';
+import { FaUserCircle } from 'react-icons/fa';
+import { EventSourcePolyfill } from 'event-source-polyfill';
+import notificationIcon from './images/notification.jpg';
 
 export const AppContext = createContext();
 
 function App() {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(
-        !!sessionStorage.getItem('accessToken')
+        !!localStorage.getItem('accessToken') // 세션 스토리지 -> 로컬 스토리지
     );
     const [profileImage, setProfileImage] = useState(null);
     console.log('profileImage = {}', profileImage);
@@ -23,7 +24,7 @@ function App() {
     const handleLogout = async () => {
         try {
             await axiosInstance.post('/members/logout');
-            sessionStorage.removeItem('accessToken');
+            localStorage.removeItem('accessToken'); // 세션 스토리지 -> 로컬 스토리지
             document.cookie =
                 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             updateLoginStatus(false);
@@ -87,12 +88,13 @@ function App() {
                     await Notification.requestPermission();
                 }
 
-                // SSE 연결 설정
+                console.log('SSE 연결 설정, userId : ' + userId);
+                //SSE 연결 설정
                 eventSource = new EventSourcePolyfill(
                     `${import.meta.env.VITE_BASE_URL}/subscribe/${userId}`,
                     {
                         headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
+                            Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // 세션 스토리지 -> 로컬 스토리지
                             'Last-Event-ID': Date.now().toString()
                         },
                         withCredentials: true,
@@ -103,7 +105,7 @@ function App() {
 
                 // 연결 상태 관리
                 eventSource.onopen = () => {
-                    console.log('SSE 연결 성공');
+                    console.log('로그인 이후 -- SSE 연결 성공');
                     if (reconnectTimer) {
                         clearTimeout(reconnectTimer);
                         reconnectTimer = null;
@@ -115,15 +117,22 @@ function App() {
                     console.debug('SSE 연결 활성 상태 유지');
                 });
 
-                // 알림 이벤트 처리
+                // 알림 이벤트 처리 - 'notification' 이벤트 수신 시..
                 eventSource.addEventListener('notification', (e) => {
                     try {
-                        console.log('알림 : ' + e.data);
+
+                        console.log('notification 이벤트를 받았다!!');
+                        console.log('e.data : ', e.data); // e.data 값 확인
+
                         const notification = JSON.parse(e.data);
+                        console.log('받은 notification :: ' + notification);
+
                         if (Notification.permission === 'granted') {
-                            const noti = new Notification('Movlit 알림', {
-                                body: notification.message,
-                                icon: '/notification-icon.png'
+                            console.log('Notifcation.permission이 granted 됨');
+                            console.log(notification.message);
+                            const noti = new Notification('Movlit', {
+                                body: notification.message, // 알림 메세지 표시
+                                icon: notificationIcon
                             });
                             noti.onclick = () => window.focus();
                         }
@@ -164,24 +173,24 @@ function App() {
     }, [isLoggedIn]);
 
     return (
-        <AppContext.Provider value={{updateLoginStatus, isLoggedIn}}>
+        <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
             <nav className="navbar">
                 <div className="nav-left">
                     <NavLink
                         to="/"
-                        className={({isActive}) => (isActive ? 'active' : '')}
+                        className={({ isActive }) => (isActive ? 'active' : '')}
                     >
                         Movlit
                     </NavLink>
                     <NavLink
                         to="/"
-                        className={({isActive}) => (isActive ? 'active' : '')}
+                        className={({ isActive }) => (isActive ? 'active' : '')}
                     >
                         영화
                     </NavLink>
                     <NavLink
                         to="/book"
-                        className={({isActive}) => (isActive ? 'active' : '')}
+                        className={({ isActive }) => (isActive ? 'active' : '')}
                     >
                         책
                     </NavLink>
@@ -195,7 +204,7 @@ function App() {
                     {/*)}*/}
                     <NavLink
                         to="/chatMain" // 채팅 페이지로 이동하는 링크 추가
-                        className={({isActive}) => (isActive ? 'active' : '')}
+                        className={({ isActive }) => (isActive ? 'active' : '')}
                     >
                         채팅
                     </NavLink>
@@ -216,13 +225,13 @@ function App() {
                         <>
                             <NavLink
                                 to="/member/login"
-                                className={({isActive}) => (isActive ? 'active' : '')}
+                                className={({ isActive }) => (isActive ? 'active' : '')}
                             >
                                 로그인
                             </NavLink>
                             <NavLink
                                 to="/member/register"
-                                className={({isActive}) => (isActive ? 'active' : '')}
+                                className={({ isActive }) => (isActive ? 'active' : '')}
                             >
                                 회원가입
                             </NavLink>
@@ -232,7 +241,7 @@ function App() {
                         <div className="nav-right-logged-in">
                             <NavLink
                                 to="/mypage"
-                                className={({isActive}) =>
+                                className={({ isActive }) =>
                                     isActive ? 'active nav-mypage' : 'nav-mypage'
                                 }
                             >
@@ -243,7 +252,7 @@ function App() {
                                         className="nav-mypage-img"
                                     />
                                 ) : (
-                                    <FaUserCircle className="nav-mypage-icon"/>
+                                    <FaUserCircle className="nav-mypage-icon" />
                                 )}
                             </NavLink>
                             <button onClick={handleLogout} className="logout-button">
@@ -255,9 +264,9 @@ function App() {
             </nav>
 
             {/* Outlet에 context 전달 */}
-            <Outlet context={{updateLoginStatus, isLoggedIn}}/>
+            <Outlet context={{ updateLoginStatus, isLoggedIn }} />
 
-            <ToastContainer/>
+            <ToastContainer />
         </AppContext.Provider>
     );
 }
