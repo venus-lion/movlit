@@ -24,6 +24,24 @@ function MemberProfilePage() {
     const [followerCount, setFollowerCount] = useState(0); // 팔로워 개수
     const [followingCount, setFollowingCount] = useState(0); // 팔로잉 개수
 
+    const [loginMemberId, setLoginMemberId] = useState(null); // 멤버ID 상태변수 추가
+
+    //현재 로그인한 사용자의 memberId 가져오기
+    const fetchLoginMemberId = async () => {
+        try {
+            const response = await axiosInstance.get('/members/id');
+            console.log('로그인한 memberId :: loginMemberId ');
+            console.log(response.data.memberId);
+
+            console.log('파라미터변수 memberId :: ');
+            console.log(memberId);
+
+            setLoginMemberId(response.data.memberId);
+        }  catch (error) {
+            console.error('Error fetching member ID:', error);
+        }
+    };
+
     // 팔로우 상태 확인
     const checkFollowStatus = async () => {
       try {
@@ -79,6 +97,7 @@ function MemberProfilePage() {
 
         checkFollowStatus();
         fetchFollowCounts();
+        fetchLoginMemberId(); // 현재 로그인한 loginMemberId
     }, [memberId]);
 
     // 팔로우, 언팔로우 기능 처리
@@ -123,9 +142,12 @@ function MemberProfilePage() {
                 <div className="user-info">
                     <h2>{userData.nickname}</h2>
                     <p>{userData.email}</p>
-                    <button onClick={handleFollowToggle} className="follow-button">
+                    {/*loginMemberId와 memberId가 동일하지 않을 때만 팔로우 버튼 렌더링*/}
+                    { loginMemberId !== memberId &&
+                        (<button onClick={handleFollowToggle} className="follow-button">
                         {isFollowing ? '언팔로우' : '팔로우'}
-                    </button>
+                    </button>)
+                    }
                 </div>
             </div>
             <div className="memberpage-stats">
