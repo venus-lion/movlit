@@ -5,6 +5,7 @@ import './App.css';
 import { ToastContainer } from 'react-toastify';
 import { FaUserCircle } from 'react-icons/fa';
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import notificationIcon from './images/notification.jpg';
 
 export const AppContext = createContext();
 
@@ -127,14 +128,12 @@ function App() {
                         console.log('받은 notification :: ' + notification);
 
                         if (Notification.permission === 'granted') {
-                            console.log('Notifcation.permission이 granted이다 !');
+                            console.log('Notifcation.permission이 granted 됨');
                             console.log(notification.message);
-                            const noti = new Notification('Movlit 알림', {
+                            const noti = new Notification('Movlit', {
                                 body: notification.message, // 알림 메세지 표시
-                                icon: '/notification-icon.png'
+                                icon: notificationIcon
                             });
-                            // 테스트 위한 임시 alert
-                            alert(notification.message);
                             noti.onclick = () => window.focus();
                         }
                     } catch (error) {
