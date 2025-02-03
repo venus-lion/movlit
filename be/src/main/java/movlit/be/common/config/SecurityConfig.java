@@ -1,8 +1,10 @@
 package movlit.be.common.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Arrays;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.auth.application.service.OAuth2AuthenticationSuccessHandler;
@@ -98,7 +100,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/subscribe/*").authenticated()
                         .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
-                                "/error/**", "api/books/**", "/ws-stomp/**")
+                                "/error/**", "api/books/**", "/ws-stomp/**", "/notification/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/follows/*/follow").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/follows/*/follow").authenticated()

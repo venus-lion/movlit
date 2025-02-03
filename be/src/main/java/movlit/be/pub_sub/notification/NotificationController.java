@@ -1,12 +1,5 @@
 package movlit.be.pub_sub.notification;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
@@ -33,6 +26,5 @@ public class NotificationController {
         SseEmitter emitter = sseEmitterService.addEmitter(id);
         return ResponseEntity.ok().body(emitter);
     }
-
 
 }
