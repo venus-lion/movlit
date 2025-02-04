@@ -38,6 +38,9 @@ public class OneononeChatroomService {
         MemberEntity sender = memberReadService.findEntityByMemberId(memberId);
         MemberEntity receiver = memberReadService.findEntityByMemberId(request.getReceiverId());
 
+        oneOnOneChatroomRepository.fetchOneOnOneChatroomBySenderAndReceiver(sender.getMemberId(),
+                receiver.getMemberId()); // For Validation
+
         OneononeChatroom oneononeChatroom =
                 new OneononeChatroom(IdFactory.createOneOnOneChatroomId());
 
