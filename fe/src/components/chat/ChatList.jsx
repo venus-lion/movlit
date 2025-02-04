@@ -100,7 +100,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                 if (stompClient.connected) stompClient.deactivate();
             }
         };
-    }, [groupChats]); // 의존성 배열 비움
+    }, []); // 의존성 배열 비움
 
     // 필터링된 채팅 목록 (메모이제이션)
     const filteredChats = useMemo(() => {
