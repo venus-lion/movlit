@@ -54,16 +54,12 @@
     color: #666;
 }
 
-.github-url {
-    margin-top: 5px;
-    word-break: break-all;
+/* FollowList.css */
+.user-link {
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모 요소의 색상 상속 */
 }
 
-.github-url a {
-    color: #0366d6;
-    text-decoration: none;
-}
-
-.github-url a:hover {
-    text-decoration: underline;
+.user-link:hover {
+    text-decoration: underline; /* 마우스 오버 시 밑줄 표시 */
 }
