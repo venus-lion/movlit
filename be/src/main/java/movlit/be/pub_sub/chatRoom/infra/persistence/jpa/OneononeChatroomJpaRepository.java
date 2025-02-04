@@ -25,4 +25,21 @@ public interface OneononeChatroomJpaRepository extends JpaRepository<OneononeCha
             + "WHERE oc.oneononeChatroomId = :roomId")
     Optional<OneononeChatroom> findWithMembersById(@Param("roomId") OneononeChatroomId roomId);
 
+    @Query("SELECT o " +
+            "FROM OneononeChatroom o " +
+            "WHERE EXISTS (" +
+            "   SELECT 1 " +
+            "   FROM MemberROneononeChatroom mro1 " +
+            "   WHERE mro1.oneononeChatroom = o " +
+            "   AND mro1.member.memberId = :senderId" +
+            ") " +
+            "AND EXISTS (" +
+            "   SELECT 1 " +
+            "   FROM MemberROneononeChatroom mro2 " +
+            "   WHERE mro2.oneononeChatroom = o " +
+            "   AND mro2.member.memberId = :receiverId" +
+            ")")
+    Optional<OneononeChatroom> findOneOnOneChatroomBySenderAndReceiver(@Param("senderId") MemberId senderId,
+                                                                       @Param("receiverId") MemberId receiverId);
+
 }

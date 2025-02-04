@@ -38,45 +38,47 @@ public class OneononeChatroomService {
         MemberEntity sender = memberReadService.findEntityByMemberId(memberId);
         MemberEntity receiver = memberReadService.findEntityByMemberId(request.getReceiverId());
 
-        OneononeChatroom oneononeChatroom =
-                new OneononeChatroom(IdFactory.createOneOnOneChatroomId());
+        // For Valid
+        oneOnOneChatroomRepository.fetchOneOnOneChatroomBySenderAndReceiver(sender.getMemberId(),
+                receiver.getMemberId());
+
+        OneononeChatroom oneononeChatroom = new OneononeChatroom(IdFactory.createOneOnOneChatroomId());
 
         // sender의 일대일 채팅방 관계 entity set
-        MemberROneononeChatroom senderROneononeChatroom =
-                new MemberROneononeChatroom(IdFactory.createMemberROneOnOneChatroomId());
-        senderROneononeChatroom.updateOneononeChatroom(oneononeChatroom);
-        senderROneononeChatroom.updateMember(sender);
-        oneononeChatroom.updateMemberROneononeChatroom(senderROneononeChatroom);
+        injectOneOnOneChatroom(oneononeChatroom, sender);
 
         // receiver의 일대일 채팅방 관계 entity set
-        MemberROneononeChatroom receiverROneononeChatroom =
-                new MemberROneononeChatroom(IdFactory.createMemberROneOnOneChatroomId());
-        receiverROneononeChatroom.updateOneononeChatroom(oneononeChatroom);
-        receiverROneononeChatroom.updateMember(receiver);
-        oneononeChatroom.updateMemberROneononeChatroom(receiverROneononeChatroom);
+        injectOneOnOneChatroom(oneononeChatroom, receiver);
 
         // DB 저장
         OneononeChatroom savedOneononeChatroom = oneOnOneChatroomRepository.create(oneononeChatroom);
 
-        OneononeChatroomResponse senderResponse = new OneononeChatroomResponse(
-                savedOneononeChatroom.getOneononeChatroomId(),
-                receiver.getMemberId(),
-                receiver.getNickname(),
-                receiver.getProfileImgUrl()
-        );
-
-        OneononeChatroomResponse receiverResponse = new OneononeChatroomResponse(
-                savedOneononeChatroom.getOneononeChatroomId(),
-                sender.getMemberId(),
-                sender.getNickname(),
-                sender.getProfileImgUrl()
-        );
+        OneononeChatroomResponse senderResponse = makeResponse(savedOneononeChatroom, receiver);
+        OneononeChatroomResponse receiverResponse = makeResponse(savedOneononeChatroom, sender);
 
         // Redis에 채팅방 추가
         this.addOneononeChatroomToRedis(sender, senderResponse);
         this.addOneononeChatroomToRedis(receiver, receiverResponse);
 
         return senderResponse;
+    }
+
+    private static OneononeChatroomResponse makeResponse(OneononeChatroom savedOneononeChatroom,
+                                                         MemberEntity receiver) {
+        return new OneononeChatroomResponse(
+                savedOneononeChatroom.getOneononeChatroomId(),
+                receiver.getMemberId(),
+                receiver.getNickname(),
+                receiver.getProfileImgUrl()
+        );
+    }
+
+    private static void injectOneOnOneChatroom(OneononeChatroom oneononeChatroom, MemberEntity sender) {
+        MemberROneononeChatroom senderROneononeChatroom =
+                new MemberROneononeChatroom(IdFactory.createMemberROneOnOneChatroomId());
+        senderROneononeChatroom.updateOneononeChatroom(oneononeChatroom);
+        senderROneononeChatroom.updateMember(sender);
+        oneononeChatroom.updateMemberROneononeChatroom(senderROneononeChatroom);
     }
 
     @Transactional(readOnly = true)

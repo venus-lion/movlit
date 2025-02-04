@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomNotFoundException;
+import movlit.be.common.exception.GroupChatroomAlreadyExistsException;
+import movlit.be.common.exception.OneOnOneChatroomAlreadyExistsException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.pub_sub.chatRoom.domain.MemberROneononeChatroom;
@@ -12,6 +14,7 @@ import movlit.be.pub_sub.chatRoom.domain.OneononeChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.OneononeChatroomRepository;
 import movlit.be.pub_sub.chatRoom.infra.persistence.jpa.OneononeChatroomJpaRepository;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -60,6 +63,12 @@ public class OneononeChatroomRepositoryImpl implements OneononeChatroomRepositor
         OneononeChatroom oneononeChatroom = oneononeChatroomJpaRepository.findWithMembersById(roomId)
                 .orElseThrow(ChatroomNotFoundException::new);
         return oneononeChatroom.getMemberROneononeChatrooms();
+    }
+
+    public OneononeChatroom fetchOneOnOneChatroomBySenderAndReceiver(MemberId senderId,
+                                                                     MemberId receiverId) {
+        return oneononeChatroomJpaRepository.findOneOnOneChatroomBySenderAndReceiver(senderId, receiverId)
+                .orElseThrow(OneOnOneChatroomAlreadyExistsException::new);
     }
 
 }

@@ -70,6 +70,9 @@ public enum ErrorMessage {
     CHATROOM_NOT_FOUND("해당 채팅방이 존재하지 않습니다.", "c010"),
     CHATROOM_ACCESS_DENIED("해당 채팅방 접근 권한이 없습니다.", "c011"),
 
+    // one on one chat
+    ONEONONE_CHATROOM_ALREADY_EXISTS("해당 컨텐츠의 일대일 채팅이 이미 존재합니다.", "o001"),
+
     // Redis
     FAILED_DESERIALIZE_DATA("Redis 데이터를 역직렬화하는데 실패했습니다.", "r001"),
     REDIS_STREAM_OPERATION_RETURN_NULL("Redis Stream 연산 중 NULL 발생했습니다. Redis 연결 및 스트림 상태를 확인해주세요.", "r002"),
