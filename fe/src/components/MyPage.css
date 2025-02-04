@@ -187,3 +187,14 @@
     object-fit: cover;
     border-radius: 50%;
 }
+
+/*  팔로잉 팔로워 링크 버튼 */
+.link-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+
+}
