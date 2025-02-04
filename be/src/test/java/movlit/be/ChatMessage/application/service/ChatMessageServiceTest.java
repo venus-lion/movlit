@@ -12,7 +12,7 @@ import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import movlit.be.pub_sub.chatRoom.application.service.OneononeChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
-import movlit.be.pub_sub.notification.NotificationService;
+import movlit.be.pub_sub.notification.NotificationUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class ChatMessageServiceTest {
     private RedisMessagePublisher messagePublisher;
 
     @Mock
-    private NotificationService notificationService;
+    private NotificationUseCase notificationUsecase;
 
     @Mock
     private RedisNotificationPublisher redisNotificationPublisher;
@@ -115,7 +115,7 @@ public class ChatMessageServiceTest {
         verify(messagePublisher, times(1)).sendMessage(testMessageDto);
 
         // 알림 서비스가 정상적으로 호출된다.
-        verify(notificationService, times(1)).groupChatroomMessageNotification(testMessageDto);
+        verify(notificationUsecase, times(1)).groupChatroomMessageNotification(testMessageDto);
     }
 
     @Test

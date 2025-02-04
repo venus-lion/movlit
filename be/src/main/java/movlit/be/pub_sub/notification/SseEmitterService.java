@@ -9,9 +9,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.notification.domain.Notification;
-import movlit.be.pub_sub.notification.infra.persistence.NotificationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -24,10 +21,7 @@ public class SseEmitterService {
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
     private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>();
-
     private final NotificationService notificationService;
-
-
 
     public void sendNotificationToReceiver(String id, NotificationDto notification) {
         SseEmitter emitter = emitters.get(id);
@@ -131,4 +125,5 @@ public class SseEmitterService {
             log.debug("Cancelled heartbeat task for {}", id);
         }
     }
+
 }

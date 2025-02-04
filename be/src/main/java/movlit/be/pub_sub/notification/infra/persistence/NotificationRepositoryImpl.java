@@ -1,18 +1,16 @@
 package movlit.be.pub_sub.notification.infra.persistence;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.NotificationNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.notification.domain.Notification;
 import movlit.be.pub_sub.notification.infra.persistence.mongo.NotificationMongoRepository;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationRepositoryImpl implements NotificationRepository{
+public class NotificationRepositoryImpl implements NotificationRepository {
 
     private final NotificationMongoRepository notificationMongoRepository;
 
@@ -29,7 +27,9 @@ public class NotificationRepositoryImpl implements NotificationRepository{
     }
 
     @Override
-    public void saveNotification(Notification notification) { notificationMongoRepository.save(notification); }
+    public void saveNotification(Notification notification) {
+        notificationMongoRepository.save(notification);
+    }
 
     @Override
     public void deleteById(String id) {

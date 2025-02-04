@@ -1,16 +1,11 @@
 package movlit.be.pub_sub.notification.domain;
 
-
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import movlit.be.pub_sub.notification.NotificationType;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -30,9 +25,6 @@ public class Notification {
     private String link = null; // 알림 클릭했을 때 넘어갈 url
     private String timestamp;
 
-
-
-    @Builder
     public Notification(MemberId memberId, String message, NotificationType type, String timestamp) {
 
         this.memberId = memberId;
@@ -40,6 +32,5 @@ public class Notification {
         this.type = type;
         this.timestamp = timestamp;
     }
-
 
 }
