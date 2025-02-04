@@ -468,14 +468,27 @@ function BookDetailPage() {
         return <div style={styles.loading}>Loading...</div>;
     }
 
-    const handleJoinGroupChatroom = (movieId) => {
+    const handleJoinGroupChatroom = async (bookId) => {
         try {
+            const param = {
+                contentId: bookId,
+                contentType: "book",
+            };
+
+            const response = await axiosInstance.post(`/chat/group/checkJoin`, param);
+            const isJoined = response.data
+            if (isJoined === true) {
+                alert("이미 가입된 채팅방입니다.");
+                return;
+            }
+
             const selectedCard = {
                 bookId: bookId,
                 bookImgUrl: bookData.bookImgUrl,
                 title: bookData.title,
                 crew: crews.map(crew => crew.name),
             };
+
             console.log(selectedCard);
             handleOpenGroupChatInfoModal(selectedCard, "book");
 
@@ -583,6 +596,7 @@ function BookDetailPage() {
                         그룹채팅 입장
                     </button>
                 </div>
+                `
 
                 <div style={styles.info}>
                     <div style={styles.ratingAndWish}>
