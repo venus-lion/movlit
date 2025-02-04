@@ -16,6 +16,7 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,6 +87,22 @@ public class GroupChatroomController {
 //        List<GroupChatroomResponseDto> myGroupChatListRes = groupChatroomService.fetchMyGroupChatList(memberId);
         List<GroupChatroomResponseDto> myGroupChatListRes = fetchGroupChatroomUseCase.execute(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(myGroupChatListRes);
+    }
+
+    /**
+     * 그룹 채팅방 나가기
+     *
+     * 현재 로그인한 사용자(MyMemberDetails)가 PathVariable인 GroupChatroomId 에서 나간다
+     */
+    @DeleteMapping("/api/chat/group/{groupChatroomId}/leave")
+    public ResponseEntity<String> leaveGroupChatroom(
+            @PathVariable GroupChatroomId groupChatroomId,
+            @AuthenticationPrincipal MyMemberDetails details){
+
+        MemberId memberId = details.getMemberId();
+        groupChatroomService.leaveGroupChatroom(groupChatroomId, memberId);
+
+        return ResponseEntity.ok().body(memberId.getValue() + " 님이 그룹채팅방에서 성공적으로 나갔습니다.");
     }
 
 }
