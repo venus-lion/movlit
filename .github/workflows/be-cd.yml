@@ -24,13 +24,13 @@ jobs:
       - name: 설정파일을 추가한다
         run: |
           cd ${{ env.TEST_RESOURCE_PATH }}
-          echo "${{ secrets.APPLICATION_YML }}" > application.yml
+          echo "${{ secrets.APPLICATION_TEST_YML }}" > application.yml
       #          echo "${{ secrets.APPLICATION_JWT_YML }}" > application-jwt.yml
       #          echo "${{ secrets.APPLICATION_OAUTH_YML }}" > application-oauth2.yml
       - name: 어플리케이션을 빌드한다
         run: |
           chmod +x gradlew
-          ./gradlew build --exclude-task test --exclude-task asciidoctor
+          ./gradlew build --exclude-task asciidoctor
 
         working-directory: ${{ env.ROOT_PATH }}
       - name: 도커 허브에 로그인한다
