@@ -15,6 +15,6 @@ public interface OneononeChatroomRepository {
 
     List<MemberROneononeChatroom> findWithMembersById(OneononeChatroomId roomId);
 
-    OneononeChatroom fetchOneOnOneChatroomBySenderAndReceiver(MemberId senderId, MemberId receiverId);
+    boolean existsOneOnOneChatroomBySenderAndReceiver(MemberId senderId, MemberId receiverId);
 
 }

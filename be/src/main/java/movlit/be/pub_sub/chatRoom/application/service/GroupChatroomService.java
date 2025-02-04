@@ -15,6 +15,7 @@ import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.exception.GroupChatroomAlreadyExistsException;
 import movlit.be.common.exception.GroupChatroomAlreadyJoinedException;
+import movlit.be.common.exception.GroupChatroomNotFoundException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.GroupChatroomId;
@@ -30,13 +31,16 @@ import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreation
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.GroupChatRepository;
+import movlit.be.pub_sub.chatRoom.presentation.dto.CheckJoinGroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
+import movlit.be.pub_sub.notification.NotificationService;
 import movlit.be.pub_sub.notification.NotificationType;
+import movlit.be.pub_sub.notification.domain.Notification;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -60,6 +64,7 @@ public class GroupChatroomService {
     private final BookHeartReadService bookHeartReadService;
 
     private final RedisNotificationPublisher redisNotificationPublisher;
+    private final NotificationService notificationService;
 
     // TODO: Const 분리
     private static final String CHATROOM_MEMBERS_KEY_PREFIX = "chatroom:";
@@ -134,7 +139,12 @@ public class GroupChatroomService {
         } else if (contentType.equals("BK")) {
             BookId bookId = new BookId(pureContentId);
             String bookName = bookDetailReadService.fetchByBookId(bookId).getTitle();
-            contentName = bookName.substring(0, bookName.indexOf(" -"));
+            int index = bookName.indexOf(" -");
+            if (index != -1) {
+                contentName = bookName.substring(0, index); // "-"가 있으면 앞부분만 사용
+            } else {
+                contentName = bookName; // "-"가 없으면 전체 문자열 사용
+            }
             heartingMemberIds =
                     bookHeartReadService.fetchHeartingMemberIdsByBookId(bookId);
         }
@@ -149,7 +159,10 @@ public class GroupChatroomService {
                         NotificationMessage.generateNewGroupChatroomNotiMessage(contentType, contentName, roomName),
                         NotificationType.CONTENT_HEART_CHATROOM,
                         url);
+                // Notification Redis Publish (SSE 알림)
                 redisNotificationPublisher.publishNotification(notification);
+                // Notification MongoDB에 저장
+                notificationService.saveNotification(notification);
             }
         }
     }
@@ -325,6 +338,7 @@ public class GroupChatroomService {
         return groupChatRepository.findByChatroomId(groupChatroomId);
     }
 
+
     // 그룹채팅방 나가기
     @Transactional
     public void leaveGroupChatroom(GroupChatroomId groupchatroomId, MemberId memberId){
@@ -340,6 +354,28 @@ public class GroupChatroomService {
 
         // 변경사항을 저장할 것
         groupChatRepository.create(groupChatroom); // 변경 사항 저장
+
+
+    public Boolean checkIfGroupChatroomJoin(MemberId memberId, CheckJoinGroupChatroomRequest request) {
+        try {
+            String contentId;
+
+            if ("movie".equals(request.contentType())) {
+                contentId = "MV_" + request.contentId();
+            } else {
+                contentId = "BK_" + request.contentId();
+            }
+
+            GroupChatroom groupChatroom = groupChatRepository.fetchEntityByContentId(contentId);
+            validateAlreadyJoined(memberId, groupChatroom);
+
+            return false;
+
+        } catch (GroupChatroomNotFoundException e) {
+            return false;
+        } catch (GroupChatroomAlreadyJoinedException e) {
+            return true;
+        }
 
     }
 

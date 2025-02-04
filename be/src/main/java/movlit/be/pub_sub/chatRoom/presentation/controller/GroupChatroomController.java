@@ -9,6 +9,7 @@ import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.application.service.FetchGroupChatroomUseCase;
 import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
+import movlit.be.pub_sub.chatRoom.presentation.dto.CheckJoinGroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponse;
@@ -89,6 +90,7 @@ public class GroupChatroomController {
         return ResponseEntity.status(HttpStatus.OK).body(myGroupChatListRes);
     }
 
+
     /**
      * 그룹 채팅방 나가기
      *
@@ -103,6 +105,17 @@ public class GroupChatroomController {
         groupChatroomService.leaveGroupChatroom(groupChatroomId, memberId);
 
         return ResponseEntity.ok().body(memberId.getValue() + " 님이 그룹채팅방에서 성공적으로 나갔습니다.");
+
+    // 채팅방 가입 여부
+    @PostMapping("/api/chat/group/checkJoin")
+    public ResponseEntity<Boolean> checkJoin(
+            @AuthenticationPrincipal MyMemberDetails details,
+            @RequestBody CheckJoinGroupChatroomRequest request) {
+        MemberId memberId = details.getMemberId();
+        boolean isJoin = groupChatroomService.checkIfGroupChatroomJoin(memberId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isJoin);
+
     }
 
 }

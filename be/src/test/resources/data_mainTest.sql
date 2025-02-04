@@ -649,3 +649,9 @@ VALUES ('book_r_crew_id1', '9791141601706', 'crew_id_2'),
        ('book_r_crew_id4', '9791141601454', 'crew_id_2'),
        ('book_r_crew_id5', '9788931475944', 'crew_id_3'),
        ('book_r_crew_id6', '9788937604706', 'crew_id_1');
+
+INSERT INTO test.group_chat_room (id, room_name, content_id, reg_dt)
+VALUES ('group_chat_room_1', '채팅방1', 'MV_1', now());
+
+INSERT INTO test.group_chat_room (id, room_name, content_id, reg_dt)
+VALUES ('group_chat_room_2', '채팅방2', 'BK_1', now());

@@ -475,8 +475,20 @@ function MovieDetailPage() {
     }
     const uniqueGenreList = Array.from(uniqueGenres);
 
-    const handleJoinGroupChatroom = (movieId) => {
+    const handleJoinGroupChatroom = async (movieId) => {
         try {
+            const param = {
+                contentId: movieId,
+                contentType: "movie",
+            };
+
+            const response = await axiosInstance.post(`/chat/group/checkJoin`, param);
+            const isJoined = response.data
+            if (isJoined === true) {
+                alert("이미 가입된 채팅방입니다.");
+                return;
+            }
+
             const selectedCard = {
                 movieId: movieId,
                 posterPath: movieData.posterUrl,
@@ -488,6 +500,7 @@ function MovieDetailPage() {
                     genreName: genre.name // 새로운 속성 추가
                 })),
             };
+            // 가입 여부 확인 api 호출
             console.log(selectedCard);
             handleOpenGroupChatInfoModal(selectedCard, "movie");
 

@@ -60,6 +60,13 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
 
     boolean existsByContentId(String contentId);
 
+    @Query("SELECT gc "
+            + "FROM GroupChatroom gc "
+            + "LEFT JOIN gc.memberRChatroom mr "
+            + "WHERE gc.contentId = :contentId")
+    Optional<GroupChatroom> findGroupChatroomByContentId(String contentId);
+
+
 }
 
 

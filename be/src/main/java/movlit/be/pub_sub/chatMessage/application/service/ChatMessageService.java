@@ -20,6 +20,7 @@ import movlit.be.pub_sub.chatRoom.application.service.OneononeChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
+import movlit.be.pub_sub.notification.NotificationService;
 import movlit.be.pub_sub.notification.NotificationType;
 import movlit.be.pub_sub.notification.NotificationUseCase;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,7 @@ public class ChatMessageService {
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisNotificationPublisher redisNotificationPublisher;
     private final NotificationUseCase notificationUsecase;
+    private final NotificationService notificationService;
 
     private static final String MESSAGE_QUEUE = "chat_message_queue";   // 큐 이름 (채팅방마다 별도의 큐를 사용할 수 있음)
     private final MemberReadService memberReadService;
@@ -82,7 +84,10 @@ public class ChatMessageService {
                 url
         );
 
+        // Notification Redis Publish (SSE 알림)
         redisNotificationPublisher.publishNotification(notification);
+        // Notification MongoDB에 저장
+        notificationService.saveNotification(notification);
     }
 
     // 그룹 채팅방 sendMessage
@@ -110,7 +115,7 @@ public class ChatMessageService {
 
     // TODO : 채팅 읽음 처리
     public void updateMessageAsRead(String roomId, MemberId memberId) {
-
+        
     }
 
     /**

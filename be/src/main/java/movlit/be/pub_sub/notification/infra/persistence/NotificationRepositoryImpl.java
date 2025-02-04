@@ -17,7 +17,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Override
     public List<Notification> findByMemberId(MemberId memberId) {
         // MongoDB memberId에 대한 알림 목록 조회
-        List<Notification> notificationList = notificationMongoRepository.findByMemberId(memberId);
+        List<Notification> notificationList = notificationMongoRepository.findByMemberIdOrderByTimestampDesc(memberId);
 
         if (notificationList == null || notificationList.isEmpty()) {
             throw new NotificationNotFoundException(); //
