@@ -52,6 +52,7 @@ public class NotificationService {
                 IdFactory.createMemberId(notificationdto.getId()),
                 notificationdto.getMessage(),
                 notificationdto.getType(),
+                notificationdto.getUrl(),
                 notificationdto.getTimestamp()
         );
 

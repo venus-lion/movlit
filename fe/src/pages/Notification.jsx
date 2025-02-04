@@ -2,10 +2,13 @@ import React, {useEffect, useState} from 'react';
 import './Home.css';
 import '../App.css';
 import axiosInstance from "../axiosInstance.js";
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 추가
+
 
 
 function Notification() {
     const [myNotifications, setMyNotifications] = useState([]);
+    const navigate = useNavigate();  // useNavigate 훅 호출
 
 
     useEffect(() => {
@@ -57,6 +60,16 @@ function Notification() {
 
     };
 
+    // 알림 리스트 클릭 시 해당 알림 url로 이동
+    const handleNotificationClick = (url) => {
+        // URL이 'http'로 시작하면 절대 경로, 아니면 상대 경로로 처리
+        if (url && url.startsWith('http')) {
+            window.location.href = url; // 절대 URL로 이동
+        } else if (url) {
+            navigate(url); // 상대 URL로 이동
+        }
+    };
+
     return (
         <div className="notification-container">
             <h1>
@@ -86,9 +99,15 @@ function Notification() {
                     }
 
                     return (
-                        <div key={notification.id} className="notification-item">
-                            <img src={imgSrc} alt="아이콘" className="noti-icon"/>
-                            <p className="noti-message">{notification.message}</p>
+                        <div
+                            key={notification.id}
+                            className="notification-item"
+                        >
+                        <img src={imgSrc} alt="아이콘" className="noti-icon"/>
+                            <p className="noti-message"
+                               onClick={() => handleNotificationClick(notification.url)} // 클릭 시 URL로 이동
+                               style={{ cursor : 'pointer'}}
+                            >{notification.message}</p>
                             <button className="delete-btn" onClick={() => deleteNotification(notification.id)}>X
                             </button>
                         </div>

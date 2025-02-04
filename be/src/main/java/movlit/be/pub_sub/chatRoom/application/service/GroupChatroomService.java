@@ -151,7 +151,7 @@ public class GroupChatroomService {
         if (!heartingMemberIds.isEmpty()) {
             for (MemberId heartigMemberId : heartingMemberIds) {
                 log.info(">> 알림발송할 멤버 " + heartigMemberId.getValue());
-                String url = basicUrl + "/chatMain/" + createdChatroom.getGroupChatroomId() + "/group";
+                String url = basicUrl + "/chatMain/" + createdChatroom.getGroupChatroomId().getValue() + "/group";
                 NotificationDto notification = new NotificationDto(
                         heartigMemberId.getValue(),
                         NotificationMessage.generateNewGroupChatroomNotiMessage(contentType, contentName, roomName),
