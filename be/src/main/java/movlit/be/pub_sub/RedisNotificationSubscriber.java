@@ -28,7 +28,7 @@ public class RedisNotificationSubscriber {
             log.info("Received notificationDto: {}", notificationDto);
 
             // SSE Emitter를 통해 클라이언트에게 알림 전송
-            sseEmitterService.sendNotificationToReceiver(notificationDto.getId(), notificationDto);
+            sseEmitterService.sendNotification(notificationDto.getId(), notificationDto);
 
         } catch (Exception e) {
             log.error("Exception in onNotification {}", e);
