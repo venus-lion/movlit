@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Home.css';
-import { useOutletContext } from 'react-router-dom';
+import {useOutletContext} from 'react-router-dom';
 
 import BestsellerBooksComponent from "./BestsellerBooksComponent.jsx";
 import PopularBooksComponent from "./PopularBooksComponent.jsx";
@@ -10,7 +10,7 @@ import useApiData from "../hooks/userRecommendBookApi.jsx";
 import RandomGenreBooksComponent from "./RandomGenreBooksComponent.jsx";
 
 function BookHome() {
-    const { isLoggedIn } = useOutletContext();
+    const {isLoggedIn} = useOutletContext();
 
     // 사용자 찜한 도서 기반 추천 도서 API 호출
     const {
@@ -51,13 +51,12 @@ function BookHome() {
     const handlePrevInterestGenre = () => handlePrev(startIndexInterestGenre, setStartIndexInterestGenre);
 
 
-
     return (
         <div className="book-home">
-            <BestsellerBooksComponent />
-            <PopularBooksComponent />
-            <NewBooksComponent />
-            <RandomGenreBooksComponent />
+            <BestsellerBooksComponent/>
+            <PopularBooksComponent/>
+            <NewBooksComponent/>
+            <RandomGenreBooksComponent/>
 
             {isLoggedIn && interestGenreBooks.length > 0 && (
                 <BookCarouselRecommend

@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance';
 import './FollowList.css';
-import { FaUserCircle } from 'react-icons/fa';
+import {FaUserCircle} from 'react-icons/fa';
 import FollowToggleButton from "./FollowToggleButton.jsx";
 
-function FollowList({type}){
+function FollowList({type}) {
     const [followList, setFollowList] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 let response;
-                if (type === 'followers'){ // 내 팔로워
+                if (type === 'followers') { // 내 팔로워
                     response = await axiosInstance.get(`/follows/my/follow/details`);
                 } else { // 내 팔로잉
                     response = await axiosInstance.get(`/follows/my/following/details`);
@@ -36,9 +36,9 @@ function FollowList({type}){
                     <div key={follow.memberId} className="follow-item">
                         <div className="profile-image">
                             {follow.profileImgUrl ? (
-                                <img src={follow.profileImgUrl} alt="Profile" className="profile-img" />
+                                <img src={follow.profileImgUrl} alt="Profile" className="profile-img"/>
                             ) : (
-                                <FaUserCircle className="default-profile-icon" />
+                                <FaUserCircle className="default-profile-icon"/>
                             )}
                         </div>
                         <div className="user-info">
@@ -46,7 +46,7 @@ function FollowList({type}){
                             <div className="email">{follow.email}</div>
                         </div>
                         {/* 팔로잉/팔로우 버튼 (MemberProfilePage에서 가져옴) */}
-                        <FollowToggleButton memberId={follow.memberId} />
+                        <FollowToggleButton memberId={follow.memberId}/>
                     </div>
                 ))}
             </div>

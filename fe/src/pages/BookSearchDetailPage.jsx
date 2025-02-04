@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useParams} from 'react-router-dom';
 import './SearchDetailPage.css'; // SearchPage.css 기반
-import axios from 'axios';
 import axiosInstance from "../axiosInstance.js";
 
 function BookSearchDetailPage() {
@@ -14,12 +13,12 @@ function BookSearchDetailPage() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log("input Str : "+ inputStr);
+        console.log("input Str : " + inputStr);
         const fetchData = async () => {
             setLoading(true);
             try {
                 const response = await axiosInstance.get(`/books/search/searchBook`, {
-                    params: { page, pageSize, inputStr},
+                    params: {page, pageSize, inputStr},
                 }); // 9개씩 가져오도록 pageSize 설정
                 const data = response.data;
 
@@ -28,7 +27,6 @@ function BookSearchDetailPage() {
                 setPageSize(pageSize);
 
                 // setTotalPages(data.totalPages); // totalPages 설정 (API 응답에 totalPages가 있다고 가정)
-
 
 
             } catch (error) {

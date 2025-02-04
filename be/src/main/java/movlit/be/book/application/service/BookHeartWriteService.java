@@ -6,7 +6,6 @@ import movlit.be.book.domain.BookHeartVo;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookHeartCountRepository;
 import movlit.be.book.domain.repository.BookHeartRepository;
-import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ public class BookHeartWriteService {
 
     private final BookHeartRepository bookHeartRepository;
     private final BookHeartCountRepository bookHeartCountRepository;
-
 
     // 해당 도서 찜하기
     @Transactional
@@ -34,7 +32,7 @@ public class BookHeartWriteService {
             // bookHeartCount 증가
             if (savedHeart != null) {
                 BookHeartCountVo existingCount = bookHeartCountRepository.fetchByBook(bookVo);
-                if(existingCount == null){
+                if (existingCount == null) {
                     BookHeartCountVo heartCount = BookHeartCountVo.builder()
                             .bookVo(bookVo)
                             .build();
@@ -55,8 +53,9 @@ public class BookHeartWriteService {
         if (existingHeart != null) {
             bookHeartRepository.delete(existingHeart);
             BookHeartCountVo existingCount = bookHeartCountRepository.fetchByBook(bookVo);
-            if(existingCount != null && existingCount.getCount() > 0)
+            if (existingCount != null && existingCount.getCount() > 0) {
                 bookHeartCountRepository.decreaseHeartCount(bookVo);
+            }
         } else {
             throw new Exception("찜하기를 삭제할 수 없습니다");
         }

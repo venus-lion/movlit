@@ -8,8 +8,6 @@ import movlit.be.image.domain.repository.ImageRepository;
 import movlit.be.image.presentation.dto.response.ImageResponse;
 import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.member.domain.repository.MemberRepository;
-import movlit.be.pub_sub.RedisMessagePublisher;
-import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
 import movlit.be.pub_sub.chatRoom.application.service.dto.ProfileImageUpdatedEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;

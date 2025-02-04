@@ -12,12 +12,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class FollowRepositoryImpl implements FollowRepository {
+
     private final FollowJpaRepository followJpaRepository;
 
     // 이미 팔로우한 경우 체크
     @Override
     public boolean existsByFollowerIdAndFolloweeId(MemberId followerId, MemberId followeeId) {
-        if (followJpaRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)){
+        if (followJpaRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)) {
             throw new FollowAlreadyMemberException();
         }
         return false;

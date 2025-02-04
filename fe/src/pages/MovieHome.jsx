@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './Home.css';
-import { Link, useOutletContext } from 'react-router-dom';
+import {useOutletContext} from 'react-router-dom';
 import PopularMoviesComponent from "./PopularMoviesComponent.jsx";
 import LatestMoviesComponent from "./LatestMoviesComponent.jsx";
 import GenreMoviesComponent from "./GenreMoviesComponent.jsx";
@@ -9,7 +9,7 @@ import RecentHeartSimilarCrewMoviesComponent from "./RecentHeartSimilarCrewMovie
 
 function MovieHome() {
     const [randomGenreIds, setRandomGenreIds] = useState([]);
-    const { isLoggedIn } = useOutletContext();
+    const {isLoggedIn} = useOutletContext();
     useEffect(() => {
 
         // 1부터 16까지 숫자 중 랜덤하게 4개의 숫자 뽑기
@@ -29,12 +29,12 @@ function MovieHome() {
 
     return (
         <div className="movie-home">
-            <PopularMoviesComponent />
-            <LatestMoviesComponent />
-            {isLoggedIn && <RecentHeartSimilarCrewMoviesComponent />}
-            {isLoggedIn && <InterestGenreMoviesComponent />}
+            <PopularMoviesComponent/>
+            <LatestMoviesComponent/>
+            {isLoggedIn && <RecentHeartSimilarCrewMoviesComponent/>}
+            {isLoggedIn && <InterestGenreMoviesComponent/>}
             {randomGenreIds.map(genreId => (
-                <GenreMoviesComponent key={genreId} genreId={genreId} />
+                <GenreMoviesComponent key={genreId} genreId={genreId}/>
             ))}
         </div>
     );

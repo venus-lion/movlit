@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.common.util.ids.MovieCommentLikeCountId;
-import movlit.be.common.util.ids.MovieHeartCountId;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -30,7 +29,8 @@ public class MovieCommentLikeCountEntity {
     private Long version;
 
     @Builder
-    public MovieCommentLikeCountEntity(MovieCommentLikeCountId movieCommentLikeCountId, MovieCommentId movieCommentId, Long count) {
+    public MovieCommentLikeCountEntity(MovieCommentLikeCountId movieCommentLikeCountId, MovieCommentId movieCommentId,
+                                       Long count) {
         this.movieCommentLikeCountId = movieCommentLikeCountId;
         this.movieCommentId = movieCommentId;
         this.count = count;

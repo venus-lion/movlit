@@ -4,7 +4,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MemberNotFoundException;
 import movlit.be.common.exception.NotExistMovieHeartByMember;
-import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie_heart.application.converter.MovieHeartConverter;
 import movlit.be.movie_heart.domain.MovieHeart;
@@ -38,7 +37,7 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
     public List<MovieHeart> fetchMovieHeartRecentByMember(MemberId memberId) {
         List<MovieHeartEntity> movieHeartList = movieHeartJpaRepository.findTop3ByMemberIdOrderByRegDtDesc(memberId);
 
-        if(movieHeartList.isEmpty()){
+        if (movieHeartList.isEmpty()) {
             throw new NotExistMovieHeartByMember();
         }
 
@@ -55,7 +54,6 @@ public class MovieHeartRepositoryImpl implements MovieHeartRepository {
 
         return HeartingMemberList;
     }
-
 
 
 }

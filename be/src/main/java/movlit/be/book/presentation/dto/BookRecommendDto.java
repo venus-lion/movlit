@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class BookRecommendDto {
+
     private String bookId; // isbn13
     private String isbn; // isbn
     private String title;
@@ -19,4 +20,5 @@ public class BookRecommendDto {
     private String bookImgUrl;
     private LocalDate regDt;
     private LocalDate updDt;
+
 }

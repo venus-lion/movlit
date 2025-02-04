@@ -6,7 +6,6 @@ import movlit.be.book.domain.BookVo;
 
 public interface BookRCrewRepository {
 
-
     List<BookRCrewVo> findByBook(BookVo bookVo);
 
 }

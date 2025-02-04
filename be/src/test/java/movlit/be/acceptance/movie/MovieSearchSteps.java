@@ -16,13 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MovieSearchSteps {
+
     /**
      * 1. 유저_관심_장르와_유사한_영화를_조회한다.
      * 2. 인기순_영화리스트를_조회한다.
      * 3. 장르별_영화리스트를_조회한다.
      * */
 
-    public static ExtractableResponse<Response> 로그인유저_관심장르_영화_리스트를_조회한다(String accessToken, RequestSpecification spec){
+    public static ExtractableResponse<Response> 로그인유저_관심장르_영화_리스트를_조회한다(String accessToken, RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("page", 1)
@@ -38,7 +39,8 @@ public class MovieSearchSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 찜한_영화_크루_유사한_영화_리스트를_조회한다(String accessToken, RequestSpecification spec){
+    public static ExtractableResponse<Response> 찜한_영화_크루_유사한_영화_리스트를_조회한다(String accessToken,
+                                                                          RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("page", 1)
@@ -54,7 +56,7 @@ public class MovieSearchSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 검색어를_입력하여_영화_리스트를_조회한다(String inputStr, RequestSpecification spec){
+    public static ExtractableResponse<Response> 검색어를_입력하여_영화_리스트를_조회한다(String inputStr, RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("inputStr", inputStr)
@@ -77,7 +79,8 @@ public class MovieSearchSteps {
         );
     }
 
-    public static void 선호장르_하나이상_맞는_응답_데이터가_존재한다(ExtractableResponse<Response> response, List<Long> userInterestGenreIds) {
+    public static void 선호장르_하나이상_맞는_응답_데이터가_존재한다(ExtractableResponse<Response> response,
+                                                 List<Long> userInterestGenreIds) {
         Assertions.assertAll(
                 () -> {
                     List<Movie> movieList = response.jsonPath().getList("movieList", Movie.class);
@@ -93,12 +96,13 @@ public class MovieSearchSteps {
     }
 
     public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,
-                                                   HttpStatus expectedHttpStatus) {
+                                                      HttpStatus expectedHttpStatus) {
         return assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());
     }
 
     public static AbstractStringAssert<?> 오류코드를_검증한다(ExtractableResponse<Response> response,
-                                                  String code) {
+                                                     String code) {
         return assertThat(response.jsonPath().getString("code")).isEqualTo(code);
     }
+
 }

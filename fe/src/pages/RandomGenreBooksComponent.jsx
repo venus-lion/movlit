@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import useBookList from "../hooks/useBookList.jsx";
 import BookGenreCarousel from "./BookGenreCarousel.jsx";
 
-function RandomGenreBooksComponent(){
+function RandomGenreBooksComponent() {
     const {books, loading, error} = useBookList({
-        endpoint : '/books/genres/random',
-        params: {limit : 30},
+        endpoint: '/books/genres/random',
+        params: {limit: 30},
     });
 
     const [startIndex, setStartIndex] = useState(0); // 화면에 보이는 도서 시작 인덱스

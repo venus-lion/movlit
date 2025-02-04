@@ -35,7 +35,7 @@ public class MovieDetailWriteService {
     }
 
     private MovieCommentEntity makeMovieCommentEntity(Long movieId, MemberId memberId,
-                                                             MovieCommentRequest request) {
+                                                      MovieCommentRequest request) {
         MovieCommentId movieCommentId = IdFactory.createMovieCommentId();
         LocalDateTime now = LocalDateTime.now();
         String comment = request.getComment();

@@ -15,12 +15,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookNewRepositoryImpl implements BookNewRepository {
+
     private final BookNewJpaRepository bookNewJpaRepository;
+
     @Override
     public List<BookNewVo> findAllBookNew(Pageable pageable) {
         List<BookNewEntity> bookNewEntities = bookNewJpaRepository.findBookNewEntityByPaging(pageable);
 
-        if (bookNewEntities.isEmpty()){
+        if (bookNewEntities.isEmpty()) {
             throw new BookNewNotFoundException();
         }
 

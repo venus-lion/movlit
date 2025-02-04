@@ -13,12 +13,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookHeartCountJpaRepository extends JpaRepository<BookHeartCountEntity, Long> {
 
-
     Optional<BookHeartCountEntity> findByBookEntity(BookEntity bookEntity);
+
     @Query("SELECT bc.count FROM BookHeartCountEntity bc "
             + "WHERE bc.bookEntity.bookId = :bookId ")
     Optional<Integer> countByBookId(BookId bookId);
-
 
     @Modifying
     @Query("UPDATE BookHeartCountEntity bhc SET bhc.count = bhc.count + 1 WHERE bhc.bookEntity = :bookEntity")
@@ -27,8 +26,6 @@ public interface BookHeartCountJpaRepository extends JpaRepository<BookHeartCoun
     @Modifying
     @Query("UPDATE BookHeartCountEntity bhc SET bhc.count = bhc.count - 1 WHERE bhc.bookEntity = :bookEntity")
     void decreaseHeartCount(@Param("bookEntity") BookEntity bookEntity);
-
-
 
 
 }

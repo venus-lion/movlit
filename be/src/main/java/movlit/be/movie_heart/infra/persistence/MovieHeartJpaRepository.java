@@ -20,7 +20,6 @@ public interface MovieHeartJpaRepository extends JpaRepository<MovieHeartEntity,
 
     List<MovieHeartEntity> findTop3ByMemberIdOrderByRegDtDesc(MemberId memberId);
 
-
     @Query("SELECT mh.memberId "
             + "FROM MovieHeartEntity mh "
             + "WHERE mh.movieId = :movieId")

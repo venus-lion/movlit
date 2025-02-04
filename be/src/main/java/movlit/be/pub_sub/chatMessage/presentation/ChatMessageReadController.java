@@ -29,7 +29,7 @@ public class ChatMessageReadController {
     }
 
     @GetMapping("/recent/{roomId}")
-    public ResponseEntity<ChatMessageDto> fetchRecentMessage(@PathVariable String roomId){
+    public ResponseEntity<ChatMessageDto> fetchRecentMessage(@PathVariable String roomId) {
         ChatMessageDto chatMessageRes = chatMessageService.fetchRecentMessage(roomId);
         return ResponseEntity.ok(chatMessageRes);
     }

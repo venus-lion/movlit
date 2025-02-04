@@ -14,19 +14,20 @@ import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.converter.MemberConverter;
 import movlit.be.member.domain.Member;
-import movlit.be.member.domain.entity.MemberEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class BookHeartRepositoryImpl implements BookHeartRepository {
+
     private final BookHeartJpaRepository bookHeartJpaRepository;
 
     @Override
     public BookHeartVo fetchByBookAndMember(BookVo bookVo, Member member) {
         BookHeartEntity bookHeartEntity =
-                bookHeartJpaRepository.findByBookEntityAndMemberEntity(BookDetailConverter.toEntity(bookVo), MemberConverter.toEntity(member))
-                .orElse(null);
+                bookHeartJpaRepository.findByBookEntityAndMemberEntity(BookDetailConverter.toEntity(bookVo),
+                                MemberConverter.toEntity(member))
+                        .orElse(null);
 
         return BookHeartConverter.toDomain(bookHeartEntity);
     }
@@ -48,7 +49,7 @@ public class BookHeartRepositoryImpl implements BookHeartRepository {
 
     @Override
     public void delete(BookHeartVo bookHeartVo) {
-            bookHeartJpaRepository.delete(BookHeartConverter.toEntity(bookHeartVo));
+        bookHeartJpaRepository.delete(BookHeartConverter.toEntity(bookHeartVo));
 
     }
 

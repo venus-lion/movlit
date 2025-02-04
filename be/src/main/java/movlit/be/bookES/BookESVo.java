@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class BookESVo {
+
     private String bookId; // isbn13
     private String isbn; // isbn
     private String title;

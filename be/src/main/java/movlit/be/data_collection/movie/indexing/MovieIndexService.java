@@ -44,8 +44,6 @@ public class MovieIndexService {
             cnt.getAndIncrement();
         });
 
-
-
         return movieDocumentList;
     }
 

@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 
 public class MovieCommentSteps {
 
-        public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다(String accessToken, String movieId,
+    public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다(String accessToken, String movieId,
                                                                 RequestSpecification spec) {
         Map<String, Object> body = new HashMap<>();
         body.put("score", 2);
@@ -25,7 +25,7 @@ public class MovieCommentSteps {
     }
 
     public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다_2(String accessToken, String movieId,
-                                                                RequestSpecification spec) {
+                                                                  RequestSpecification spec) {
         Map<String, Object> body = new HashMap<>();
         body.put("score", 3);
         body.put("comment", "이 영화는 정말 재밌어");
@@ -33,7 +33,7 @@ public class MovieCommentSteps {
     }
 
     public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다_3(String accessToken, String movieId,
-                                                                RequestSpecification spec) {
+                                                                  RequestSpecification spec) {
         Map<String, Object> body = new HashMap<>();
         body.put("score", 4);
         body.put("comment", "이건 안 봐도 되는 정도?");
@@ -41,7 +41,7 @@ public class MovieCommentSteps {
     }
 
     public static ExtractableResponse<Response> 영화_코멘트_작성을_요청한다_4(String accessToken, String movieId,
-                                                                RequestSpecification spec) {
+                                                                  RequestSpecification spec) {
         Map<String, Object> body = new HashMap<>();
         body.put("score", 2);
         body.put("comment", "그래도 한 번쯤은 봐야 합니다.");
@@ -57,7 +57,7 @@ public class MovieCommentSteps {
     }
 
     public static ExtractableResponse<Response> 영화_코멘트_목록_조회를_요청한다(String movieId,
-                                                             RequestSpecification spec) {
+                                                                   RequestSpecification spec) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
@@ -86,7 +86,7 @@ public class MovieCommentSteps {
     }
 
     public static ExtractableResponse<Response> 로그인_후_내_영화_코멘트_조회를_요청한다(String accessToken, String movieId,
-                                                                         RequestSpecification spec) {
+                                                                        RequestSpecification spec) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)

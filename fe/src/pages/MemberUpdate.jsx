@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
@@ -94,7 +94,7 @@ const MemberUpdate = () => {
     return (
         // MemberRegister와 유사한 폼 구조를 사용합니다.
         <div className="bg-light">
-            <div className="container" style={{ marginTop: '30px' }}>
+            <div className="container" style={{marginTop: '30px'}}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">
@@ -105,15 +105,15 @@ const MemberUpdate = () => {
                                         <strong>회원 수정</strong>
                                     </h3>
                                 </div>
-                                <hr />
+                                <hr/>
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{ width: '45%' }}>
+                                            <td style={{width: '45%'}}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{ width: '55%' }}>
+                                            <td style={{width: '55%'}}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -213,11 +213,12 @@ const MemberUpdate = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     type="submit"
-                                                    style={{ marginRight: '5px' }}
+                                                    style={{marginRight: '5px'}}
                                                 >
                                                     수정
                                                 </button>
-                                                <button className="btn btn-secondary" type="button" onClick={() => navigate('/mypage')}>
+                                                <button className="btn btn-secondary" type="button"
+                                                        onClick={() => navigate('/mypage')}>
                                                     취소
                                                 </button>
                                             </td>

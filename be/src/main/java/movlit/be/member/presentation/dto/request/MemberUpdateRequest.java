@@ -1,6 +1,5 @@
 package movlit.be.member.presentation.dto.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -28,7 +27,7 @@ public class MemberUpdateRequest {
 
     @Builder
     public MemberUpdateRequest(String nickname, String password, String repeatPassword, String dob,
-                                 List<Long> genreIds) {
+                               List<Long> genreIds) {
         this.nickname = nickname;
         this.password = password;
         this.repeatPassword = repeatPassword;

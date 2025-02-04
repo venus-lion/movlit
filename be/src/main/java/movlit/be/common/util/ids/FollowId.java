@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @EqualsAndHashCode(callSuper = true)
 public class FollowId extends BaseId {
+
     public FollowId(String value) {
         super(value);
     }

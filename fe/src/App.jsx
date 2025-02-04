@@ -1,10 +1,10 @@
-import React, { useCallback, useState, createContext, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import React, {createContext, useCallback, useEffect, useState} from 'react';
+import {NavLink, Outlet, useNavigate} from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import { ToastContainer } from 'react-toastify';
-import { FaUserCircle } from 'react-icons/fa';
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import {ToastContainer} from 'react-toastify';
+import {FaUserCircle} from 'react-icons/fa';
+import {EventSourcePolyfill} from 'event-source-polyfill';
 import notificationIcon from './images/notification.jpg';
 
 
@@ -194,26 +194,25 @@ function App() {
     }, [isLoggedIn]);
 
 
-
     return (
-        <AppContext.Provider value={{ updateLoginStatus, isLoggedIn }}>
+        <AppContext.Provider value={{updateLoginStatus, isLoggedIn}}>
             <nav className="navbar">
                 <div className="nav-left">
                     <NavLink
                         to="/"
-                        className={({ isActive }) => (isActive ? 'active' : '')}
+                        className={({isActive}) => (isActive ? 'active' : '')}
                     >
                         Movlit
                     </NavLink>
                     <NavLink
                         to="/"
-                        className={({ isActive }) => (isActive ? 'active' : '')}
+                        className={({isActive}) => (isActive ? 'active' : '')}
                     >
                         영화
                     </NavLink>
                     <NavLink
                         to="/book"
-                        className={({ isActive }) => (isActive ? 'active' : '')}
+                        className={({isActive}) => (isActive ? 'active' : '')}
                     >
                         책
                     </NavLink>
@@ -227,7 +226,7 @@ function App() {
                     {/*)}*/}
                     <NavLink
                         to="/chatMain" // 채팅 페이지로 이동하는 링크 추가
-                        className={({ isActive }) => (isActive ? 'active' : '')}
+                        className={({isActive}) => (isActive ? 'active' : '')}
                     >
                         채팅
                     </NavLink>
@@ -248,13 +247,13 @@ function App() {
                         <>
                             <NavLink
                                 to="/member/login"
-                                className={({ isActive }) => (isActive ? 'active' : '')}
+                                className={({isActive}) => (isActive ? 'active' : '')}
                             >
                                 로그인
                             </NavLink>
                             <NavLink
                                 to="/member/register"
-                                className={({ isActive }) => (isActive ? 'active' : '')}
+                                className={({isActive}) => (isActive ? 'active' : '')}
                             >
                                 회원가입
                             </NavLink>
@@ -262,14 +261,14 @@ function App() {
                     )}
                     {isLoggedIn && (
                         <div className="nav-right-logged-in">
-                            <div onClick={handleBellClick} style={{ position: 'relative' }}>
+                            <div onClick={handleBellClick} style={{position: 'relative'}}>
                                 <img src="/images/notification-bell-icon.png" alt="알림" className="noti-img"/>
                                 {newNotification && <span className="badge">N</span>} {/* 빨간 점 표시 */}
                             </div>
 
                             <NavLink
                                 to="/mypage"
-                                className={({ isActive }) =>
+                                className={({isActive}) =>
                                     isActive ? 'active nav-mypage' : 'nav-mypage'
                                 }
                             >
@@ -280,7 +279,7 @@ function App() {
                                         className="nav-mypage-img"
                                     />
                                 ) : (
-                                    <FaUserCircle className="nav-mypage-icon" />
+                                    <FaUserCircle className="nav-mypage-icon"/>
                                 )}
                             </NavLink>
 
@@ -293,9 +292,9 @@ function App() {
             </nav>
 
             {/* Outlet에 context 전달 */}
-            <Outlet context={{ updateLoginStatus, isLoggedIn }} />
+            <Outlet context={{updateLoginStatus, isLoggedIn}}/>
 
-            <ToastContainer />
+            <ToastContainer/>
         </AppContext.Provider>
     );
 }

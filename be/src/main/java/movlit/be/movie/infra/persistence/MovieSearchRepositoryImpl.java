@@ -9,13 +9,11 @@ import co.elastic.clients.elasticsearch._types.query_dsl.NestedQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.Genre;

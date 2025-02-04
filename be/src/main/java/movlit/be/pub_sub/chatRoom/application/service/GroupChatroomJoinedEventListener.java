@@ -25,6 +25,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 @Slf4j
 public class GroupChatroomJoinedEventListener {
+
     private final GroupChatroomService groupChatroomService;
     private final RedisMessagePublisher redisMessagePublisher;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -47,11 +48,11 @@ public class GroupChatroomJoinedEventListener {
 
         // 2. UpdateRoomDto 생성 및 발행
         UpdateRoomDto updateRoomDto = new UpdateRoomDto(
-              groupChatroomId,
-              MessageType.GROUP,
-              EventType.MEMBER_JOIN,
-              newMemberId,
-              joinMessage // 입장메세지 설정
+                groupChatroomId,
+                MessageType.GROUP,
+                EventType.MEMBER_JOIN,
+                newMemberId,
+                joinMessage // 입장메세지 설정
         );
 
         log.info(">> updateRoomDto :: {}", updateRoomDto.toStringWithJoinMsg());
@@ -68,9 +69,9 @@ public class GroupChatroomJoinedEventListener {
 
             // 새 멤버정보 추가
             GroupChatroomMemberResponse newMemberResponse = new GroupChatroomMemberResponse(
-              newMemberId,
-              newMember.getNickname(),
-              newMember.getProfileImgUrl()
+                    newMemberId,
+                    newMember.getNickname(),
+                    newMember.getProfileImgUrl()
             );
             cachedMembers.add(newMemberResponse);
             log.info("GroupChatroomJoinedEventListener :: 캐시에 새로운 멤버 추가 :: {}", newMemberResponse);

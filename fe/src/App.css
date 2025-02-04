@@ -96,7 +96,7 @@
 
 /* 알림 notification 관련 스타일 */
 .noti-img {
-    position : relative;
+    position: relative;
     width: 30px;
     height: 30px;
     /*object-fit: cover; !* 이미지 비율 유지하면서 채우기 *!*/
@@ -104,6 +104,7 @@
     /*padding: 2px;*/
 
 }
+
 .badge {
     position: absolute;
     top: -3px;
@@ -123,7 +124,6 @@
     padding: 10px;
     border: 1px solid #ccc;
 }
-
 
 
 .notification-container {

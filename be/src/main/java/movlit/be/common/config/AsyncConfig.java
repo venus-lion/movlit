@@ -1,7 +1,6 @@
 package movlit.be.common.config;
 
 import java.util.concurrent.Executor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

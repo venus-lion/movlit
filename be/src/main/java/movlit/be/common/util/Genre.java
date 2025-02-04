@@ -3,7 +3,6 @@ package movlit.be.common.util;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import movlit.be.common.exception.InvalidGenreIdException;
 import movlit.be.member.presentation.dto.response.GenreListReadResponse;
 

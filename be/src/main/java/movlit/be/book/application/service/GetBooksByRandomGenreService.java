@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.BookVo;
-import movlit.be.common.util.Genre;
 import movlit.be.book.domain.repository.BookGenreRepository;
 import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto;
 import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto.GenreDto;
 import movlit.be.book.presentation.dto.BooksGenreResponse.BookItemWithGenreDto.WriterDto;
+import movlit.be.common.util.Genre;
 import movlit.be.common.util.ids.BookId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +44,7 @@ public class GetBooksByRandomGenreService {
     }
 
     // 랜덤 장르ID 리스트 가져오기
-    private List<Long> getRandomGenreIds(int count){
+    private List<Long> getRandomGenreIds(int count) {
         List<Genre> genreList = Arrays.stream(Genre.values())
                 .filter(genre -> (genre.getId() != 16L && genre.getId() != 99999L))
                 .collect(Collectors.toList());
@@ -87,7 +87,6 @@ public class GetBooksByRandomGenreService {
                 .build();
 
     }
-
 
 
 }

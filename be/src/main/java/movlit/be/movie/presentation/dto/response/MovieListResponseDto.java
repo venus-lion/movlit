@@ -4,4 +4,5 @@ import java.util.List;
 import movlit.be.movie.domain.Movie;
 
 public record MovieListResponseDto(List<Movie> movieList) {
+
 }

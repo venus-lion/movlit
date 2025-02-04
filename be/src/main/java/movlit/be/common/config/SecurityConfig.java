@@ -1,10 +1,8 @@
 package movlit.be.common.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.Arrays;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import movlit.be.auth.application.service.MyOAuth2MemberService;
 import movlit.be.auth.application.service.OAuth2AuthenticationSuccessHandler;
@@ -26,7 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
 @EnableWebSecurity

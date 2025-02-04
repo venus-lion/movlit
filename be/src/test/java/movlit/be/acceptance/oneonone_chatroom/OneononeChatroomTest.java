@@ -1,8 +1,12 @@
 package movlit.be.acceptance.oneonone_chatroom;
 
+import static movlit.be.acceptance.oneonone_chatroom.OneOnOneChatroomSteps.로그인_유저의_일대일_채팅_목록을_가져온다;
+import static movlit.be.acceptance.oneonone_chatroom.OneOnOneChatroomSteps.상태코드가_200이다;
+import static movlit.be.acceptance.oneonone_chatroom.OneOnOneChatroomSteps.응답결과를_검증한다;
+import static movlit.be.acceptance.oneonone_chatroom.OneOnOneChatroomSteps.일대일_채팅을_생성한다;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.JwtTokenUtil;
 import movlit.be.common.util.ids.MemberId;
@@ -11,13 +15,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static movlit.be.acceptance.oneonone_chatroom.OneOnOneChatroomSteps.*;
-
 @DisplayName("일대일 채팅 인수 테스트")
 public class OneononeChatroomTest extends AcceptanceTest {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
     @Autowired
     private MemberReadService memberReadService;
 

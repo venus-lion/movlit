@@ -3,7 +3,6 @@ package movlit.be.movie_heart.application.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.MovieHeartAlreadyExistsException;
-import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.movie.application.converter.detail.MovieConvertor;
@@ -27,7 +26,8 @@ public class MovieHeartService {
     public MovieHeartResponse heart(Long movieId, MemberId memberId) {
         memberReadService.validateMemberIdExists(memberId);
         validateHeartExists(movieId, memberId);
-        MovieHeartEntity movieHeartEntity = movieHeartRepository.heart(MovieConvertor.toMovieHeartEntity(movieId, memberId));
+        MovieHeartEntity movieHeartEntity = movieHeartRepository.heart(
+                MovieConvertor.toMovieHeartEntity(movieId, memberId));
         movieHeartCountService.incrementMovieHeartCount(movieHeartEntity.getMovieId());
         Long movieHeartCount = movieHeartCountService.fetchMovieHeartCountByMovieId(movieHeartEntity.getMovieId());
         return MovieConvertor.toMovieHeartResponse(movieHeartEntity, movieHeartCount);
@@ -61,7 +61,7 @@ public class MovieHeartService {
     }
 
     // 해당 영화를 찜한 멤버Id 리스트 가져오기
-    public List<MemberId> fetchHeartingMemberIdsByMovieId(Long movieId){
+    public List<MemberId> fetchHeartingMemberIdsByMovieId(Long movieId) {
         List<MemberId> heartingMemberIds = movieHeartRepository.fetchHeartingMembersByMovieId(movieId);
 
         return heartingMemberIds;

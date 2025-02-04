@@ -1,11 +1,10 @@
 package movlit.be.book.infra.persistence;
 
-import java.awt.print.Book;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.application.converter.BookCommentConverter;
 import movlit.be.book.application.converter.BookCommentLikeCountConverter;
-import movlit.be.book.domain.BookCommentVo;
 import movlit.be.book.domain.BookCommentLikeCountVo;
+import movlit.be.book.domain.BookCommentVo;
 import movlit.be.book.domain.entity.BookCommentLikeCountEntity;
 import movlit.be.book.domain.repository.BookCommentLikeCountRepository;
 import movlit.be.book.infra.persistence.jpa.BookCommentLikeCountJpaRepository;
@@ -15,12 +14,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookCommentLikeCountRepositoryImpl implements BookCommentLikeCountRepository {
+
     private final BookCommentLikeCountJpaRepository bookCommentLikeCountJpaRepository;
 
     @Override
     public BookCommentLikeCountVo fetchByBookComment(BookCommentVo bookCommentVo) {
-        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.findByBookCommentEntity(BookCommentConverter.toEntity(
-                        bookCommentVo))
+        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.findByBookCommentEntity(
+                        BookCommentConverter.toEntity(
+                                bookCommentVo))
                 .orElse(null);
 
         return BookCommentLikeCountConverter.toDomain(likeCountEntity);
@@ -45,8 +46,9 @@ public class BookCommentLikeCountRepositoryImpl implements BookCommentLikeCountR
 
     @Override
     public BookCommentLikeCountVo save(BookCommentLikeCountVo bookCommentLikeCountVo) {
-        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.save(BookCommentLikeCountConverter.toEntity(
-                bookCommentLikeCountVo));
+        BookCommentLikeCountEntity likeCountEntity = bookCommentLikeCountJpaRepository.save(
+                BookCommentLikeCountConverter.toEntity(
+                        bookCommentLikeCountVo));
         return BookCommentLikeCountConverter.toDomain(likeCountEntity);
     }
 

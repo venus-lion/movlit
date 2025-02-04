@@ -65,7 +65,7 @@ public class GroupChatroomSteps {
     }
 
     public static ExtractableResponse<Response> 나의_그룹채팅리스트를_조회한다(String accessToken,
-                                                               RequestSpecification spec) {
+                                                                 RequestSpecification spec) {
         return RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

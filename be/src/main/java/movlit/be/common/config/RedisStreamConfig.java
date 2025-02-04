@@ -1,5 +1,6 @@
 package movlit.be.common.config;
 
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,9 +11,6 @@ import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer.StreamMessageListenerContainerOptions;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.time.Duration;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -42,9 +40,11 @@ public class RedisStreamConfig {
                 .pollTimeout(Duration.ofSeconds(1))
                 .build();
 
-        StreamMessageListenerContainer<String, MapRecord<String, String, String>> container = StreamMessageListenerContainer.create(redisConnectionFactory, options);
+        StreamMessageListenerContainer<String, MapRecord<String, String, String>> container = StreamMessageListenerContainer.create(
+                redisConnectionFactory, options);
         container.start();
         log.info("==== StreamMessageListenerContainer 빈 등록 : {}", container);
         return container;
     }
+
 }

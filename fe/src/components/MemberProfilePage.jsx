@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance';
 import './MemberProfilePage.css';
-import { FaUserCircle } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import {FaUserCircle} from 'react-icons/fa';
+import {useParams} from 'react-router-dom';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function MemberProfilePage() {
@@ -17,7 +17,7 @@ function MemberProfilePage() {
         bookCommentCount: 0
     });
     const [genreList, setGenreList] = useState([]);
-    const { memberId } = useParams();
+    const {memberId} = useParams();
 
     // 팔로잉, 팔로우 관련 변수 추가
     const [isFollowing, setIsFollowing] = useState(false); // 팔로우 상태
@@ -37,22 +37,22 @@ function MemberProfilePage() {
             console.log(memberId);
 
             setLoginMemberId(response.data.memberId);
-        }  catch (error) {
+        } catch (error) {
             console.error('Error fetching member ID:', error);
         }
     };
 
     // 팔로우 상태 확인
     const checkFollowStatus = async () => {
-      try {
-          const response = await axiosInstance.get(`/follows/check/${memberId}`);
-          console.log('프론트에서 팔로우 팔로잉 여부 api 호출 결과 !!');
-          console.log(response.data.following);
+        try {
+            const response = await axiosInstance.get(`/follows/check/${memberId}`);
+            console.log('프론트에서 팔로우 팔로잉 여부 api 호출 결과 !!');
+            console.log(response.data.following);
 
-          setIsFollowing(response.data.following); // 서버로부터 팔로우 상태를 받아옴
-      } catch (error){
-          console.error('Error checking follow status : ', error);
-      }
+            setIsFollowing(response.data.following); // 서버로부터 팔로우 상태를 받아옴
+        } catch (error) {
+            console.error('Error checking follow status : ', error);
+        }
     };
 
     // 팔로워 / 팔로잉 개수 가져오기
@@ -146,12 +146,12 @@ function MemberProfilePage() {
 
     return (
         <div className="memberpage-container">
-            <ToastContainer />
+            <ToastContainer/>
             <div className="profile-image">
                 {userData.profileImgUrl ? (
-                    <img src={userData.profileImgUrl} alt="Profile" className="profile-img" />
+                    <img src={userData.profileImgUrl} alt="Profile" className="profile-img"/>
                 ) : (
-                    <FaUserCircle className="default-profile-icon" />
+                    <FaUserCircle className="default-profile-icon"/>
                 )}
             </div>
             <div className="memberpage-header">

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import axiosInstance from '../axiosInstance';
 import './MyPage.css';
-import { FaUserCircle, FaCamera } from 'react-icons/fa';
-import { IoSettingsOutline } from 'react-icons/io5';
-import { Link, useNavigate } from 'react-router-dom';
-import { confirmAlert } from 'react-confirm-alert';
+import {FaCamera, FaUserCircle} from 'react-icons/fa';
+import {IoSettingsOutline} from 'react-icons/io5';
+import {Link, useNavigate} from 'react-router-dom';
+import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { AppContext } from '../App';
-import { ToastContainer, toast } from 'react-toastify';
+import {AppContext} from '../App';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function MyPage() {
@@ -23,7 +23,7 @@ function MyPage() {
     const [genreList, setGenreList] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
-    const { updateLoginStatus } = useContext(AppContext);
+    const {updateLoginStatus} = useContext(AppContext);
     const fileInputRef = useRef(null);
     const [isHovering, setIsHovering] = useState(false);
 
@@ -34,19 +34,19 @@ function MyPage() {
 
     //현재 로그인한 사용자의 memberId 가져오기
     const fetchMemberId = async () => {
-      try {
+        try {
             const response = await axiosInstance.get('/members/id');
             console.log('로그인한 memberId 가져오기 !!! ');
             console.log(response.data.memberId);
             console.log(response.data.memberId.value);
             setMemberId(response.data.memberId);
-      }  catch (error) {
-          console.error('Error fetching member ID:', error);
-      }
+        } catch (error) {
+            console.error('Error fetching member ID:', error);
+        }
     };
 
     // 팔로워 / 팔로잉 개수 가져오기
-    const fetchFollowCounts = async (currentMemberId) =>  {
+    const fetchFollowCounts = async (currentMemberId) => {
         const followerCountResponse =
             await axiosInstance.get(`/follows/${memberId}/followers/count`);
         console.log('프론트, 나를 팔로우하는, 팔로워 개수 가져오기 !! ');
@@ -113,7 +113,8 @@ function MyPage() {
                 },
                 {
                     label: '아니오',
-                    onClick: () => {},
+                    onClick: () => {
+                    },
                 },
             ],
         });
@@ -142,7 +143,7 @@ function MyPage() {
         fetchMemberId(); // 로그인한 사용자 memberId 가져오기
         fetchMyPageData();
         fetchGenreList();
-      //  fetchFollowCounts();
+        //  fetchFollowCounts();
     }, []);
 
     useEffect(() => {
@@ -208,7 +209,7 @@ function MyPage() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            setUserData({ ...userData, profileImgUrl: response.data.imageUrl });
+            setUserData({...userData, profileImgUrl: response.data.imageUrl});
             toast.success('프로필 사진이 성공적으로 변경되었습니다.\n새로고침을 해주세요.', {
                 position: 'top-right',
                 autoClose: 5000,
@@ -253,11 +254,11 @@ function MyPage() {
 
     return (
         <div className="mypage-container">
-            <ToastContainer />
+            <ToastContainer/>
             <input
                 type="file"
                 ref={fileInputRef}
-                style={{ display: 'none' }}
+                style={{display: 'none'}}
                 onChange={handleFileChange}
                 accept="image/*"
             />
@@ -266,16 +267,16 @@ function MyPage() {
                 onClick={handleProfileImageClick}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                style={{ cursor: 'pointer' }}
+                style={{cursor: 'pointer'}}
             >
                 {userData.profileImgUrl ? (
-                    <img src={userData.profileImgUrl} alt="Profile" className="profile-img" />
+                    <img src={userData.profileImgUrl} alt="Profile" className="profile-img"/>
                 ) : (
-                    <FaUserCircle className="default-profile-icon" />
+                    <FaUserCircle className="default-profile-icon"/>
                 )}
                 {isHovering && (
                     <div className="overlay">
-                        <FaCamera className="camera-icon" />
+                        <FaCamera className="camera-icon"/>
                     </div>
                 )}
             </div>
@@ -285,7 +286,7 @@ function MyPage() {
                     <p>{userData.email}</p>
                 </div>
                 <div className="settings-icon" onClick={toggleDropdown}>
-                    <IoSettingsOutline className="settings-icon-comp" />
+                    <IoSettingsOutline className="settings-icon-comp"/>
                     {isDropdownOpen && (
                         <div className="dropdown-menu">
                             <Link to="/member/update" className="dropdown-item">

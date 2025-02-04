@@ -1,4 +1,3 @@
-import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import App from './App';
@@ -23,7 +22,6 @@ import Notification from "./pages/Notification.jsx";
 import MemberProfilePage from "./components/MemberProfilePage.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import FollowList from "./pages/FollowList.jsx";
-
 
 
 const router = createBrowserRouter([
@@ -107,7 +105,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'members/:memberId', // 회원 페이지 라우트 추가
-                element: <MemberProfilePage />,
+                element: <MemberProfilePage/>,
             },
             {
                 path: '/my-followers',

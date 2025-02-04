@@ -29,5 +29,4 @@ public class BookCommentVo {
     private Boolean delYn; // 삭제여부 (default : 0)
 
 
-
 }

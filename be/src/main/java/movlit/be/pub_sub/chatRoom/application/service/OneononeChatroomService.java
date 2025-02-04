@@ -2,6 +2,8 @@ package movlit.be.pub_sub.chatRoom.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Duration;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.FailedDeserializeException;
@@ -19,9 +21,6 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Duration;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

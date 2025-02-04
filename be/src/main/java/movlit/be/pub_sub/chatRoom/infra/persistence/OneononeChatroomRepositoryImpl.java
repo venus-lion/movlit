@@ -2,7 +2,6 @@ package movlit.be.pub_sub.chatRoom.infra.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ChatroomNotFoundException;

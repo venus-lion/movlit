@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 @EqualsAndHashCode(callSuper = true)
-public class BookRCrewId extends BaseId{
+public class BookRCrewId extends BaseId {
+
     public BookRCrewId(String value) {
         super(value);
     }
+
 }

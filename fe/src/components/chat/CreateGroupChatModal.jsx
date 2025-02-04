@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
-import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
+import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatModal.css";
 import axiosInstance from "../../axiosInstance.js";
 
@@ -13,11 +13,11 @@ const renderStars = (rating) => {
     return (
         <>
             {[...Array(fullStars)].map((_, index) => (
-                <FaStar key={`full-${index}`} className="star-icon" />
+                <FaStar key={`full-${index}`} className="star-icon"/>
             ))}
-            {halfStar === 1 && <FaStarHalfAlt className="star-icon" />}
+            {halfStar === 1 && <FaStarHalfAlt className="star-icon"/>}
             {[...Array(emptyStars)].map((_, index) => (
-                <FaRegStar key={`empty-${index}`} className="star-icon" />
+                <FaRegStar key={`empty-${index}`} className="star-icon"/>
             ))}
         </>
     );
@@ -29,7 +29,7 @@ const truncateTitle = (title, maxLength = 15) => {
     }
     return title;
 };
-const CreateGroupChatModal = ({ isOpen, onClose, onConfirm }) => {
+const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
     const [selectedCategory, setSelectedCategory] = useState("movie");
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -168,8 +168,9 @@ const CreateGroupChatModal = ({ isOpen, onClose, onConfirm }) => {
                                                     {selectedCategory === "movie" ? (
                                                         <>
                                                             <img src={result.posterPath} alt={result.title}
-                                                                 className="result-image" />
-                                                            <div className="result-title">{truncateTitle(result.title)}</div>
+                                                                 className="result-image"/>
+                                                            <div
+                                                                className="result-title">{truncateTitle(result.title)}</div>
                                                             <div className="result-rating">
                                                                 ⭐<span>({Math.round(parseFloat(result.voteAverage) * 10) / 10})</span>
                                                             </div>
@@ -182,8 +183,9 @@ const CreateGroupChatModal = ({ isOpen, onClose, onConfirm }) => {
                                                     ) : (
                                                         <>
                                                             <img src={result.bookImgUrl} alt={result.title}
-                                                                 className="result-image" />
-                                                            <div className="result-title">{truncateTitle(result.title)}</div>
+                                                                 className="result-image"/>
+                                                            <div
+                                                                className="result-title">{truncateTitle(result.title)}</div>
                                                             <div>
                                                                 <p className="result-info">
                                                                     {result.crew.join(', ')}

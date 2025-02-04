@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Modal from "react-modal";
-import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
+import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js";
 

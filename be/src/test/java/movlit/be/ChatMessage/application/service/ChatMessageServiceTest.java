@@ -1,5 +1,14 @@
 package movlit.be.ChatMessage.application.service;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.member.application.service.MemberReadService;
@@ -22,12 +31,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StreamOperations;
-
-import java.time.LocalDateTime;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class ChatMessageServiceTest {
@@ -92,7 +95,8 @@ public class ChatMessageServiceTest {
                 "테스터1",
                 null
         );
-        when(oneononeChatroomService.fetchChatroomInfo(mockRoomInfo.getRoomId(), testMessageDto2.getSenderId())).thenReturn(mockRoomInfo);
+        when(oneononeChatroomService.fetchChatroomInfo(mockRoomInfo.getRoomId(),
+                testMessageDto2.getSenderId())).thenReturn(mockRoomInfo);
         Member mockMember = mock(Member.class);
         when(memberReadService.findByMemberId(testMessageDto2.getSenderId())).thenReturn(mockMember);
         when(mockMember.getNickname()).thenReturn("테스터2");

@@ -1,8 +1,8 @@
 // BookCarousel.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-function BookGenreCarousel({ title, books, startIndex, handlePrev, handleNext }) {
+function BookGenreCarousel({title, books, startIndex, handlePrev, handleNext}) {
     return (
         <div className="book-content">
             <h2>{title}</h2>
@@ -19,7 +19,7 @@ function BookGenreCarousel({ title, books, startIndex, handlePrev, handleNext })
                                 <div className="book-rank">
                                     {startIndex + index + 1}
                                 </div>
-                                <img src={book.bookImgUrl} alt={book.title} className="book-image" />
+                                <img src={book.bookImgUrl} alt={book.title} className="book-image"/>
                                 <div className="book-info">
                                     <h3 className="book-title">{book.title}</h3>
                                     <p className="book-writer">

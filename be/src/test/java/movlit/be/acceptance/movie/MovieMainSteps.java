@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MovieMainSteps {
+
     /**
      * 1. 최신순_영화리스트를_조회한다.
      * 2. 인기순_영화리스트를_조회한다.
@@ -22,7 +23,7 @@ public class MovieMainSteps {
      * */
 
     public static ExtractableResponse<Response> 최신순_영화_리스트를_조회한다(int page, int pageSize,
-                                                                 RequestSpecification spec){
+                                                                 RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("page", page)
@@ -38,7 +39,7 @@ public class MovieMainSteps {
     }
 
     public static ExtractableResponse<Response> 인기순_영화_리스트를_조회한다(int page, int pageSize,
-                                                                 RequestSpecification spec){
+                                                                 RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("page", page)
@@ -54,7 +55,7 @@ public class MovieMainSteps {
     }
 
     public static ExtractableResponse<Response> 장르별_영화_리스트를_조회한다(Long genreId, int page, int pageSize,
-                                                                 RequestSpecification spec){
+                                                                 RequestSpecification spec) {
 
         return RestAssured
                 .given()
@@ -73,7 +74,7 @@ public class MovieMainSteps {
     }
 
     public static ExtractableResponse<Response> 로그인유저_선호장르_영화_리스트를_조회한다(String accessToken, int page, int pageSize,
-                                                                        RequestSpecification spec){
+                                                                        RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("page", page)
@@ -106,12 +107,13 @@ public class MovieMainSteps {
     }
 
     public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,
-                                                   HttpStatus expectedHttpStatus) {
+                                                      HttpStatus expectedHttpStatus) {
         return assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());
     }
 
     public static AbstractStringAssert<?> 오류코드를_검증한다(ExtractableResponse<Response> response,
-                                                  String code) {
+                                                     String code) {
         return assertThat(response.jsonPath().getString("code")).isEqualTo(code);
     }
+
 }

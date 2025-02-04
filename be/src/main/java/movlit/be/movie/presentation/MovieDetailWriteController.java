@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetails;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.MovieCommentId;
-import movlit.be.movie.application.converter.detail.MovieConvertor;
 import movlit.be.movie.application.service.MovieDetailWriteService;
 import movlit.be.movie.presentation.dto.request.MovieCommentRequest;
 import movlit.be.movie.presentation.dto.response.MovieCommentResponse;

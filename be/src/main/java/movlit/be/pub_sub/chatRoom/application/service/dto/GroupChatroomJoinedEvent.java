@@ -8,6 +8,8 @@ import movlit.be.common.util.ids.MemberId;
 @Getter
 @AllArgsConstructor
 public class GroupChatroomJoinedEvent {
+
     private final GroupChatroomId groupChatroomId;
     private final MemberId memberId;
+
 }

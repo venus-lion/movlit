@@ -8,9 +8,8 @@ import movlit.be.book.application.service.BookCommentReadService;
 import movlit.be.book.application.service.BookCommentWriteService;
 import movlit.be.book.application.service.BookDetailReadService;
 import movlit.be.book.application.service.BookDetailWriteService;
-import movlit.be.book.domain.BookCommentVo;
 import movlit.be.book.domain.BookCommentLikeVo;
-import movlit.be.book.domain.BookVo;
+import movlit.be.book.domain.BookCommentVo;
 import movlit.be.book.presentation.dto.BookCommentRequestDto;
 import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.exception.BookCommentAccessDenied;
@@ -18,7 +17,6 @@ import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
-import movlit.be.member.domain.Member;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort.Direction;
@@ -53,10 +51,12 @@ public class BookCommentController {
                                                                                 @PageableDefault(size = 4, sort = "regDt", direction = Direction.DESC)
                                                                                 Pageable pageable) {
         MemberId memberId = null;
-        if(details != null)
+        if (details != null) {
             memberId = details.getMemberId();
+        }
 
-        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.fetchPagedBookComments(bookId, memberId, pageable);
+        Slice<BookCommentResponseDto> pagedResult = bookCommentReadService.fetchPagedBookComments(bookId, memberId,
+                pageable);
 
         log.info("::BookCommentController_bookCommentReadService::");
 
@@ -65,13 +65,15 @@ public class BookCommentController {
 
     // 해당 책 나의 리뷰
     @GetMapping("{bookId}/myComment")
-    public ResponseEntity fetchMyBookComment(@PathVariable BookId bookId, @AuthenticationPrincipal MyMemberDetails details) {
+    public ResponseEntity fetchMyBookComment(@PathVariable BookId bookId,
+                                             @AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
             MemberId memberId = details.getMemberId();
 
             BookCommentResponseDto myBookComment = bookCommentReadService.fetchCommentByMemberAndBook(memberId, bookId);
-            if(myBookComment == null)
+            if (myBookComment == null) {
                 return ResponseEntity.badRequest().build();
+            }
 
             log.info("::BookCommentController_fetchMyBookComment::");
             log.info(">> MyBookComment : " + myBookComment);
@@ -149,7 +151,7 @@ public class BookCommentController {
     // 해당 도서 리뷰 좋아요(like) 하기
     @PostMapping("comments/{bookCommentId}/likes")
     public ResponseEntity addLikes(@PathVariable BookCommentId bookCommentId,
-                                    @AuthenticationPrincipal MyMemberDetails details) {
+                                   @AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
             MemberId memberId = details.getMemberId();
 
@@ -167,7 +169,7 @@ public class BookCommentController {
     // 해당 도서 리뷰 좋아요(like) 삭제
     @DeleteMapping("comments/{bookCommentId}/likes")
     public ResponseEntity removeLikes(@PathVariable BookCommentId bookCommentId,
-                                       @AuthenticationPrincipal MyMemberDetails details)
+                                      @AuthenticationPrincipal MyMemberDetails details)
             throws Exception {
         if (details != null) {
             MemberId memberId = details.getMemberId();
@@ -179,7 +181,6 @@ public class BookCommentController {
         return
                 ResponseEntity.badRequest().build();
     }
-
 
 
 }

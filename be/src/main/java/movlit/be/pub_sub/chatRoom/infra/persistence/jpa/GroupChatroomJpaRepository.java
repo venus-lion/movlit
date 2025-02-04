@@ -7,12 +7,12 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom, GroupChatroomId> {
+
     Optional<GroupChatroom> findByGroupChatroomId(GroupChatroomId chatroomId);
 
     @Query("SELECT NEW movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto( "
@@ -35,7 +35,6 @@ public interface GroupChatroomJpaRepository extends JpaRepository<GroupChatroom,
             "WHERE g.groupChatroomId = :chatroomId"
     )
     List<GroupChatroomMemberResponse> findMembersByChatroomId(@Param("chatroomId") GroupChatroomId chatroomId);
-
 
     // 해당 사용자가 가입된 그룹 채팅방 리스트
     @Query("SELECT NEW movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponseDto( "

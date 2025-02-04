@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {useLocation, useNavigate, useOutletContext} from 'react-router-dom';
 
 const OAuthCallback = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { updateLoginStatus } = useOutletContext();
+    const {updateLoginStatus} = useOutletContext();
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);

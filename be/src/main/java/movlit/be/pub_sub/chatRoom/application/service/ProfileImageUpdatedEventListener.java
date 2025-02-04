@@ -3,10 +3,8 @@ package movlit.be.pub_sub.chatRoom.application.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.ids.GroupChatroomId;
@@ -28,6 +26,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileImageUpdatedEventListener {
+
     private final RedisMessagePublisher redisMessagePublisher;
     private final FetchGroupChatroomUseCase fetchGroupChatroomUseCase;
 
@@ -49,7 +48,6 @@ public class ProfileImageUpdatedEventListener {
         // 업데이트된 멤버정보 조회
         MemberEntity updatedMember = memberReadService.findEntityById(memberId);
         log.info("RedisMessageSubscriber >>> 프로필업데이트된 멤버정보 : " + updatedMember.toStringExceptLazyLoading());
-
 
         // 각 그룹채팅방 ID에 대해 updatedRoomDto 생성 및 메세지 발행
         for (GroupChatroomResponseDto groupChatroomResponseDto : groupChatroomResponseDtoList) {

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
+
     private final BookJpaRepository bookJpaRepository;
 
     @Override
@@ -28,12 +29,13 @@ public class BookRepositoryImpl implements BookRepository {
                 .orElseThrow(BookNotFoundException::new);
         return BookConverter.toDomain(bookEntity);
     }
+
     @Override
     public List<BookVo> findBooksWithCrewDetails(List<BookId> bookIds) {
         List<BookEntity> booksWithCrewDetails = bookJpaRepository.findBooksWithCrewDetails(bookIds);
 
         // BOOKS_BY_GENRE_NOT_FOUND
-        if (booksWithCrewDetails.isEmpty()){
+        if (booksWithCrewDetails.isEmpty()) {
             throw new BooksByGenreNotFoundException();
         }
 
@@ -45,7 +47,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<BookVo> findBooksByGenreIds(List<Long> genreIds, Pageable pageable) {
         List<BookEntity> booksByGenreIds = bookJpaRepository.findBooksByGenreIds(genreIds, pageable);
-        if (booksByGenreIds.isEmpty()){
+        if (booksByGenreIds.isEmpty()) {
             throw new BooksByGenreNotFoundException();
         }
         return booksByGenreIds.stream()
@@ -62,7 +64,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<BookCrewResponseDto> fetchBookCrewByBookId(BookId bookId){
+    public List<BookCrewResponseDto> fetchBookCrewByBookId(BookId bookId) {
         List<BookCrewResponseDto> bookCrewResponse = bookJpaRepository.findBookCrewByBookId(bookId)
                 .orElseThrow(BookNotFoundException::new);
 

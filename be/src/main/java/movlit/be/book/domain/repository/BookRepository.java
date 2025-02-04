@@ -17,7 +17,7 @@ public interface BookRepository {
 
     List<BookVo> findBooksByGenreIds(List<Long> genreIds, Pageable pageable);
 
-    BookDetailResponseDto fetchBookDetailByBookId(@Param("bookId")BookId bookId, @Param("memberId") MemberId memberId);
+    BookDetailResponseDto fetchBookDetailByBookId(@Param("bookId") BookId bookId, @Param("memberId") MemberId memberId);
 
     List<BookCrewResponseDto> fetchBookCrewByBookId(BookId bookId);
 

@@ -87,7 +87,6 @@ public class BookDetailController {
             log.info("::BookDetailController_removeHearts::");
             log.info(">> RemovedBookHeart : \nmember : " + member + "\nbook : " + bookVo.toString());
 
-
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

@@ -3,7 +3,6 @@ package movlit.be.pub_sub.chatMessage.infra.persistence;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatMessage.domain.ChatMessage;
 import movlit.be.pub_sub.chatMessage.infra.persistence.mongo.ChatMessageMongoRepository;

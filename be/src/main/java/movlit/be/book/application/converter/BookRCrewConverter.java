@@ -11,7 +11,6 @@ public class BookRCrewConverter {
         // TODO : 공통적인 예외처리 등록해주기
     }
 
-
     // Domain -> Entity
     public static BookRCrewEntity toEntity(BookRCrewVo bookRCrewVo) {
         return BookRCrewEntity.builder()
@@ -22,7 +21,7 @@ public class BookRCrewConverter {
     }
 
     // Domain list -> Entity list
-    public static List<BookRCrewEntity> toEntityList(List<BookRCrewVo> bookRCrewVos){
+    public static List<BookRCrewEntity> toEntityList(List<BookRCrewVo> bookRCrewVos) {
         return bookRCrewVos.stream()
                 .map(BookRCrewConverter::toEntity)
                 .collect(Collectors.toList());
@@ -38,7 +37,7 @@ public class BookRCrewConverter {
     }
 
     // Entity List -> Domain List
-    public static List<BookRCrewVo> toDomainList(List<BookRCrewEntity> bookRCrewEntities){
+    public static List<BookRCrewVo> toDomainList(List<BookRCrewEntity> bookRCrewEntities) {
         return bookRCrewEntities.stream()
                 .map(BookRCrewConverter::toDomain)
                 .collect(Collectors.toList());

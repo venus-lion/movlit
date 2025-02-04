@@ -2,6 +2,7 @@ package movlit.be.book.application.converter;
 
 import movlit.be.book.domain.BookBestsellerVo;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
+
 public class BookBestsellerConverter {
 
     private BookBestsellerConverter() {
@@ -27,4 +28,5 @@ public class BookBestsellerConverter {
                 .bestDuration(bookBestsellerEntity.getBestDuration())
                 .build();
     }
+
 }

@@ -9,7 +9,9 @@ import movlit.be.common.util.ids.MemberId;
 @AllArgsConstructor
 @ToString
 public class GroupChatroomMemberResponse {
+
     private MemberId memberId;
     private String nickname;
     private String profileImgUrl;
+
 }

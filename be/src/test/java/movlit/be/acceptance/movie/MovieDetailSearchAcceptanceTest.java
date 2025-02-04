@@ -1,7 +1,7 @@
 package movlit.be.acceptance.movie;
 
-import static movlit.be.acceptance.movie.MovieDetailSearchSteps.영화_페이지의_장르와_연관된_영화_리스트를_조회한다;
 import static movlit.be.acceptance.movie.MovieDetailSearchSteps.상태코드가_200이고_응답_데이터가_존재한다;
+import static movlit.be.acceptance.movie.MovieDetailSearchSteps.영화_페이지의_장르와_연관된_영화_리스트를_조회한다;
 
 import movlit.be.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;

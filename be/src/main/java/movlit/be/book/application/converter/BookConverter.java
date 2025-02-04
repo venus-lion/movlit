@@ -9,8 +9,6 @@ public class BookConverter {
         // TODO : 공통적인 예외처리 등록해주기
     }
 
-
-
     // Domain -> Entity
     public static BookEntity toEntity(BookVo bookVo) {
         return BookEntity.builder()

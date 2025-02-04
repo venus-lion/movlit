@@ -19,11 +19,12 @@ class MovieSearchAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("로그인 유저 기반 추천 영화 리스트 search 테스트")
-    class LoginUserInterestGenreMovieList{
+    class LoginUserInterestGenreMovieList {
+
         String accessToken;
 
         @BeforeEach
-        public void before(){
+        public void before() {
             accessToken = 회원_윤기_액세스토큰;
         }
 
@@ -58,6 +59,7 @@ class MovieSearchAcceptanceTest extends AcceptanceTest {
             // then
             상태코드가_200이고_응답_데이터가_존재한다(response);
         }
+
     }
 
     @DisplayName("텍스트를 입력받아 검색하여 영화를 가져오는데 성공하면, 상태코드 200과 body를 반환한다.")
@@ -75,4 +77,5 @@ class MovieSearchAcceptanceTest extends AcceptanceTest {
         // then
         상태코드가_200이고_응답_데이터가_존재한다(response);
     }
+
 }

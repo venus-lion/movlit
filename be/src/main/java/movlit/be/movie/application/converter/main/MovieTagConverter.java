@@ -8,7 +8,7 @@ public class MovieTagConverter {
     // Domain -> Entity
 
     // Entity -> Domain
-    public static MovieTag toDomain(MovieTagEntity movieTagEntity){
+    public static MovieTag toDomain(MovieTagEntity movieTagEntity) {
         MovieTagIdForEntity movieTagIdForEntity = movieTagEntity.getMovieTagIdForEntity();
         return MovieTag.builder()
                 .movieTagId(movieTagIdForEntity.getMovieTagId())
@@ -16,4 +16,5 @@ public class MovieTagConverter {
                 .name(movieTagEntity.getName())
                 .build();
     }
+
 }

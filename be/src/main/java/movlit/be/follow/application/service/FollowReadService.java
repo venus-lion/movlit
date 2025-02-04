@@ -16,13 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class FollowReadService {
+
     private final FollowRepository followRepository;
     private final MemberReadService memberReadService;
 
     @Transactional(readOnly = true)
     public List<FollowResponse> getMyFollowersDetails(
             MemberId loginId
-    ){
+    ) {
         // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
         MemberEntity loginMember = memberReadService.findEntityById(loginId);
         log.info("FollwerReadService >>> loginMember : {}", loginMember);
@@ -34,7 +35,7 @@ public class FollowReadService {
                 .map(this::toFollowResponse)
                 .toList();
 
-        for (FollowResponse followResponse : followResponseList){
+        for (FollowResponse followResponse : followResponseList) {
             log.info("FollowReadService >> followResponse : {}", followResponse);
         }
         return followResponseList;
@@ -44,7 +45,7 @@ public class FollowReadService {
     @Transactional(readOnly = true)
     public List<FollowResponse> getMyFollowingDetail(
             MemberId loginId
-    ){
+    ) {
         // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
         MemberEntity loginMember = memberReadService.findEntityById(loginId);
         log.info("FollwerReadService >>> loginMember : {}", loginMember);
@@ -60,7 +61,7 @@ public class FollowReadService {
     @Transactional(readOnly = true)
     public int getFollowerCount(
             MemberId loginId
-    ){
+    ) {
         // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
         MemberEntity loginMember = memberReadService.findEntityById(loginId);
         log.info("FollwerReadService >>> loginMember : {}", loginMember);
@@ -74,7 +75,7 @@ public class FollowReadService {
     @Transactional(readOnly = true)
     public int getFollowCount(
             MemberId loginId
-    ){
+    ) {
         // 해당 loginId에 해당하는 Member가 존재하지 않는다면, 예외 발생
         memberReadService.findEntityById(loginId);
 
@@ -83,10 +84,11 @@ public class FollowReadService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isFollowing(MemberId loginId, MemberId otherMemberId){
+    public boolean isFollowing(MemberId loginId, MemberId otherMemberId) {
         return followRepository.existsByFollowerIdAndFolloweeIdWithoutException(loginId, otherMemberId);
     }
-    private FollowResponse toFollowResponse(Follow follow){
+
+    private FollowResponse toFollowResponse(Follow follow) {
         MemberEntity follower = follow.getFollower(); // 나를 팔로우하는 사람(팔로워) 정보 가져오기
 
         return FollowResponse.builder()
@@ -97,7 +99,7 @@ public class FollowReadService {
                 .build();
     }
 
-    private FollowResponse toFollowingResponse(Follow follow){
+    private FollowResponse toFollowingResponse(Follow follow) {
         MemberEntity followee = follow.getFollowee(); // 내가 팔로우하는 사람 정보 가져오기
 
         return FollowResponse.builder()

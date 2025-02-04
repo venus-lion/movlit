@@ -1,5 +1,5 @@
 // useRecommendedBooks.jsx
-import { useState, useEffect, useCallback } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance.js';
 
 const UserRecommendedBooks = (isLoggedIn) => {
@@ -32,7 +32,7 @@ const UserRecommendedBooks = (isLoggedIn) => {
         }
     }, [isLoggedIn, fetchRecommendedBooks]);
 
-    return { recommendedBooks, loading, error };
+    return {recommendedBooks, loading, error};
 };
 
 export default UserRecommendedBooks;

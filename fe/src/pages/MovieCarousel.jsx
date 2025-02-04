@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa'; // 별 아이콘 임포트
+import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa'; // 별 아이콘 임포트
 import './Home.css';
 
 function MovieCarousel({title, movies, startIndex, handleNext, handlePrev, hasMore, loading, slideSize = 8}) {

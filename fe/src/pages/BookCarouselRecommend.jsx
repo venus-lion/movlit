@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-function BookCarouselRecommend({ title, books, startIndex, handlePrev, handleNext }) {
+function BookCarouselRecommend({title, books, startIndex, handlePrev, handleNext}) {
     return (
         <div>
             <h2>{title}</h2>
@@ -20,13 +20,13 @@ function BookCarouselRecommend({ title, books, startIndex, handlePrev, handleNex
                                         {startIndex + index + 1}
                                     </div>
                                 )}
-                                <img src={book.bookImgUrl} alt={book.title} className="book-image" />
+                                <img src={book.bookImgUrl} alt={book.title} className="book-image"/>
                                 <div className="book-info">
                                     <h3 className="book-title">{book.title}</h3>
                                     <p className="book-writer">
                                         {/* 작가 정보가 존재하는 경우에만 렌더링 */}
                                         {book.crew && book.crew.length > 0 && (
-                                          <span>
+                                            <span>
                                               {book.crew.join(', ')}
                                           </span>
                                         )}

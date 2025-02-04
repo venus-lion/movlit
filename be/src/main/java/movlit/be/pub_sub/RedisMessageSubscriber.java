@@ -1,20 +1,14 @@
 package movlit.be.pub_sub;
 
-
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.ContentTypeNotExistException;
 import movlit.be.common.util.ids.GroupChatroomId;
-import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.application.service.MemberReadService;
-import movlit.be.member.domain.Member;
-import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
@@ -23,7 +17,6 @@ import movlit.be.pub_sub.chatRoom.presentation.dto.UpdateRoomDto.EventType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * 메시지 수신자(Subscriber) 구현
@@ -40,6 +33,7 @@ public class RedisMessageSubscriber {
     private static final String CHATROOM_MEMBERS_KEY_PREFIX = "chatroom:";
     private static final String CHATROOM_MEMBERS_KEY_SUFFIX = ":members";
     private static final long CHATROOM_MEMBERS_CACHE_TTL = 60 * 60; // 1시간
+
     /**
      * Redis에서 메시지가 발행(publish)되면
      * 대기하고 있던 Redis Subscriber가 해당 메시지를 받아 처리한다.
@@ -77,9 +71,10 @@ public class RedisMessageSubscriber {
         try {
             // 1. publisher로부터 발행받은 updateRoomDto 체크
             UpdateRoomDto updateRoomDto = objectMapper.readValue(publishMessage, UpdateRoomDto.class);
-            log.info("RedisMessageSubscriber ::: publisher부터 발행받은 updateRoomDto - Profile_Update : " + updateRoomDto.toString());
-            log.info("RedisMessageSubscriber ::: publisher부터 발행받은 updateRoomDto - Member_Join : " + updateRoomDto.toStringWithJoinMsg());
-
+            log.info("RedisMessageSubscriber ::: publisher부터 발행받은 updateRoomDto - Profile_Update : "
+                    + updateRoomDto.toString());
+            log.info("RedisMessageSubscriber ::: publisher부터 발행받은 updateRoomDto - Member_Join : "
+                    + updateRoomDto.toStringWithJoinMsg());
 
             GroupChatroomId groupChatroomId = updateRoomDto.getGroupChatroomId();
 
@@ -89,10 +84,11 @@ public class RedisMessageSubscriber {
             // 3. Redis에서 캐시된 데이터 조회
             String cachedJson = (String) redisTemplate.opsForValue().get(cacheKey);
 
-            if (cachedJson != null){
+            if (cachedJson != null) {
                 // 캐시된 데이터(Json 문자열)를 List<GroupChatroomMemberResponse>로 역직렬화
-                List<GroupChatroomMemberResponse> cachedMembers = objectMapper.readValue(cachedJson, new TypeReference<>() {
-                });
+                List<GroupChatroomMemberResponse> cachedMembers = objectMapper.readValue(cachedJson,
+                        new TypeReference<>() {
+                        });
 
                 // WebSocket 클라이언트한테 업데이트된 멤버정보 전송
                 System.out.println("RedisMessageSubscriber >>>> roomId :: " + groupChatroomId);
@@ -100,7 +96,7 @@ public class RedisMessageSubscriber {
                 if (updateRoomDto.getEventType().equals(EventType.MEMBER_PROFILE_UPDATE)) {
                     // 멤버 프로필 업데이트 이벤트 처리
                     messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId.getValue(), cachedMembers);
-                } else if (updateRoomDto.getEventType().equals(EventType.MEMBER_JOIN)){
+                } else if (updateRoomDto.getEventType().equals(EventType.MEMBER_JOIN)) {
                     // 새로운 멤버가입 이벤트 처리
                     // joinMessage와 cachedMembers를 함께 전송
                     Map<String, Object> response = new HashMap<>();

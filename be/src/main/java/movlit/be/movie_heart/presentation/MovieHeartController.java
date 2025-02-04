@@ -26,7 +26,7 @@ public class MovieHeartController {
 
     @DeleteMapping("/api/movies/{movieId}/hearts")
     public ResponseEntity<Void> unHeart(@PathVariable Long movieId,
-                                                    @AuthenticationPrincipal MyMemberDetails details) {
+                                        @AuthenticationPrincipal MyMemberDetails details) {
         movieHeartService.unHeart(movieId, details.getMemberId());
         return ResponseEntity.ok().build();
     }

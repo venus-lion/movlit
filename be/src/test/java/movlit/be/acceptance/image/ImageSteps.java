@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 
 public class ImageSteps {
 
-
     public static ExtractableResponse<Response> 프로필_이미지를_업로드한다(String accessToken, RequestSpecification spec) {
         return RestAssured.given().spec(spec)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE).multiPart(getFile("images/potato.jpg"))
@@ -51,7 +50,6 @@ public class ImageSteps {
                                                       HttpStatus expectedHttpStatus) {
         return assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());
     }
-
 
     static File getFile(String path) {
         Resource resource = new ClassPathResource(path);

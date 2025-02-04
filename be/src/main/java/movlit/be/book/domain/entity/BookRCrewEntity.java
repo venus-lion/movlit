@@ -25,7 +25,6 @@ public class BookRCrewEntity {
     @EmbeddedId
     private BookRCrewId bookRCrewId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private BookEntity book;
@@ -33,4 +32,5 @@ public class BookRCrewEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id", referencedColumnName = "id")
     private BookcrewEntity bookcrewEntity;
+
 }

@@ -2,12 +2,7 @@ package movlit.be.bookES;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import movlit.be.common.util.ids.BookId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -34,7 +28,6 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @Setting(settingPath = "/mappings/book-setting.json")
 @Mapping(mappingPath = "/mappings/book-mapping.json")
 public class BookES {
-
 
     @Id
     private String bookId; // isbn13, uuid

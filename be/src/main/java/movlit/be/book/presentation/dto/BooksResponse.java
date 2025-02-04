@@ -9,9 +9,11 @@ import lombok.Data;
 public class BooksResponse {
 
     private List<BookItemDto> books;
+
     @Data
     @Builder
     public static class BookItemDto {
+
         private String bookId; // ISBN13
         private String title;
         private List<WriterDto> writers;
@@ -21,8 +23,12 @@ public class BooksResponse {
         @Data
         @Builder
         public static class WriterDto {
+
             private String name;
             private String role;
+
         }
+
     }
+
 }

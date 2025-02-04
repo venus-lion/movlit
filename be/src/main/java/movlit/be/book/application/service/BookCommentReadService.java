@@ -1,11 +1,10 @@
 package movlit.be.book.application.service;
 
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.domain.BookCommentVo;
-import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.book.domain.repository.BookCommentRepository;
+import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
@@ -23,8 +22,6 @@ public class BookCommentReadService {
     private final BookCommentRepository bookCommentRepository;
 //    private final BookCommentLikeRepository bookCommentLikeRepository;
 //    private final BookCommentLikeCountRepository bookCommentLikeCountRepository;
-
-
 
     // 리뷰 리스트
     public Slice<BookCommentResponseDto> fetchPagedBookComments(BookId bookId, MemberId memberId, Pageable pageable) {
@@ -64,7 +61,6 @@ public class BookCommentReadService {
 //            return false;
 //        }
 //    }
-
 
 
 }

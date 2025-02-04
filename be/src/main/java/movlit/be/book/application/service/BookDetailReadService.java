@@ -9,22 +9,16 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.domain.BookVo;
-import movlit.be.book.domain.repository.BookCommentRepository;
+import movlit.be.book.domain.repository.BookRepository;
 import movlit.be.book.presentation.dto.BookCrewResponseDto;
 import movlit.be.book.presentation.dto.BookDetailResponseDto;
-import movlit.be.book.domain.BookcrewVo;
-import movlit.be.book.domain.repository.BookHeartCountRepository;
-import movlit.be.book.domain.repository.BookHeartRepository;
-import movlit.be.book.domain.repository.BookRepository;
-import movlit.be.book.domain.repository.BookcrewRepository;
 import movlit.be.bookES.BookES;
 import movlit.be.bookES.BookESConvertor;
-import movlit.be.bookES.BookESVo;
 import movlit.be.bookES.BookESRepository;
+import movlit.be.bookES.BookESVo;
 import movlit.be.common.exception.BookNotFoundException;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.Member;
 import movlit.be.movie.domain.document.MovieDocument;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +40,7 @@ public class BookDetailReadService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     // 도서 상세 정보 (리팩토링 후)
-    public BookDetailResponseDto fetchBookDetail(BookId bookId, MemberId memberId){
+    public BookDetailResponseDto fetchBookDetail(BookId bookId, MemberId memberId) {
 
         // 1. 책 정보 조회
         Optional<BookDetailResponseDto> bookDetailsOpt = Optional.ofNullable(
@@ -175,7 +169,6 @@ public class BookDetailReadService {
 
 
     }
-
 
     // 관련 영화 추천
     public List<MovieDocument> fetchRecommendedMovies(BookId bookId) {

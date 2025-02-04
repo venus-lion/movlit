@@ -7,9 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-
 import java.util.Map;
-
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpStatus;

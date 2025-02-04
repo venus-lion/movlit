@@ -3,7 +3,6 @@ import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
 import './ChatPage.css'; // CSS 파일 import
-import {useOutletContext} from 'react-router-dom';
 import {FaUserCircle} from "react-icons/fa";
 
 function ChatPage({roomId, roomInfo}) {

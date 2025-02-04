@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import movlit.be.book.domain.entity.BookcrewEntity;
-import movlit.be.common.util.ids.BookRCrewId;
 import movlit.be.common.util.ids.BookcrewId;
 
 @Getter
@@ -22,4 +21,5 @@ public class BookCrewResponseDto {
     private String name;
     private BookcrewEntity.Role role;
     private String profileImageUrl;
+
 }

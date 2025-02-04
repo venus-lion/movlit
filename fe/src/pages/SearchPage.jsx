@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
+import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa';
 import {Link, useParams} from 'react-router-dom';
 import './SearchPage.css';
 import './Home.css'
-import axios from "axios";
 import axiosInstance from "../axiosInstance.js";
 
 function SearchPage() {
@@ -57,7 +56,7 @@ function SearchPage() {
                 const bookResponse = await axiosInstance.get(`/books/search/searchBook`, {
                     params: {
                         page: 1,
-                        pageSize : 20,
+                        pageSize: 20,
                         inputStr: inputStr
                     }
                 })
@@ -92,7 +91,7 @@ function SearchPage() {
                 <div className="more-link-container">
                     {movieList.length > 9 && (
                         <a>
-                        <Link className="more-link" key={inputStr} to={`/movies/search/${inputStr}`}>더 보기</Link>
+                            <Link className="more-link" key={inputStr} to={`/movies/search/${inputStr}`}>더 보기</Link>
                         </a>
                     )}
                 </div>
@@ -102,22 +101,22 @@ function SearchPage() {
                     <p>검색 결과가 없습니다.</p>
                 ) : (
                     movieList.slice(0, 9).map((movie) => (
-                    <div key={movie.movieId} className="search-item">
-                        <Link to={`/movie/${movie.movieId}`}>
-                            <div className="movie-info">
-                                <img src={movie.posterPath} alt={movie.title}/>
+                        <div key={movie.movieId} className="search-item">
+                            <Link to={`/movie/${movie.movieId}`}>
                                 <div className="movie-info">
-                                    <h3 className="movie-title">{movie.title}</h3>
-                                    {renderStars(parseFloat(movie.voteAverage))}
-                                    <span>({Math.round(parseFloat(movie.voteAverage) * 10) / 10})</span>
-                                    <p className="movie-genres">
-                                        {movie.movieGenre.map((g) => g.genreName).join(', ')}
-                                    </p>
+                                    <img src={movie.posterPath} alt={movie.title}/>
+                                    <div className="movie-info">
+                                        <h3 className="movie-title">{movie.title}</h3>
+                                        {renderStars(parseFloat(movie.voteAverage))}
+                                        <span>({Math.round(parseFloat(movie.voteAverage) * 10) / 10})</span>
+                                        <p className="movie-genres">
+                                            {movie.movieGenre.map((g) => g.genreName).join(', ')}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </div>
-                )))}
+                            </Link>
+                        </div>
+                    )))}
             </div>
 
 
@@ -126,8 +125,8 @@ function SearchPage() {
                 <div className="more-link-container">
                     {
                         books.length > 9 && (
-                        <Link className="more-link" key={inputStr} to={`/books/search/${inputStr}`}>더 보기</Link>
-                    )}
+                            <Link className="more-link" key={inputStr} to={`/books/search/${inputStr}`}>더 보기</Link>
+                        )}
                 </div>
             </div>
             <div className="search-results books">
@@ -135,13 +134,13 @@ function SearchPage() {
                     <p>검색 결과가 없습니다.</p>
                 ) : (
                     books.slice(0, 9).map((book) => (
-                    <div key={book.bookId} className="search-item">
-                        <Link to={`/book/${book.bookId}`}>
-                            <img src={book.bookImgUrl} alt={book.title}/>
-                            <p>{book.title}</p>
-                        </Link>
-                    </div>
-                )))}
+                        <div key={book.bookId} className="search-item">
+                            <Link to={`/book/${book.bookId}`}>
+                                <img src={book.bookImgUrl} alt={book.title}/>
+                                <p>{book.title}</p>
+                            </Link>
+                        </div>
+                    )))}
             </div>
         </div>
     );

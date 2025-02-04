@@ -20,9 +20,9 @@ import movlit.be.member.domain.entity.MemberEntity;
 @Builder
 @AllArgsConstructor
 public class Follow {
+
     @EmbeddedId
     private FollowId followId;
-
 
     // Follow 엔디티는 팔로우 관계를 단방향 매핑으로 구현한다
     // 예: "A"가 "B"를 팔로우한다.
@@ -33,4 +33,5 @@ public class Follow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followee_id", nullable = false)
     private MemberEntity followee; // 팔로우를 받는 사용자, "B"
+
 }

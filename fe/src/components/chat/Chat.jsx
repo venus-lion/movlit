@@ -26,7 +26,7 @@ const Chat = () => {
     // 로그인 상태 확인 및 리다이렉트 로직 추가
     useEffect(() => {
         if (!isLoggedIn) {
-            navigate('/member/login', { replace: true }); // 리다이렉트 할 때, 브라우저 히스토리에 현재 경로를 남기지 않음
+            navigate('/member/login', {replace: true}); // 리다이렉트 할 때, 브라우저 히스토리에 현재 경로를 남기지 않음
         }
     }, [isLoggedIn, navigate]);
 

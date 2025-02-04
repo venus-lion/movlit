@@ -17,7 +17,7 @@ public class MovieHeartConverter {
     }
 
     // entity -> domain
-    public static MovieHeart toDomain(MovieHeartEntity movieHeartEntity){
+    public static MovieHeart toDomain(MovieHeartEntity movieHeartEntity) {
         return MovieHeart.builder()
                 .movieHeartId(movieHeartEntity.getMovieHeartId())
                 .movieId(movieHeartEntity.getMovieId())
@@ -26,7 +26,6 @@ public class MovieHeartConverter {
                 .regDt(movieHeartEntity.getRegDt())
                 .build();
     }
-
 
 
 }

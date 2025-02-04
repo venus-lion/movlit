@@ -22,6 +22,7 @@ import movlit.be.common.util.ids.BookBestsellerId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookBestsellerEntity {
+
     @EmbeddedId
     private BookBestsellerId bookBestsellerId;
 

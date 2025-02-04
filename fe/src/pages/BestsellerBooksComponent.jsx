@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import useBookList from "../hooks/useBookList.jsx";
 import BookCarousel from "./BookCarousel.jsx";
 
-function BestsellerBooksComponent(){
+function BestsellerBooksComponent() {
     const {books, loading, error} = useBookList({
-        endpoint : '/books/bestseller',
-        params: {limit : 30},
+        endpoint: '/books/bestseller',
+        params: {limit: 30},
     });
 
     const [startIndex, setStartIndex] = useState(0); // 화면에 보이는 도서 시작 인덱스
@@ -32,13 +32,13 @@ function BestsellerBooksComponent(){
     );
 
     return (
-      <BookCarousel
-          title="신간 베스트셀러 순위"
-          books={books}
-          startIndex={startIndex}
-          handleNext={handleNext}
-          handlePrev={handlePrev}
-      ></BookCarousel>
+        <BookCarousel
+            title="신간 베스트셀러 순위"
+            books={books}
+            startIndex={startIndex}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
+        ></BookCarousel>
     );
 }
 

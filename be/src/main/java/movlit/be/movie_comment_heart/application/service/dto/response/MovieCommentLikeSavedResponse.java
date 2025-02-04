@@ -17,7 +17,8 @@ public class MovieCommentLikeSavedResponse {
         this.movieCommentLikeId = movieCommentLikeId;
     }
 
-    public static MovieCommentLikeSavedResponse from(MovieCommentId movieCommentId, MovieCommentLikeId movieCommentLikeId) {
+    public static MovieCommentLikeSavedResponse from(MovieCommentId movieCommentId,
+                                                     MovieCommentLikeId movieCommentLikeId) {
         return new MovieCommentLikeSavedResponse(movieCommentId, movieCommentLikeId);
     }
 

@@ -32,7 +32,8 @@ public class MovieSearchController {
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
         MemberId currentMemberId = details.getMemberId();
-        MovieListResponseDto response = movieSearchService.searchMovieByMemberInterestGenre(currentMemberId, page, pageSize);
+        MovieListResponseDto response = movieSearchService.searchMovieByMemberInterestGenre(currentMemberId, page,
+                pageSize);
 
         return ResponseEntity.ok(response);
     }
@@ -45,9 +46,10 @@ public class MovieSearchController {
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize
-    ){
+    ) {
         MemberId currentMemberId = details.getMemberId();
-        MovieListResponseDto response = movieSearchService.fetchMovieByMemberRecentHeart(currentMemberId, page, pageSize);
+        MovieListResponseDto response = movieSearchService.fetchMovieByMemberRecentHeart(currentMemberId, page,
+                pageSize);
 
         return ResponseEntity.ok(response);
     }
@@ -59,9 +61,10 @@ public class MovieSearchController {
     public ResponseEntity<MovieDocumentResponseDto> getSearchMovie(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize,
-            @RequestParam String inputStr){
+            @RequestParam String inputStr) {
         MovieDocumentResponseDto response = movieSearchService.getSearchMovie(inputStr, page, pageSize);
 
         return ResponseEntity.ok(response);
     }
+
 }

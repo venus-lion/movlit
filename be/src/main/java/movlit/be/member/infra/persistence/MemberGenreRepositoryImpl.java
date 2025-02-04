@@ -8,7 +8,6 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.entity.MemberGenreEntity;
 import movlit.be.member.domain.repository.MemberGenreRepository;
 import movlit.be.member.infra.persistence.jpa.MemberGenreJpaRepository;
-import movlit.be.member.presentation.dto.response.GenreListReadResponse;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -31,7 +30,7 @@ public class MemberGenreRepositoryImpl implements MemberGenreRepository {
     public List<Genre> findUserInterestGenreList(MemberId memberId) {
         List<MemberGenreEntity> memberGenreEntityList = memberGenreJpaRepository.findAllByMemberId(memberId);
 
-        if (memberGenreEntityList.isEmpty()){
+        if (memberGenreEntityList.isEmpty()) {
             throw new MemberGenreNotFoundException();
         }
 

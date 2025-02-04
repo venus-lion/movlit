@@ -5,8 +5,6 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import movlit.be.common.util.ids.BookcrewId;
-import org.hibernate.annotations.GenericGenerator;
 
 // RoleType 파싱은 임의로 해서 안될 것임
 @Entity
@@ -25,6 +22,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookcrewEntity {
+
     public enum Role {
         AUTHOR, // 지은이
         TRANSLATOR, // 옮긴이

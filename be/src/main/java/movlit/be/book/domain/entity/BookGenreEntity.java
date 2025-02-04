@@ -10,7 +10,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,4 +45,5 @@ public class BookGenreEntity {
     @MapsId("bookId") // 복합 키의 bookId와 연결
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private BookEntity bookEntity;
+
 }

@@ -8,6 +8,7 @@ import movlit.be.movie.domain.entity.MovieRCrewEntity;
 import movlit.be.movie.domain.entity.MovieRCrewIdForEntity;
 
 public class MovieCrewConverter {
+
     // RCrew Entity ->  RCrew Domain
     public static MovieRCrew toRCrewDomain(MovieRCrewEntity entity) {
         MovieRCrewIdForEntity entityId = entity.getMovieRCrewIdForEntity();
@@ -18,7 +19,6 @@ public class MovieCrewConverter {
                 .movieCrew(MovieCrewConverter.toCrewDomain(movieCrewEntity))
                 .build();
     }
-
 
     // CrewEntity -> CrewDomain
     public static MovieCrew toCrewDomain(MovieCrewEntity entity) {
@@ -31,4 +31,5 @@ public class MovieCrewConverter {
                 .orderNo(entity.getOrderNo())
                 .build();
     }
+
 }

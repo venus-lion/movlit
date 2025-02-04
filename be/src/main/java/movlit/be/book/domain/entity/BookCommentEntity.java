@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import movlit.be.common.util.ids.BookCommentId;
-import movlit.be.common.util.ids.BookRCrewId;
-import movlit.be.common.util.ids.BookcrewId;
 import movlit.be.member.domain.entity.MemberEntity;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -39,7 +36,6 @@ public class BookCommentEntity {
 
     @EmbeddedId
     private BookCommentId bookCommentId;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)

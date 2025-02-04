@@ -12,35 +12,38 @@ public class BookCommentConverter {
 
     // Domain -> Entity
     public static BookCommentEntity toEntity(BookCommentVo bookCommentVo) {
-        if(bookCommentVo == null){
+        if (bookCommentVo == null) {
             return null;
-        }else
+        } else {
             return BookCommentEntity.builder()
-                .bookCommentId(bookCommentVo.getBookCommentId())
-                .bookEntity(BookDetailConverter.toEntity(bookCommentVo.getBookVo()))
-                .memberEntity(MemberConverter.toEntity(bookCommentVo.getMember()))
-                .comment(bookCommentVo.getComment())
-                .score(bookCommentVo.getScore())
-                .regDt(bookCommentVo.getRegDt())
-                .updDt(bookCommentVo.getUpdDt())
-                .delYn(bookCommentVo.getDelYn())
-                .build();
+                    .bookCommentId(bookCommentVo.getBookCommentId())
+                    .bookEntity(BookDetailConverter.toEntity(bookCommentVo.getBookVo()))
+                    .memberEntity(MemberConverter.toEntity(bookCommentVo.getMember()))
+                    .comment(bookCommentVo.getComment())
+                    .score(bookCommentVo.getScore())
+                    .regDt(bookCommentVo.getRegDt())
+                    .updDt(bookCommentVo.getUpdDt())
+                    .delYn(bookCommentVo.getDelYn())
+                    .build();
+        }
     }
 
     // Entity -> Domain
     public static BookCommentVo toDomain(BookCommentEntity bookCommentEntity) {
-        if(bookCommentEntity == null){
+        if (bookCommentEntity == null) {
             return null;
-        }else
+        } else {
             return BookCommentVo.builder()
-                .bookCommentId(bookCommentEntity.getBookCommentId())
-                .bookVo(BookDetailConverter.toDomain(bookCommentEntity.getBookEntity()))
-                .member(MemberConverter.toDomain(bookCommentEntity.getMemberEntity()))
-                .comment(bookCommentEntity.getComment())
-                .score(bookCommentEntity.getScore())
-                .regDt(bookCommentEntity.getRegDt())
-                .updDt(bookCommentEntity.getUpdDt())
-                .delYn(bookCommentEntity.getDelYn())
-                .build();
+                    .bookCommentId(bookCommentEntity.getBookCommentId())
+                    .bookVo(BookDetailConverter.toDomain(bookCommentEntity.getBookEntity()))
+                    .member(MemberConverter.toDomain(bookCommentEntity.getMemberEntity()))
+                    .comment(bookCommentEntity.getComment())
+                    .score(bookCommentEntity.getScore())
+                    .regDt(bookCommentEntity.getRegDt())
+                    .updDt(bookCommentEntity.getUpdDt())
+                    .delYn(bookCommentEntity.getDelYn())
+                    .build();
+        }
     }
+
 }

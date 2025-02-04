@@ -3,9 +3,9 @@ import MovieCarousel from './MovieCarousel';
 import useAuthMovieList from "../hooks/useAuthMovieList.jsx";
 
 function InterestGenreMoviesComponent() {
-    const { movies, loading, error } = useAuthMovieList({
+    const {movies, loading, error} = useAuthMovieList({
         endpoint: '/movies/search/interestGenre',
-        params: { pageSize: 30 },
+        params: {pageSize: 30},
     });
 
     const [startIndex, setStartIndex] = useState(0);  // 화면에 보이는 영화 시작 인덱스

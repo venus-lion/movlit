@@ -1,5 +1,5 @@
 // useApiData.jsx
-import { useState, useEffect, useCallback } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance';
 
 const useApiData = (endpoint, isLoggedIn) => {
@@ -32,7 +32,7 @@ const useApiData = (endpoint, isLoggedIn) => {
         }
     }, [isLoggedIn, fetchData]);
 
-    return { data, loading, error };
+    return {data, loading, error};
 };
 
 export default useApiData;

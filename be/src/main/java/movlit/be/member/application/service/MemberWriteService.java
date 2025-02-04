@@ -20,7 +20,6 @@ import movlit.be.member.presentation.dto.request.MemberLoginRequest;
 import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import movlit.be.member.presentation.dto.request.MemberRegisterRequest;
 import movlit.be.member.presentation.dto.request.MemberUpdateRequest;
-import movlit.be.member.presentation.dto.response.MemberRegisterOAuth2Response;
 import movlit.be.member.presentation.dto.response.MemberRegisterResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,6 @@ public class MemberWriteService {
         Member member = MemberConverter.toMemberForUpdate(request);
         memberEntity.updateMember(member, makeMemberGenreEntities(memberEntity.getMemberId(), request.getGenreIds()));
     }
-
 
     public void deleteMember(MemberId memberId, String accessToken) {
         logout(accessToken);

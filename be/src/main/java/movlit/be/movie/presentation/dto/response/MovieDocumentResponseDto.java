@@ -4,4 +4,5 @@ import java.util.List;
 import movlit.be.movie.domain.document.MovieDocument;
 
 public record MovieDocumentResponseDto(List<MovieDocument> movieList, long totalPages) {
+
 }

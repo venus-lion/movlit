@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookNewSpecialRepositoryImpl implements BookNewSpecialRepository {
+
     private final BookNewSpecialJpaRepository bookNewSpecialJpaRepository;
 
     @Override
@@ -22,7 +23,7 @@ public class BookNewSpecialRepositoryImpl implements BookNewSpecialRepository {
         List<BookNewSpecialEntity> bookNewSpecialEntities = bookNewSpecialJpaRepository.findBookNewSpecialEntitiesByPaging(
                 pageable);
 
-        if (bookNewSpecialEntities.isEmpty()){
+        if (bookNewSpecialEntities.isEmpty()) {
             throw new BookNewSpecialNotFoundException();
         }
 

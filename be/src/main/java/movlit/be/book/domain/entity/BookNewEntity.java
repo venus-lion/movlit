@@ -21,10 +21,12 @@ import movlit.be.common.util.ids.BookNewId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookNewEntity {
+
     @EmbeddedId
     private BookNewId bookNewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private BookEntity bookEntity;
+
 }

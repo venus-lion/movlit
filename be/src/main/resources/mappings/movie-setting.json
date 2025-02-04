@@ -16,7 +16,9 @@
       "filter": {
         "korean_stop": {
           "type": "stop",
-          "stopwords": [" "]
+          "stopwords": [
+            " "
+          ]
         },
         "english_stop": {
           "type": "stop",
@@ -31,20 +33,40 @@
         "english_analyzer": {
           "type": "custom",
           "tokenizer": "standard",
-          "filter": ["lowercase", "english_stop", "english_snowball"],
-          "char_filter": ["html_strip"]
+          "filter": [
+            "lowercase",
+            "english_stop",
+            "english_snowball"
+          ],
+          "char_filter": [
+            "html_strip"
+          ]
         },
         "korean_analyzer": {
           "type": "custom",
           "tokenizer": "my_nori_tokenizer",
-          "filter": ["lowercase", "stop", "korean_stop", "nori_part_of_speech"],
-          "char_filter": ["html_strip"]
+          "filter": [
+            "lowercase",
+            "stop",
+            "korean_stop",
+            "nori_part_of_speech"
+          ],
+          "char_filter": [
+            "html_strip"
+          ]
         },
         "my_ngram_analyzer": {
           "type": "custom",
           "tokenizer": "my_ngram_tokenizer",
-          "filter": ["lowercase", "stop", "korean_stop", "nori_part_of_speech"],
-          "char_filter": ["html_strip"]
+          "filter": [
+            "lowercase",
+            "stop",
+            "korean_stop",
+            "nori_part_of_speech"
+          ],
+          "char_filter": [
+            "html_strip"
+          ]
         }
       }
     }

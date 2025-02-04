@@ -1,46 +1,41 @@
 package movlit.be.book.getBookApi;
 
-
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
-import movlit.be.book.domain.Genre;
-import movlit.be.book.domain.entity.BookGenreEntity;
-import movlit.be.book.domain.entity.BookGenreIdEntity;
-import movlit.be.book.getBookApi.dto.BookBestResponseDto;
-import movlit.be.book.getBookApi.dto.BookBestResponseDto.Item;
 import movlit.be.book.domain.entity.BookBestsellerEntity;
 import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.entity.BookRCrewEntity;
 import movlit.be.book.domain.entity.BookcrewEntity;
+import movlit.be.book.domain.entity.BookcrewEntity.Role;
 import movlit.be.book.domain.entity.GenerateUUID;
+import movlit.be.book.getBookApi.dto.BookBestResponseDto;
+import movlit.be.book.getBookApi.dto.BookBestResponseDto.Item;
 import movlit.be.book.infra.persistence.jpa.BookBestsellerJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookGenreJpaRepository;
-import movlit.be.book.infra.persistence.jpa.BookRCrewJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookJpaRepository;
+import movlit.be.book.infra.persistence.jpa.BookRCrewJpaRepository;
 import movlit.be.book.infra.persistence.jpa.BookcrewJpaRepository;
 import movlit.be.common.util.ids.BookBestsellerId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.BookRCrewId;
 import movlit.be.common.util.ids.BookcrewId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import movlit.be.book.domain.entity.BookcrewEntity.Role;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class GetBookBestService {
+
     private final RestTemplate restTemplate;
     private final BookJpaRepository bookRepository;
-    private final BookcrewJpaRepository bookcrewRepository ;
+    private final BookcrewJpaRepository bookcrewRepository;
     private final BookBestsellerJpaRepository bookBestsellerRepository;
     private final BookRCrewJpaRepository bookRCrewRepository;
 
@@ -53,40 +48,40 @@ public class GetBookBestService {
     @Value("${aladin.key}")
     String apiKey;
 
-    public void repeatGet(int times){
-        for(int i=1; i < times+1; i++){
+    public void repeatGet(int times) {
+        for (int i = 1; i < times + 1; i++) {
 
             String url = baseUrl + "ttbkey=" + apiKey +
-                    "&QueryType=Bestseller&MaxResults=50&start="+i+"&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
+                    "&QueryType=Bestseller&MaxResults=50&start=" + i
+                    + "&SearchTarget=Book&Cover=Big&output=js&Version=20131101";
 
             insertBook(url);
         }
     }
 
-    public void insertBook(String url){
+    public void insertBook(String url) {
 
         BookBestResponseDto bookResponseDto = restTemplate.getForObject(url, BookBestResponseDto.class);
 
-
-        if(bookResponseDto != null ){
+        if (bookResponseDto != null) {
 
             List<Item> bookList = bookResponseDto.getItem();
 
-            if (bookList == null){
+            if (bookList == null) {
                 System.out.println("booklist는 null이다");
             }
-            if(bookList != null){
+            if (bookList != null) {
 
                 System.out.println("책 목록이 존재함, 책 수: " + bookList.size());
 
                 // booklist 순회하며 bookEntity 저장
-                for(Item book : bookList) {
+                for (Item book : bookList) {
                     try {
                         savedBookEntity = null;
 
                         String categoryName = book.getCategoryName();
 
-                        if( (book.getIsbn13() != null) && (!book.getIsbn13().equals("")) &&
+                        if ((book.getIsbn13() != null) && (!book.getIsbn13().equals("")) &&
                                 (!categoryName.contains("국내도서>외국어>") && !categoryName.contains("국내도서>수험서/자격증"))) {
 
                             BookId bookId = new BookId(book.getIsbn13());
@@ -118,7 +113,6 @@ public class GetBookBestService {
                                 BookCategory bookCategory = new BookCategory(bookGenreJpaRepository);
                                 bookCategory.classifyAndSaveBooks(categoryCode, savedBookEntity);
 
-
                                 String[] crewArr = book.getAuthor().split(", ");
 
                                 int crewNum = crewArr.length;
@@ -137,8 +131,8 @@ public class GetBookBestService {
                                         BookcrewId bookCrewId = null;
                                         BookcrewEntity savedBookcrewEntity = null;
 
-                                        if(!bookcrewRepository.existsByName(name).isPresent()){ // 처음 나오는 작가 -- bookcrewRepository.save
-
+                                        if (!bookcrewRepository.existsByName(name)
+                                                .isPresent()) { // 처음 나오는 작가 -- bookcrewRepository.save
 
                                             BookcrewEntity savedBookcrew = BookcrewEntity.builder()
                                                     .crewId(new BookcrewId(GenerateUUID.generateUUID()))
@@ -149,7 +143,7 @@ public class GetBookBestService {
 
                                             savedBookcrewEntity = bookcrewRepository.save(savedBookcrew);
 
-                                        }else{ // 중복해서 나오는 작가
+                                        } else { // 중복해서 나오는 작가
                                             savedBookcrewEntity = bookcrewRepository.existsByName(name).orElseThrow();
 
 
@@ -184,7 +178,7 @@ public class GetBookBestService {
                         } else {
                             System.out.println("이미 존재하는 책 :: " + book.getIsbn13());
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         System.err.println("Error processing book: " + book.getTitle() + ", " + e.getMessage());
                     }
                 }
@@ -193,10 +187,7 @@ public class GetBookBestService {
         }
 
 
-
     }
-
-
 
     // 예시: 파싱된 role 값을 설정하는 메서드
     public Role setParsedRole(String roleString) {

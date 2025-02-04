@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import useMovieList from '../hooks/useMovieList';
 import MovieCarousel from './MovieCarousel';
 
 function LatestMoviesComponent() {
-    const { movies, loading, error } = useMovieList({
+    const {movies, loading, error} = useMovieList({
         endpoint: '/movies/main/latest',
-        params: { pageSize: 20 },
+        params: {pageSize: 20},
     });
 
     const [startIndex, setStartIndex] = useState(0);  // 화면에 보이는 영화 시작 인덱스

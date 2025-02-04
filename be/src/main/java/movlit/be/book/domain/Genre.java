@@ -2,6 +2,7 @@ package movlit.be.book.domain;
 
 import java.util.Arrays;
 import movlit.be.common.exception.InvalidGenreIdException;
+
 public enum Genre {
     ACTION(1L, "액션"), // + 모험
     ANIMATION(2l, "애니메이션"),
@@ -25,7 +26,7 @@ public enum Genre {
     private final String name;
 
     // Id 값으로 값 접근
-    public static Genre of(final Long id){
+    public static Genre of(final Long id) {
         return Arrays.stream(Genre.values())
                 .filter(g -> id == g.getId())
                 .findFirst().orElseThrow(InvalidGenreIdException::new);

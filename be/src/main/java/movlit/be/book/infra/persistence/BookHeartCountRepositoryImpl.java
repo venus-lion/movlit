@@ -14,12 +14,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookHeartCountRepositoryImpl implements BookHeartCountRepository {
+
     private final BookHeartCountJpaRepository bookHeartCountJpaRepository;
 
     @Override
     public BookHeartCountVo fetchByBook(BookVo bookVo) {
-        BookHeartCountEntity heartCountEntity = bookHeartCountJpaRepository.findByBookEntity(BookDetailConverter.toEntity(
-                        bookVo))
+        BookHeartCountEntity heartCountEntity = bookHeartCountJpaRepository.findByBookEntity(
+                        BookDetailConverter.toEntity(
+                                bookVo))
                 .orElse(null);
         return BookHeartCountConverter.toDomain(heartCountEntity);
     }
@@ -39,10 +41,9 @@ public class BookHeartCountRepositoryImpl implements BookHeartCountRepository {
         return BookHeartCountConverter.toDomain(countEntity);
     }
 
-
     @Override
     public void increaseHeartCount(BookVo bookVo) {
-          bookHeartCountJpaRepository.increaseHeartCount(BookDetailConverter.toEntity(bookVo));
+        bookHeartCountJpaRepository.increaseHeartCount(BookDetailConverter.toEntity(bookVo));
     }
 
     @Override

@@ -29,7 +29,6 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation;
-import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 

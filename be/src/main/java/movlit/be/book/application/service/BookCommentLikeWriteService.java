@@ -9,7 +9,6 @@ import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookCommentLikeCountRepository;
 import movlit.be.book.domain.repository.BookCommentLikeRepository;
 import movlit.be.common.util.ids.BookCommentId;
-import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.domain.Member;
@@ -27,7 +26,6 @@ public class BookCommentLikeWriteService {
 
     private final BookCommentLikeRepository bookCommentLikeRepository;
     private final BookCommentLikeCountRepository bookCommentLikeCountRepository;
-
 
     // 해당 도서 리뷰에 대한 좋아요 추가
     @Transactional
@@ -80,23 +78,24 @@ public class BookCommentLikeWriteService {
         Member member = memberReadService.findByMemberId(memberId);
 
         BookCommentLikeVo existingLike = bookCommentLikeRepository.fetchByBookCommentAndMember(comment, member);
-        if(existingLike != null){
+        if (existingLike != null) {
             log.info("::BookCommentLikeWriteService_removeLike::");
             log.info(">> delete Like: \nmember : " + member.toString() + "\nbook : " + bookVo.toString());
             // 리뷰에 대한 좋아요 삭제
             bookCommentLikeRepository.delete(existingLike);
             BookCommentLikeCountVo existingCount = bookCommentLikeCountRepository.fetchByBookComment(comment);
             // bookCommentLikeCount  1 증가
-            if(existingCount != null && existingCount.getCount() > 0)
+            if (existingCount != null && existingCount.getCount() > 0) {
                 bookCommentLikeCountRepository.decreaseHeartCount(comment);
+            }
 
-        }else {
+        } else {
             throw new Exception("좋아요를 삭제할 수 없습니다.");
         }
     }
-    
+
     // 해당 리뷰의 좋아요 0으로 초기화 (리뷰 삭제 전 관련 좋아요 삭제)
-    public void removeLikeandCount(BookCommentId bookCommentId){
+    public void removeLikeandCount(BookCommentId bookCommentId) {
         log.info("::BookCommentLikeWriteService_removeLikeAndCount::");
         log.info(">> BookCommentId : " + bookCommentId);
 

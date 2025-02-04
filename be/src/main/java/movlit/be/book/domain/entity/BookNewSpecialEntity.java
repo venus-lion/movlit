@@ -21,6 +21,7 @@ import movlit.be.common.util.ids.BookNewSpecialId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookNewSpecialEntity {
+
     @EmbeddedId
     private BookNewSpecialId bookNewSpecialId;
 

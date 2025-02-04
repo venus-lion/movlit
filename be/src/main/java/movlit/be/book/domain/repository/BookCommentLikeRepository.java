@@ -1,7 +1,7 @@
 package movlit.be.book.domain.repository;
 
-import movlit.be.book.domain.BookCommentVo;
 import movlit.be.book.domain.BookCommentLikeVo;
+import movlit.be.book.domain.BookCommentVo;
 import movlit.be.common.util.ids.BookCommentId;
 import movlit.be.member.domain.Member;
 
@@ -15,8 +15,6 @@ public interface BookCommentLikeRepository {
     void delete(BookCommentLikeVo bookCommentLikeVo);
 
     void deleteAllByCommentId(BookCommentId bookCommentId);
-
-
 
 
 }

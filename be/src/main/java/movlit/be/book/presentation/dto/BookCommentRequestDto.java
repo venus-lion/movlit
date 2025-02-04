@@ -25,7 +25,4 @@ public class BookCommentRequestDto {
     private BigDecimal score; // 리뷰 - 별점 (not null)
 
 
-
-
-
 }

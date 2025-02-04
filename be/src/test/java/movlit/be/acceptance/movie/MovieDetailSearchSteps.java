@@ -17,7 +17,8 @@ import org.springframework.http.MediaType;
 
 public class MovieDetailSearchSteps {
 
-    public static ExtractableResponse<Response> 영화_페이지의_장르와_연관된_영화_리스트를_조회한다(String movieId, RequestSpecification spec){
+    public static ExtractableResponse<Response> 영화_페이지의_장르와_연관된_영화_리스트를_조회한다(String movieId,
+                                                                             RequestSpecification spec) {
         return RestAssured
                 .given()
                 .param("page", 1)
@@ -32,7 +33,6 @@ public class MovieDetailSearchSteps {
                 .extract();
     }
 
-
     public static void 상태코드가_200이고_응답_데이터가_존재한다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK),
@@ -40,7 +40,8 @@ public class MovieDetailSearchSteps {
         );
     }
 
-    public static void 선호장르_하나이상_맞는_응답_데이터가_존재한다(ExtractableResponse<Response> response, List<Long> userInterestGenreIds) {
+    public static void 선호장르_하나이상_맞는_응답_데이터가_존재한다(ExtractableResponse<Response> response,
+                                                 List<Long> userInterestGenreIds) {
         Assertions.assertAll(
                 () -> {
                     List<Movie> movieList = response.jsonPath().getList("movieList", Movie.class);
@@ -56,12 +57,13 @@ public class MovieDetailSearchSteps {
     }
 
     public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,
-                                                   HttpStatus expectedHttpStatus) {
+                                                      HttpStatus expectedHttpStatus) {
         return assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());
     }
 
     public static AbstractStringAssert<?> 오류코드를_검증한다(ExtractableResponse<Response> response,
-                                                  String code) {
+                                                     String code) {
         return assertThat(response.jsonPath().getString("code")).isEqualTo(code);
     }
+
 }

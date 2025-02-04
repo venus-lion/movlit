@@ -1,8 +1,6 @@
 package movlit.be.movie.infra.persistence;
 
 import java.util.List;
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.MovieNotFoundException;
@@ -11,11 +9,9 @@ import movlit.be.movie.application.converter.main.MovieConverter;
 import movlit.be.movie.domain.Movie;
 import movlit.be.movie.domain.entity.MovieEntity;
 import movlit.be.movie.domain.repository.MovieRepository;
-import movlit.be.movie.infra.persistence.jpa.MovieGenreJpaRepository;
 import movlit.be.movie.infra.persistence.jpa.MovieJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -50,20 +46,23 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<Movie> findByVoteCountGreaterThan500OrderByPopularityDesc(Long minVoteCount, Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByVoteCountGreaterThanEqualOrderByPopularityDesc(minVoteCount, pageable);
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByVoteCountGreaterThanEqualOrderByPopularityDesc(
+                minVoteCount, pageable);
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
     @Override
     public List<Movie> findByMovieGenreIdForEntity_GenreId(Long genreId, Pageable pageable) {
-        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(genreId, pageable);
+        Page<MovieEntity> movieEntityPage = movieJpaRepository.findByMovieGenreEntityList_MovieGenreIdForEntity_GenreIdOrderByReleaseDateDescPopularityDescVoteCountDesc(
+                genreId, pageable);
 
         return movieEntityPage.getContent().stream().map(MovieConverter::toDomain).toList();
     }
 
     @Override
     public Movie findMostRecentMovieHeart(MemberId memberId) {
-            return null;
+        return null;
 
     }
+
 }

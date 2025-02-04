@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Modal from "react-modal";
-import {FaStar, FaRegStar, FaStarHalfAlt} from 'react-icons/fa';
+import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js"; // axios 임포트
 
@@ -23,7 +23,15 @@ const renderStars = (rating) => {
     );
 };
 
-const GetGroupChatInfoModal = ({isOpen, onClose, onConfirm, onJoin, selectedCard, selectedCategory, onUpdateChatList }) => {
+const GetGroupChatInfoModal = ({
+                                   isOpen,
+                                   onClose,
+                                   onConfirm,
+                                   onJoin,
+                                   selectedCard,
+                                   selectedCategory,
+                                   onUpdateChatList
+                               }) => {
 
     if (!selectedCard) return null;
 

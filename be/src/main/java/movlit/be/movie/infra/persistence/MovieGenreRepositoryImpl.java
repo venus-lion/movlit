@@ -1,8 +1,6 @@
 package movlit.be.movie.infra.persistence;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.util.Genre;
 import movlit.be.movie.domain.repository.MovieGenreRepository;

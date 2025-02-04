@@ -7,6 +7,8 @@ import movlit.be.common.util.ids.BookNewSpecialId;
 @Getter
 @Builder
 public class BookNewSpecialVo {
+
     private BookNewSpecialId bookNewSpecialId;
     private BookVo bookVo;
+
 }

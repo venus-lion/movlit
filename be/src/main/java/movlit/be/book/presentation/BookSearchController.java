@@ -7,7 +7,6 @@ import movlit.be.book.application.service.BookSearchService;
 import movlit.be.book.application.service.BooksRecommendationService;
 import movlit.be.book.presentation.dto.BookRecommendDto;
 import movlit.be.book.presentation.dto.BooksSearchResponseDto;
-import movlit.be.bookES.BookESVo;
 import movlit.be.common.util.ids.MemberId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 @RequestMapping("/api/books/search")
 public class BookSearchController {
+
     private final BookSearchService bookSearchService;
     private final BooksRecommendationService booksRecommendationService;
 
@@ -28,7 +28,7 @@ public class BookSearchController {
      * */
     @GetMapping("/interestGenre")
     public ResponseEntity<List<BookRecommendDto>> fetchBookUserInterestByGenre(@AuthenticationPrincipal
-                                                                         MyMemberDetails details) {
+                                                                               MyMemberDetails details) {
         MemberId memberId = details.getMemberId();
         List<BookRecommendDto> bookRecommendDtos = booksRecommendationService.fetchBookUserInterestByGenre(memberId);
 
@@ -40,12 +40,12 @@ public class BookSearchController {
      * */
 
     @GetMapping("/recommendations")
-    public ResponseEntity<List<BookRecommendDto>> fetchRecommendedBooksByUserRecentHeart(@AuthenticationPrincipal MyMemberDetails details) {
+    public ResponseEntity<List<BookRecommendDto>> fetchRecommendedBooksByUserRecentHeart(
+            @AuthenticationPrincipal MyMemberDetails details) {
         List<BookRecommendDto> bookRecommendDtos = booksRecommendationService.fetchRecommendedBooksByUserRecentHeart(
                 details.getMemberId());
         return ResponseEntity.ok(bookRecommendDtos);
     }
-
 
     /**
      * 도서 검색 결과 - elasticsearch 기반
@@ -54,7 +54,7 @@ public class BookSearchController {
     public ResponseEntity<BooksSearchResponseDto> fetchSearchBook(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int pageSize,
-            @RequestParam String inputStr){
+            @RequestParam String inputStr) {
         BooksSearchResponseDto searchBook = bookSearchService.fetchSearchBook(inputStr, page, pageSize);
 
         return ResponseEntity.ok(searchBook);

@@ -1,12 +1,7 @@
 package movlit.be.acceptance.image;
 
-import static movlit.be.acceptance.image.ImageSteps.*;
-import static movlit.be.acceptance.image.ImageSteps.상태코드가_200이고_응답에_id와_url이_존재함을_검증한다;
-
 import movlit.be.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 
 @DisplayName("이미지 관련 기능 인수테스트")
 class ImageAcceptanceTest extends AcceptanceTest {

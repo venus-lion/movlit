@@ -4,11 +4,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import movlit.be.common.exception.ContentTypeNotExistException;
 import movlit.be.common.util.IdFactory;
-import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
-import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
 
 public class ChatroomConvertor {
 

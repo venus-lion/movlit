@@ -32,10 +32,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BookSearchService {
+
     private final ElasticsearchOperations elasticsearchOperations;
 
     // 유저 취향 장르 기반, 추천 검색
-    public List<BookRecommendDto> searchBooksByGenres(List<Genre> genres){
+    public List<BookRecommendDto> searchBooksByGenres(List<Genre> genres) {
         // 1. 장르 이름 추출
         List<String> genreNames = genres.stream()
                 .map(Genre::getName)
@@ -46,7 +47,7 @@ public class BookSearchService {
         // FunctionScoreQuery - 각 장르에 대한 가중치 설정
         List<FunctionScore> functions = new ArrayList<>();
 
-        for (String genreName : genreNames){
+        for (String genreName : genreNames) {
             functions.add(FunctionScore.of(f -> f
                     .filter(Query.of(q -> q
                             .match(m -> m.field("categoryName").query(genreName))))
@@ -85,7 +86,7 @@ public class BookSearchService {
         SearchHits<BookES> searchHits = elasticsearchOperations.search(nativeQuery, BookES.class);
 
         // 값이 없다면..
-        if (!searchHits.hasSearchHits()){
+        if (!searchHits.hasSearchHits()) {
             System.out.println("사용자 취향에 맞는 도서가 없습니다. -- /interestGenre");
             return null;
         }
@@ -102,7 +103,8 @@ public class BookSearchService {
     }
 
     // 사용자 최근 찜한 도서 추천
-    public List<BookRecommendDto> fetchRecommendedBooksByUserRecentHeart(List<String> bookIds, List<BookES> bookESList, Pageable pageable){
+    public List<BookRecommendDto> fetchRecommendedBooksByUserRecentHeart(List<String> bookIds, List<BookES> bookESList,
+                                                                         Pageable pageable) {
         /*
             사용자가 찜한 도서 '4'개 가져오기
             - description -> titleKeyword의 유사도(fuzziness)
@@ -117,12 +119,12 @@ public class BookSearchService {
         List<String> titleKeywordList = extractTitleKeywordList(bookESList);
 
         // 2. categoryName 필터링 -- 국내도서>소설/시/희곡>판타지/환상문학>한국판타지/환상소설 -> 가장 마지막 ">" 이후 부분을 추출하고 + '>'가 2개 이상 포함된 경우에만 필터링하기
-            //  List<String> testCategory = new ArrayList<>();
-            //  testCategory.add("국내도서>소설/시/희곡>판타지/환상문학>한국판타지/환상소설");
-            //  testCategory.add("국내도서>만화>본격장르만화>판타지>드라마틱 판타지");
-            //  testCategory.add("국내도서>소설/시/희곡>로맨스소설>한국 로맨스소설");
-            //  testCategory.add("국내도서>소설/시/희곡>로맨스소설"); // 일부로 한 depths 뺀 예시 -- 최소한 depths가 '>'로 2개는 있고, 그때의 가장 마지막 '>' 다음  categoryName을 필터링할 것
-            //  testCategory.add("국내도서>소설/시/희곡"); // 이때의 categoryName은 depth가 2라서 제외하고 싶음
+        //  List<String> testCategory = new ArrayList<>();
+        //  testCategory.add("국내도서>소설/시/희곡>판타지/환상문학>한국판타지/환상소설");
+        //  testCategory.add("국내도서>만화>본격장르만화>판타지>드라마틱 판타지");
+        //  testCategory.add("국내도서>소설/시/희곡>로맨스소설>한국 로맨스소설");
+        //  testCategory.add("국내도서>소설/시/희곡>로맨스소설"); // 일부로 한 depths 뺀 예시 -- 최소한 depths가 '>'로 2개는 있고, 그때의 가장 마지막 '>' 다음  categoryName을 필터링할 것
+        //  testCategory.add("국내도서>소설/시/희곡"); // 이때의 categoryName은 depth가 2라서 제외하고 싶음
 
         List<String> filteredCatgoryList = categoryList.stream()
                 .filter(categoryName -> categoryName.split(">").length > 2) // ">"가 2개 이상인 경우만 필터링
@@ -219,25 +221,26 @@ public class BookSearchService {
         return bookRecommendDtos;
     }
 
-    private List<String> extractCrewList(List<BookES> bookESList){
+    private List<String> extractCrewList(List<BookES> bookESList) {
         return bookESList.stream()
                 .map(BookES::getCrew)
                 .flatMap(List::stream)
                 .toList();
     }
 
-    private List<String> extractCategoryList(List<BookES> bookESList){
+    private List<String> extractCategoryList(List<BookES> bookESList) {
         return bookESList.stream()
                 .map(BookES::getCategoryName)
                 .toList();
     }
 
-    private List<String> extractTitleKeywordList(List<BookES> bookESList){
+    private List<String> extractTitleKeywordList(List<BookES> bookESList) {
         return bookESList.stream()
                 .map(BookES::getTitleKeyword)
                 .toList();
     }
-    public BooksSearchResponseDto fetchSearchBook(String inputStr, int page, int pageSize){
+
+    public BooksSearchResponseDto fetchSearchBook(String inputStr, int page, int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
 
         System.out.println("검색 시작 :::: " + inputStr);
@@ -245,18 +248,18 @@ public class BookSearchService {
         Query boolQuery = Query.of(q -> q
                 .bool(bq -> bq.
                         should(
-                            // 1. title
-                            Query.of(q1 -> q1.match(m -> m.field("title").query(inputStr).boost(1.8F))),
-                            Query.of(q1 -> q1.match(m -> m.field("title.ngram").query(inputStr).boost(1.8F))),
-                            Query.of(fq -> fq.fuzzy(q1 -> q1.field("title.standard").value(inputStr)
-                                    .fuzziness("AUTO").boost(1.4F))),
-                            // 2. categoryName
-                            Query.of(tq -> tq.term(q2 -> q2.field("categoryName").value(inputStr).boost(2.0F))),
-                            Query.of(fq2 -> fq2.fuzzy(q3 -> q3.field("categoryName").value(inputStr)
-                                    .fuzziness("AUTO").boost(2.0F))),
-                            // 3. crew
-                            Query.of(mq -> mq.match(q4 -> q4.field("crew").query(inputStr).boost(1.8F))),
-                            Query.of(mq -> mq.match(q5 -> q5.field("crew.ngram").query(inputStr).boost(1.8F)))
+                                // 1. title
+                                Query.of(q1 -> q1.match(m -> m.field("title").query(inputStr).boost(1.8F))),
+                                Query.of(q1 -> q1.match(m -> m.field("title.ngram").query(inputStr).boost(1.8F))),
+                                Query.of(fq -> fq.fuzzy(q1 -> q1.field("title.standard").value(inputStr)
+                                        .fuzziness("AUTO").boost(1.4F))),
+                                // 2. categoryName
+                                Query.of(tq -> tq.term(q2 -> q2.field("categoryName").value(inputStr).boost(2.0F))),
+                                Query.of(fq2 -> fq2.fuzzy(q3 -> q3.field("categoryName").value(inputStr)
+                                        .fuzziness("AUTO").boost(2.0F))),
+                                // 3. crew
+                                Query.of(mq -> mq.match(q4 -> q4.field("crew").query(inputStr).boost(1.8F))),
+                                Query.of(mq -> mq.match(q5 -> q5.field("crew.ngram").query(inputStr).boost(1.8F)))
                         )));
 
         NativeQuery nativeQuery = new NativeQueryBuilder()
@@ -273,7 +276,7 @@ public class BookSearchService {
                 .map(SearchHit::getContent)
                 .toList();
 
-        for (BookES bookES : bookESList){
+        for (BookES bookES : bookESList) {
             System.out.println("그때마다의 bookES의 categoryName :: " + bookES.getCategoryName());
         }
 
@@ -282,7 +285,7 @@ public class BookSearchService {
         long totalHits = searchHits.getTotalHits();
         long totalPages = totalHits / pageSize2;
 
-        if (totalHits % pageSize2 != 0){ // 데이터가 완전히 나눠지지 않아, 한 페이지 추가
+        if (totalHits % pageSize2 != 0) { // 데이터가 완전히 나눠지지 않아, 한 페이지 추가
             totalPages++;
         }
 
@@ -295,4 +298,5 @@ public class BookSearchService {
                 .totalPages(totalPages)
                 .build();
     }
+
 }

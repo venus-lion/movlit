@@ -2,7 +2,6 @@ package movlit.be.common.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
 import movlit.be.common.util.ids.BaseId;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.FollowId;

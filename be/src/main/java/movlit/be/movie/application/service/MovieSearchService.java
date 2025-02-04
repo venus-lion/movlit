@@ -3,7 +3,6 @@ package movlit.be.movie.application.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.NotExistMovieHeartByMember;
@@ -71,4 +70,5 @@ public class MovieSearchService {
 
         return movieSearchRepository.searchMovieList(inputStr, pageable);
     }
+
 }

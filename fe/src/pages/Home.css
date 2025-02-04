@@ -1,4 +1,4 @@
-.book-home, .movie-home{
+.book-home, .movie-home {
     padding: 20px;
 
 }
@@ -12,33 +12,34 @@
 /*    margin: 0 auto; !* 여백 자동 설정 *!*/
 /*}*/
 
-.book-carousel-section, .movie-carousel-section{
+.book-carousel-section, .movie-carousel-section {
     margin: 20px 0;
 
 }
 
-.book-carousel, .movie-carousel{
+.book-carousel, .movie-carousel {
     display: flex;
     align-items: center;
     position: relative;
     /*margin-bottom: 20px;*/
 }
 
-.book-list, .movie-list{
+.book-list, .movie-list {
     display: flex;
     /*width: 100%;*/
     overflow: hidden;
     width: 100%;
     justify-content: flex-start;
 
-    align-items: flex-start;     /* 카드들이 위아래로도 상단 정렬되도록(선택 사항) */
+    align-items: flex-start; /* 카드들이 위아래로도 상단 정렬되도록(선택 사항) */
     /*margin: 0 auto;        !* 필요한 경우 수평 중앙에 배치 *!*/
 }
-.movie-card img{
+
+.movie-card img {
     margin: 0px;
 }
 
-.book-card, .movie-card{
+.book-card, .movie-card {
     /*width: 20%;*/
     /*margin-right: 20px;*/
     position: relative; /* 순위 표시를 위해 relative 설정 */
@@ -49,7 +50,7 @@
     color: inherit;
 }
 
-.book-rank, .movie-rank{
+.book-rank, .movie-rank {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -60,14 +61,14 @@
     font-weight: bold;
 }
 
-.book-image, .movie-image{
+.book-image, .movie-image {
     width: 100%;
     /*padding-top: 56.25%; !* 16:9 비율 유지 (높이는 비율로 계산) *!*/
     /*position: relative;*/
     border-radius: 8px;
 }
 
-.book-image img{
+.book-image img {
     position: absolute;
     top: 0;
     left: 0;
@@ -76,23 +77,23 @@
     object-fit: cover; /* 비율 유지하면서 div를 채우도록 설정 */
 }
 
-.book-info, .movie-info{
+.book-info, .movie-info {
     margin-top: 10px;
     text-align: center;
 }
 
-.book-title, .movie-title{
+.book-title, .movie-title {
     font-size: 16px;
     /*margin-bottom: 5px;*/
     margin: 5px 0;
 }
 
-.book-writer, .movie-writer{
+.book-writer, .movie-writer {
     font-size: 14px;
     color: #666;
 }
 
-.book-genres, .movie-genres{
+.book-genres, .movie-genres {
     font-size: 0.9rem;
     color: #555;
 }
@@ -106,6 +107,7 @@
     cursor: pointer;
     margin: 0 10px;
 }
+
 .prev-button:disabled,
 .next-button:disabled {
     cursor: not-allowed;
@@ -119,13 +121,13 @@
 }
 
 @media (max-width: 480px) {
-    .movie-card, .book-card{
+    .movie-card, .book-card {
         flex: 0 0 45%;
     }
 }
 
 .star-icon {
-    color: gold;  /* 별 색상 */
-    font-size: 16px;  /* 별 크기 */
-    margin-right: 2px;  /* 별 간 간격 */
+    color: gold; /* 별 색상 */
+    font-size: 16px; /* 별 크기 */
+    margin-right: 2px; /* 별 간 간격 */
 }

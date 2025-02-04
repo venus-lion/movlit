@@ -29,6 +29,6 @@ public interface BookCommentLikeCountJpaRepository extends JpaRepository<BookCom
 
     @Modifying
     @Query("DELETE FROM BookCommentLikeCountEntity clc WHERE clc.bookCommentEntity.bookCommentId = :bookCommentId")
-    void deleteAllByCommentId(@Param("bookCommentId")BookCommentId bookCommentId);
+    void deleteAllByCommentId(@Param("bookCommentId") BookCommentId bookCommentId);
 
 }

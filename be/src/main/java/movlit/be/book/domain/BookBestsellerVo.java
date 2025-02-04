@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import movlit.be.common.util.ids.BookBestsellerId;
 
@@ -22,4 +21,5 @@ public class BookBestsellerVo {
     private Integer bestRank;
 
     private String bestDuration;
+
 }

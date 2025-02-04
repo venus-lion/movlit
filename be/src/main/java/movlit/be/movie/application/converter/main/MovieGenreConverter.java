@@ -7,11 +7,12 @@ import movlit.be.movie.domain.entity.MovieGenreEntity;
 public class MovieGenreConverter {
 
     // Entity -> Domain
-    public static MovieGenre toDomain(MovieGenreEntity movieGenreEntity){
-        Long genreId =  movieGenreEntity.getMovieGenreIdForEntity().getGenreId();
+    public static MovieGenre toDomain(MovieGenreEntity movieGenreEntity) {
+        Long genreId = movieGenreEntity.getMovieGenreIdForEntity().getGenreId();
         return MovieGenre.builder()
                 .genreId(genreId)
                 .genreName(Genre.of(genreId).getName())
                 .build();
     }
+
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatMessageConsumer {
+
     private final RedisTemplate<String, Object> redisTemplate;
     private final StreamMessageListenerContainer<String, MapRecord<String, String, String>> streamMessageListenerContainer;
     private final ChatMessageStreamListener chatMessageStreamListener;

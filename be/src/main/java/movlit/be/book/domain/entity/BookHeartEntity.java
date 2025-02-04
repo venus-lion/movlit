@@ -34,7 +34,6 @@ public class BookHeartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookHeartId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
     private BookEntity bookEntity;
@@ -43,14 +42,12 @@ public class BookHeartEntity {
     @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
     private MemberEntity memberEntity;
 
-
     @Column(name = "is_hearted")
     Boolean isHearted;
 
     @CreatedDate
 //    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt; // 찜한 시간,날짜 추가
-
 
 
 }

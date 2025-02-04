@@ -4,7 +4,7 @@ import java.nio.file.AccessDeniedException;
 
 public class BookCommentAccessDenied extends AccessDeniedException {
 
-    public BookCommentAccessDenied(){
+    public BookCommentAccessDenied() {
         super(String.valueOf(ErrorMessage.BOOK_COMMENT_AccessDenied));
     }
 

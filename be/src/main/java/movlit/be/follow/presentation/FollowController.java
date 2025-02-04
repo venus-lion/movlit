@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class FollowController {
+
     private final FollowWriteService followWriteService;
     private final FollowReadService followReadService;
 
@@ -35,9 +36,9 @@ public class FollowController {
             @AuthenticationPrincipal MyMemberDetails details, // 현재 로그인한 사용자 정보
             @PathVariable MemberId followeeId // 팔로우할 대상 사용자 ID
 
-    ){
+    ) {
         MemberId followerId = null;
-        if(details != null) {
+        if (details != null) {
             followerId = details.getMemberId();
         }
         followWriteService.memberFollow(followerId, followeeId);
@@ -50,9 +51,9 @@ public class FollowController {
     public ResponseEntity<String> memberUnFollow(
             @AuthenticationPrincipal MyMemberDetails details, // 현재 로그인한 사용자 정보
             @PathVariable MemberId followeeId // 언팔로우 대상 사용자 ID
-    ){
+    ) {
         MemberId followerId = null;
-        if (details != null){
+        if (details != null) {
             followerId = details.getMemberId();
         }
         followWriteService.memberUnFollow(followerId, followeeId);
@@ -64,9 +65,9 @@ public class FollowController {
     @GetMapping("/my/follow/details")
     public ResponseEntity<List<FollowResponse>> getMyFollowerDetail(
             @AuthenticationPrincipal MyMemberDetails details // 현재 로그인한 사용자 정보
-    ){
+    ) {
         MemberId loginId = null;
-        if (details != null){
+        if (details != null) {
             loginId = details.getMemberId();
         }
         List<FollowResponse> followResponseList = followReadService.getMyFollowersDetails(loginId);
@@ -78,31 +79,31 @@ public class FollowController {
     @GetMapping("/my/following/details")
     public ResponseEntity<List<FollowResponse>> getMyFollowingDetail(
             @AuthenticationPrincipal MyMemberDetails details // 현재 로그인한 사용자 정보
-    ){
+    ) {
         MemberId loginId = null;
-        if (details != null){
+        if (details != null) {
             loginId = details.getMemberId();
         }
         List<FollowResponse> followResponseList = followReadService.getMyFollowingDetail(loginId);
 
         return ResponseEntity.status(HttpStatus.OK).body(followResponseList);
     }
-    
+
     // 나를 팔로우하는 사람들(팔로워) 개수 조회 - 내 팔로워 개수
     @GetMapping("/{memberId}/followers/count")
     public ResponseEntity<Integer> getMyFollowerCount(
-           @PathVariable MemberId memberId
-    ){
+            @PathVariable MemberId memberId
+    ) {
         Integer followerCount = followReadService.getFollowerCount(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(followerCount);
     }
-    
+
     // 내가 팔로우하는 사람들(팔로우) 개수 조회 - 내 팔로우 개수
     @GetMapping("/{memberId}/follows/count")
     public ResponseEntity<Integer> getMyFollowCount(
             @PathVariable MemberId memberId
-    ){
+    ) {
         int followCount = followReadService.getFollowCount(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(followCount);
@@ -114,9 +115,9 @@ public class FollowController {
     public ResponseEntity<Map<String, Boolean>> checkFollowing(
             @AuthenticationPrincipal MyMemberDetails details,
             @PathVariable MemberId otherMemberId
-    ){
+    ) {
         MemberId loginId = null;
-        if (details != null){
+        if (details != null) {
             loginId = details.getMemberId();
         }
         boolean isFollowing = followReadService.isFollowing(loginId, otherMemberId);
@@ -126,4 +127,5 @@ public class FollowController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 }

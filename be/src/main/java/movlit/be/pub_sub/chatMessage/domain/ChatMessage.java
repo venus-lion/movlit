@@ -3,8 +3,10 @@ package movlit.be.pub_sub.chatMessage.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import org.bson.types.ObjectId;

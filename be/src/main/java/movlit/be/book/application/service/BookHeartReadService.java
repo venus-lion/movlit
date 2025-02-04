@@ -7,21 +7,20 @@ import movlit.be.book.infra.persistence.recommend_jpa.BookHeartRecommendReposito
 import movlit.be.common.exception.BookHeartNotFoundException;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.Member;
-import movlit.be.member.domain.entity.MemberEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class BookHeartReadService {
+
     private final BookHeartRecommendRepository bookHeartRecommendRepository;
     private final BookHeartRepository bookHeartRepository;
 
-    public List<String> fetchRecentLikedBookIdsByMemberId(MemberId memberId, int count){
+    public List<String> fetchRecentLikedBookIdsByMemberId(MemberId memberId, int count) {
         List<String> bookIds = bookHeartRecommendRepository.findRecentLikedBookIdsByMemberId(
                 memberId, count);
 
-        if (bookIds.isEmpty()){
+        if (bookIds.isEmpty()) {
             // 해당 유저가 찜한 도서가 존재하지 않는다.
             throw new BookHeartNotFoundException();
         }
@@ -29,9 +28,10 @@ public class BookHeartReadService {
     }
 
     // 해당 책을 찜한 멤버 리스트 가져오기
-    public List<MemberId> fetchHeartingMemberIdsByBookId(BookId bookId){
+    public List<MemberId> fetchHeartingMemberIdsByBookId(BookId bookId) {
         List<MemberId> heartingMemberIds = bookHeartRepository.fetchHeartingMembersByBookId(bookId);
 
         return heartingMemberIds;
     }
+
 }

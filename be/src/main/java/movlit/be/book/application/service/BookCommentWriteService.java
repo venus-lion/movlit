@@ -1,13 +1,12 @@
 package movlit.be.book.application.service;
 
-import java.awt.print.Book;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.book.domain.BookCommentVo;
 import movlit.be.book.domain.BookVo;
-import movlit.be.book.presentation.dto.BookCommentRequestDto;
 import movlit.be.book.domain.entity.GenerateUUID;
 import movlit.be.book.domain.repository.BookCommentRepository;
+import movlit.be.book.presentation.dto.BookCommentRequestDto;
 import movlit.be.book.presentation.dto.BookCommentResponseDto;
 import movlit.be.common.exception.BookCommentAccessDenied;
 import movlit.be.common.util.ids.BookCommentId;
@@ -66,11 +65,11 @@ public class BookCommentWriteService {
         if (bookCommentVo != null) {
             if (bookCommentVo.getMember().getMemberId().equals(memberId)
                     && bookCommentVo.getBookVo().getBookId().equals(bookId)) {
-                    // 기존 리뷰에서 코멘트 및 평점 update
-                    bookCommentVo.setComment(commentDto.getComment());
-                    if (commentDto.getScore() != null) {
-                        bookCommentVo.setScore(commentDto.getScore());
-                    }
+                // 기존 리뷰에서 코멘트 및 평점 update
+                bookCommentVo.setComment(commentDto.getComment());
+                if (commentDto.getScore() != null) {
+                    bookCommentVo.setScore(commentDto.getScore());
+                }
 
 
             } else {
@@ -96,7 +95,8 @@ public class BookCommentWriteService {
                 try {
                     // 하드 삭제
                     log.info("::BookCommentWriteService_deleteBookComment::");
-                    log.info(">> deleteBookComment : \nmember : " + member.toString() + "\nbook : " + bookVo.toString());
+                    log.info(
+                            ">> deleteBookComment : \nmember : " + member.toString() + "\nbook : " + bookVo.toString());
                     // 해당 리뷰의 좋아요 및 좋아요 카운트 선 리셋(삭제)
                     bookCommentLikeWriteService.removeLikeandCount(bookCommentId);
                     // 이후 리뷰 삭제
@@ -109,7 +109,7 @@ public class BookCommentWriteService {
                     log.error("Error during deletion: ", e);
                     throw new RuntimeException("Failed to delete comment or likes");
                 }
-            }else {
+            } else {
                 throw new BookCommentAccessDenied();
             }
         } else {
@@ -117,11 +117,6 @@ public class BookCommentWriteService {
         }
 
     }
-
-
-
-
-
 
 
 }

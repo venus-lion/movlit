@@ -1,17 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import axiosInstance from '../../axiosInstance.js';
-import { Client } from '@stomp/stompjs';
+import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { EventSourcePolyfill } from 'event-source-polyfill';
 
-const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
+const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
     const [groupChats, setGroupChats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [personalChats, setPersonalChats] = useState([]);
     const [stompClient, setStompClient] = useState(null);
-
-
 
 
     // 그룹 채팅방 목록 가져오기 함수 (분리됨)
@@ -77,7 +74,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                                 setGroupChats((prevChats) => {
                                     return prevChats.map((c) =>
                                         c.groupChatroomId === receivedMessage.roomId
-                                            ? { ...c, recentMessage: receivedMessage }
+                                            ? {...c, recentMessage: receivedMessage}
                                             : c
                                     );
                                 });
@@ -167,7 +164,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                             }}
                             onClick={() => onSelectChat(chat)}
                         >
-                            <div style={{ fontWeight: 'bold', color: 'black' }}>
+                            <div style={{fontWeight: 'bold', color: 'black'}}>
                                 {chat.roomName}
                             </div>
                             <div style={style.conTitle}>
@@ -179,7 +176,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                                         <div style={style.recentMsg}>
                                             <strong>[New] </strong>
                                             {chat.recentMessage.message}
-                                            <br />
+                                            <br/>
                                             {chat.recentMessage.regDt}
                                         </div>
                                     </div>
@@ -188,7 +185,7 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                                         <div style={style.recentMsg}>메시지 없음</div>
                                     </div>
                                 )}
-                                <div style={{ fontSize: '0.6em', color: '#aaa' }}>
+                                <div style={{fontSize: '0.6em', color: '#aaa'}}>
                                     {chat.regDt}
                                 </div>
                             </div>
@@ -213,13 +210,13 @@ const ChatList = ({ activeTab, searchTerm, onSelectChat }) => {
                             }}
                             onClick={() => onSelectChat(chat)}
                         >
-                            <div style={{ fontWeight: 'bold', fontSize: '1.2em' }}>
+                            <div style={{fontWeight: 'bold', fontSize: '1.2em'}}>
                                 {chat.receiverNickname}
                             </div>
-                            <div style={{ fontSize: '0.8em', color: '#666' }}>
+                            <div style={{fontSize: '0.8em', color: '#666'}}>
                                 메시지: {chat.latestMessage}
                             </div>
-                            <div style={{ fontSize: '0.6em', color: '#aaa' }}>
+                            <div style={{fontSize: '0.6em', color: '#aaa'}}>
                                 {chat.regDt}
                             </div>
                         </div>

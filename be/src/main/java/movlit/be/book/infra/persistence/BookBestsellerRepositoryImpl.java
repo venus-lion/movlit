@@ -15,13 +15,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookBestsellerRepositoryImpl implements BookBestsellerRepository {
+
     private final BookBestsellerJpaRepository bookBestsellerJpaRepository;
 
     @Override
     public List<BookBestsellerVo> findAllBestsellers(Pageable pageable) {
         List<BookBestsellerEntity> bestsellerEntities = bookBestsellerJpaRepository.findBestsellersByPaging(pageable);
 
-        if (bestsellerEntities.isEmpty()){
+        if (bestsellerEntities.isEmpty()) {
             throw new BookBestsellerNotFoundException();
         }
 

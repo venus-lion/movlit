@@ -27,15 +27,17 @@ public class UpdateRoomDto {
         MEMBER_JOIN // 새로운 멤버 가입 이벤트
     }
 
-    public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType, MemberId memberId) {
+    public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType,
+                         MemberId memberId) {
         this.groupChatroomId = groupChatroomId;
         this.messageType = messageType;
         this.eventType = eventType;
         this.memberId = memberId;
     }
 
-    public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType, MemberId memberId
-    ,String joinMessage) {
+    public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType,
+                         MemberId memberId
+            , String joinMessage) {
         this.groupChatroomId = groupChatroomId;
         this.messageType = messageType;
         this.eventType = eventType;

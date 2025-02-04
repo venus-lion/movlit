@@ -1,4 +1,3 @@
-
 package movlit.be.auth.application.service;// OAuth2AuthenticationSuccessHandler.java
 
 import jakarta.servlet.ServletException;

@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Client } from '@stomp/stompjs';
+import React, {useEffect, useRef, useState} from 'react';
+import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance';
 import './ChatPageGroup.css';
-import { FaUserCircle } from 'react-icons/fa'; // react-icons에서 기본 프로필 이미지 아이콘을 가져옵니다.
+import {FaUserCircle} from 'react-icons/fa'; // react-icons에서 기본 프로필 이미지 아이콘을 가져옵니다.
 
-function ChatPageGroup({ roomId, roomInfo }) {
+function ChatPageGroup({roomId, roomInfo}) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [stompClient, setStompClient] = useState(null);
@@ -71,12 +71,11 @@ function ChatPageGroup({ roomId, roomInfo }) {
                 const receivedData = JSON.parse(message.body);
 
                 // 1. receivedData가 배열(멤버 목록)인지, 객체(UpdateRoomDto)인지 체크
-                if (Array.isArray(receivedData)){
+                if (Array.isArray(receivedData)) {
                     // 1-1. 멤버 프로필 업데이트 이벤트
                     console.log('멤버 프로필 업데이트 이벤트 발행 후, 프론트 적용 !!');
                     setMembers(receivedData);
-                }
-                else if (receivedData.hasOwnProperty('updateRoomDto')){
+                } else if (receivedData.hasOwnProperty('updateRoomDto')) {
                     // 1-2. receivedData에 updateRoomDto 속성이 있으면, MEMBER_JOIN 이벤트로 간주
                     const updateRoomDto = receivedData.updateRoomDto;
                     const cachedMembers = receivedData.cachedMembers;
@@ -147,11 +146,11 @@ function ChatPageGroup({ roomId, roomInfo }) {
     };
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
     }, [messages]);
 
     return (
-        <div className="chat-container-group" style={{ display: 'flex', flexDirection: 'column', height: '90%' }}>
+        <div className="chat-container-group" style={{display: 'flex', flexDirection: 'column', height: '90%'}}>
             <div className="chat-header-group">
                 <h2>채팅방: {roomInfo.roomName}</h2>
             </div>

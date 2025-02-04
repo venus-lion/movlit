@@ -15,7 +15,6 @@ public interface BookHeartRepository {
     // 도서 찜한 멤버 리스트
     List<MemberId> fetchHeartingMembersByBookId(BookId bookId);
 
-
     BookHeartVo save(BookHeartVo bookHeartVo);
 
     void delete(BookHeartVo bookHeartVo);

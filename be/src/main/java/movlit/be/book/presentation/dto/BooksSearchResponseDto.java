@@ -8,6 +8,8 @@ import movlit.be.bookES.BookESVo;
 @Data
 @Builder
 public class BooksSearchResponseDto {
+
     private List<BookESVo> bookESVoList;
     private long totalPages;
+
 }

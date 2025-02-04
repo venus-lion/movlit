@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import movlit.be.common.util.ids.BookId;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

@@ -17,8 +17,9 @@ public class MemberGenres {
     private List<MemberGenreEntity> memberGenreEntityList = new ArrayList<>();
 
     public MemberGenres(List<MemberGenreEntity> newMemberGenreEntityList) {
-        if(newMemberGenreEntityList != null)
+        if (newMemberGenreEntityList != null) {
             this.memberGenreEntityList.addAll(newMemberGenreEntityList);
+        }
 
     }
 

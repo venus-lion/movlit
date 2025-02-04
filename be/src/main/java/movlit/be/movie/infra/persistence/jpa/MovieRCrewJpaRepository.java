@@ -16,11 +16,11 @@ public interface MovieRCrewJpaRepository extends JpaRepository<MovieRCrewEntity,
             + "WHERE mc.movieRCrewIdForEntity.movieId = :movieId")
     List<MovieDetailCrewResponse> findMovieCrewsByMovieId(@Param("movieId") Long movieId);
 
-
     @Query("SELECT new movlit.be.movie.presentation.dto.response.MovieCrewResponseDto( " +
             "mrc.movieRCrewIdForEntity.movieId, mrc.movieCrewEntity.movieCrewId, " +
             "mrc.movieCrewEntity.name, mrc.movieCrewEntity.role, mrc.movieCrewEntity.orderNo) " +
             "FROM MovieRCrewEntity mrc " +
             "WHERE mrc.movieRCrewIdForEntity.movieId IN :movieIds")
     List<MovieCrewResponseDto> findMovieCrewByMovieIds(@Param("movieIds") List<Long> movieIds);
+
 }

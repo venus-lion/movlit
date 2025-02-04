@@ -1,6 +1,7 @@
 package movlit.be.book.getBookApi.dto;
 
 // 신간, 주목할만한 신간 도서 Dto
+
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +43,6 @@ public class BookResponseDto {
         private boolean adult;
 
     }
-
 
     @Override
     public String toString() {

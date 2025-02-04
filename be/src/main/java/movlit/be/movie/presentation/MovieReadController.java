@@ -61,4 +61,5 @@ public class MovieReadController {
         MovieListByGenreResponseDto reponseDto = movieReadService.getMovieGroupbyGenre(genreId, page, pageSize);
         return ResponseEntity.ok().body(reponseDto);
     }
+
 }

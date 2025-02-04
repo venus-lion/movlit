@@ -1,9 +1,5 @@
 package movlit.be.book.getBookApi;
 
-import static movlit.be.book.getBookApi.GetBookBestService.*;
-
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.Genre;
 import movlit.be.book.domain.entity.BookEntity;
@@ -19,6 +15,7 @@ public class BookCategory {
     // private final Object serviceObject;
 
     private final BookGenreJpaRepository bookGenreJpaRepository;
+
     public void classifyAndSaveBooks(String bookCode, BookEntity savedBookEntity) {
 
 //        if (serviceObject instanceof GetBookBestService){
@@ -30,7 +27,7 @@ public class BookCategory {
             saveBookToDatabase(Genre.ACTION, savedBookEntity);
         }
         if (isAnimationCategory(bookCode)) {
-           // GetBookBestService.saveBookToDatabase(bookCode, Genre.ANIMATION);
+            // GetBookBestService.saveBookToDatabase(bookCode, Genre.ANIMATION);
             saveBookToDatabase(Genre.ANIMATION, savedBookEntity);
         }
         if (isComedyCategory(bookCode)) {
@@ -76,30 +73,28 @@ public class BookCategory {
         if (isWARCategory(bookCode)) {
             saveBookToDatabase(Genre.WAR, savedBookEntity);
         }
-        if(isUNKNOWNCategory(bookCode)){
+        if (isUNKNOWNCategory(bookCode)) {
             saveBookToDatabase(Genre.ETC, savedBookEntity);
         }
     }
 
-
     //  ACTION(1, "액션"), // + 모험
     private boolean isActionCategory(String bookCode) {
         return
-        "50933".equals(bookCode) ||
-                "3724".equals(bookCode) ||
-                "4133".equals(bookCode);
+                "50933".equals(bookCode) ||
+                        "3724".equals(bookCode) ||
+                        "4133".equals(bookCode);
     }
 
     // ANIMATION(2, "애니메이션")
     private boolean isAnimationCategory(String bookCode) {
         return "4298".equals(bookCode) ||
-                 "4302".equals(bookCode) ||
-                 "4301".equals(bookCode) ||
-                 "4303".equals(bookCode) ||
-                 "2924".equals(bookCode);
+                "4302".equals(bookCode) ||
+                "4301".equals(bookCode) ||
+                "4303".equals(bookCode) ||
+                "2924".equals(bookCode);
 
     }
-
 
     // COMEDY(3, "코미디")
     private boolean isComedyCategory(String bookCode) {
@@ -110,75 +105,75 @@ public class BookCategory {
     // CRIME(4, "범죄")
     private boolean isCrimeCategory(String bookCode) {
         return "2556".equals(bookCode) ||
-                 "50926".equals(bookCode) ||
-                 "51067".equals(bookCode) ||
-                 "51062".equals(bookCode) ||
-                 "51058".equals(bookCode) ||
-                 "51065".equals(bookCode);
+                "50926".equals(bookCode) ||
+                "51067".equals(bookCode) ||
+                "51062".equals(bookCode) ||
+                "51058".equals(bookCode) ||
+                "51065".equals(bookCode);
     }
 
     // DOCUMENTARY(5, "다큐멘터리")
     private boolean isDocumentaryCategory(String bookCode) {
         return "48899".equals(bookCode) ||
-                 "48901".equals(bookCode) ||
-                 "48902".equals(bookCode) ||
-                 "51377".equals(bookCode) ||
-                 "51423".equals(bookCode) ||
-                 "51425".equals(bookCode) ||
-                 "51842".equals(bookCode) ||
-                 "51843".equals(bookCode) ||
-                 "51844".equals(bookCode) ||
-                 "51845".equals(bookCode) ||
-                 "51373".equals(bookCode) ||
-                 "51394".equals(bookCode) ||
-                 "50827".equals(bookCode) ||
-                 "51381".equals(bookCode) ||
-                 "51416".equals(bookCode) ||
-                 "52906".equals(bookCode) ||
-                 "52904".equals(bookCode);
+                "48901".equals(bookCode) ||
+                "48902".equals(bookCode) ||
+                "51377".equals(bookCode) ||
+                "51423".equals(bookCode) ||
+                "51425".equals(bookCode) ||
+                "51842".equals(bookCode) ||
+                "51843".equals(bookCode) ||
+                "51844".equals(bookCode) ||
+                "51845".equals(bookCode) ||
+                "51373".equals(bookCode) ||
+                "51394".equals(bookCode) ||
+                "50827".equals(bookCode) ||
+                "51381".equals(bookCode) ||
+                "51416".equals(bookCode) ||
+                "52906".equals(bookCode) ||
+                "52904".equals(bookCode);
     }
 
     //  DRAMA(6, "드라마")
     private boolean isDramaCategory(String bookCode) {
         return "51242".equals(bookCode) ||
-                 "50919".equals(bookCode) ||
-                 "50918".equals(bookCode) ||
-                 "50996".equals(bookCode) ||
-                 "50998".equals(bookCode) ||
-                 "51242".equals(bookCode) ||
-                 "51239".equals(bookCode) ||
-                 "50917".equals(bookCode) ||
-                 "50994".equals(bookCode) ||
-                 "50993".equals(bookCode);
+                "50919".equals(bookCode) ||
+                "50918".equals(bookCode) ||
+                "50996".equals(bookCode) ||
+                "50998".equals(bookCode) ||
+                "51242".equals(bookCode) ||
+                "51239".equals(bookCode) ||
+                "50917".equals(bookCode) ||
+                "50994".equals(bookCode) ||
+                "50993".equals(bookCode);
     }
 
     // FANTASY(7, "판타지")
     private boolean isFantasyCategory(String bookCode) {
         return "50928".equals(bookCode) ||
-                 "51120".equals(bookCode) ||
-                 "51122".equals(bookCode) ||
-                 "4133".equals(bookCode) ||
-                 "4134".equals(bookCode) ||
-                 "4135".equals(bookCode) ||
-                 "4132".equals(bookCode);
+                "51120".equals(bookCode) ||
+                "51122".equals(bookCode) ||
+                "4133".equals(bookCode) ||
+                "4134".equals(bookCode) ||
+                "4135".equals(bookCode) ||
+                "4132".equals(bookCode);
     }
 
     // HISTORY(8, "역사")
     private boolean isHistoryCategory(String bookCode) {
         return "4670".equals(bookCode) ||
-                 "50929".equals(bookCode) ||
-                 "49220".equals(bookCode) ||
-                 "48813".equals(bookCode) ||
-                 "50883".equals(bookCode) ||
-                 "74".equals(bookCode);
+                "50929".equals(bookCode) ||
+                "49220".equals(bookCode) ||
+                "48813".equals(bookCode) ||
+                "50883".equals(bookCode) ||
+                "74".equals(bookCode);
     }
 
     // MUSIC(9, "음악")
     private boolean isMusicCategory(String bookCode) {
         return "50966".equals(bookCode) ||
-                 "51012".equals(bookCode) ||
-                 "51214".equals(bookCode) ||
-                 "51000".equals(bookCode);
+                "51012".equals(bookCode) ||
+                "51214".equals(bookCode) ||
+                "51000".equals(bookCode);
     }
 
     // MYSTERY(10, "미스터리")
@@ -194,18 +189,18 @@ public class BookCategory {
     // ROMANCE(11, "로맨스")
     private boolean isRomanceCategory(String bookCode) {
         return "51107".equals(bookCode) ||
-                 "50935".equals(bookCode) ||
-                 "51126".equals(bookCode) ||
-                 "51107".equals(bookCode) ||
-                 "50935".equals(bookCode) ||
-                 "51126".equals(bookCode) ||
-                 "51125".equals(bookCode);
+                "50935".equals(bookCode) ||
+                "51126".equals(bookCode) ||
+                "51107".equals(bookCode) ||
+                "50935".equals(bookCode) ||
+                "51126".equals(bookCode) ||
+                "51125".equals(bookCode);
     }
 
     // SCIENCE_FICTION(12, "SF")
     private boolean isSFCategory(String bookCode) {
         return "2553".equals(bookCode) ||
-               "50930".equals(bookCode);
+                "50930".equals(bookCode);
     }
 
     // TV_MOVIE(13, "TV 영화")
@@ -220,7 +215,7 @@ public class BookCategory {
     private boolean isTHRILLERCategory(String bookCode) {
         return "3723".equals(bookCode) ||
                 "50933".equals(bookCode) ||
-                "50931".equals(bookCode) ; // 스릴러 완료
+                "50931".equals(bookCode); // 스릴러 완료
     }
 
     // WAR(15, "전쟁")
@@ -256,7 +251,7 @@ public class BookCategory {
                 !isWARCategory(bookCode);
     }
 
-    private void saveBookToDatabase(Genre genre, BookEntity savedBookEntity){
+    private void saveBookToDatabase(Genre genre, BookEntity savedBookEntity) {
 
         Long genreId = genre.getId();
         BookId bookId = savedBookEntity.getBookId();
@@ -276,4 +271,5 @@ public class BookCategory {
 
 
     }
+
 }

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import MovieCarousel from './MovieCarousel';
 import useGenreMovieList from "../hooks/useGenreMovieList.jsx";
 
-function GenreMoviesComponent({ genreId }) {
-    const { movies, loading, error, genreName } = useGenreMovieList({
+function GenreMoviesComponent({genreId}) {
+    const {movies, loading, error, genreName} = useGenreMovieList({
         endpoint: '/movies/main/genre',
-        params: { genreId: genreId, pageSize: 50 },
+        params: {genreId: genreId, pageSize: 50},
     });
 
     const [startIndex, setStartIndex] = useState(0);  // 화면에 보이는 영화 시작 인덱스

@@ -16,9 +16,11 @@ import movlit.be.common.util.ids.BookId;
 @EqualsAndHashCode
 @Getter
 public class BookGenreIdEntity implements Serializable {
+
     @Column(name = "genre_id")
     private Long genreId;
 
     @Column(name = "book_id")
     private BookId bookId; // BookEntity의 bookId 자료형이랑 같아야 해서?
+
 }

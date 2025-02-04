@@ -16,21 +16,37 @@
       "filter": {
         "stopwords": {
           "type": "stop",
-          "stopwords": [" "]
+          "stopwords": [
+            " "
+          ]
         }
       },
       "analyzer": {
         "my_nori_analyzer": {
           "type": "custom",
           "tokenizer": "my_nori_tokenizer",
-          "filter": ["lowercase", "stop", "stopwords", "nori_part_of_speech"],
-          "char_filter": ["html_strip"]
+          "filter": [
+            "lowercase",
+            "stop",
+            "stopwords",
+            "nori_part_of_speech"
+          ],
+          "char_filter": [
+            "html_strip"
+          ]
         },
         "my_ngram_analyzer": {
           "type": "custom",
           "tokenizer": "my_ngram_tokenizer",
-          "filter": ["lowercase", "stop", "stopwords", "nori_part_of_speech"],
-          "char_filter": ["html_strip"]
+          "filter": [
+            "lowercase",
+            "stop",
+            "stopwords",
+            "nori_part_of_speech"
+          ],
+          "char_filter": [
+            "html_strip"
+          ]
         }
       }
     }

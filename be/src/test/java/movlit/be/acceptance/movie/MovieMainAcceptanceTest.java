@@ -8,9 +8,7 @@ import static movlit.be.acceptance.movie.MovieMainSteps.최신순_영화_리스�
 
 import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.Genre;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("영화 메인 페이지 관련 인수테스트")
@@ -64,4 +62,5 @@ class MovieMainAcceptanceTest extends AcceptanceTest {
         // then
         상태코드가_200이고_genreId에_맞는_응답_데이터가_존재한다(response, genreId);
     }
+
 }

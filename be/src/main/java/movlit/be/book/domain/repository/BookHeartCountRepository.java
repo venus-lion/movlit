@@ -5,11 +5,15 @@ import movlit.be.book.domain.BookVo;
 import movlit.be.common.util.ids.BookId;
 
 public interface BookHeartCountRepository {
+
     BookHeartCountVo fetchByBook(BookVo bookVo);
+
     int countHeartByBookId(BookId bookId);
+
     void increaseHeartCount(BookVo bookVo);
 
     void decreaseHeartCount(BookVo bookVo);
+
     BookHeartCountVo save(BookHeartCountVo bookHeartCountVo);
 
 

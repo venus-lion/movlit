@@ -1,9 +1,9 @@
 // FollowToggleButton.jsx (새 파일 생성)
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
-function FollowToggleButton({ memberId }) {
+function FollowToggleButton({memberId}) {
     const [isFollowing, setIsFollowing] = useState(false);
 
     const checkFollowStatus = async () => {

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class BookCrewRepositoryImpl implements BookcrewRepository {
+
     private final BookcrewJpaRepository bookcrewJpaRepository;
 
     @Override
@@ -21,8 +22,6 @@ public class BookCrewRepositoryImpl implements BookcrewRepository {
 
         return BookcrewConverter.toDomainList(bookCrewEntity);
     }
-
-
 
 
 }

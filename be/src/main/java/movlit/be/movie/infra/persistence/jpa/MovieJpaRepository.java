@@ -1,8 +1,6 @@
 package movlit.be.movie.infra.persistence.jpa;
 
 import java.util.List;
-import java.util.Optional;
-import movlit.be.common.util.ids.MemberId;
 import movlit.be.movie.domain.entity.MovieEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +30,5 @@ public interface MovieJpaRepository extends JpaRepository<MovieEntity, Long> {
             + "WHERE m.movieId = mh.movieId "
             + "AND mh.memberId = :memberId")
     Page<MovieEntity> findMoviesByMemberHeart(Pageable pageable, Long memberId);
+
 }

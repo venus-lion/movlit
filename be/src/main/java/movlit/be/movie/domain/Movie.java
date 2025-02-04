@@ -1,16 +1,13 @@
 package movlit.be.movie.domain;
 
 import jakarta.persistence.Lob;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import movlit.be.book.domain.Genre;
 
 @Getter
 @ToString

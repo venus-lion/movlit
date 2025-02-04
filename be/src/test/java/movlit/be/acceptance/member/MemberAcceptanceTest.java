@@ -228,7 +228,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         }
 
 
-
     }
 
 }

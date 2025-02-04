@@ -1,6 +1,5 @@
 package movlit.be.bookES;
 
-import movlit.be.common.util.ids.BookId;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 

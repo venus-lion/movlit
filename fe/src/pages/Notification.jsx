@@ -1,15 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import './Home.css';
 import '../App.css';
-import { Link, useOutletContext } from 'react-router-dom';
 import axiosInstance from "../axiosInstance.js";
-
-
 
 
 function Notification() {
     const [myNotifications, setMyNotifications] = useState([]);
-
 
 
     useEffect(() => {
@@ -49,11 +45,11 @@ function Notification() {
 
     // 모든 알림 삭제
     const deleteAllmyNotifications = async () => {
-        try{
+        try {
             await axiosInstance.delete(`/notification/all`);
             setMyNotifications([]);
 
-        }catch (err){
+        } catch (err) {
             console.error('Error while deleting notification:', err);
         }
 
@@ -63,7 +59,7 @@ function Notification() {
     return (
         <div className="notification-container">
             <h1>
-                <img src="/images/notification-bell-icon.png" alt="아이콘" className="noti-icon" />
+                <img src="/images/notification-bell-icon.png" alt="아이콘" className="noti-icon"/>
                 나의 알림
                 <button className="delete-all-btn" onClick={deleteAllmyNotifications}>모두 삭제</button>
             </h1>
@@ -90,19 +86,16 @@ function Notification() {
 
                     return (
                         <div key={notification.id} className="notification-item">
-                            <img src={imgSrc} alt="아이콘" className="noti-icon" />
+                            <img src={imgSrc} alt="아이콘" className="noti-icon"/>
                             <p className="noti-message">{notification.message}</p>
-                            <button className="delete-btn" onClick={() => deleteNotification(notification.id)}>X</button>
+                            <button className="delete-btn" onClick={() => deleteNotification(notification.id)}>X
+                            </button>
                         </div>
                     );
                 })}
             </div>
         </div>
     );
-
-
-
-
 
 
 };

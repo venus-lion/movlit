@@ -5,6 +5,7 @@ import movlit.be.common.util.ids.MemberId;
 import movlit.be.follow.domain.Follow;
 
 public interface FollowRepository {
+
     boolean existsByFollowerIdAndFolloweeId(MemberId followerId, MemberId followeeId);
 
     boolean existsByFollowerIdAndFolloweeIdWithoutException(MemberId followerId, MemberId followeeId);
@@ -22,4 +23,5 @@ public interface FollowRepository {
     long countFollowersByLoginId(MemberId loginId);
 
     long countFollowsByLoginId(MemberId loginId);
+
 }

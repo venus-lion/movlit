@@ -6,7 +6,6 @@ import movlit.be.book.domain.entity.BookEntity;
 import movlit.be.book.domain.entity.BookHeartEntity;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.MemberId;
-import movlit.be.member.domain.Member;
 import movlit.be.member.domain.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

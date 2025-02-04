@@ -1,12 +1,9 @@
 package movlit.be.acceptance.group_chatroom;
 
-
 import static movlit.be.acceptance.group_chatroom.GroupChatroomSteps.그룹_채팅_생성을_요청한다_1;
 import static movlit.be.acceptance.group_chatroom.GroupChatroomSteps.그룹_채팅_생성을_요청한다_2;
 import static movlit.be.acceptance.group_chatroom.GroupChatroomSteps.그룹_채팅_생성을_요청한다_3;
-import static movlit.be.acceptance.group_chatroom.GroupChatroomSteps.그룹_채팅을_생성한다;
 import static movlit.be.acceptance.group_chatroom.GroupChatroomSteps.나의_그룹채팅리스트를_조회한다;
-
 import static movlit.be.acceptance.group_chatroom.GroupChatroomSteps.상태코드가_200이다;
 
 import movlit.be.acceptance.AcceptanceTest;

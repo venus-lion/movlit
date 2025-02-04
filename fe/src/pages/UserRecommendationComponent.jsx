@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import BookCarousel from "./BookCarousel.jsx";
 import UserRecommendedBooks from "../hooks/UserRecommendedBooks.jsx";
 
-function UserRecommendationComponent(){
+function UserRecommendationComponent() {
 
     const {recommendedBooks, loading, error} = UserRecommendedBooks(
         isLoggedIn,

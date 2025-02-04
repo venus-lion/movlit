@@ -10,17 +10,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface FollowJpaRepository extends JpaRepository<Follow, FollowId> {
+
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END " +
             "FROM Follow f " +
             "WHERE f.follower.memberId = :followerId AND f.followee.memberId = :followeeId")
-    boolean existsByFollowerIdAndFolloweeId(@Param("followerId")MemberId followerId,
-                                            @Param("followeeId")MemberId followeeId);
+    boolean existsByFollowerIdAndFolloweeId(@Param("followerId") MemberId followerId,
+                                            @Param("followeeId") MemberId followeeId);
 
     @Query("SELECT f FROM Follow f " +
             "WHERE f.follower.memberId = :followerId AND f.followee.memberId = :followeeId")
-    Optional<Follow> findByFollowerIdAndFolloweeId(@Param("followerId")MemberId followerId,
-                                                   @Param("followeeId")MemberId followeeId);
-
+    Optional<Follow> findByFollowerIdAndFolloweeId(@Param("followerId") MemberId followerId,
+                                                   @Param("followeeId") MemberId followeeId);
 
     // 나를 팔로우하는 사람들(내 팔로워) 조회 - fetch join으로 내 팔로워 정보까지 한번에 가져오기 (성능 개선)
     @Query("SELECT f FROM Follow f " +
@@ -43,4 +43,5 @@ public interface FollowJpaRepository extends JpaRepository<Follow, FollowId> {
     @Query("SELECT COUNT(f) FROM Follow f " +
             "WHERE f.follower.memberId = :loginId")
     long countFollowsByLoginId(MemberId loginId);
+
 }

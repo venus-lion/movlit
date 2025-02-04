@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axiosInstance from '../axiosInstance';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
-import { ToastContainer, toast } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MemberRegister = () => {
@@ -117,7 +117,7 @@ const MemberRegister = () => {
 
     return (
         <div className="bg-light">
-            <div className="container" style={{ marginTop: '30px' }}>
+            <div className="container" style={{marginTop: '30px'}}>
                 <div className="row">
                     <div className="col-3"></div>
                     <div className="col-6">
@@ -128,15 +128,15 @@ const MemberRegister = () => {
                                         <strong>회원 가입</strong>
                                     </h3>
                                 </div>
-                                <hr />
+                                <hr/>
                                 <form onSubmit={handleSubmit}>
                                     <table className="table table-borderless">
                                         <tbody>
                                         <tr>
-                                            <td style={{ width: '45%' }}>
+                                            <td style={{width: '45%'}}>
                                                 <label className="col-form-label">이메일</label>
                                             </td>
-                                            <td style={{ width: '55%' }}>
+                                            <td style={{width: '55%'}}>
                                                 <input
                                                     type="text"
                                                     name="email"
@@ -235,7 +235,7 @@ const MemberRegister = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     type="submit"
-                                                    style={{ marginRight: '5px' }}
+                                                    style={{marginRight: '5px'}}
                                                 >
                                                     확인
                                                 </button>
@@ -276,7 +276,7 @@ const MemberRegister = () => {
                     <div className="col-3"></div>
                 </div>
             </div>
-            <ToastContainer />
+            <ToastContainer/>
         </div>
     );
 };

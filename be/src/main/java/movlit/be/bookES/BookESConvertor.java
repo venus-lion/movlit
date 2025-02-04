@@ -5,7 +5,7 @@ import movlit.be.book.presentation.dto.BookRecommendDto;
 public class BookESConvertor {
 
     // ES(Document) -> Domain
-    public static BookESVo documentToDomain(BookES bookES){
+    public static BookESVo documentToDomain(BookES bookES) {
         return BookESVo.builder()
                 .bookId(bookES.getBookId())
                 .isbn(bookES.getIsbn())
@@ -22,7 +22,7 @@ public class BookESConvertor {
     }
 
     // ES(Document) -> RecommendDto
-    public static BookRecommendDto documentToRecommendDto(BookES bookES){
+    public static BookRecommendDto documentToRecommendDto(BookES bookES) {
         return BookRecommendDto.builder()
                 .bookId(bookES.getBookId())
                 .isbn(bookES.getIsbn())
@@ -37,4 +37,5 @@ public class BookESConvertor {
                 .updDt(bookES.getUpdDt())
                 .build();
     }
+
 }

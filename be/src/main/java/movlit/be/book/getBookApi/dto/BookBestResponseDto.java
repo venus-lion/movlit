@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BookBestResponseDto {
 
-
     //    private String version;
     private String logo;
     private String title;
@@ -44,7 +43,6 @@ public class BookBestResponseDto {
         private Integer bestRank;
 
     }
-
 
     @Override
     public String toString() {

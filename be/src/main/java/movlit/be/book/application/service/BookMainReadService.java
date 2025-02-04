@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import movlit.be.book.domain.BookBestsellerVo;
-import movlit.be.book.domain.BookNewVo;
 import movlit.be.book.domain.BookNewSpecialVo;
+import movlit.be.book.domain.BookNewVo;
 import movlit.be.book.domain.BookVo;
 import movlit.be.book.domain.repository.BookBestsellerRepository;
 import movlit.be.book.domain.repository.BookNewRepository;
@@ -21,11 +21,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BookMainReadService {
+
     private final BookBestsellerRepository bookBestsellerRepository;
     private final BookNewRepository bookNewRepository;
     private final BookNewSpecialRepository bookNewSpecialRepository;
 
-    public List<BookItemDto> fetchBestsellers(int limit){
+    public List<BookItemDto> fetchBestsellers(int limit) {
         Pageable pageable = PageRequest.of(0, limit); // 0페이지 ~ limit 개수만큼 가져옴
         List<BookBestsellerVo> bookbestsellers = bookBestsellerRepository.findAllBestsellers(pageable);
 
@@ -34,7 +35,7 @@ public class BookMainReadService {
                 .collect(Collectors.toList());
     }
 
-    public List<BookItemDto> fetchBookNews(int limit){
+    public List<BookItemDto> fetchBookNews(int limit) {
         Pageable pageable = PageRequest.of(5, limit);
         List<BookNewVo> bookNewVos = bookNewRepository.findAllBookNew(pageable);
 
@@ -43,7 +44,7 @@ public class BookMainReadService {
                 .collect(Collectors.toList());
     }
 
-    public List<BookItemDto> fetchBookNewSpecials(int limit){
+    public List<BookItemDto> fetchBookNewSpecials(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         List<BookNewSpecialVo> bookNewSpecialVos = bookNewSpecialRepository.findAllBookNewSpecial(pageable);
 
@@ -53,7 +54,7 @@ public class BookMainReadService {
     }
 
     // 공통된 Book -> BookItemDto 변환 로직
-    private BookItemDto convertToDto(Object bookObject){
+    private BookItemDto convertToDto(Object bookObject) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // BookBestseller, BookNew, BookNewSpecial 일 때에 따라 다른 타입으로 변환
@@ -77,16 +78,16 @@ public class BookMainReadService {
     }
 
     // Entity에 맞는 Book 객체를 가져옴
-    private BookVo getBookFromEntity(Object bookEntity){
-        if (bookEntity instanceof BookBestsellerVo){
-            return ((BookBestsellerVo)bookEntity).getBookVo();
+    private BookVo getBookFromEntity(Object bookEntity) {
+        if (bookEntity instanceof BookBestsellerVo) {
+            return ((BookBestsellerVo) bookEntity).getBookVo();
         } else if (bookEntity instanceof BookNewVo) {
-            return ((BookNewVo)bookEntity).getBookVo();
-        } else if (bookEntity instanceof BookNewSpecialVo){
-            return ((BookNewSpecialVo)bookEntity).getBookVo();
-        }
-        else {
+            return ((BookNewVo) bookEntity).getBookVo();
+        } else if (bookEntity instanceof BookNewSpecialVo) {
+            return ((BookNewSpecialVo) bookEntity).getBookVo();
+        } else {
             throw new BookIllegalArgumentException();
         }
     }
+
 }

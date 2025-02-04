@@ -4,8 +4,9 @@ import movlit.be.book.domain.BookNewVo;
 import movlit.be.book.domain.entity.BookNewEntity;
 
 public class BookNewConverter {
+
     // Domain -> Entity
-    public static BookNewEntity toEntity(BookNewVo bookNewVo){
+    public static BookNewEntity toEntity(BookNewVo bookNewVo) {
         return BookNewEntity.builder()
                 .bookNewId(bookNewVo.getBookNewId())
                 .bookEntity(BookConverter.toEntity(bookNewVo.getBookVo()))
@@ -13,7 +14,7 @@ public class BookNewConverter {
     }
 
     // Entity -> Domain
-    public static BookNewVo toDomain(BookNewEntity bookNewEntity){
+    public static BookNewVo toDomain(BookNewEntity bookNewEntity) {
         return BookNewVo.builder()
                 .bookNewId(bookNewEntity.getBookNewId())
                 .bookVo(BookConverter.toDomain(bookNewEntity.getBookEntity()))

@@ -24,6 +24,7 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookCommentLikeCountEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookCommentLikeCountId;
@@ -38,7 +39,6 @@ public class BookCommentLikeCountEntity {
 
     @Column
     private Long version;
-
 
 
 }

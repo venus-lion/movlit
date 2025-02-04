@@ -15,9 +15,10 @@ public class MovieIndexingController {
     private final MovieIndexService movieIndexService;
 
     @GetMapping("/movies")
-    public void getMovieIndices(){
+    public void getMovieIndices() {
         List<MovieDocument> movieDocumentList = movieIndexService.getMovieIndices();
 
 
     }
+
 }

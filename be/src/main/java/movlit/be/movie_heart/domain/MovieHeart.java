@@ -13,9 +13,11 @@ import movlit.be.common.util.ids.MovieHeartId;
 @AllArgsConstructor
 @Builder
 public class MovieHeart {
+
     private MovieHeartId movieHeartId;
     private Long movieId;
     private MemberId memberId;
     private boolean isHearted;
     private LocalDateTime regDt;
+
 }

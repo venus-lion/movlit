@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import axios from 'axios';
 import axiosInstance from "../axiosInstance.js";
 
 const useBookList = ({endpoint, params = {}}) => {
@@ -11,11 +10,11 @@ const useBookList = ({endpoint, params = {}}) => {
         const fetchBooks = async () => {
             try {
                 const response = await axiosInstance.get(endpoint, {
-                    params: { ...params},
+                    params: {...params},
                 });
 
                 setBooks(response.data.books);
-            } catch (err){
+            } catch (err) {
                 console.error(`Error fetching books from ${endpoint}: `, err);
             } finally {
                 setLoading(false); // 로딩 다함
