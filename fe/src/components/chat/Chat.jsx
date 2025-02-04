@@ -16,6 +16,8 @@ const Chat = () => {
     const {isLoggedIn} = useOutletContext();
     const navigate = useNavigate();
     const [refreshKey, setRefreshKey] = useState(0); // 채팅 리스트 새로고침 키 추가
+    const [chatComponentKey, setChatComponentKey] = useState(0); // Chat 컴포넌트 새로고침 키
+
 
     const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false); // 모달1 열림 상태
     const [isGetGroupChatInfoModalOpen, setIsGetGroupChatInfoModalOpen] = useState(false); // 채팅방 존재여무 모달2 열림 상태
@@ -132,6 +134,17 @@ const Chat = () => {
         }
     }, [selectedChat, activeTab, navigate]);
 
+    // ChatList 갱신 함수
+    const refreshChatList = () => {
+        setRefreshKey(prevKey => prevKey + 1);
+    };
+
+    // Chat 컴포넌트 새로고침 함수
+    const refreshChatComponent = () => {
+        setChatComponentKey(prevKey => prevKey + 1);
+        setSelectedChat(null); // selectedChat을 null로 설정
+    };
+
     return (
         <div style={{display: 'flex', height: 'calc(100vh - 60px)'}}>
             {/* 왼쪽: 채팅 목록 */}
@@ -200,7 +213,12 @@ const Chat = () => {
                     activeTab === 'personal' ? (
                         <ChatPage roomId={selectedChat.roomId} roomInfo={selectedChat}/> /* 개인 채팅방 */
                     ) : (
-                        <ChatPageGroup roomId={selectedChat.groupChatroomId} roomInfo={selectedChat}/> /* 그룹 채팅방 */
+                        <ChatPageGroup
+                            roomId={selectedChat.groupChatroomId}
+                            roomInfo={selectedChat}
+                            refreshChatList={refreshChatList}
+                            refreshChatComponent={refreshChatComponent} // refreshChatComponent 함수 전달
+                        /> /* 그룹 채팅방 */
                     )
                 ) : (
                     <div style={{textAlign: 'center', marginTop: '20%'}}>

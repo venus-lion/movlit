@@ -3,9 +3,10 @@ import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance';
 import './ChatPageGroup.css';
-import {FaUserCircle} from 'react-icons/fa'; // react-icons에서 기본 프로필 이미지 아이콘을 가져옵니다.
+import {FaUserCircle} from 'react-icons/fa';
+import {useNavigate} from "react-router-dom"; // react-icons에서 기본 프로필 이미지 아이콘을 가져옵니다.
 
-function ChatPageGroup({roomId, roomInfo}) {
+function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [stompClient, setStompClient] = useState(null);
@@ -13,6 +14,8 @@ function ChatPageGroup({roomId, roomInfo}) {
     const messagesEndRef = useRef(null);
     const [isComposing, setIsComposing] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         axiosInstance
@@ -136,6 +139,32 @@ function ChatPageGroup({roomId, roomInfo}) {
         }
     };
 
+    // 그룹채팅방 나가기 함수
+    const handleLeaveChatroom = async () => {
+        try {
+            // 나가기 api 호출
+            await axiosInstance.delete(`/chat/group/${roomId}/leave`);
+
+            alert("채팅방을 나갔습니다.");
+
+            // 채팅방 목록 갱신
+            refreshChatList();
+
+            console.log('Chat 컴포넌트 새로고침');
+
+            // Chat 컴포넌트 새로고침
+            refreshChatComponent();
+
+            console.log('/chatMain으로 navigate');
+            // // 채팅방 목록 페이지로 이동
+            navigate('/chatMain');
+
+        } catch (error){
+                console.error("Error leaving chatroom:", error);
+                alert("채팅방 나가기 실패: " + error.response.data.message); // 에러 메시지 표시
+        }
+    };
+
     const handleCompositionStart = () => setIsComposing(true);
     const handleCompositionEnd = () => setIsComposing(false);
 
@@ -153,6 +182,7 @@ function ChatPageGroup({roomId, roomInfo}) {
         <div className="chat-container-group" style={{display: 'flex', flexDirection: 'column', height: '90%'}}>
             <div className="chat-header-group">
                 <h2>채팅방: {roomInfo.roomName}</h2>
+                <button onClick={handleLeaveChatroom} className="leave-button">나가기</button>
             </div>
             <div className="chat-messages-group">
                 {messages.map((message, index) => {

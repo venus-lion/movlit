@@ -338,6 +338,24 @@ public class GroupChatroomService {
         return groupChatRepository.findByChatroomId(groupChatroomId);
     }
 
+
+    // 그룹채팅방 나가기
+    @Transactional
+    public void leaveGroupChatroom(GroupChatroomId groupchatroomId, MemberId memberId){
+        GroupChatroom groupChatroom = groupChatRepository.findByChatroomId(groupchatroomId);
+      //  MemberEntity member = memberReadService.findEntityById(memberId);
+
+        // 그룹채팅방에 참여중인 멤버목록에서 해당 멤버를 찾아 제거하기
+        // memberRChatroom에서 memberId와 groupChatroomId가 모두 일치하는 row를 찾아 제거
+        groupChatroom.getMemberRChatroom().removeIf(memberRChatroom ->
+                memberRChatroom.getMember().getMemberId().equals(memberId) &&
+                memberRChatroom.getGroupChatroom().getGroupChatroomId().equals(groupchatroomId)
+        );
+
+        // 변경사항을 저장할 것
+        groupChatRepository.create(groupChatroom); // 변경 사항 저장
+
+
     public Boolean checkIfGroupChatroomJoin(MemberId memberId, CheckJoinGroupChatroomRequest request) {
         try {
             String contentId;
@@ -358,6 +376,7 @@ public class GroupChatroomService {
         } catch (GroupChatroomAlreadyJoinedException e) {
             return true;
         }
+
     }
 
 }
