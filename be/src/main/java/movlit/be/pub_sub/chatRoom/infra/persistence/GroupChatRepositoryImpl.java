@@ -1,6 +1,7 @@
 package movlit.be.pub_sub.chatRoom.infra.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.exception.GroupChatroomNotFoundException;
@@ -66,5 +67,10 @@ public class GroupChatRepositoryImpl implements GroupChatRepository {
         return members;
     }
 
+    @Override
+    public GroupChatroom fetchEntityByContentId(String contentId) {
+        return groupChatroomJpaRepository.findGroupChatroomByContentId(contentId)
+                .orElseThrow(GroupChatroomNotFoundException::new);
+    }
 
 }

@@ -15,6 +15,7 @@ import movlit.be.common.exception.ChatroomAccessDenied;
 import movlit.be.common.exception.ChatroomNotFoundException;
 import movlit.be.common.exception.GroupChatroomAlreadyExistsException;
 import movlit.be.common.exception.GroupChatroomAlreadyJoinedException;
+import movlit.be.common.exception.GroupChatroomNotFoundException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.BookId;
 import movlit.be.common.util.ids.GroupChatroomId;
@@ -30,6 +31,7 @@ import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreation
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
 import movlit.be.pub_sub.chatRoom.domain.repository.GroupChatRepository;
+import movlit.be.pub_sub.chatRoom.presentation.dto.CheckJoinGroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponse;
@@ -334,6 +336,28 @@ public class GroupChatroomService {
 
     public GroupChatroom fetchGroupChatroomById(GroupChatroomId groupChatroomId) {
         return groupChatRepository.findByChatroomId(groupChatroomId);
+    }
+
+    public Boolean checkIfGroupChatroomJoin(MemberId memberId, CheckJoinGroupChatroomRequest request) {
+        try {
+            String contentId;
+
+            if ("movie".equals(request.contentType())) {
+                contentId = "MV_" + request.contentId();
+            } else {
+                contentId = "BK_" + request.contentId();
+            }
+
+            GroupChatroom groupChatroom = groupChatRepository.fetchEntityByContentId(contentId);
+            validateAlreadyJoined(memberId, groupChatroom);
+
+            return false;
+
+        } catch (GroupChatroomNotFoundException e) {
+            return false;
+        } catch (GroupChatroomAlreadyJoinedException e) {
+            return true;
+        }
     }
 
 }

@@ -115,7 +115,7 @@ public class ChatMessageService {
 
     // TODO : 채팅 읽음 처리
     public void updateMessageAsRead(String roomId, MemberId memberId) {
-
+        
     }
 
     /**

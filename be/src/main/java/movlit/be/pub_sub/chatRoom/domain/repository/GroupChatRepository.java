@@ -1,6 +1,7 @@
 package movlit.be.pub_sub.chatRoom.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
@@ -22,5 +23,7 @@ public interface GroupChatRepository {
     List<GroupChatroomMemberResponse> findMembersByChatroomId(@Param("chatroomId") GroupChatroomId chatroomId);
 
     GroupChatroom findByChatroomId(GroupChatroomId chatroomId);
+
+    GroupChatroom fetchEntityByContentId(String contentId);
 
 }

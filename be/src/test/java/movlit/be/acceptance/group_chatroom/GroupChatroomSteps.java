@@ -1,6 +1,7 @@
 package movlit.be.acceptance.group_chatroom;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import io.restassured.RestAssured;
@@ -79,6 +80,41 @@ public class GroupChatroomSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 그룹_채팅방을_가입한다(String accessToken,
+                                                             String pathParam,
+                                                             RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .pathParam("groupChatroomId", pathParam)
+                .post("/api/chat/group/{groupChatroomId}")
+                .then()
+                .log().all()
+                .extract();
+
+    }
+
+    public static ExtractableResponse<Response> 그룹_채팅방_가입여부를_확인한다(String accessToken,
+                                                                  Map<String, Object> body,
+                                                                  RequestSpecification spec) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .spec(spec)
+                .log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .body(body)
+                .get("/api/chat/group/checkJoin")
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static void 상태코드가_200이다(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.OK));
@@ -88,6 +124,20 @@ public class GroupChatroomSteps {
         Assertions.assertAll(
                 () -> 상태코드를_검증한다(response, HttpStatus.NOT_FOUND),
                 () -> 오류코드를_검증한다(response, "m105"));
+    }
+
+    public static void 반환값은_false_이다(ExtractableResponse<Response> response) {
+        Boolean result = response.as(Boolean.class);
+        Assertions.assertAll(
+                () -> assertThat(result).isEqualTo(false)
+        );
+    }
+
+    public static void 반환값은_true_이다(ExtractableResponse<Response> response) {
+        Boolean result = response.as(Boolean.class);
+        Assertions.assertAll(
+                () -> assertThat(result).isEqualTo(true)
+        );
     }
 
     public static AbstractIntegerAssert<?> 상태코드를_검증한다(ExtractableResponse<Response> response,

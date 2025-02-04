@@ -9,6 +9,7 @@ import movlit.be.common.util.ids.GroupChatroomId;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.chatRoom.application.service.FetchGroupChatroomUseCase;
 import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
+import movlit.be.pub_sub.chatRoom.presentation.dto.CheckJoinGroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomRequest;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomResponse;
@@ -86,6 +87,17 @@ public class GroupChatroomController {
 //        List<GroupChatroomResponseDto> myGroupChatListRes = groupChatroomService.fetchMyGroupChatList(memberId);
         List<GroupChatroomResponseDto> myGroupChatListRes = fetchGroupChatroomUseCase.execute(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(myGroupChatListRes);
+    }
+
+    // 채팅방 가입 여부
+    @GetMapping("/api/chat/group/checkJoin")
+    public ResponseEntity<Boolean> checkJoin(
+            @AuthenticationPrincipal MyMemberDetails details,
+            @RequestBody CheckJoinGroupChatroomRequest request) {
+        MemberId memberId = details.getMemberId();
+        boolean isJoin = groupChatroomService.checkIfGroupChatroomJoin(memberId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isJoin);
     }
 
 }
