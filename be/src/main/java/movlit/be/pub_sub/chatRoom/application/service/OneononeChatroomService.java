@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.exception.FailedDeserializeException;
 import movlit.be.common.exception.MemberNotFoundException;
+import movlit.be.common.exception.OneOnOneChatroomAlreadyExistsException;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
@@ -39,8 +40,7 @@ public class OneononeChatroomService {
         MemberEntity receiver = memberReadService.findEntityByMemberId(request.getReceiverId());
 
         // For Valid
-        oneOnOneChatroomRepository.fetchOneOnOneChatroomBySenderAndReceiver(sender.getMemberId(),
-                receiver.getMemberId());
+        validateAlreadyExist(sender, receiver);
 
         OneononeChatroom oneononeChatroom = new OneononeChatroom(IdFactory.createOneOnOneChatroomId());
 
@@ -61,6 +61,15 @@ public class OneononeChatroomService {
         this.addOneononeChatroomToRedis(receiver, receiverResponse);
 
         return senderResponse;
+    }
+
+    private void validateAlreadyExist(MemberEntity sender, MemberEntity receiver) {
+        if (oneOnOneChatroomRepository.existsOneOnOneChatroomBySenderAndReceiver(
+                sender.getMemberId(),
+                receiver.getMemberId())
+        ) {
+            throw new OneOnOneChatroomAlreadyExistsException();
+        }
     }
 
     private static OneononeChatroomResponse makeResponse(OneononeChatroom savedOneononeChatroom,
