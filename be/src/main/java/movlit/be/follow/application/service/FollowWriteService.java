@@ -11,6 +11,7 @@ import movlit.be.member.domain.entity.MemberEntity;
 import movlit.be.pub_sub.RedisNotificationPublisher;
 import movlit.be.pub_sub.notification.NotificationDto;
 import movlit.be.pub_sub.notification.NotificationMessage;
+import movlit.be.pub_sub.notification.NotificationService;
 import movlit.be.pub_sub.notification.NotificationType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class FollowWriteService {
     private final FollowRepository followRepository;
     private final MemberReadService memberReadService;
     private final RedisNotificationPublisher redisNotificationPublisher;
+    private final NotificationService notificationService;
 
     @Value("${share.url}")
     private String basicUrl;
@@ -91,6 +93,8 @@ public class FollowWriteService {
 
         // Redis를 통해 알림 발행
         redisNotificationPublisher.publishNotification(notificationDto);
+        // Notification MongoDB에 저장
+        notificationService.saveNotification(notificationDto);
     }
 
 }

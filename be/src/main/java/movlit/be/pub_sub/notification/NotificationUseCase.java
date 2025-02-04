@@ -20,6 +20,7 @@ public class NotificationUseCase {
     private final MemberReadService memberReadService;
     private final RedisNotificationPublisher redisNotificationPublisher;
     private final GroupChatroomService groupChatroomService;
+    private final NotificationService notificationService;
 
     @Value("${share.url}")
     private String basicUrl;
@@ -49,7 +50,12 @@ public class NotificationUseCase {
                 ))
                 .toList();
 
-        notificationDtoList.forEach(redisNotificationPublisher::publishNotification);
+        notificationDtoList.forEach(notificationDto -> {
+            // Notification Redis Publish (SSE 알림)
+            redisNotificationPublisher.publishNotification(notificationDto);
+            // Notification MongoDB에 저장
+            notificationService.saveNotification(notificationDto);
+        });
     }
 
 }
