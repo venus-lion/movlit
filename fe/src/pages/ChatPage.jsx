@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axiosInstance from '../axiosInstance'; // axios 인스턴스 import
-import './ChatPage.css'; // CSS 파일 import
+import './ChatPageGroup.css'; // CSS 파일 import
 import {FaUserCircle} from "react-icons/fa";
 
 function ChatPage({roomId, roomInfo}) {
@@ -107,11 +107,11 @@ function ChatPage({roomId, roomInfo}) {
     }, [messages]);
 
     return (
-        <div className="chat-container" style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-            <div className="chat-header">
+        <div className="chat-container-group" style={{display: 'flex', flexDirection: 'column', height: '90%'}}>
+            <div className="chat-header-group">
                 <h2>채팅방: {roomInfo.receiverNickname}</h2>
             </div>
-            <div style={{flex: 1, overflowY: 'auto', marginBottom: '10px'}}>
+            <div className="chat-messages-group">
                 {messages.map((message, index) => {
                     const receiver = {
                         memberId: roomInfo.receiverId,
@@ -122,22 +122,16 @@ function ChatPage({roomId, roomInfo}) {
                     return (
                         <div
                             key={index}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'flex-start',
-                                marginBottom: '10px',
-                                flexDirection: isCurrentUser ? 'row-reverse' : 'row',
-                            }}
-                            className={`message ${isCurrentUser ? 'own-message' : ''}`}
+                            className={`message-group ${isCurrentUser ? 'own-message-group' : ''}`}
                         >
                             {!isCurrentUser && receiver && (
-                                <div className="message-profile">
+                                <div className="message-profile-group">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
                                     {receiver.profileImgUrl ? (
                                         <img
                                             src={receiver.profileImgUrl}
                                             alt="Profile"
-                                            className="profile-img"
+                                            className="profile-img-group"
                                         />
                                     ) : (
                                         <FaUserCircle size={36} className="profile-img"/>
@@ -145,11 +139,11 @@ function ChatPage({roomId, roomInfo}) {
                                     <strong>{receiver.nickname}</strong>
                                 </div>
                             )}
-                            <div className="message-content">
-                                <div className={`message-bubble ${isCurrentUser ? 'own-bubble' : ''}`}>
+                            <div className="message-content-group">
+                                <div className={`message-bubble-group ${isCurrentUser ? 'own-bubble' : ''}`}>
                                     {message.message}
                                 </div>
-                                <div className="message-time">
+                                <div className="message-time-group">
                                     {new Date(message.regDt).toLocaleTimeString()}
                                 </div>
                             </div>
@@ -159,9 +153,9 @@ function ChatPage({roomId, roomInfo}) {
                 <div ref={messagesEndRef}/>
                 {/* 스크롤을 위한 빈 div */}
             </div>
-            <div className="chat-input" style={{display: 'flex', borderTop: '1px solid #ddd', padding: '10px'}}>
+            <div className="chat-input-container-group">
                 <input
-                    style={{flex: 1, padding: '10px', border: '1px solid #ddd'}}
+                    className="chat-input-group"
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
