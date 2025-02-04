@@ -3,6 +3,7 @@ import axiosInstance from '../axiosInstance';
 import './FollowList.css';
 import {FaUserCircle} from 'react-icons/fa';
 import FollowToggleButton from "./FollowToggleButton.jsx";
+import {Link} from "react-router-dom";
 
 function FollowList({type}) {
     const [followList, setFollowList] = useState([]);
@@ -42,7 +43,11 @@ function FollowList({type}) {
                             )}
                         </div>
                         <div className="user-info">
-                            <div className="nickname">{follow.nickname}</div>
+                            <div className="nickname">
+                                <Link to={`/members/${follow.memberId}`} className="user-link">
+                                      {follow.nickname} {/* nickname 텍스트를 Link 컴포넌트 안으로 이동 */}
+                                </Link>
+                            </div>
                             <div className="email">{follow.email}</div>
                         </div>
                         {/* 팔로잉/팔로우 버튼 (MemberProfilePage에서 가져옴) */}
