@@ -20,11 +20,13 @@ public class UpdateRoomDto {
 
     private EventType eventType; // ex) MEMBER_PROFILE_UPDATE
     private MemberId memberId; // "업데이트된" memberId
-    private String joinMessage; // 새로운 멤버 가입 메시지
+    private String eventMessage; // 새로운 멤버 가입 메시지
 
     public enum EventType {
         MEMBER_PROFILE_UPDATE, // 멤버 프로필 정보 업데이트
-        MEMBER_JOIN // 새로운 멤버 가입 이벤트
+        MEMBER_JOIN, // 새로운 멤버 가입 이벤트
+        MEMBER_LEAVE // 멤버 나가기 이벤트
+
     }
 
     public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType,
@@ -37,12 +39,12 @@ public class UpdateRoomDto {
 
     public UpdateRoomDto(GroupChatroomId groupChatroomId, MessageType messageType, EventType eventType,
                          MemberId memberId
-            , String joinMessage) {
+            , String eventMessage) {
         this.groupChatroomId = groupChatroomId;
         this.messageType = messageType;
         this.eventType = eventType;
         this.memberId = memberId;
-        this.joinMessage = joinMessage;
+        this.eventMessage = eventMessage;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class UpdateRoomDto {
                 ", messageType=" + messageType +
                 ", eventType=" + eventType +
                 ", memberId=" + memberId.getValue() +
-                ", joinMessage= " + joinMessage + '}';
+                ", joinMessage= " + eventMessage + '}';
     }
 
 }
