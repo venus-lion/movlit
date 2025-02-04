@@ -3,15 +3,12 @@ package movlit.be.pub_sub.notification;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.GroupChatroomId;
-import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.application.service.MemberReadService;
 import movlit.be.pub_sub.RedisNotificationPublisher;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.GroupChatroomMemberResponse;
-import movlit.be.pub_sub.notification.domain.Notification;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class NotificationUseCase {
 
-    private final NotificationService notificationService;
     private final MemberReadService memberReadService;
     private final RedisNotificationPublisher redisNotificationPublisher;
     private final GroupChatroomService groupChatroomService;
@@ -54,7 +50,6 @@ public class NotificationUseCase {
                 .toList();
 
         notificationDtoList.forEach(redisNotificationPublisher::publishNotification);
-
     }
 
 }

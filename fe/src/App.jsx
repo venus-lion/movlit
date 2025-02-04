@@ -147,8 +147,6 @@ function App() {
                                 icon: notificationIcon,
                             });
 
-                            // 테스트 위한 임시 alert
-                            alert(notification.message);
                             // 알림 종
                             setNotifications((prev) => [...prev, notification]);
                             setNewNotification(true); // 새로운 알림 발생
