@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -43,12 +44,14 @@ public class NotificationController {
 
     }
 
+    // 하나의 알림 삭제
     @DeleteMapping("/api/notification/{notiId}")
     public ResponseEntity<Void> deleteNotification(@PathVariable String notiId) {
         notificationService.deleteNotificationById(notiId);
         return ResponseEntity.ok().build();
     }
 
+    // 모든 알림 삭제
     @DeleteMapping("/api/notification/all")
     public ResponseEntity<Void> deleteAllNotification(@AuthenticationPrincipal MyMemberDetails details) {
         if (details != null) {
@@ -59,6 +62,32 @@ public class NotificationController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    // 모든 알림 읽음 처리 (알림 목록 페이지 접속 -> 모든 알림 읽음)
+    @PutMapping("/api/notification/markAllAsRead")
+    public ResponseEntity<Void> markAllAsRead(@AuthenticationPrincipal MyMemberDetails details) {
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            notificationService.markAllAsRead(memberId);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // 읽지 않은 알림 조회 (메인페이지에서 읽지 않은 알림이 있을 시 -> 종 아이콘에 빨간색 뱃지 "N" 표시)
+    @GetMapping("/api/notification/unread")
+    public ResponseEntity<List<Notification>> fetchUnreadNotifications(@AuthenticationPrincipal MyMemberDetails details) {
+        if (details != null) {
+            MemberId memberId = details.getMemberId();
+            List<Notification> unreadNotifications =  notificationService.fetchUnreadNotifications(memberId);
+            return ResponseEntity.ok().body(unreadNotifications);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
 
 
 }

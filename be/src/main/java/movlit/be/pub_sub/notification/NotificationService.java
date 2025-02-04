@@ -58,4 +58,18 @@ public class NotificationService {
         notificationRepository.saveNotification(notification);
     }
 
+    // 모든 알림 읽음 처리
+    public void markAllAsRead(MemberId memberId) {
+        List<Notification> notifications = notificationRepository.findByMemberId(memberId);
+        for (Notification notification : notifications) {
+            notification.setIsRead(true); // 읽음으로 설정
+        }
+        notificationRepository.saveAll(notifications); // 일괄 저장
+    }
+
+    // 읽지 않은 알림 조회
+    public List<Notification> fetchUnreadNotifications(MemberId memberId) {
+        return notificationRepository.findByMemberIdAndIsRead(memberId, false);
+    }
+
 }

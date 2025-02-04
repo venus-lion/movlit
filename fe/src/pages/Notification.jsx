@@ -9,14 +9,15 @@ function Notification() {
 
 
     useEffect(() => {
-        // 이곳에서 알림을 가져오는 API를 호출하세요
-
 
         const fetchedMyNotifications = async () => {
             try {
+                // 알림 리스트 불러오기
                 const response = await axiosInstance.get('/notification');
-
                 setMyNotifications(response.data);
+
+                // 모든 알림 읽음 상태로 update
+                await axiosInstance.put('/notification/markAllAsRead');
             } catch (err) {
                 console.error(`Error fetching myNotifications : `, err);
             }

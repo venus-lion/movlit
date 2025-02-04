@@ -193,6 +193,29 @@ function App() {
         };
     }, [isLoggedIn]);
 
+    // 읽지 않은 알림 조회
+    useEffect(() => {
+        const fetchUnreadNotifications = async () => {
+            // 로그인 시 확인하지 않은 새로운 알림만 불러오기
+            try {
+                const response = await axiosInstance.get('/notification/unread');
+                const data = response.data; // response.data로 수정
+                //console.log('읽지 않은 알림 : ' + JSON.stringify(data, null, 2));
+
+                if (data.length > 0) {
+                    setNewNotification(true); // 새로운 알림 존재 시 배지 표시
+                } else {
+                    setNewNotification(false); // 새로운 알림 없으면 배지 숨김
+                }
+                setNotifications(data);
+            } catch (error) {
+                console.error("안읽은 알림 가져오기 오류:", error);
+            }
+        };
+        fetchUnreadNotifications();
+
+    }, [isLoggedIn]);
+
 
     return (
         <AppContext.Provider value={{updateLoginStatus, isLoggedIn}}>
@@ -261,7 +284,8 @@ function App() {
                     )}
                     {isLoggedIn && (
                         <div className="nav-right-logged-in">
-                            <div onClick={handleBellClick} style={{position: 'relative'}}>
+
+                            <div onClick={handleBellClick} style={{ position: 'relative', cursor : 'pointer'}}>
                                 <img src="/images/notification-bell-icon.png" alt="알림" className="noti-img"/>
                                 {newNotification && <span className="badge">N</span>} {/* 빨간 점 표시 */}
                             </div>

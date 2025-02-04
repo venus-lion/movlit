@@ -16,7 +16,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public List<Notification> findByMemberId(MemberId memberId) {
-        // MongoDB memberId에 대한 알림 목록 조회
         List<Notification> notificationList = notificationMongoRepository.findByMemberIdOrderByTimestampDesc(memberId);
 
         if (notificationList == null || notificationList.isEmpty()) {
@@ -40,6 +39,23 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     public void deleteAllByMemberId(MemberId memberId) {
         notificationMongoRepository.deleteAllByMemberId(memberId);
     }
+
+    @Override
+    public void saveAll(List<Notification> notificationList) {
+        notificationMongoRepository.saveAll(notificationList);
+    }
+
+    @Override
+    public List<Notification> findByMemberIdAndIsRead(MemberId memberId, Boolean isRead) {
+        List<Notification> notificationList =
+                notificationMongoRepository.findByMemberIdAndIsReadOrderByTimestampDesc(memberId, isRead);
+
+        if (notificationList == null || notificationList.isEmpty()) {
+            throw new NotificationNotFoundException(); //
+        }
+        return notificationList;
+    }
+
 
 
 }

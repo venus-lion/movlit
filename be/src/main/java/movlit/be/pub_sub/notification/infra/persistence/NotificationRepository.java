@@ -14,4 +14,8 @@ public interface NotificationRepository {
 
     void deleteAllByMemberId(MemberId memberId);
 
+    void saveAll(List<Notification> notificationList);
+
+    List<Notification> findByMemberIdAndIsRead(MemberId memberId, Boolean isRead);
+
 }
