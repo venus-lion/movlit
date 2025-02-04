@@ -90,7 +90,6 @@ public class GroupChatroomController {
         return ResponseEntity.status(HttpStatus.OK).body(myGroupChatListRes);
     }
 
-
     /**
      * 그룹 채팅방 나가기
      *
@@ -99,12 +98,14 @@ public class GroupChatroomController {
     @DeleteMapping("/api/chat/group/{groupChatroomId}/leave")
     public ResponseEntity<String> leaveGroupChatroom(
             @PathVariable GroupChatroomId groupChatroomId,
-            @AuthenticationPrincipal MyMemberDetails details){
+            @AuthenticationPrincipal MyMemberDetails details) {
 
         MemberId memberId = details.getMemberId();
         groupChatroomService.leaveGroupChatroom(groupChatroomId, memberId);
 
         return ResponseEntity.ok().body(memberId.getValue() + " 님이 그룹채팅방에서 성공적으로 나갔습니다.");
+
+    }
 
     // 채팅방 가입 여부
     @PostMapping("/api/chat/group/checkJoin")
