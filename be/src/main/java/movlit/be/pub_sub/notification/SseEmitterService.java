@@ -21,7 +21,6 @@ public class SseEmitterService {
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
     private final Map<String, Boolean> emitterCompletionStatus = new ConcurrentHashMap<>();
-    private final NotificationService notificationService;
 
     public void sendNotificationToReceiver(String id, NotificationDto notification) {
         SseEmitter emitter = emitters.get(id);
@@ -31,9 +30,6 @@ public class SseEmitterService {
                 log.info("SSeEmitterService : notification send 이벤트 발행 !! ");
 
                 emitter.send(SseEmitter.event().name("notification").data(notification));
-
-                // Notification MongoDB에 저장
-                notificationService.saveNotification(notification);
 
             } catch (IOException e) {
                 handleEmitterError(id, e, "Error sending notification to user {}");
