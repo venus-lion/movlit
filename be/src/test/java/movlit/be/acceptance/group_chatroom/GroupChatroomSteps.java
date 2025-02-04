@@ -109,7 +109,7 @@ public class GroupChatroomSteps {
                 .auth().oauth2(accessToken)
                 .when()
                 .body(body)
-                .get("/api/chat/group/checkJoin")
+                .post("/api/chat/group/checkJoin")
                 .then()
                 .log().all()
                 .extract();
