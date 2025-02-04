@@ -10,4 +10,5 @@ public class FollowResponse {
     private MemberId memberId;
     private String nickname;
     private String profileImgUrl;
+    private String email;
 }

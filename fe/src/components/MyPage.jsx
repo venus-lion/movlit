@@ -62,6 +62,15 @@ function MyPage() {
 
     };
 
+    // 클릭 이벤트 핸들러 추가
+    const handleFollowerClick = () => {
+        navigate('/my-followers');
+    };
+
+    const handleFollowingClick = () => {
+        navigate('/my-followings');
+    }
+
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
@@ -291,11 +300,11 @@ function MyPage() {
             </div>
             <div className="mypage-stats">
                 <div className="stat-item">
-                    <span>{followerCount}</span>
+                    <span onClick={handleFollowerClick} className="link-button">{followerCount}</span>
                     <span>팔로워</span>
                 </div>
                 <div className="stat-item">
-                    <span>{followingCount}</span>
+                    <span onClick={handleFollowingClick} className="link-button">{followingCount}</span>
                     <span>팔로잉</span>
                 </div>
                 <div className="stat-item">

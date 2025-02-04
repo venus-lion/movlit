@@ -93,6 +93,7 @@ public class FollowReadService {
                 .memberId(follower.getMemberId())
                 .nickname(follower.getNickname())
                 .profileImgUrl(follower.getProfileImgUrl())
+                .email(follower.getEmail())
                 .build();
     }
 
@@ -103,6 +104,7 @@ public class FollowReadService {
                 .memberId(followee.getMemberId())
                 .nickname(followee.getNickname())
                 .profileImgUrl(followee.getProfileImgUrl())
+                .email(followee.getEmail())
                 .build();
     }
 

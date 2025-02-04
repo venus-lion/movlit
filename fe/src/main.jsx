@@ -22,6 +22,7 @@ import Chat from "./components/chat/Chat.jsx";
 import Notification from "./pages/Notification.jsx";
 import MemberProfilePage from "./components/MemberProfilePage.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
+import FollowList from "./pages/FollowList.jsx";
 
 
 
@@ -107,6 +108,14 @@ const router = createBrowserRouter([
             {
                 path: 'members/:memberId', // 회원 페이지 라우트 추가
                 element: <MemberProfilePage />,
+            },
+            {
+                path: '/my-followers',
+                element: <FollowList type="followers"/>
+            },
+            {
+                path: '/my-followings',
+                element: <FollowList type="followings"/>
             }
         ],
     },
