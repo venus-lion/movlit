@@ -83,22 +83,46 @@ function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}
                     const updateRoomDto = receivedData.updateRoomDto;
                     const cachedMembers = receivedData.cachedMembers;
 
-                    // 1-3. cachedMembers로 멤버 목록 업데이트 - (멤버 프로필 이벤트랑 동일하게 처리)
-                    setMembers(cachedMembers);
+                    if (updateRoomDto.eventType === 'MEMBER_JOIN'){
+                        // MEMBER_JOIN 이벤트 처리
+                        setMembers(cachedMembers);
 
-                    // 1-4. joinMessage 처리
-                    const joinMessage = updateRoomDto.joinMessage;
-                    console.log('updatedMembers의 joinMessage :: ' + joinMessage);
+                        // joinMessage 처리
+                        const joinMessage = updateRoomDto.eventMessage;
+                        console.log('updatedMembers의 joinMessage :: ' + joinMessage);
 
-                    // 1-5. joinMessage를 채팅 메시지와 구분하여 화면에 표시
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        {
-                            type: 'join', // 메시지 유형을 'join'으로 설정
-                            message: joinMessage,
-                            regDt: new Date(),
-                        },
-                    ]);
+                        // 1-5. joinMessage를 채팅 메시지와 구분하여 화면에 표시
+                        setMessages((prevMessages) => [
+                            ...prevMessages,
+                            {
+                                type: 'join', // 메시지 유형을 'join'으로 설정
+                                message: joinMessage,
+                                regDt: new Date(),
+                            },
+                        ]);
+                    } else if (updateRoomDto.eventType === 'MEMBER_LEAVE'){
+                        console.log('member leave 이벤트 발행 ... !');
+
+                        // MEMBER_LEAVE 이벤트 처리
+                        setMembers(cachedMembers);
+
+                        const leaveMessage = updateRoomDto.eventMessage;
+
+                        console.log('leaveMsg >>> ');
+                        console.log(leaveMessage);
+
+                        setMessages((prevMessages) => [
+                            ...prevMessages,
+                            {
+                                type: 'join', // (중요) 나간 멤버 알림 메시지 유형을 'join'으로 설정
+                                message: leaveMessage, // "ㅇㅇ님이 나갔습니다" 메시지 설정
+                                regDt: new Date(),
+                            },
+                        ]);
+                    }
+
+
+
                 }
 
             }))

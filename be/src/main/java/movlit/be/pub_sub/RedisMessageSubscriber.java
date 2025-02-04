@@ -98,11 +98,19 @@ public class RedisMessageSubscriber {
                     messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId.getValue(), cachedMembers);
                 } else if (updateRoomDto.getEventType().equals(EventType.MEMBER_JOIN)) {
                     // 새로운 멤버가입 이벤트 처리
-                    // joinMessage와 cachedMembers를 함께 전송
+                    // eventMessage와 cachedMembers를 함께 전송
                     Map<String, Object> response = new HashMap<>();
                     response.put("updateRoomDto", updateRoomDto);
                     response.put("cachedMembers", cachedMembers);
                     log.info("RedisMessageSubscriber의 cachedMembers 개수 : {}", cachedMembers.size());
+
+                    messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId.getValue(), response);
+                } else if (updateRoomDto.getEventType().equals(EventType.MEMBER_LEAVE)){
+                    // 기존 멤버 나가는 이벤트 처리
+                    // eventMessage와 cachedMembers 함께 전송
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("updateRoomDto", updateRoomDto);
+                    response.put("cachedMembers", cachedMembers);
 
                     messagingTemplate.convertAndSend("/topic/chat/room/" + groupChatroomId.getValue(), response);
                 }

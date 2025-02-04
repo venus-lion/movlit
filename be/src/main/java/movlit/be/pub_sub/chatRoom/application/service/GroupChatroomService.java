@@ -27,6 +27,7 @@ import movlit.be.movie_heart.application.service.MovieHeartService;
 import movlit.be.pub_sub.RedisNotificationPublisher;
 import movlit.be.pub_sub.chatRoom.application.convertor.ChatroomConvertor;
 import movlit.be.pub_sub.chatRoom.application.service.dto.GroupChatroomJoinedEvent;
+import movlit.be.pub_sub.chatRoom.application.service.dto.GroupChatroomLeftEvent;
 import movlit.be.pub_sub.chatRoom.application.service.dto.RequestDataForCreationWorker;
 import movlit.be.pub_sub.chatRoom.domain.GroupChatroom;
 import movlit.be.pub_sub.chatRoom.domain.MemberRChatroom;
@@ -354,6 +355,10 @@ public class GroupChatroomService {
 
         // 변경사항을 저장할 것
         groupChatRepository.create(groupChatroom); // 변경 사항 저장
+
+        // 그룹채팅방 나가기 이벤트 발행
+        log.info("GrouopChatroomService >>> GroupChatroomLeftEvent 발행 ...");
+        eventPublisher.publishEvent(new GroupChatroomLeftEvent(groupchatroomId, memberId));
 
     }
 
