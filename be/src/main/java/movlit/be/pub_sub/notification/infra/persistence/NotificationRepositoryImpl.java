@@ -16,13 +16,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public List<Notification> findByMemberId(MemberId memberId) {
-        List<Notification> notificationList = notificationMongoRepository.findByMemberIdOrderByTimestampDesc(memberId);
-
-        if (notificationList == null || notificationList.isEmpty()) {
-            throw new NotificationNotFoundException(); //
-        }
-
-        return notificationList;
+        return notificationMongoRepository.findByMemberIdOrderByTimestampDesc(memberId);
     }
 
     @Override
