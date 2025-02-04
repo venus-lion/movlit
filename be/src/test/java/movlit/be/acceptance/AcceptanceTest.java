@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -29,6 +30,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -37,14 +39,14 @@ import org.testcontainers.utility.DockerImageName;
 public abstract class AcceptanceTest {
 
     public static final DockerImageName MYSQL_IMAGE = DockerImageName.parse("mysql:8.0");
-    //    public static final DockerImageName REDIS_IMAGE = DockerImageName.parse("redis:7.2");
+    public static final DockerImageName REDIS_IMAGE = DockerImageName.parse("redis:7.2");
     public static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             .withDatabaseName("test").withUsername("root").withPassword("1234").withReuse(true);
-//    public static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withReuse(true);
+    public static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withReuse(true);
 
     static {
         MYSQL.setPortBindings(List.of("3307:3306"));
-//        REDIS.setPortBindings(List.of("6379:6379"));
+        REDIS.setPortBindings(List.of("6379:6379"));
     }
 
     @LocalServerPort
@@ -99,7 +101,7 @@ public abstract class AcceptanceTest {
     @BeforeAll
     static void startContainer() {
         MYSQL.start();
-//        REDIS.start();
+        REDIS.start();
     }
 
     private void initAccessToken() {
