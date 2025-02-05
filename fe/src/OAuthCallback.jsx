@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useLocation, useNavigate, useOutletContext} from 'react-router-dom';
+import axiosInstance from "./axiosInstance.js";
 
 const OAuthCallback = () => {
     const location = useLocation();
@@ -15,7 +16,9 @@ const OAuthCallback = () => {
         console.log('refreshToken:', refreshToken); // refreshToken 출력
 
         if (accessToken && refreshToken) {
-            sessionStorage.setItem('accessToken', accessToken);
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+            localStorage.setItem('accessToken', accessToken);
             document.cookie = `refreshToken=${refreshToken}; SameSite=None; Secure; HttpOnly; Path=/; Max-Age=1209600`;
 
             console.log('OAuth2 로그인 성공, accessToken=', accessToken);
