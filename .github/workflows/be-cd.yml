@@ -29,9 +29,6 @@ jobs:
           # 생성 후 파일 확인 명령어 추가
           ls -l ${{ env.TEST_RESOURCE_PATH }}/application.yml
           stat ${{ env.TEST_RESOURCE_PATH }}/application.yml
-      - name: Validate YAML syntax
-        run: |
-          python3 -c 'import yaml, sys; yaml.safe_load(sys.stdin)' < ${{ env.TEST_RESOURCE_PATH }}/application.yml
       - name: 어플리케이션을 빌드한다
         run: |
           chmod +x gradlew
