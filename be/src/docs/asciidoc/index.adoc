@@ -149,7 +149,7 @@ operation::unJoinMemberCheckGroupChatJoin_success[snippets='http-request,http-re
 
 operation::joinMemberCheckGroupChatJoin_success[snippets='http-request,http-response']
 
-operation::mMemberCheckNotExistGroupChatJoin_success[snippets='http-request,http-response']
+operation::memberCheckNotExistGroupChatJoin_success[snippets='http-request,http-response']
 
 === 일대일 채팅
 

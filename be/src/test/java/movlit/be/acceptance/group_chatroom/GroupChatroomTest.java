@@ -121,7 +121,7 @@ public class GroupChatroomTest extends AcceptanceTest {
     @Test
     void when_member_check_not_exist_group_chat_join_then_response_200_and_body() {
         // docs
-        api_문서_타이틀("mMemberCheckNotExistGroupChatJoin_success", spec);
+        api_문서_타이틀("memberCheckNotExistGroupChatJoin_success", spec);
 
         // given
         String accessToken = 회원_윤기_액세스토큰;
