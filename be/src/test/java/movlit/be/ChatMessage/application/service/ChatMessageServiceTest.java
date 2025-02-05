@@ -22,13 +22,14 @@ import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
 import movlit.be.pub_sub.chatRoom.application.service.OneononeChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
+import movlit.be.pub_sub.notification.NotificationDto;
+import movlit.be.pub_sub.notification.NotificationService;
 import movlit.be.pub_sub.notification.NotificationUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StreamOperations;
@@ -52,6 +53,9 @@ public class ChatMessageServiceTest extends AcceptanceTest {
 
     @Mock
     private NotificationUseCase notificationUsecase;
+
+    @Mock
+    private NotificationService notificationService;
 
     @Mock
     private RedisNotificationPublisher redisNotificationPublisher;
@@ -126,19 +130,15 @@ public class ChatMessageServiceTest extends AcceptanceTest {
     @DisplayName("sendMessageForOneOnOne 실행 시 메시지가 정상 처리된다.")
     void sendMessageForOneOnOneTest() {
         // Given
-
         testMessageDto2.setMessageType(MessageType.ONE_ON_ONE);
 
         // When
         chatMessageService.sendMessageForOneOnOne(testMessageDto2);
 
         // Then
-        // Redis Stream에 정상적으로 메시지가 추가된다.
-        verify(streamOperations, times(1)).add(any(), any(Map.class));
-
-        // Redis Pub/Sub을 통해 메시지가 정상적으로 발행된다.
-        verify(messagePublisher, times(1)).sendMessage(testMessageDto2);
-
+        verify(streamOperations, times(1)).add(any(), any(Map.class)); // Redis Stream 추가 확인
+        verify(messagePublisher, times(1)).sendMessage(testMessageDto2); // 메시지 발행 확인
+        verify(notificationService, times(1)).saveNotification(any(NotificationDto.class)); // 알림 저장 확인
     }
 
     @Test
