@@ -141,7 +141,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(url)); // allowedOrigins 대신 setAllowedOriginPatterns 사용
 //        configuration.setAllowedOriginPatterns(List.of("*.movlit.store"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
