@@ -138,8 +138,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(url)); // allowedOrigins 대신 setAllowedOriginPatterns 사용
-//        configuration.setAllowedOriginPatterns(List.of("*.movlit.store"));
+        configuration.setAllowedOrigins(List.of(url));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
