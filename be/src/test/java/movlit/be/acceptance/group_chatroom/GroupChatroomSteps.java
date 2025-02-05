@@ -74,7 +74,7 @@ public class GroupChatroomSteps {
                 .log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .get("/api/chatrooms/myGroupChatrooms")
+                .get("/api/chat/group/rooms/my")
                 .then()
                 .log().all()
                 .extract();
