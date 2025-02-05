@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
+import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.pub_sub.RedisNotificationPublisher;
@@ -18,9 +19,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-class NotificationControllerTest {
+class NotificationControllerTest extends AcceptanceTest {
 
     @Autowired
     private MockMvc mockMvc;

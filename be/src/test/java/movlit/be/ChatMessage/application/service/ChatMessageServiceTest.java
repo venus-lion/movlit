@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
 import movlit.be.member.application.service.MemberReadService;
@@ -32,8 +33,7 @@ import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StreamOperations;
 
-@SpringBootTest
-public class ChatMessageServiceTest {
+public class ChatMessageServiceTest extends AcceptanceTest {
 
     @InjectMocks
     private ChatMessageService chatMessageService;

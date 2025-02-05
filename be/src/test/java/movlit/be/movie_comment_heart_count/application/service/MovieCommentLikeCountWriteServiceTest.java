@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
+import movlit.be.acceptance.AcceptanceTest;
 import movlit.be.common.util.IdFactory;
 import movlit.be.common.util.ids.MovieCommentId;
 import movlit.be.common.util.ids.MovieCommentLikeCountId;
@@ -17,8 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class MovieCommentLikeCountWriteServiceTest {
+class MovieCommentLikeCountWriteServiceTest extends AcceptanceTest {
 
     @Autowired
     private MovieCommentLikeCountWriteService movieCommentLikeCountWriteService;
