@@ -34,7 +34,9 @@ jobs:
           python3 -c 'import yaml, sys; yaml.safe_load(sys.stdin)' < ${{ env.TEST_RESOURCE_PATH }}/application.yml
       - name: 어플리케이션을 빌드한다
         run: |
-          chmod +x gradlew
+          echo "::group::Gradle Build Logs"
+          chmod +x gradlew --info
+          echo "::endgroup::"
           ./gradlew build
 
         working-directory: ${{ env.ROOT_PATH }}
