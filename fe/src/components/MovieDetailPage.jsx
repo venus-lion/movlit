@@ -561,7 +561,6 @@ function MovieDetailPage() {
                     color: 'white',
                 }}
             >
-                <ToastContainer/>
                 <div style={styles.breadcrumbs}>
                     홈 / 영화 / {movieData.title}
                 </div>

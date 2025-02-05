@@ -254,7 +254,6 @@ function MyPage() {
 
     return (
         <div className="mypage-container">
-            <ToastContainer/>
             <input
                 type="file"
                 ref={fileInputRef}

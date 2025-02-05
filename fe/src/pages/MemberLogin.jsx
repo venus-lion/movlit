@@ -55,7 +55,6 @@ const MemberLogin = () => {
 
     return (
         <div className="bg-light">
-            <ToastContainer/>
             <div className="container" style={{marginTop: '30px'}}>
                 <div className="row">
                     <div className="col-4"></div>

@@ -276,7 +276,6 @@ const MemberRegister = () => {
                     <div className="col-3"></div>
                 </div>
             </div>
-            <ToastContainer/>
         </div>
     );
 };
