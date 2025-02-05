@@ -321,7 +321,7 @@ function App() {
             <ToastContainer
                 position="top-right"
                 autoClose={1000}
-                hideProgressBar
+                hideProgressBar={false}
                 closeOnClick
                 pauseOnHover={false}
                 draggable
