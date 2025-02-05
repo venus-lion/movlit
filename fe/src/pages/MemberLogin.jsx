@@ -27,29 +27,13 @@ const MemberLogin = () => {
 
             updateLoginStatus(true);
             console.log('로그인 요청 성공');
-            toast.success('로그인에 성공했습니다!', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.success('로그인에 성공했습니다!');
             console.log('알림 표시 후');
             navigate('/');
         } catch (error) {
             setError('로그인 정보가 올바르지 않습니다.');
             console.error('Login error:', error);
-            toast.error('로그인 정보가 올바르지 않습니다.', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.error('로그인 정보가 올바르지 않습니다.');
         }
     };
 
