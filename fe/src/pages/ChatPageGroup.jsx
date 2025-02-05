@@ -11,7 +11,7 @@ function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}
     const [newMessage, setNewMessage] = useState('');
     const [stompClient, setStompClient] = useState(null);
     const [members, setMembers] = useState([]);
-    const messagesEndRef = useRef(null);
+    const messagesContainerRef = useRef(null); // 스크롤 컨테이너에 대한 ref
     const [isComposing, setIsComposing] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
 
@@ -198,8 +198,15 @@ function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}
         }
     };
 
+    // messages가 변경될 때마다 스크롤을 맨 하단으로 이동
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+        // 스크롤을 맨 하단으로 이동하는 로직
+        const scrollToBottom = () => {
+            if (messagesContainerRef.current) {
+                messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+            }
+        };
+        scrollToBottom();
     }, [messages]);
 
     return (
@@ -208,7 +215,7 @@ function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}
                 <h2>채팅방: {roomInfo.roomName}</h2>
                 <button onClick={handleLeaveChatroom} className="leave-button">나가기</button>
             </div>
-            <div className="chat-messages-group">
+            <div className="chat-messages-group" ref={messagesContainerRef}>
                 {messages.map((message, index) => {
                     const sender = members.find((m) => m.memberId === message.senderId);
                     const isCurrentUser = message.senderId === currentUserId;
@@ -252,7 +259,7 @@ function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}
                         </div>
                     );
                 })}
-                <div ref={messagesEndRef}/>
+                <div/>
             </div>
             <div className="chat-input-container-group">
                 <input

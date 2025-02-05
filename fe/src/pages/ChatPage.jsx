@@ -12,7 +12,7 @@ function ChatPage({roomId, roomInfo}) {
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false); // 채팅방 참여 이력
     const [message, setMessage] = useState(''); // 공지 메시지 표시
     const focusDivRef = useRef(null); // 포커스를 주기 위한 ref
-    const messagesEndRef = useRef(null);
+    const messagesContainerRef = useRef(null); // 스크롤 컨테이너에 대한 ref
     // const {isLoggedIn} = useOutletContext();  // 로그인 상태
     const [currentUserId, setCurrentUserId] = useState(null);
     const [isComposing, setIsComposing] = useState(false);
@@ -101,9 +101,15 @@ function ChatPage({roomId, roomInfo}) {
         }
     };
 
-    // 새 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
+    // messages가 변경될 때마다 스크롤을 맨 하단으로 이동
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+        // 스크롤을 맨 하단으로 이동하는 로직
+        const scrollToBottom = () => {
+            if (messagesContainerRef.current) {
+                messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+            }
+        };
+        scrollToBottom();
     }, [messages]);
 
     return (
@@ -111,7 +117,7 @@ function ChatPage({roomId, roomInfo}) {
             <div className="chat-header-group">
                 <h2>채팅방: {roomInfo.receiverNickname}</h2>
             </div>
-            <div className="chat-messages-group">
+            <div className="chat-messages-group" ref={messagesContainerRef}>
                 {messages.map((message, index) => {
                     const receiver = {
                         memberId: roomInfo.receiverId,
@@ -150,7 +156,7 @@ function ChatPage({roomId, roomInfo}) {
                         </div>
                     );
                 })}
-                <div ref={messagesEndRef}/>
+                <div/>
                 {/* 스크롤을 위한 빈 div */}
             </div>
             <div className="chat-input-container-group">
