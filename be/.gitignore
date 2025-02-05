@@ -40,4 +40,4 @@ out/
 
 # Exclude sensitive configuration file
 src/main/resources/application.yml
-#src/test/resources/application.yml
+src/test/resources/application.yml
