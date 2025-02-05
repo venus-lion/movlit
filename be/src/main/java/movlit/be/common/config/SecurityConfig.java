@@ -95,8 +95,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/noti/newGroupChat/*").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/notification/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/members/id").authenticated()
-                        // FIXME: 시큐리티에 @Async로 비동기 설정
-                        .requestMatchers(HttpMethod.GET, "/api/subscribe/*").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/subscribe/*").permitAll() // TODO: 권한 주기
                         .requestMatchers("/collect/indices/**", "/collect/movie/**", "/discover",
                                 "/websocket/**", "/echo", "/api/members/login", "/img/**", "/js/**", "/css/**",
                                 "/error/**", "api/books/**", "/ws-stomp/**", "/notification/**")
