@@ -1,11 +1,15 @@
 package movlit.be.common.config;
 
+import io.lettuce.core.RedisConnectionException;
+import io.lettuce.core.RedisException;
+import jakarta.annotation.PreDestroy;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.RedisSystemException;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
@@ -17,9 +21,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Slf4j
 public class RedisStreamConfig {
 
-    // TODO : AppConfig에서 정의한 threadPoolExecutor의 설정이 Redis Stream 처리에도 적합한지 확인.(스레드 풀 크키, 큐 크기)
-//    private final ThreadPoolExecutor threadPoolExecutor;
-//    private final RedisConnectionFactory redisConnectionFactory;
+    // 종료 상태 플래그 (shutdown 중인지 여부)
+    private volatile boolean shuttingDown = false;
 
     @Bean
     public StreamMessageListenerContainer<String, MapRecord<String, String, String>> streamMessageListenerContainer(
@@ -38,6 +41,17 @@ public class RedisStreamConfig {
                 .executor(taskExecutor)
                 .batchSize(10)
                 .pollTimeout(Duration.ofSeconds(1))
+                .errorHandler(
+                        e -> {
+                            // shutdown 중이고, 예외 메시지가 "Connection closed"인 경우만 무시
+//                            if (shuttingDown && e.getMessage() != null && e.getMessage()
+//                                    .contains("Redis exception")) {
+                            if (e instanceof RedisSystemException || e instanceof RedisException) {
+                                log.debug("Ignored connection closed exception during shutdown: {}", e.getMessage());
+                            } else {
+                                log.error("Unexpected error in stream polling task", e);
+                            }
+                        })
                 .build();
 
         StreamMessageListenerContainer<String, MapRecord<String, String, String>> container = StreamMessageListenerContainer.create(
@@ -45,6 +59,13 @@ public class RedisStreamConfig {
         container.start();
         log.info("==== StreamMessageListenerContainer 빈 등록 : {}", container);
         return container;
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        // 애플리케이션 컨텍스트 종료 전에 shutdown 플래그를 true로 설정
+        shuttingDown = true;
+        log.info("RedisStreamConfig is shutting down. Setting shutdown flag to true.");
     }
 
 }
