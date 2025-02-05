@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatNameModal.css";
 import axiosInstance from "../../axiosInstance.js";
+import {toast} from "react-toastify";
 
 // 별을 표시하는 함수
 const renderStars = (rating) => {
@@ -32,7 +33,7 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
 
     const handleSubmit = () => {
         if (!chatroomName.trim()) {
-            alert("채팅방 제목은 필수입니다.");
+            toast.error('채팅방 제목은 필수입니다.');
             return;
         }
 
@@ -46,12 +47,11 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         try {
             const response = axiosInstance.post("/chat/create/group", requestData);
             console.log("채팅방 생성 성공:", response.data);
-            alert("채팅방을 생성했습니다!");
+            toast.success('채팅방을 생성했습니다.');
             onUpdateChatList();
             onClose();
         } catch (error) {
-            console.error("채팅방 생성 실패:", error);
-            alert("채팅방 생성에 실패했습니다.");
+            toast.success('채팅방 생성에 실패했습니다.');
         }
     };
 

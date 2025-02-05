@@ -99,6 +99,7 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
         };
     }, []); // 의존성 배열 비움
 
+
     // 필터링된 채팅 목록 (메모이제이션)
     const filteredChats = useMemo(() => {
         const chats = activeTab === 'personal' ? personalChats : groupChats;

@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import {FaRegStar, FaStar, FaStarHalfAlt} from 'react-icons/fa';
 import "../../assets/css/CreateGroupChatModal.css";
 import axiosInstance from "../../axiosInstance.js";
+import {toast} from "react-toastify";
 
 const renderStars = (rating) => {
     const validRating = Math.max(0, Math.min(10, rating || 0));
@@ -49,7 +50,7 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
 
     const handleSearch = async () => {
         if (!searchTerm.trim()) {
-            alert("검색어를 입력하세요.");
+            toast.error('검색어를 입력해주세요.');
             return;
         }
         setSearchResults([]);
@@ -87,7 +88,7 @@ const CreateGroupChatModal = ({isOpen, onClose, onConfirm}) => {
 
     const handleConfirm = () => {
         if (!selectedCard) {
-            alert("카드를 선택해주세요.");
+            toast.error('카드를 선택해주세요.');
             return;
         }
         onConfirm(selectedCard, selectedCategory);
