@@ -14,12 +14,17 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+
+    asciidoctorExt
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -56,6 +61,7 @@ dependencies {
 
     // Spring REST Docs
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.0' // Rest Assured와 함께 사용
 
     // Spring Validation
@@ -87,46 +93,28 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
-tasks.named('test') {
+test {
     outputs.dir snippetsDir
-    useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
+asciidoctor {
     inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
     dependsOn test
-    doFirst {
-        delete file('src/main/resources/static/docs') // 기존 문서 삭제 (선택 사항)
-    }
-    doLast {
-        copy {
-            from "${asciidoctor.outputDir}"
-            into 'src/main/resources/static/docs' // 문서 위치 (선택 사항)
-        }
-    }
-}
-
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-build {
-    dependsOn copyDocument
 }
 
 bootJar {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}") {
-        into 'static/docs'
+    copy {
+        from asciidoctor.outputDir
+        into 'src/main/resources/static/docs'
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated/annotationProcessor/java/main"]
-        }
-    }
+clean {
+    delete file('src/main/resources/static/docs')
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
