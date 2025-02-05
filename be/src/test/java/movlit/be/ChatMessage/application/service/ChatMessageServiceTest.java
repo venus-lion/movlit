@@ -20,6 +20,7 @@ import movlit.be.pub_sub.chatMessage.application.service.ChatMessageService;
 import movlit.be.pub_sub.chatMessage.infra.persistence.ChatMessageRepository;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 import movlit.be.pub_sub.chatMessage.presentation.dto.response.MessageType;
+import movlit.be.pub_sub.chatRoom.application.service.GroupChatroomService;
 import movlit.be.pub_sub.chatRoom.application.service.OneononeChatroomService;
 import movlit.be.pub_sub.chatRoom.presentation.dto.OneononeChatroomResponse;
 import movlit.be.pub_sub.notification.NotificationDto;
@@ -65,6 +66,9 @@ public class ChatMessageServiceTest extends AcceptanceTest {
 
     @Mock
     private MemberReadService memberReadService;
+
+    @Mock
+    private GroupChatroomService groupChatroomService;
 
     private ChatMessageDto testMessageDto;
     private ChatMessageDto testMessageDto2;
