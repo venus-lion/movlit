@@ -1,7 +1,12 @@
 package movlit.be.auth.presentation;
 
+import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetailsService;
+import movlit.be.auth.domain.repository.AuthCodeStorage;
+import movlit.be.auth.domain.repository.RefreshTokenStorage;
 import movlit.be.auth.presentation.dto.RefreshTokenRequest;
 import movlit.be.common.filter.dto.AuthenticationRequest;
 import movlit.be.common.filter.dto.AuthenticationResponse;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -23,6 +29,8 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final MyMemberDetailsService myMemberDetailsService;
+    private final AuthCodeStorage authCodeStorage;
+    private final RefreshTokenStorage refreshTokenStorage;
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
@@ -45,7 +53,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/api/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
 
@@ -58,6 +66,30 @@ public class AuthenticationController {
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh Token"); // TODO: 리팩토링 필요
+    }
+
+    @PostMapping("/api/token")
+    public ResponseEntity<?> exchangeToken(@RequestBody Map<String, String> body) {
+        String code = body.get("code");
+        String email = authCodeStorage.fetchEmailForCode(code);
+
+        if (Objects.isNull(email)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "잘못된 code입니다."));
+        }
+
+        final String accessToken = jwtTokenUtil.generateAccessToken(email);
+        final String refreshToken = jwtTokenUtil.generateRefreshToken(email);
+        final UserDetails userDetails = myMemberDetailsService.loadUserByUsername(email);
+
+        log.info("======== accessToken={}", accessToken);
+        log.info("======== refreshToken={}", refreshToken);
+        log.info("========= userDetails.getUsername={}", userDetails.getUsername());
+
+        refreshTokenStorage.saveRefreshToken(email, refreshToken);
+
+        authCodeStorage.removeCode(code);
+
+        return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
     }
 
 }
