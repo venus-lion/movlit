@@ -21,11 +21,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class MyMemberDetails implements UserDetails, OAuth2User {
 
     // 공통
-    @Getter
     private MemberId memberId;
 
     // 로컬 로그인
-    @Getter
     private Member member;
 
     // 소셜 로그인
@@ -64,6 +62,14 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
     public MemberId getMemberId() {
         if (member != null){
             return member.getMemberId();
+        }
+
+        return null;
+    }
+
+    public Member getMember() {
+        if (member != null){
+            return member;
         }
 
         return null;
