@@ -40,7 +40,6 @@ function ChatPage({roomId, roomInfo}) {
                 Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
             },
             debug: (str) => {
-                //console.log('STOMP Debug:', str);
                 console.log("메시지  : " + JSON.stringify(messages, null, 2));
             },
         });
@@ -78,7 +77,7 @@ function ChatPage({roomId, roomInfo}) {
                 roomId: roomId, // roomId 사용
                 senderId: currentUserId, // 현재 사용자 ID (실제로는 인증 정보에서 가져와야 함)
                 message: newMessage,
-                regDt: getNowDate().toISOString()
+                regDt: getNowDate()
             };
 
             stompClient.publish({
@@ -150,7 +149,7 @@ function ChatPage({roomId, roomInfo}) {
                                     {message.message}
                                 </div>
                                 <div className="message-time-group">
-                                    {getNowDate().toLocaleTimeString()}
+                                    {DateTimeUtil(getNowDate())}
                                 </div>
                             </div>
                         </div>

@@ -44,10 +44,8 @@ export function getNowDate() {
     const seoulTime = utcToZonedTime(nowUtc, 'Asia/Seoul');
 
     // 원하는 형식으로 포맷 (예: 'yyyy-MM-dd HH:mm:ss')
-    const formatted = format(seoulTime, 'yyyy-MM-dd HH:mm:ss', {timeZone: 'Asia/Seoul'});
-    // return formatted;
-    console.log('getNowDate() : ' + seoulTime);
-    return seoulTime;
+    const formatted = format(seoulTime, "yyyy-MM-dd'T'HH:mm:ss", {timeZone: 'Asia/Seoul'});
+    return formatted;
 }
 
 export default DateTimeUtil;
