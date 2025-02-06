@@ -149,8 +149,11 @@ function ChatPage({roomId, roomInfo}) {
                                 <div className={`message-bubble-group ${isCurrentUser ? 'own-bubble' : ''}`}>
                                     {message.message}
                                 </div>
+                                {/*<div className="message-time-group">*/}
+                                {/*    {new Date(message.regDt).toLocaleTimeString()}*/}
+                                {/*</div>*/}
                                 <div className="message-time-group">
-                                    {new Date(message.regDt).toLocaleTimeString()}
+                                    {message.regDt ? new Date(message.regDt).toLocaleTimeString() : 'Invalid Date'}
                                 </div>
                             </div>
                         </div>
