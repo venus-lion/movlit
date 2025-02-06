@@ -85,7 +85,6 @@ public class GroupChatroomController {
     public ResponseEntity<List<GroupChatroomResponseDto>> fetchMyGroupChats(
             @AuthenticationPrincipal MyMemberDetails details) {
         MemberId memberId = details.getMemberId();
-//        List<GroupChatroomResponseDto> myGroupChatListRes = groupChatroomService.fetchMyGroupChatList(memberId);
         List<GroupChatroomResponseDto> myGroupChatListRes = fetchGroupChatroomUseCase.execute(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(myGroupChatListRes);
     }

@@ -8,6 +8,7 @@ import ChatPageGroup from "../../pages/ChatPageGroup.jsx";
 import CreateGroupChatNameModal from "./CreateGroupChatNameModal.jsx";
 import axiosInstance from "../../axiosInstance.js";
 import GetGroupChatInfoModal from "./GetGroupChatInfoModal.jsx"; // axios 임포트
+import {toast} from "react-toastify";
 
 const Chat = () => {
     const [activeTab, setActiveTab] = useState('personal'); // 개인 채팅 또는 그룹 채팅
@@ -91,38 +92,23 @@ const Chat = () => {
             return;
         }
         setIsCreateGroupChatModalOpen(true); // 모달 열기
-
-        // const roomName = prompt('생성할 채팅방 이름을 입력하세요 : ');
-        // if (!roomName) return;
-
-        /*
-            TODO : 이미 존재하는 채팅방 제목이면, ‘이미 존재하는 채팅방입니다. 참여하시겠습니까?’ 하고 팝업창 띄우고
-              ‘참여’ 버튼 누르면, 이미 존재하는 채팅방 참여하는 것
-         */
-
-        // 채팅방이 존재하지 않으면 새로운 채팅방 개설
-        // -- 근데 일대일채팅방인지, 그룹채팅방인지에 따라 다른 생성 api를 호출해야 하고..
-        // -- 그리고 일대일채팅이면,
-
     };
 
     const handleJoinRoom = async (existingRoomInfo) => {
         // existingRoomInfo가 null이 아닌지 확인
         if (!existingRoomInfo || !existingRoomInfo.groupChatroomId) {
-            alert("채팅방 정보가 유효하지 않습니다.");
+            toast.error("채팅방 정보가 유효하지 않습니다.");
             return;
         }
 
         const groupChatroomId = existingRoomInfo.groupChatroomId; // 채팅방 ID 추출
         try {
             const response = await axiosInstance.post(`/chat/group/${groupChatroomId}`);
-            console.log("채팅방 가입 성공:", response.data);
-            alert("채팅방 가입에 성공하였습니다.");
+            toast.success("채팅방 가입에 성공하였습니다.");
             setRefreshKey(prevKey => prevKey + 1); // 키를 업데이트하여 ChatList를 다시 렌더링함
             handleCloseGroupChatInfoModal(); // 현재 두번째 모달창 닫기
         } catch (error) {
-            console.error("채팅방 가입 실패:", error);
-            alert("채팅방 가입에 실패했습니다.");
+            toast.success("채팅방 가입에 실패했습니다.");
         }
     };
 
@@ -171,7 +157,7 @@ const Chat = () => {
                     }}
                 />
                 <ChatList
-                    key={refreshKey} // 새로고침 키 전달
+                    refreshKey={refreshKey} // 새로고침 키 전달
                     activeTab={activeTab}
                     searchTerm={searchTerm}
                     onSelectChat={(chat) => setSelectedChat(chat)} // 선택된 채팅방 설정

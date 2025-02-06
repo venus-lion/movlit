@@ -31,7 +31,7 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         setChatroomName(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!chatroomName.trim()) {
             toast.error('채팅방 제목은 필수입니다.');
             return;
@@ -45,7 +45,7 @@ const CreateGroupChatNameModal = ({isOpen, onClose, selectedCard, selectedCatego
         };
 
         try {
-            const response = axiosInstance.post("/chat/create/group", requestData);
+            const response = await axiosInstance.post("/chat/create/group", requestData);
             console.log("채팅방 생성 성공:", response.data);
             toast.success('채팅방을 생성했습니다.');
             onUpdateChatList();
