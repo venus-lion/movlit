@@ -51,7 +51,15 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return member.getMemberId().getValue();
+    }
+
+    public MemberId getMemberId() {
+        if (member != null){
+            return member.getMemberId();
+        }
+
+        return null;
     }
 
     @Override
