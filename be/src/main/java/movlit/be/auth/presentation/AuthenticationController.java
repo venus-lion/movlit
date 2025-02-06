@@ -3,6 +3,7 @@ package movlit.be.auth.presentation;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.auth.application.service.MyMemberDetailsService;
 import movlit.be.auth.domain.repository.AuthCodeStorage;
 import movlit.be.auth.domain.repository.RefreshTokenStorage;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -75,8 +77,13 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(Map.of("error", "잘못된 code입니다."));
         }
 
-        String accessToken = jwtTokenUtil.generateAccessToken(email);
-        String refreshToken = jwtTokenUtil.generateRefreshToken(email);
+        final String accessToken = jwtTokenUtil.generateAccessToken(email);
+        final String refreshToken = jwtTokenUtil.generateRefreshToken(email);
+        final UserDetails userDetails = myMemberDetailsService.loadUserByUsername(email);
+
+        log.info("======== accessToken={}", accessToken);
+        log.info("======== refreshToken={}", refreshToken);
+        log.info("========= userDetails.getUsername={}", userDetails.getUsername());
 
         refreshTokenStorage.saveRefreshToken(email, refreshToken);
 
