@@ -112,6 +112,7 @@ public class MemberConverter {
                 // TODO: profileImgId
                 .profileImgUrl(request.getProfileImgUrl())
                 .provider("oauth2")
+                .role("ROLE_MEMBER")
                 .regDt(LocalDateTime.now())
                 .build();
     }

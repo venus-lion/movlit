@@ -53,16 +53,10 @@ public class MemberWriteService {
         String nickname = UniqueNicknameGenerator.generate();
         List<MemberGenreEntity> memberGenreEntities = makeMemberGenreEntities(memberId, List.of(1L, 2L, 3L));
 
-        log.info("=== nickname : {}, memberGenreEntities : {}", nickname, memberGenreEntities);
         Member member = MemberConverter.oAuth2RequestToMemberEntity(request, nickname,
                 memberGenreEntities, memberId);
 
-        log.info("==== Member 셋팅 : {}", member);
-
-        MemberEntity memberEntity = MemberConverter.toMemberEntity(request, nickname, memberGenreEntities, memberId);
-        log.info("==== Member Entity 셋팅 : {}", member);
-
-        return MemberConverter.toDomain(memberRepository.saveEntity(memberEntity));
+        return memberRepository.save(member);
     }
 
     public void updateMember(MemberId memberId, MemberUpdateRequest request) {

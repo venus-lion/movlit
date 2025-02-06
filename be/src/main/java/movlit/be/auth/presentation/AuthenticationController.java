@@ -73,17 +73,19 @@ public class AuthenticationController {
         String code = body.get("code");
         String email = authCodeStorage.fetchEmailForCode(code);
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, code)
+        );
+
         if (Objects.isNull(email)) {
             return ResponseEntity.badRequest().body(Map.of("error", "잘못된 code입니다."));
         }
 
         final String accessToken = jwtTokenUtil.generateAccessToken(email);
         final String refreshToken = jwtTokenUtil.generateRefreshToken(email);
-        final UserDetails userDetails = myMemberDetailsService.loadUserByUsername(email);
 
         log.info("======== accessToken={}", accessToken);
         log.info("======== refreshToken={}", refreshToken);
-        log.info("========= userDetails.getUsername={}", userDetails.getUsername());
 
         refreshTokenStorage.saveRefreshToken(email, refreshToken);
 
