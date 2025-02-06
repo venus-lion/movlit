@@ -2,49 +2,43 @@ import React, {useEffect, useMemo, useState} from 'react';
 import axiosInstance from '../../axiosInstance.js';
 import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import ChatMessageDatetime from "../../util/ChatMessageDatetime.jsx";
 
-const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
+const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
     const [groupChats, setGroupChats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [personalChats, setPersonalChats] = useState([]);
     const [stompClient, setStompClient] = useState(null);
 
-
-    // 그룹 채팅방 목록 가져오기 함수 (분리됨)
-    const fetchGroupChats = async () => {
-        try {
-            const response = await axiosInstance.get('/chat/group/rooms/my');
-            //console.log('groupchats : ' + response.data);
-            setGroupChats(response.data);
-        } catch (error) {
-            console.error('Error fetching group chats:', error);
-        }
-    };
-
-    // 일대일 채팅방 목록 가져오기 함수
-    const fetchPersonalChats = async () => {
-        try {
-            const response = await axiosInstance.get('/chat/oneOnOne');
-            setPersonalChats(response.data);
-            //console.log(response.data);
-        } catch (error) {
-            setError(error.message || '네트워크 오류가 발생했습니다.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
+    // fetch 관련 로직만 별도 useEffect로 분리 (refreshKey 변화에 따라 재호출)
     useEffect(() => {
-        // 그룹 채팅방 목록 가져오기
-        fetchGroupChats();
+        const fetchChats = async () => {
+            setLoading(true);
+            try {
+                await Promise.all([
+                    (async () => {
+                        const response = await axiosInstance.get('/chat/group/rooms/my');
+                        setGroupChats(response.data);
+                        console.log(response.data);
+                    })(),
+                    (async () => {
+                        const response = await axiosInstance.get('/chat/oneOnOne');
+                        setPersonalChats(response.data);
+                    })(),
+                ]);
+            } catch (err) {
+                setError(err.message || '네트워크 오류가 발생했습니다.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        // 일대일 채팅방 목록 가져오기
-        fetchPersonalChats();
+        fetchChats();
+    }, [refreshKey]);
 
-
-        // WebSocket 클라이언트 설정
+    // 웹소켓 연결 관련 로직은 최초 한 번만 실행하도록 [] 의존성 사용
+    useEffect(() => {
         const client = new Client({
             webSocketFactory: () =>
                 new SockJS(`${process.env.VITE_BASE_URL_FOR_CONF}/ws-stomp`),
@@ -56,48 +50,70 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
             },
         });
 
-        // 연결 시 호출되는 콜백
         client.onConnect = () => {
             console.log('WebSocket Connected');
 
-            // 한 번만 실행되도록 수정 (최초 연결 + 구독 정보 없음)
-            if (stompClient && !stompClient.subscriptions) {
-                stompClient.subscriptions = {};
-
-                groupChats.forEach((chat) => {
-                    const subId = `/topic/chat/message/group/${chat.groupChatroomId}`;
-                    if (!stompClient.subscriptions[subId]) {
-                        stompClient.subscriptions[subId] = client.subscribe(
-                            subId,
-                            (message) => {
-                                const receivedMessage = JSON.parse(message.body);
-                                setGroupChats((prevChats) => {
-                                    return prevChats.map((c) =>
-                                        c.groupChatroomId === receivedMessage.roomId
-                                            ? {...c, recentMessage: receivedMessage}
-                                            : c
-                                    );
-                                });
-                            }
-                        );
-                    }
+            // 그룹 채팅에 대한 구독 처리
+            groupChats.forEach((chat) => {
+                const subId = `/topic/chat/message/group/${chat.groupChatroomId}`;
+                client.subscribe(subId, (message) => {
+                    const receivedMessage = JSON.parse(message.body);
+                    setGroupChats((prevChats) =>
+                        prevChats.map((c) =>
+                            c.groupChatroomId === receivedMessage.roomId
+                                ? {...c, recentMessage: receivedMessage}
+                                : c
+                        )
+                    );
                 });
-            }
+            });
+
+            personalChats.forEach((chat) => {
+                const subId = `/topic/chat/message/one-on-one/${chat.roomId}`;
+                client.subscribe(subId, (message) => {
+                    const receivedMessage = JSON.parse(message.body);
+                    setPersonalChats((prevChats) =>
+                        prevChats.map((c) =>
+                            c.roomId === receivedMessage.roomId
+                                ? {...c, recentMessage: receivedMessage}
+                                : c
+                        )
+                    );
+                });
+            });
         };
 
         client.activate();
         setStompClient(client);
 
         return () => {
-            if (stompClient) {
-                // 언마운트 시 모든 구독 해제
-                Object.values(stompClient.subscriptions || {}).forEach((sub) =>
-                    sub.unsubscribe()
-                );
-                if (stompClient.connected) stompClient.deactivate();
-            }
+            client.deactivate();
         };
-    }, []); // 의존성 배열 비움
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // 웹소켓 연결은 최초 마운트 시 한 번만 실행
+
+    // groupChats 값이 변경되었을 때 아직 구독되지 않은 topic만 추가
+    useEffect(() => {
+        // stompClient가 존재하고 연결된 상태일 때
+        if (stompClient && stompClient.connected) {
+            groupChats.forEach((chat) => {
+                const subId = `/topic/chat/message/group/${chat.groupChatroomId}`;
+                // 만약 해당 채팅방에 대한 구독이 아직 없다면
+                if (!stompClient.subscriptions || !stompClient.subscriptions[subId]) {
+                    stompClient.subscribe(subId, (message) => {
+                        const receivedMessage = JSON.parse(message.body);
+                        setGroupChats((prevChats) =>
+                            prevChats.map((c) =>
+                                c.groupChatroomId === receivedMessage.roomId
+                                    ? {...c, recentMessage: receivedMessage}
+                                    : c
+                            )
+                        );
+                    });
+                }
+            });
+        }
+    }, [groupChats, stompClient]);
 
 
     // 필터링된 채팅 목록 (메모이제이션)
@@ -211,15 +227,23 @@ const ChatList = ({activeTab, searchTerm, onSelectChat}) => {
                             }}
                             onClick={() => onSelectChat(chat)}
                         >
-                            <div style={{fontWeight: 'bold', fontSize: '1.2em'}}>
+                            <div style={{fontWeight: 'bold', color: 'black', fontSize: '1.2em'}}>
                                 {chat.receiverNickname}
                             </div>
-                            <div style={{fontSize: '0.8em', color: '#666'}}>
-                                메시지: {chat.latestMessage}
-                            </div>
-                            <div style={{fontSize: '0.6em', color: '#aaa'}}>
-                                {chat.regDt}
-                            </div>
+                            {chat.recentMessage ? (
+                                <div>
+                                    <div style={style.recentMsg}>
+                                        <strong>[New] </strong>
+                                        {chat.recentMessage.message}
+                                        <br/>
+                                        {ChatMessageDatetime(chat.recentMessage.regDt)}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div style={style.recentMsg}>메시지 없음</div>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
