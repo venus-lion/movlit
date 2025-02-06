@@ -11,6 +11,7 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -114,7 +115,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 break;
         }
 
-        return new MyMemberDetails(member, oAuth2User.getAttributes());
+        return new MyMemberDetails(member, oAuth2User.getAttributes()); // OAuth2AuthenticationToken 자동 생성
     }
 
 }

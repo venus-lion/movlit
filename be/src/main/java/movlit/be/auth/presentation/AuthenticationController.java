@@ -11,6 +11,8 @@ import movlit.be.auth.presentation.dto.RefreshTokenRequest;
 import movlit.be.common.filter.dto.AuthenticationRequest;
 import movlit.be.common.filter.dto.AuthenticationResponse;
 import movlit.be.common.util.JwtTokenUtil;
+import movlit.be.member.application.service.MemberReadService;
+import movlit.be.member.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +33,7 @@ public class AuthenticationController {
     private final MyMemberDetailsService myMemberDetailsService;
     private final AuthCodeStorage authCodeStorage;
     private final RefreshTokenStorage refreshTokenStorage;
+    private final MemberReadService memberReadService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
@@ -72,10 +75,6 @@ public class AuthenticationController {
     public ResponseEntity<?> exchangeToken(@RequestBody Map<String, String> body) {
         String code = body.get("code");
         String email = authCodeStorage.fetchEmailForCode(code);
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, code)
-        );
 
         if (Objects.isNull(email)) {
             return ResponseEntity.badRequest().body(Map.of("error", "잘못된 code입니다."));
