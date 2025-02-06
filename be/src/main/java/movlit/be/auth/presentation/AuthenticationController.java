@@ -73,6 +73,10 @@ public class AuthenticationController {
         String code = body.get("code");
         String email = authCodeStorage.fetchEmailForCode(code);
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, code)
+        );
+
         if (Objects.isNull(email)) {
             return ResponseEntity.badRequest().body(Map.of("error", "잘못된 code입니다."));
         }

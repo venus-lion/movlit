@@ -114,19 +114,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 break;
         }
 
-        MyMemberDetails myMemberDetails = new MyMemberDetails(member, oAuth2User.getAttributes());
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new OAuth2AuthenticationToken(
-                        myMemberDetails,
-                        myMemberDetails.getAuthorities(),
-                        memberRequest.getClientRegistration().getRegistrationId()
-                )
-        );
-
-        log.info("============== Security Context: {}", SecurityContextHolder.getContext().getAuthentication());
-
-        return myMemberDetails;
+        return new MyMemberDetails(member, oAuth2User.getAttributes());
     }
 
 }
