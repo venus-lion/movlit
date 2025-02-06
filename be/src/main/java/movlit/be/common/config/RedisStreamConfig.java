@@ -43,9 +43,6 @@ public class RedisStreamConfig {
                 .pollTimeout(Duration.ofSeconds(1))
                 .errorHandler(
                         e -> {
-                            // shutdown 중이고, 예외 메시지가 "Connection closed"인 경우만 무시
-//                            if (shuttingDown && e.getMessage() != null && e.getMessage()
-//                                    .contains("Redis exception")) {
                             if (e instanceof RedisSystemException || e instanceof RedisException) {
                                 log.debug("Ignored connection closed exception during shutdown: {}", e.getMessage());
                             } else {

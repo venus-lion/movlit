@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.common.util.ids.OneononeChatroomId;
+import movlit.be.pub_sub.chatMessage.presentation.dto.response.ChatMessageDto;
 
 @Getter
 @NoArgsConstructor
@@ -15,6 +16,7 @@ public class OneononeChatroomResponse {
     private MemberId receiverId;
     private String receiverNickname;
     private String receiverProfileImgUrl;
+    private ChatMessageDto recentMessage;
 
     // 최근 채팅정보도 필요한지 검토
 
@@ -24,6 +26,10 @@ public class OneononeChatroomResponse {
         this.receiverId = receiverId;
         this.receiverNickname = receiverNickname;
         this.receiverProfileImgUrl = receiverProfileImgUrl;
+    }
+
+    public void setRecentMessage(ChatMessageDto recentMessage) {
+        this.recentMessage = recentMessage;
     }
 
 }
