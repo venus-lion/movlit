@@ -29,7 +29,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        // TODO: Oauth2 로그인 시에만 header가 넘어오지 않음
         final String authorizationHeader = request.getHeader("Authorization");
+        log.info("===== [JwtRequestFilter] authorization Header= {} ", authorizationHeader);
 
         String email = null;
         String jwt = null;
