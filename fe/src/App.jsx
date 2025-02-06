@@ -6,10 +6,9 @@ import {toast, ToastContainer} from 'react-toastify';
 import {FaUserCircle} from 'react-icons/fa';
 import {EventSourcePolyfill} from 'event-source-polyfill';
 import notificationIcon from './images/notification.jpg';
-
+import 'react-toastify/dist/ReactToastify.css';
 
 export const AppContext = createContext();
-
 
 function App() {
     const navigate = useNavigate();
@@ -285,7 +284,7 @@ function App() {
                     {isLoggedIn && (
                         <div className="nav-right-logged-in">
 
-                            <div onClick={handleBellClick} style={{ position: 'relative', cursor : 'pointer'}}>
+                            <div onClick={handleBellClick} style={{position: 'relative', cursor: 'pointer'}}>
                                 <img src="/images/notification-bell-icon.png" alt="알림" className="noti-img"/>
                                 {newNotification && <span className="badge">N</span>} {/* 빨간 점 표시 */}
                             </div>
