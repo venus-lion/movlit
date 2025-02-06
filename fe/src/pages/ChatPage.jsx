@@ -18,6 +18,7 @@ function ChatPage({roomId, roomInfo}) {
     const [currentUserId, setCurrentUserId] = useState(null);
     const [isComposing, setIsComposing] = useState(false);
     console.log('roomInfo: ', roomInfo);
+
     useEffect(() => {
         axiosInstance
             .get(`/members/id`)
@@ -72,6 +73,8 @@ function ChatPage({roomId, roomInfo}) {
     }, [roomId]); // roomId가 변경될 때마다 재연결
 
     const sendMessage = () => {
+        initiateChat();
+
         if (stompClient && newMessage && currentUserId) {
             const chatMessage = {
                 roomId: roomId, // roomId 사용
@@ -86,6 +89,21 @@ function ChatPage({roomId, roomInfo}) {
             });
 
             setNewMessage('');
+        }
+    };
+
+    // 일대일 채팅방 생성 후 최초
+    const initiateChat = () => {
+        if (messages.length === 0) {
+            if (stompClient && newMessage && currentUserId) {
+                const requestBody = {
+                    roomId: roomId,
+                    topicReceiverId: roomInfo.receiverId,
+                    topicSenderId: currentUserId
+                }
+
+                axiosInstance.post(`/chat/oneOnOne/create-publish`, requestBody);
+            }
         }
     };
 

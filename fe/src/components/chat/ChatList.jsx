@@ -10,6 +10,7 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
     const [error, setError] = useState(null);
     const [personalChats, setPersonalChats] = useState([]);
     const [stompClient, setStompClient] = useState(null);
+    const [currentUserId, setCurrentUserId] = useState(null);
 
     // fetch 관련 로직만 별도 useEffect로 분리 (refreshKey 변화에 따라 재호출)
     useEffect(() => {
@@ -39,6 +40,18 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
 
     // 웹소켓 연결 관련 로직은 최초 한 번만 실행하도록 [] 의존성 사용
     useEffect(() => {
+        const fetchMemberId = async () => {
+            try {
+                const response = await axiosInstance.get(`/members/id`);
+                const userId = response.data.memberId;
+                setCurrentUserId(userId);
+                console.log('!현재 로그인 유저:', userId);
+            } catch (error) {
+                console.error('Error fetching current user ID:', error);
+            }
+        };
+        fetchMemberId();
+
         const client = new Client({
             webSocketFactory: () =>
                 new SockJS(`${process.env.VITE_BASE_URL_FOR_CONF}/ws-stomp`),
@@ -52,6 +65,16 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
 
         client.onConnect = () => {
             console.log('WebSocket Connected');
+            console.log(currentUserId);
+            const tempId = `/topic/oneononeChatroom/create/publish/${currentUserId}`;
+            console.log(tempId);
+            client.subscribe(`/topic/oneononeChatroom/create/publish/${currentUserId}`, (message) => {
+                const createdChat = JSON.parse(message.body);
+                console.log('개인채팅방 생성건! ');
+                console.log(createdChat);
+                setPersonalChats((prevChats) => [...prevChats, createdChat]);
+            });
+
             personalChats.forEach((chat) => {
                 const subId = `/topic/chat/message/one-on-one/${chat.roomId}`;
                 client.subscribe(subId, (message) => {
@@ -89,7 +112,13 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
             client.deactivate();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // 웹소켓 연결은 최초 마운트 시 한 번만 실행
+    }, [currentUserId]);
+
+    useEffect(() => {
+        console.log('***********');
+        console.log(personalChats);
+    }, [personalChats]);  // personalChats 변경될 때마다 실행
+
 
     // 개인 채팅에 대한 구독 처리 (개인 채팅 배열이 변경될 때마다 추가)
     useEffect(() => {
