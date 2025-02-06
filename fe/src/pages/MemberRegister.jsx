@@ -42,28 +42,12 @@ const MemberRegister = () => {
         event.preventDefault();
 
         if (password !== repeatPassword) {
-            toast.error('패스워드가 일치하지 않습니다.', {
-                position: "top-center",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.error('패스워드가 일치하지 않습니다.');
             return;
         }
 
         if (selectedGenres.length < 3) {
-            toast.error('최소 3개의 장르를 선택해야 합니다.', {
-                position: "top-center",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.error('최소 3개의 장르를 선택해야 합니다.');
             return;
         }
 
@@ -78,39 +62,15 @@ const MemberRegister = () => {
             });
 
             console.log('Registration successful:', response.data);
-            toast.success('회원 가입이 완료되었습니다.', {
-                position: "top-center",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.success('회원 가입이 완료되었습니다.');
 
             navigate('/member/login');
         } catch (error) {
             console.error('Registration error:', error);
             if (error.response) {
-                toast.error(error.response.data.message, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.error(error.response.data.message);
             } else {
-                toast.error('요청 중 오류가 발생했습니다.', {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.error('요청 중 오류가 발생했습니다.');
             }
         }
     };
@@ -276,7 +236,6 @@ const MemberRegister = () => {
                     <div className="col-3"></div>
                 </div>
             </div>
-            <ToastContainer/>
         </div>
     );
 };

@@ -2,7 +2,7 @@ import React, {createContext, useCallback, useEffect, useState} from 'react';
 import {NavLink, Outlet, useNavigate} from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './App.css';
-import {ToastContainer} from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import {FaUserCircle} from 'react-icons/fa';
 import {EventSourcePolyfill} from 'event-source-polyfill';
 import notificationIcon from './images/notification.jpg';
@@ -56,7 +56,7 @@ function App() {
 
     const handleSearch = async () => {
         if (inputStr.trim() === '') {
-            alert('검색어를 입력해주세요!');
+            toast.success('검색어를 입력해주세요!');
             return;
         }
 
@@ -318,7 +318,15 @@ function App() {
             {/* Outlet에 context 전달 */}
             <Outlet context={{updateLoginStatus, isLoggedIn}}/>
 
-            <ToastContainer/>
+            <ToastContainer
+                position="top-right"
+                autoClose={1000}
+                hideProgressBar={false}
+                closeOnClick
+                pauseOnHover={false}
+                draggable
+                progress={undefined}
+            />
         </AppContext.Provider>
     );
 }

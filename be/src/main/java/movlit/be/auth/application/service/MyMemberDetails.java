@@ -2,11 +2,14 @@ package movlit.be.auth.application.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -14,6 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 // 로컬 로그인 - MemberDetails 구현
 // 소셜 로그인 - OAuth2Member 구현
 
+@Slf4j
 public class MyMemberDetails implements UserDetails, OAuth2User {
 
     // 공통
@@ -35,6 +39,8 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
     public MyMemberDetails(Member member, Map<String, Object> attributes) {
         this.member = member;
         this.attributes = attributes;
+        log.info("[확인] member={}", member.toString());
+        log.info("[확인] attribute={}", attributes.toString());
     }
 
     @Override
@@ -44,14 +50,23 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> member.getRole());
-        return collection;
+        log.info("====== new SimpleGrantedAuthority(member.getRole())={}", new SimpleGrantedAuthority(member.getRole()));
+        return Collections.singletonList(
+                new SimpleGrantedAuthority(member.getRole())
+        );
     }
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return member.getMemberId().getValue();
+    }
+
+    public MemberId getMemberId() {
+        if (member != null){
+            return member.getMemberId();
+        }
+
+        return null;
     }
 
     @Override

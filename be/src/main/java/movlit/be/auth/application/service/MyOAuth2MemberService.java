@@ -9,10 +9,14 @@ import movlit.be.member.application.service.MemberReadService;
 import movlit.be.member.application.service.MemberWriteService;
 import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +30,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest memberRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(OAuth2UserRequest memberRequest) {
         String email, profileUrl;
         String hashedPwd = bCryptPasswordEncoder.encode("Social Login");
         Member member = null;
@@ -111,7 +115,7 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 break;
         }
 
-        return new MyMemberDetails(member, oAuth2User.getAttributes());
+        return new MyMemberDetails(member, oAuth2User.getAttributes()); // OAuth2AuthenticationToken 자동 생성
     }
 
 }

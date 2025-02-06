@@ -146,7 +146,6 @@ function MemberProfilePage() {
 
     return (
         <div className="memberpage-container">
-            <ToastContainer/>
             <div className="profile-image">
                 {userData.profileImgUrl ? (
                     <img src={userData.profileImgUrl} alt="Profile" className="profile-img"/>
