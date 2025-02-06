@@ -11,7 +11,9 @@ import movlit.be.member.domain.Member;
 import movlit.be.member.presentation.dto.request.MemberRegisterOAuth2Request;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MyOAuth2MemberService extends DefaultOAuth2UserService {
 
-    private final AuthenticationManager authenticationManager;
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -113,12 +114,19 @@ public class MyOAuth2MemberService extends DefaultOAuth2UserService {
                 break;
         }
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                oAuth2User, null, oAuth2User.getAuthorities()));
+        MyMemberDetails myMemberDetails = new MyMemberDetails(member, oAuth2User.getAttributes());
 
-//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(
+                new OAuth2AuthenticationToken(
+                        myMemberDetails,
+                        myMemberDetails.getAuthorities(),
+                        memberRequest.getClientRegistration().getRegistrationId()
+                )
+        );
 
-        return new MyMemberDetails(member, oAuth2User.getAttributes());
+        log.info("============== Security Context: {}", SecurityContextHolder.getContext().getAuthentication());
+
+        return myMemberDetails;
     }
 
 }

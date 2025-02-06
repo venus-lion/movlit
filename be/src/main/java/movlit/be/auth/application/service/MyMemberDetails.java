@@ -2,12 +2,14 @@ package movlit.be.auth.application.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import movlit.be.common.util.ids.MemberId;
 import movlit.be.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -48,9 +50,9 @@ public class MyMemberDetails implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> member.getRole());
-        return collection;
+        return Collections.singletonList(
+                new SimpleGrantedAuthority(member.getRole())
+        );
     }
 
     @Override

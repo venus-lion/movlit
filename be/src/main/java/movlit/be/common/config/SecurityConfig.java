@@ -108,7 +108,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/members/*/profile").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/members/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/docs/**").permitAll()
-                        .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

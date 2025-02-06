@@ -79,11 +79,9 @@ public class AuthenticationController {
 
         final String accessToken = jwtTokenUtil.generateAccessToken(email);
         final String refreshToken = jwtTokenUtil.generateRefreshToken(email);
-        final UserDetails userDetails = myMemberDetailsService.loadUserByUsername(email);
 
         log.info("======== accessToken={}", accessToken);
         log.info("======== refreshToken={}", refreshToken);
-        log.info("========= userDetails.getUsername={}", userDetails.getUsername());
 
         refreshTokenStorage.saveRefreshToken(email, refreshToken);
 
