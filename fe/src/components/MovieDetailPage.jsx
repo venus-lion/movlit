@@ -3,7 +3,6 @@ import {Link, useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import {FaComment, FaHeart, FaRegHeart, FaRegStar, FaStar, FaStarHalfAlt, FaUserCircle,} from 'react-icons/fa';
 import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import MovieCarousel from '../pages/MovieCarousel';
 import useAuthMovieList from '../hooks/useAuthMovieList';
 import useBookList from '../hooks/useBookList';

@@ -4,7 +4,6 @@ import './MemberProfilePage.css';
 import {FaUserCircle} from 'react-icons/fa';
 import {useParams} from 'react-router-dom';
 import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function MemberProfilePage() {
     const [userData, setUserData] = useState({

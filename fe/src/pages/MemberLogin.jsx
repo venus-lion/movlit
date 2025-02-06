@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import axiosInstance from '../axiosInstance';
 import {useNavigate, useOutletContext} from 'react-router-dom';
 import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const MemberLogin = () => {
     const navigate = useNavigate();
