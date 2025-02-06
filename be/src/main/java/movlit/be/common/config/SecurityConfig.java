@@ -108,7 +108,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/members/*/profile").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/members/*/genres").permitAll()
                         .requestMatchers(HttpMethod.GET, "/docs/**").permitAll()
-                        .requestMatchers("/api/members/delete", "/api/members/list").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -120,10 +119,6 @@ public class SecurityConfig {
                         .deleteCookies("refreshToken")
                 )
                 .oauth2Login(auth -> auth
-                        .loginPage("/member/login")
-                        // 1. 코드받기(인증), 2. 액세스 토큰(권한), 3. 사용자 정보 획득
-                        // 4. 3에서 받은 정보를 토대로 DB에 없으면 가입을 시켜줌
-                        // 5. 프로바이더가 제공하는 정보
                         .userInfoEndpoint(
                                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(myOAuth2MemberService)
                         )
