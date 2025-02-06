@@ -47,7 +47,6 @@ function ChatPage({roomId, roomInfo}) {
 
         client.onConnect = () => {
             console.log('WebSocket Connected');
-            // TODO: GroupChatPage에서는 group으로 처리
             client.subscribe(`/topic/chat/message/one-on-one/${roomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prevMessages) => [...prevMessages, receivedMessage]);

@@ -52,6 +52,19 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
 
         client.onConnect = () => {
             console.log('WebSocket Connected');
+            personalChats.forEach((chat) => {
+                const subId = `/topic/chat/message/one-on-one/${chat.roomId}`;
+                client.subscribe(subId, (message) => {
+                    const receivedMessage = JSON.parse(message.body);
+                    setPersonalChats((prevChats) =>
+                        prevChats.map((c) =>
+                            c.roomId === receivedMessage.roomId
+                                ? {...c, recentMessage: receivedMessage}
+                                : c
+                        )
+                    );
+                });
+            });
 
             // 그룹 채팅에 대한 구독 처리
             groupChats.forEach((chat) => {
@@ -61,20 +74,6 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
                     setGroupChats((prevChats) =>
                         prevChats.map((c) =>
                             c.groupChatroomId === receivedMessage.roomId
-                                ? {...c, recentMessage: receivedMessage}
-                                : c
-                        )
-                    );
-                });
-            });
-
-            personalChats.forEach((chat) => {
-                const subId = `/topic/chat/message/one-on-one/${chat.roomId}`;
-                client.subscribe(subId, (message) => {
-                    const receivedMessage = JSON.parse(message.body);
-                    setPersonalChats((prevChats) =>
-                        prevChats.map((c) =>
-                            c.roomId === receivedMessage.roomId
                                 ? {...c, recentMessage: receivedMessage}
                                 : c
                         )
@@ -92,6 +91,28 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // 웹소켓 연결은 최초 마운트 시 한 번만 실행
 
+    // 개인 채팅에 대한 구독 처리 (개인 채팅 배열이 변경될 때마다 추가)
+    useEffect(() => {
+        if (stompClient && stompClient.connected) {
+            personalChats.forEach((chat) => {
+                const subId = `/topic/chat/message/one-on-one/${chat.roomId}`;
+                // 이미 구독되어 있는지 확인
+                if (!stompClient.subscriptions || !stompClient.subscriptions[subId]) {
+                    stompClient.subscribe(subId, (message) => {
+                        const receivedMessage = JSON.parse(message.body);
+                        setPersonalChats((prevChats) =>
+                            prevChats.map((c) =>
+                                c.roomId === receivedMessage.roomId
+                                    ? {...c, recentMessage: receivedMessage}
+                                    : c
+                            )
+                        );
+                    });
+                }
+            });
+        }
+    }, [personalChats, stompClient]);
+
     // groupChats 값이 변경되었을 때 아직 구독되지 않은 topic만 추가
     useEffect(() => {
         // stompClient가 존재하고 연결된 상태일 때
@@ -102,6 +123,7 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
                 if (!stompClient.subscriptions || !stompClient.subscriptions[subId]) {
                     stompClient.subscribe(subId, (message) => {
                         const receivedMessage = JSON.parse(message.body);
+                        console.log('receivedMessage: ' + receivedMessage);
                         setGroupChats((prevChats) =>
                             prevChats.map((c) =>
                                 c.groupChatroomId === receivedMessage.roomId
@@ -194,7 +216,7 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
                                             <strong>[New] </strong>
                                             {chat.recentMessage.message}
                                             <br/>
-                                            {chat.recentMessage.regDt}
+                                            {ChatMessageDatetime(chat.recentMessage.regDt)}
                                         </div>
                                     </div>
                                 ) : (
@@ -202,9 +224,6 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
                                         <div style={style.recentMsg}>메시지 없음</div>
                                     </div>
                                 )}
-                                <div style={{fontSize: '0.6em', color: '#aaa'}}>
-                                    {chat.regDt}
-                                </div>
                             </div>
                         </div>
                     ))}
