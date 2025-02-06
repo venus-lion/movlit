@@ -130,7 +130,7 @@ function ChatPage({roomId, roomInfo}) {
                             key={index}
                             className={`message-group ${isCurrentUser ? 'own-message-group' : ''}`}
                         >
-                            {!isCurrentUser && receiver && (
+                            {!isCurrentUser && receiver && message && ( // message null 체크
                                 <div className="message-profile-group">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
                                     {receiver.profileImgUrl ? (
