@@ -125,10 +125,13 @@ public class RedisMessageSubscriber {
 
     public void createOneononeChatroom(String publishMessage) {
         try {
-            OneononeChatroomCreatePubDto oneononeChatroomCreatePubDto = objectMapper.readValue(publishMessage, OneononeChatroomCreatePubDto.class);
+            OneononeChatroomCreatePubDto oneononeChatroomCreatePubDto = objectMapper.readValue(publishMessage,
+                    OneononeChatroomCreatePubDto.class);
             log.info("Received message to 'createOneononeChatroom' : {}", publishMessage);
+            log.info("Subscriber Topic ReciverId : {}", oneononeChatroomCreatePubDto.getTopicReceiverId().getValue());
             messagingTemplate.convertAndSend(
-                    "/topic/oneononeChatroom/create/publish/" + oneononeChatroomCreatePubDto.getTopicReceiverId(), oneononeChatroomCreatePubDto
+                    "/topic/oneononeChatroom/create/publish/" + oneononeChatroomCreatePubDto.getTopicReceiverId(),
+                    oneononeChatroomCreatePubDto
             );
 
         } catch (Exception e) {

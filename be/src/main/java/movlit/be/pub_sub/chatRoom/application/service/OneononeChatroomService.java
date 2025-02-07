@@ -65,7 +65,6 @@ public class OneononeChatroomService {
         this.addOneononeChatroomToRedis(sender, senderResponse);
         this.addOneononeChatroomToRedis(receiver, receiverResponse);
 
-
         return senderResponse;
     }
 
@@ -77,7 +76,8 @@ public class OneononeChatroomService {
                         request.getTopicReceiverId(),
                         topicSenderId,
                         topicSender.getNickname(),
-                        topicSender.getProfileImgUrl()
+                        topicSender.getProfileImgUrl(),
+                        request.getChatMessage()
                 );
         messagePublisher.createOneononeChatroom(oneononeChatroomCreatePubDto);
     }

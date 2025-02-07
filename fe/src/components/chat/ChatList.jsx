@@ -12,6 +12,19 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
     const [stompClient, setStompClient] = useState(null);
     const [currentUserId, setCurrentUserId] = useState(null);
 
+    useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                const response = await axiosInstance.get('/members/id');
+                setCurrentUserId(response.data.memberId); // 여기서 state에 저장
+                console.log(response.data.memberId);
+            } catch (error) {
+                console.error('Error fetching current user ID:', error);
+            }
+        };
+        fetchUserId();
+    }, []);
+
     // fetch 관련 로직만 별도 useEffect로 분리 (refreshKey 변화에 따라 재호출)
     useEffect(() => {
         const fetchChats = async () => {
@@ -40,17 +53,7 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
 
     // 웹소켓 연결 관련 로직은 최초 한 번만 실행하도록 [] 의존성 사용
     useEffect(() => {
-        const fetchMemberId = async () => {
-            try {
-                const response = await axiosInstance.get(`/members/id`);
-                const userId = response.data.memberId;
-                setCurrentUserId(userId);
-                console.log('!현재 로그인 유저:', userId);
-            } catch (error) {
-                console.error('Error fetching current user ID:', error);
-            }
-        };
-        fetchMemberId();
+        if (!currentUserId) return; // 아직 ID가 없다면 연결 안 함
 
         const client = new Client({
             webSocketFactory: () =>
@@ -64,15 +67,19 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
         });
 
         client.onConnect = () => {
-            console.log('WebSocket Connected');
-            console.log(currentUserId);
+            console.log('WebSocket Connected : ' + currentUserId);
             const tempId = `/topic/oneononeChatroom/create/publish/${currentUserId}`;
             console.log(tempId);
             client.subscribe(`/topic/oneononeChatroom/create/publish/${currentUserId}`, (message) => {
-                const createdChat = JSON.parse(message.body);
-                console.log('개인채팅방 생성건! ');
-                console.log(createdChat);
-                setPersonalChats((prevChats) => [...prevChats, createdChat]);
+                try {
+                    const createdChat = JSON.parse(message.body);
+                    console.log('개인채팅방 생성건! ');
+                    console.log(createdChat);
+                    setPersonalChats((prevChats) => [...prevChats, createdChat]);
+                } catch (e) {
+                    console.error("Error parsing message:", e);
+                }
+
             });
 
             personalChats.forEach((chat) => {
@@ -165,7 +172,6 @@ const ChatList = ({refreshKey, activeTab, searchTerm, onSelectChat}) => {
             });
         }
     }, [groupChats, stompClient]);
-
 
     // 필터링된 채팅 목록 (메모이제이션)
     const filteredChats = useMemo(() => {

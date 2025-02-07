@@ -60,7 +60,7 @@ public class OneononeChatroomController {
     public void sendCreateOneononeChatroom(
             @AuthenticationPrincipal MyMemberDetails details,
             @RequestBody OneononeChatroomCreatePubRequest request) {
-        log.info("Received OneononeChatroom Create Send");
+        log.info("Received OneononeChatroom Create Send : {}", request);
         MemberId topicSenderId = details.getMemberId();
         oneononeChatroomService.publishOneononeChatroomCreate(topicSenderId, request);
     }

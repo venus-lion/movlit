@@ -73,7 +73,6 @@ function ChatPage({roomId, roomInfo}) {
     }, [roomId]); // roomId가 변경될 때마다 재연결
 
     const sendMessage = () => {
-        initiateChat();
 
         if (stompClient && newMessage && currentUserId) {
             const chatMessage = {
@@ -83,28 +82,30 @@ function ChatPage({roomId, roomInfo}) {
                 regDt: getNowDate()
             };
 
+            // 최초 DM 시도일 때
+            if (messages.length === 0) {
+                initiateChat();
+            }
             stompClient.publish({
                 destination: '/app/chat/message/one-on-one',
                 body: JSON.stringify(chatMessage),
             });
+
 
             setNewMessage('');
         }
     };
 
     // 일대일 채팅방 생성 후 최초
-    const initiateChat = () => {
-        if (messages.length === 0) {
-            if (stompClient && newMessage && currentUserId) {
-                const requestBody = {
-                    roomId: roomId,
-                    topicReceiverId: roomInfo.receiverId,
-                    topicSenderId: currentUserId
-                }
-
-                axiosInstance.post(`/chat/oneOnOne/create-publish`, requestBody);
-            }
+    const initiateChat = (chatMessage) => {
+        console.log('initiateChat message: ' + chatMessage);
+        const requestBody = {
+            roomId: roomId,
+            topicReceiverId: roomInfo.receiverId,
+            topicSenderId: currentUserId,
+            chatMessage: chatMessage,
         }
+        axiosInstance.post(`/chat/oneOnOne/create-publish`, requestBody);
     };
 
     // 크롬 엔터로 채팅할 시 한글 끝문자 처리
