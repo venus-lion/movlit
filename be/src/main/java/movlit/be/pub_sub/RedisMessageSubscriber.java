@@ -128,9 +128,9 @@ public class RedisMessageSubscriber {
             OneononeChatroomCreatePubDto oneononeChatroomCreatePubDto = objectMapper.readValue(publishMessage,
                     OneononeChatroomCreatePubDto.class);
             log.info("Received message to 'createOneononeChatroom' : {}", publishMessage);
-            log.info("Subscriber Topic ReciverId : {}", oneononeChatroomCreatePubDto.getTopicReceiverId().getValue());
             messagingTemplate.convertAndSend(
-                    "/topic/oneononeChatroom/create/publish/" + oneononeChatroomCreatePubDto.getTopicReceiverId(),
+                    "/topic/oneononeChatroom/create/publish/" + oneononeChatroomCreatePubDto.getTopicReceiverId()
+                            .getValue(),
                     oneononeChatroomCreatePubDto
             );
 

@@ -84,7 +84,7 @@ function ChatPage({roomId, roomInfo}) {
 
             // 최초 DM 시도일 때
             if (messages.length === 0) {
-                initiateChat();
+                initiateChat(chatMessage);
             }
             stompClient.publish({
                 destination: '/app/chat/message/one-on-one',
