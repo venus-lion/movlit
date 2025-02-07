@@ -20,7 +20,8 @@
 }
 
 .nav-left .active {
-    color: #ff0000; /* 활성화된 링크 색상 */
+    /*color: #c1edbb; !* 활성화된 링크 색상 *!*/
+    color: #2E8B57;
 }
 
 .nav-right {
@@ -47,13 +48,21 @@
 
 .logout-button {
     padding: 8px 15px;
-    background-color: #ff0000;
+    background-color: #c1edbb;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
+.logout-button:hover {
+    padding: 8px 15px;
+    background-color: #2E8B57;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 /* 검색 버튼 추가 */
 .search-button {
     padding: 8px 15px;
@@ -61,7 +70,11 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: rgb(255, 51, 102);
+    background-color: #c1edbb;
+}
+
+.search-button:hover {
+    background-color: #2E8B57;
 }
 
 .nav-right-logged-in {
@@ -110,6 +123,7 @@
     top: -3px;
     right: -3px;
     background: red;
+    /*background: #2E8B57;*/
     color: white;
     border-radius: 50%;
     width: 15px;
@@ -137,16 +151,19 @@
 
 
 .delete-all-btn {
-
     marginBottom: 20px;
     margin-left: 20px;
     padding: 10px 20px;
-    backgroundColor: #FF6B6B;
     color: white;
     border: none;
     borderRadius: 5px;
     cursor: pointer;
     fontSize: 16px;
+}
+
+.delete-all-btn:hover {
+    background-color: #2E8B57;
+    color: #fff;
 }
 
 
