@@ -3,7 +3,7 @@ import axiosInstance from '../axiosInstance';
 import './MyPage.css';
 import {FaCamera, FaUserCircle} from 'react-icons/fa';
 import {IoSettingsOutline} from 'react-icons/io5';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {AppContext} from '../App';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -245,7 +245,7 @@ function MyPage() {
             </div>
             <div className="mypage-stats">
                 <div className="stat-item">
-                <span onClick={handleFollowerClick} className="link-button">{followerCount}</span>
+                    <span onClick={handleFollowerClick} className="link-button">{followerCount}</span>
                     <span>팔로워</span>
                 </div>
                 <div className="stat-item">
@@ -286,35 +286,39 @@ function MyPage() {
                 onClose={closeDeleteDialog}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                PaperProps={{ // `PaperProps` to style the Dialog's paper container
+                    style: {
+                        borderRadius: 12,
+                        maxWidth: 500,
+                        width: '25%',
+                    },
+                }}
             >
-                <DialogTitle id="alert-dialog-title">
-                    {"회원 탈퇴 확인"}
+                <DialogTitle id="alert-dialog-title" sx={{
+                    fontWeight: 'bold',
+                    fontSize: '1.5rem',
+                    textAlign: 'center'
+                }}> {/* DialogTitle 스타일 변경 */}
+                    {"회원 탈퇴"}
                 </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        정말로 탈퇴하시겠습니까?
+                <DialogContent sx={{padding: '1.5rem', textAlign: 'center'}}> {/* DialogContent 스타일 변경 */}
+                    <DialogContentText id="alert-dialog-description" sx={{
+                        fontSize: '1rem',
+                        color: 'text.secondary'
+                    }}> {/* DialogContentText 스타일 변경 */}
+                        정말로 탈퇴하시겠습니까? <br/> 탈퇴 후에는 계정 복구가 불가능합니다.
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeDeleteDialog} color="primary">
+                <DialogActions sx={{padding: '1.25rem', justifyContent: 'center'}}> {/* DialogActions 스타일 변경 */}
+                    <Button onClick={closeDeleteDialog} color="primary" sx={{minWidth: 100}}> {/* "아니오" 버튼 스타일 변경 */}
                         아니오
                     </Button>
-                    <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
-                        예
+                    <Button onClick={handleDeleteConfirm} color="error" autoFocus
+                            sx={{minWidth: 100}}> {/* "예" 버튼 스타일 변경 */}
+                        예, 탈퇴합니다
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            {/* ToastContainer 컴포넌트 완전 제거 */}
-            {/* <ToastContainer // ToastContainer 컴포넌트 완전 제거
-                position="top-right"
-                autoClose={1000}
-                hideProgressBar={false}
-                closeOnClick
-                pauseOnHover={false}
-                draggable
-                progress={undefined}
-            /> */}
         </div>
     );
 }
