@@ -257,14 +257,14 @@ function App() {
                     <input
                         id={'searchInput'}
                         type="text"
-                        placeholder="검색어를 입력하세요"
+                        placeholder="콘텐츠, 인물, 장르, 태그 검색"
                         className="search-box"
                         onChange={(e) => setInputStr(e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e)}
                     />
-                    <button className="search-button" onClick={handleSearch}>
-                        검색
-                    </button>
+                    {/*<button className="search-button" onClick={handleSearch}>*/}
+                    {/*    검색*/}
+                    {/*</button>*/}
                     {!isLoggedIn && (
                         <>
                             <NavLink
