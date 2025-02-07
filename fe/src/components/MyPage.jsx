@@ -175,6 +175,24 @@ function MyPage() {
         setIsHovering(false);
     };
 
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('/members/logout');
+            localStorage.removeItem('accessToken');
+            document.cookie =
+                'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            updateLoginStatus(false);
+            setProfileImage(null);
+            navigate('/member/login');
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
+
+    const handleUpdateClick = () => { // 수정하기 버튼 클릭 핸들러
+        navigate('/member/update');
+    };
+
     return (
         <div className="mypage-container">
             <input
@@ -211,11 +229,15 @@ function MyPage() {
                     <IoSettingsOutline className="settings-icon-comp"/>
                     {isDropdownOpen && (
                         <div className="dropdown-menu">
-                            <Link to="/member/update" className="dropdown-item">
-                                회원 수정
-                            </Link>
+                            <button onClick={handleLogout} className="dropdown-item logout-button">
+                                로그아웃
+                            </button>
+                            <button onClick={handleUpdateClick}
+                                    className="dropdown-item update-button"> {/* button으로 변경 */}
+                                수정하기
+                            </button>
                             <button onClick={openDeleteDialog} className="dropdown-item delete-button">
-                                회원 탈퇴
+                                탈퇴하기
                             </button>
                         </div>
                     )}
@@ -223,7 +245,7 @@ function MyPage() {
             </div>
             <div className="mypage-stats">
                 <div className="stat-item">
-                    <span onClick={handleFollowerClick} className="link-button">{followerCount}</span>
+                <span onClick={handleFollowerClick} className="link-button">{followerCount}</span>
                     <span>팔로워</span>
                 </div>
                 <div className="stat-item">

@@ -46,21 +46,6 @@ function App() {
         setIsSnackbarOpen(false);
     };
 
-
-    const handleLogout = async () => {
-        try {
-            await axiosInstance.post('/members/logout');
-            localStorage.removeItem('accessToken');
-            document.cookie =
-                'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            updateLoginStatus(false);
-            setProfileImage(null);
-            navigate('/member/login');
-        } catch (error) {
-            console.error('Logout error:', error);
-        }
-    };
-
     // Enter 키 이벤트 처리 (기존과 동일)
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -320,10 +305,6 @@ function App() {
                                     <FaUserCircle className="nav-mypage-icon"/>
                                 )}
                             </NavLink>
-
-                            <button onClick={handleLogout} className="logout-button">
-                                로그아웃
-                            </button>
                         </div>
                     )}
                 </div>
