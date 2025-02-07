@@ -316,7 +316,7 @@ function App() {
             {/* Material-UI Snackbar 추가 (ToastContainer 대신) */}
             <Snackbar
                 open={isSnackbarOpen}
-                autoHideDuration={3000}
+                autoHideDuration={2000} // 2초로 변경
                 onClose={handleSnackbarClose}
                 anchorOrigin={{vertical: 'top', horizontal: 'right'}}
             >
