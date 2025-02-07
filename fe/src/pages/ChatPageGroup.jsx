@@ -220,7 +220,7 @@ function ChatPageGroup({roomId, roomInfo, refreshChatList, refreshChatComponent}
                                 isJoinMessage ? 'join-message-group' : '' // join 메시지에 대한 CSS 클래스 추가
                             }`}
                         >
-                            {!isCurrentUser && sender && !isJoinMessage && (
+                            {!isCurrentUser && sender && !isJoinMessage && ( // message null 체크 추가
                                 <div className="message-profile-group">
                                     {/* profileImgUrl이 있으면 이미지를 표시하고, 없으면 FaUserCircle 아이콘을 표시합니다. */}
                                     {sender && sender.profileImgUrl ? (
