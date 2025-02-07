@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams, useLocation, useNavigate} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import {FaComment, FaHeart, FaRegHeart, FaRegStar, FaStar, FaStarHalfAlt, FaUserCircle,} from 'react-icons/fa';
 import {toast, ToastContainer} from 'react-toastify';
@@ -44,6 +44,11 @@ function MovieDetailPage() {
     const [currentMemberId, setCurrentMemberId] = useState(null); // 현재 로그인된 memberId 상태 추가
 
     const initialVisibleCrews = 14;
+
+    // 알림(새 그룹채팅방 생성됨)을 통해 상세페이지 접속 -> 바로 "그룹채팅방 입장" 모달 띄우기
+    const location = useLocation(); // 현재 URL의 location 객체 가져오기
+    const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
+    const navigate = useNavigate();
 
     // 관련 영화 데이터 가져오기
     const {
@@ -159,6 +164,15 @@ function MovieDetailPage() {
             })
             .catch((error) => console.error('Error fetching member id:', error));
     }, [movieId]);
+
+    // 알림(새 그룹채팅방 생성됨)을 통해 상세페이지 접속 -> 바로 "그룹채팅방 입장" 모달 띄우기
+    useEffect(() => {
+        const fromNoti = params.get('fromNoti'); // 'fromNoti' 쿼리 파라미터 값을 가져오기
+
+        if (fromNoti === 'true' && movieId && movieData && crews) {
+            handleJoinGroupChatroom(movieId, movieData.posterUrl, movieData.title, crews);
+        }
+    }, [movieId, params, movieData, crews]); // bookData와 crews를 의존성 배열에 추가
 
     // Intersection Observer 설정 (코멘트 무한 스크롤)
     useEffect(() => {
@@ -501,7 +515,14 @@ function MovieDetailPage() {
             };
             // 가입 여부 확인 api 호출
             console.log(selectedCard);
+
+            // 모달창 호출 후 fromNoti를 false로 설정
+            params.set('fromNoti', 'false');
+            navigate({ search: params.toString() }, { replace: true });
+
             handleOpenGroupChatInfoModal(selectedCard, "movie");
+
+
 
         } catch (err) {
             console.error('Error fetching room info:', err);
