@@ -5,7 +5,6 @@ import {FaCamera, FaUserCircle} from 'react-icons/fa';
 import {IoSettingsOutline} from 'react-icons/io5';
 import {Link, useNavigate} from 'react-router-dom';
 import {confirmAlert} from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import {AppContext} from '../App';
 import {toast, ToastContainer} from 'react-toastify';
 

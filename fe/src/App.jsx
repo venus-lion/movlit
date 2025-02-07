@@ -6,7 +6,6 @@ import {toast, ToastContainer} from 'react-toastify';
 import {FaUserCircle} from 'react-icons/fa';
 import {EventSourcePolyfill} from 'event-source-polyfill';
 import notificationIcon from './images/notification.jpg';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const AppContext = createContext();
 
