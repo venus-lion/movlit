@@ -182,10 +182,11 @@ function MyPage() {
             document.cookie =
                 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             updateLoginStatus(false);
-            setProfileImage(null);
+            updateSnackbar('로그아웃 되었습니다.', 'success'); // Material-UI Snackbar 호출 (로그아웃 성공 알림)
             navigate('/member/login');
         } catch (error) {
             console.error('Logout error:', error);
+            updateSnackbar('로그아웃 중 오류가 발생했습니다.', 'error'); // Material-UI Snackbar 호출 (로그아웃 실패 알림)
         }
     };
 
