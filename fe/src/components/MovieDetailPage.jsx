@@ -1,7 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
 import {Link, useParams, useLocation, useNavigate} from 'react-router-dom';
 import React, {useEffect, useRef, useState, useContext} from 'react';
-import {Link, useParams} from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import {FaComment, FaHeart, FaRegHeart, FaRegStar, FaStar, FaStarHalfAlt, FaUserCircle,} from 'react-icons/fa';
 import MovieCarousel from '../pages/MovieCarousel';
