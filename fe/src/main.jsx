@@ -23,7 +23,6 @@ import MemberProfilePage from "./components/MemberProfilePage.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import FollowList from "./pages/FollowList.jsx";
 
-
 const router = createBrowserRouter([
     {
         path: '/',

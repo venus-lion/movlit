@@ -3,11 +3,14 @@ import axiosInstance from '../axiosInstance';
 import './MyPage.css';
 import {FaCamera, FaUserCircle} from 'react-icons/fa';
 import {IoSettingsOutline} from 'react-icons/io5';
-import {Link, useNavigate} from 'react-router-dom';
-import {confirmAlert} from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+import {useNavigate} from 'react-router-dom';
 import {AppContext} from '../App';
-import {toast, ToastContainer} from 'react-toastify';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import DialogContentText from "@mui/material/DialogContentText";
 
 function MyPage() {
     const [userData, setUserData] = useState({
@@ -22,86 +25,74 @@ function MyPage() {
     const [genreList, setGenreList] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
-    const {updateLoginStatus} = useContext(AppContext);
+    const {updateLoginStatus, updateSnackbar} = useContext(AppContext); // updateSnackbar context 함수 import
     const fileInputRef = useRef(null);
     const [isHovering, setIsHovering] = useState(false);
 
     // 팔로우, 팔로잉 관련 변수
-    const [followerCount, setFollowerCount] = useState(0); // 팔로워 개수
-    const [followingCount, setFollowingCount] = useState(0); // 팔로잉 개수
-    const [memberId, setMemberId] = useState(null); // 멤버ID 상태변수 추가
+    const [followerCount, setFollowerCount] = useState(0);
+    const [followingCount, setFollowingCount] = useState(0);
+    const [memberId, setMemberId] = useState(null);
 
-    //현재 로그인한 사용자의 memberId 가져오기
+    // Material-UI Dialog 관련 상태
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
     const fetchMemberId = async () => {
         try {
             const response = await axiosInstance.get('/members/id');
-            console.log('로그인한 memberId 가져오기 !!! ');
-            console.log(response.data.memberId);
-            console.log(response.data.memberId.value);
             setMemberId(response.data.memberId);
         } catch (error) {
             console.error('Error fetching member ID:', error);
         }
     };
 
-    // 팔로워 / 팔로잉 개수 가져오기
     const fetchFollowCounts = async (currentMemberId) => {
         const followerCountResponse =
             await axiosInstance.get(`/follows/${memberId}/followers/count`);
-        console.log('프론트, 나를 팔로우하는, 팔로워 개수 가져오기 !! ');
-        console.log(followerCountResponse.data);
         setFollowerCount(followerCountResponse.data);
 
         const followeeCountResponse =
             await axiosInstance.get(`/follows/${memberId}/follows/count`);
-        console.log('프론트, 내가 팔로우하는, 팔로우 개수 가져오기 !! ');
-        console.log(followeeCountResponse.data);
-
         setFollowingCount(followeeCountResponse.data);
-
     };
 
-    // 클릭 이벤트 핸들러 추가
     const handleFollowerClick = () => {
         navigate('/my-followers');
     };
 
     const handleFollowingClick = () => {
         navigate('/my-followings');
-    }
+    };
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const handleDelete = () => {
-        confirmAlert({
-            title: '회원 탈퇴 확인',
-            message: '정말로 탈퇴하시겠습니까?',
-            buttons: [
-                {
-                    label: '예',
-                    onClick: async () => {
-                        try {
-                            await axiosInstance.delete('/members/delete');
-                            toast.success('회원 탈퇴가 완료되었습니다.');
-                            sessionStorage.removeItem('accessToken');
-                            updateLoginStatus(false);
-                            navigate('/');
-                        } catch (error) {
-                            console.error('Error during member deletion:', error);
-                            toast.error('회원 탈퇴 중 오류가 발생했습니다.');
-                        }
-                    },
-                },
-                {
-                    label: '아니오',
-                    onClick: () => {
-                    },
-                },
-            ],
-        });
+    // Material-UI Dialog 열기
+    const openDeleteDialog = () => {
+        setIsDeleteDialogOpen(true);
     };
+
+    // Material-UI Dialog 닫기
+    const closeDeleteDialog = () => {
+        setIsDeleteDialogOpen(false);
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await axiosInstance.delete('/members/delete');
+            updateSnackbar('회원 탈퇴가 완료되었습니다.', 'success'); // Material-UI Snackbar 호출
+            sessionStorage.removeItem('accessToken');
+            updateLoginStatus(false);
+            navigate('/');
+        } catch (error) {
+            console.error('Error during member deletion:', error);
+            updateSnackbar('회원 탈퇴 중 오류가 발생했습니다.', 'error'); // Material-UI Snackbar 호출
+        } finally {
+            closeDeleteDialog();
+        }
+    };
+
 
     useEffect(() => {
         const fetchMyPageData = async () => {
@@ -116,24 +107,21 @@ function MyPage() {
         const fetchGenreList = async () => {
             try {
                 const response = await axiosInstance.get('/members/genreList');
-                console.log('Genre list response:', response.data);
                 setGenreList(response.data);
             } catch (error) {
                 console.error('Error fetching genre list:', error);
             }
         };
 
-        fetchMemberId(); // 로그인한 사용자 memberId 가져오기
+        fetchMemberId();
         fetchMyPageData();
         fetchGenreList();
-        //  fetchFollowCounts();
     }, []);
 
     useEffect(() => {
         if (memberId) {
-            fetchFollowCounts(memberId); // memberId 설정된 후, 팔로워/팔로잉 개수 가져오기
+            fetchFollowCounts(memberId);
         }
-
     }, [memberId]);
 
     const handleProfileImageClick = () => {
@@ -142,20 +130,20 @@ function MyPage() {
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
-        const MAX_FILE_SIZE = 2800 * 1024; // 2800KB in bytes
+        const MAX_FILE_SIZE = 2800 * 1024;
 
         if (!file) {
-            toast.warn('이미지를 선택해주세요.');
+            updateSnackbar('이미지를 선택해주세요.', 'warning'); // Material-UI Snackbar 호출
             return;
         }
 
         if (file.size === 0) {
-            toast.error('빈 파일은 업로드할 수 없습니다.');
+            updateSnackbar('빈 파일은 업로드할 수 없습니다.', 'error'); // Material-UI Snackbar 호출
             return;
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            toast.error('이미지 크기가 2800KB를 초과합니다.');
+            updateSnackbar('이미지 크기가 2800KB를 초과합니다.', 'error'); // Material-UI Snackbar 호출
             return;
         }
 
@@ -169,12 +157,12 @@ function MyPage() {
                 },
             });
             setUserData({...userData, profileImgUrl: response.data.imageUrl});
-            toast.success('프로필 사진이 성공적으로 변경되었습니다.\n새로고침을 해주세요.');
+            updateSnackbar('프로필 사진이 성공적으로 변경되었습니다. 새로고침을 해주세요.', 'success'); // Material-UI Snackbar 호출
         } catch (error) {
             if (error.response && error.response.status === 413) {
-                toast.error('이미지 크기가 너무 큽니다. 2800KB 이하의 이미지를 업로드해주세요.');
+                updateSnackbar('이미지 크기가 너무 큽니다. 2800KB 이하의 이미지를 업로드해주세요.', 'error'); // Material-UI Snackbar 호출
             } else {
-                toast.error('이미지 업로드 중 오류가 발생했습니다.');
+                updateSnackbar('이미지 업로드 중 오류가 발생했습니다.', 'error'); // Material-UI Snackbar 호출
             }
         }
     };
@@ -185,6 +173,25 @@ function MyPage() {
 
     const handleMouseLeave = () => {
         setIsHovering(false);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('/members/logout');
+            localStorage.removeItem('accessToken');
+            document.cookie =
+                'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            updateLoginStatus(false);
+            updateSnackbar('로그아웃 되었습니다.', 'success'); // Material-UI Snackbar 호출 (로그아웃 성공 알림)
+            navigate('/member/login');
+        } catch (error) {
+            console.error('Logout error:', error);
+            updateSnackbar('로그아웃 중 오류가 발생했습니다.', 'error'); // Material-UI Snackbar 호출 (로그아웃 실패 알림)
+        }
+    };
+
+    const handleUpdateClick = () => { // 수정하기 버튼 클릭 핸들러
+        navigate('/member/update');
     };
 
     return (
@@ -223,11 +230,15 @@ function MyPage() {
                     <IoSettingsOutline className="settings-icon-comp"/>
                     {isDropdownOpen && (
                         <div className="dropdown-menu">
-                            <Link to="/member/update" className="dropdown-item">
-                                회원 수정
-                            </Link>
-                            <button onClick={handleDelete} className="dropdown-item delete-button">
-                                회원 탈퇴
+                            <button onClick={handleLogout} className="dropdown-item logout-button">
+                                로그아웃
+                            </button>
+                            <button onClick={handleUpdateClick}
+                                    className="dropdown-item update-button"> {/* button으로 변경 */}
+                                수정하기
+                            </button>
+                            <button onClick={openDeleteDialog} className="dropdown-item delete-button">
+                                탈퇴하기
                             </button>
                         </div>
                     )}
@@ -269,6 +280,46 @@ function MyPage() {
                     ))}
                 </div>
             </div>
+
+            {/* Material-UI Dialog 추가 (유지) */}
+            <Dialog
+                open={isDeleteDialogOpen}
+                onClose={closeDeleteDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                PaperProps={{ // `PaperProps` to style the Dialog's paper container
+                    style: {
+                        borderRadius: 12,
+                        maxWidth: 500,
+                        width: '25%',
+                    },
+                }}
+            >
+                <DialogTitle id="alert-dialog-title" sx={{
+                    fontWeight: 'bold',
+                    fontSize: '1.5rem',
+                    textAlign: 'center'
+                }}> {/* DialogTitle 스타일 변경 */}
+                    {"회원 탈퇴"}
+                </DialogTitle>
+                <DialogContent sx={{padding: '1.5rem', textAlign: 'center'}}> {/* DialogContent 스타일 변경 */}
+                    <DialogContentText id="alert-dialog-description" sx={{
+                        fontSize: '1rem',
+                        color: 'text.secondary'
+                    }}> {/* DialogContentText 스타일 변경 */}
+                        정말로 탈퇴하시겠습니까? <br/> 탈퇴 후에는 계정 복구가 불가능합니다.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{padding: '1.25rem', justifyContent: 'center'}}> {/* DialogActions 스타일 변경 */}
+                    <Button onClick={closeDeleteDialog} color="primary" sx={{minWidth: 100}}> {/* "아니오" 버튼 스타일 변경 */}
+                        아니오
+                    </Button>
+                    <Button onClick={handleDeleteConfirm} color="error" autoFocus
+                            sx={{minWidth: 100}}> {/* "예" 버튼 스타일 변경 */}
+                        예, 탈퇴합니다
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
