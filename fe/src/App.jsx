@@ -318,7 +318,7 @@ function App() {
                 open={isSnackbarOpen}
                 autoHideDuration={2000} // 2초로 변경
                 onClose={handleSnackbarClose}
-                anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
             >
                 <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{width: '100%'}}>
                     {snackbarMessage}
